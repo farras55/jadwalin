@@ -14,7 +14,7 @@ Route::get('/dashboard', function () {
         'manager' => redirect()->route('manager.dashboard'),
         default => redirect()->route('employee.dashboard'),
     };
-})->middleware(['auth'])->name('dashboard');
+})->middleware('auth')->name('dashboard');
 
 // SuperAdmin Routes
 Route::middleware(['auth', 'role:superadmin'])->prefix('admin')->name('admin.')->group(function () {
