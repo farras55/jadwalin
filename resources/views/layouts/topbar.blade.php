@@ -1,65 +1,90 @@
-<header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 sticky top-0 z-20">
-    
-    <!-- Mobile Hamburger (Hidden on Desktop) -->
-    <div class="flex items-center md:hidden mr-4">
-        <button class="text-slate-500 hover:text-slate-700 focus:outline-none">
-            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </div>
+<header class="h-[64px] md:h-[72px] bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 shrink-0 z-10 sticky top-0">
+    {{-- Bagian Kiri Navbar --}}
+    <div class="flex items-center gap-3 md:gap-5">
+        {{-- Tampil di mobile saja: Logo Singkat --}}
+        <div class="md:hidden flex items-center gap-2">
+            <div class="bg-[#0B6B5A] text-white rounded-lg p-1.5 flex items-center justify-center">
+                <i data-lucide="check" class="h-4 w-4 stroke-[3]"></i>
+            </div>
+            <span class="text-[17px] font-bold text-slate-800 tracking-tight">Jadwal<span style="color: var(--c-primary, #0B6B5A);">In</span></span>
+        </div>
 
-    <!-- Left side Context (Desktop) -->
-    <div class="hidden md:flex items-center gap-5">
-        <!-- Outlet Dropdown -->
-        <button class="flex items-center h-[34px] px-3 gap-2 rounded-lg border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B6B5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            <span class="text-[13px] font-bold text-slate-700">Senopati & Kemang (2 Cabang)</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                <path d="m6 9 6 6 6-6"></path>
-            </svg>
-        </button>
+        {{-- Nama Perusahaan / Cabang --}}
+        <div class="flex items-center h-8 gap-2 text-[12px] md:text-[13px] font-semibold text-slate-700 bg-slate-50 border border-slate-200 px-3 py-1 rounded-lg max-w-[200px] md:max-w-[320px]">
+            <i data-lucide="store" class="h-4 w-4 shrink-0" style="color: var(--c-primary, #0B6B5A);"></i>
+            <span class="truncate">{{ $companyName }}</span>
+        </div>
 
-        <!-- Current Date -->
-        <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                <line x1="16" x2="16" y1="2" y2="6"></line>
-                <line x1="8" x2="8" y1="2" y2="6"></line>
-                <line x1="3" x2="21" y1="10" y2="10"></line>
-            </svg>
-            <span id="topbar-clock" class="text-[13px] font-medium text-slate-600">
-                Rabu, 23 September 2026 | 09:41 WIB
-            </span>
+        {{-- Jam & Tanggal Realtime (Sembunyi di mobile kecil) --}}
+        <div class="hidden sm:flex items-center gap-2 text-[12px] text-slate-500 font-medium border-l border-slate-200 pl-4 md:pl-5">
+            <i data-lucide="calendar-days" class="h-4 w-4 shrink-0 text-slate-400"></i>
+            <span id="navbar-date">{{ $tanggalStr }}</span>
+            <span class="hidden md:inline text-slate-300">|</span>
+            <span id="navbar-clock" class="hidden md:inline font-mono font-semibold text-slate-600">{{ $now->format('H:i') }}</span>
+            <span class="hidden md:inline text-[11px] text-slate-400 font-semibold">WIB</span>
         </div>
     </div>
 
-    <!-- Right side Actions -->
-    <div class="ml-auto flex items-center gap-3">
-        <!-- Notification -->
-        <button class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-            </svg>
-            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+    {{-- Bagian Kanan Navbar --}}
+    <div class="flex items-center gap-2 md:gap-3">
+        <button type="button" class="relative text-slate-400 hover:text-slate-700 transition p-2 rounded-lg hover:bg-slate-50" title="Notifikasi">
+            <i data-lucide="bell" class="h-5 w-5"></i>
+            <span class="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>
         </button>
 
-        <!-- Help -->
-        <button class="p-2 rounded-full text-slate-500 hover:bg-slate-100 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <path d="M12 17h.01"></path>
-            </svg>
+        <button type="button" class="hidden md:block text-slate-400 hover:text-slate-700 transition p-2 rounded-lg hover:bg-slate-50" title="Bantuan">
+            <i data-lucide="help-circle" class="h-5 w-5"></i>
         </button>
 
-        <!-- Small Profile Avatar (Mobile or Extra) -->
-        <button class="w-8 h-8 rounded-full bg-[#085245] ml-2 flex items-center justify-center text-white text-[12px] font-bold">
-            {{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'BS' }}
-        </button>
+        {{-- Dropdown Profil User (Alpine.js) --}}
+        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+            <button @click="open = !open" 
+                    type="button"
+                    class="flex items-center gap-2 p-1 rounded-full hover:bg-slate-100 transition focus:outline-none"
+                    title="{{ $userName }}">
+                @if (!empty($profilePhotoUrl))
+                    <img src="{{ $profilePhotoUrl }}" alt="{{ $userName }}" class="h-8 w-8 rounded-full object-cover ring-2 ring-slate-100">
+                @else
+                    <div class="h-8 w-8 bg-[#0B6B5A] text-white rounded-full flex items-center justify-center font-bold text-[12px] ring-2 ring-slate-100">
+                        {{ $initials }}
+                    </div>
+                @endif
+                <i data-lucide="chevron-down" class="hidden md:block h-3.5 w-3.5 text-slate-400 transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+            </button>
+
+            {{-- Dropdown Menu --}}
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 overflow-hidden"
+                 style="display: none;">
+                <div class="px-4 py-2.5 border-b border-slate-100 bg-slate-50/50">
+                    <p class="text-[12px] font-bold text-slate-800 truncate">{{ $userName }}</p>
+                    <p class="text-[11px] text-slate-500 truncate capitalize">{{ $positionName }}</p>
+                </div>
+
+                <a href="{{ route('profile.edit') }}" 
+                   class="flex items-center gap-2.5 px-4 py-2 text-[12.5px] text-slate-700 hover:bg-slate-50 transition">
+                    <i data-lucide="user" class="h-4 w-4 text-slate-400"></i>
+                    <span>Edit Profil</span>
+                </a>
+
+                @auth
+                <div class="border-t border-slate-100 my-1"></div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full flex items-center gap-2.5 px-4 py-2 text-[12.5px] text-red-600 hover:bg-red-50 transition text-left">
+                        <i data-lucide="log-out" class="h-4 w-4 text-red-500"></i>
+                        <span>Keluar</span>
+                    </button>
+                </form>
+                @endauth
+            </div>
+        </div>
     </div>
 </header>
