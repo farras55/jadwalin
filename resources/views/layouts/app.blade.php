@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'JadwalIn') }}</title>
+    <title>{{ config('app.name', 'Jadwalin') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
     
     {{-- Google Fonts: Inter --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,13 +20,14 @@
     
     <style>
         :root {
-            --c-primary: #0B6B5A;
-            --c-primary-dark: #085244;
-            --c-ink: #334155;
-            --c-ink-strong: #0F172A;
-            --c-muted: #64748B;
-            --c-line: #E2E8F0;
-            --bg-body: #F8F9FC;
+            --c-primary: #6C5CE7;
+            --c-primary-dark: #4F46E5;
+            --c-secondary: #A29BFE;
+            --c-ink: #2D2A3E;
+            --c-ink-strong: #1B1828;
+            --c-muted: #7C7896;
+            --c-line: #E2E0F7;
+            --bg-body: #F5F3FF;
         }
 
         body { 
@@ -36,13 +38,13 @@
     </style>
 </head>
 
-<body class="flex h-screen overflow-hidden text-sm">
+<body x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm">
 
-    {{-- ===== SIDEBAR (Hidden on Mobile) ===== --}}
+    {{-- ===== SIDEBAR (Desktop & Mobile Drawer) ===== --}}
     @include('layouts.sidebar')
 
     {{-- ===== MAIN WRAPPER ===== --}}
-    <main class="flex-1 flex flex-col min-w-0 bg-[#F9FAFB] pb-[60px] md:pb-0 overflow-hidden">
+    <main class="flex-1 flex flex-col min-w-0 bg-[#F5F3FF] overflow-hidden">
         
         {{-- ===== TOP NAVBAR ===== --}}
         @include('layouts.topbar')
@@ -59,19 +61,6 @@
             @yield('content')
         </div>
     </main>
-
-    {{-- ===== BOTTOM NAVBAR (Mobile Only) ===== --}}
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-[60px] bg-white border-t border-slate-200 flex justify-around items-center z-50 px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
-        @foreach ($bottomMenus as $menu)
-            @php
-                $isActive = request()->is(ltrim($menu['active_pattern'], '/'));
-            @endphp
-            <a href="{{ $menu['url'] }}" class="flex flex-col items-center justify-center w-full h-full gap-1 transition-colors {{ $isActive ? 'text-[#0B6B5A]' : 'text-slate-400 hover:text-slate-600' }}">
-                <i data-lucide="{{ $menu['icon'] }}" class="h-5 w-5 {{ $isActive ? 'fill-[#0B6B5A]/10' : '' }}"></i>
-                <span class="text-[10px] font-medium">{{ $menu['label'] }}</span>
-            </a>
-        @endforeach
-    </nav>
 
     {{-- Initialize Icons & Scripts --}}
     <script>

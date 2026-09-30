@@ -1,58 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# JADWALIN &mdash; B2B Smart Shift Scheduling Platform
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/logo.svg" width="120" height="120" alt="Jadwalin Logo">
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Platform B2B Berbasis Web untuk Otomatisasi Penjadwalan Roster Kerja Karyawan</strong><br>
+  <em>Proyek PBL (Project-Based Learning) &mdash; Semester 5</em>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 11.x (PHP 8.2+)
+- **Styling**: Tailwind CSS (Custom Ungu/Indigo Theme `#6C5CE7`)
+- **Interactivity**: Alpine.js
+- **Database**: PostgreSQL (Supabase) / SQLite (Local/Testing)
+- **Icons**: Lucide Icons
+- **Testing**: PHPUnit / Pest Feature Tests
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Panduan Onboarding Rekan Tim (Local Setup)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Ikuti langkah-langkah di bawah ini untuk menjalankan repositori ini di perangkat lokal Anda:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Clone & Masuk ke Direktori
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repository-url>
+cd jadwalin
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependensi PHP & Node.js
+```bash
+composer install
+npm install
+```
 
-## Contributing
+### 3. Konfigurasi Environment (`.env`)
+Salin file `.env.example` ke `.env` lalu generate encryption key:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+*Catatan: Pastikan konfigurasi database di file `.env` sudah sesuai dengan koneksi database lokal / Supabase Anda.*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Migrasi & Seeding Database
+Jalankan migrasi 14 tabel basis data beserta data awal seeder:
+```bash
+php artisan migrate:fresh --seed
+```
 
-## Code of Conduct
+### 5. Jalankan Development Server
+Buka dua terminal terpisah:
+```bash
+# Terminal 1: Vite Asset Server
+npm run dev
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Terminal 2: Laravel Server
+php artisan serve
+```
+Buka peramban pada tautan: [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 👤 Akun Uji Coba (Pre-seeded Accounts)
 
-## License
+Semua akun menggunakan kata sandi bawaan: **`password123`**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Role | Email Login | Hak Akses Utama |
+| :--- | :--- | :--- |
+| **Super Admin** | `owner@senjawisata.co.id` | Konfigurasi platform, kelola perusahaan tenant, master data |
+| **Manager** | `manager@senjawisata.co.id` | Plotting jadwal shift, persetujuan tukar shift, pantau presensi tim |
+| **Karyawan** | `karyawan@senjawisata.co.id` | Jadwal personal, ajukan tukar shift, catat absensi mandiri, ketersediaan |
+
+---
+
+## 📐 Panduan Arsitektur & Template Proyek
+
+Proyek ini telah dilengkapi struktur fondasi siap pakai:
+
+### 1. Desain & Komponen Layout
+- **Layout Utama**: Bungkus view modul Anda dengan `<x-app-layout>`:
+  ```blade
+  <x-app-layout>
+      <x-slot name="header">
+          <h1 class="text-xl font-bold text-[#2D2A3E]">Nama Modul</h1>
+      </x-slot>
+      
+      {{-- Konten Modul Anda --}}
+  </x-app-layout>
+  ```
+- **Responsif Otomatis**: Layout secara otomatis beralih antara *Sidebar Sticky* di laptop dan *Mobile Drawer Off-Canvas* di layar HP.
+- **Palet Warna Resmi**:
+  - Primary: `#6C5CE7` (`bg-[#6C5CE7]`, `text-[#6C5CE7]`)
+  - Hover / Deep: `#4F46E5`
+  - Background: `#F5F3FF`
+  - Border: `#E2E0F7`
+  - Text: `#2D2A3E`
+
+### 2. Struktur Routing & RBAC
+Rute telah dikelompokkan dengan proteksi middleware `role:{role}` di [`routes/web.php`](routes/web.php):
+- Prefix `/admin/` &rarr; name: `admin.*` (Hanya `superadmin`)
+- Prefix `/manager/` &rarr; name: `manager.*` (Hanya `manager`)
+- Prefix `/employee/` &rarr; name: `employee.*` (Hanya `employee`)
+
+Saat mengembangkan fitur baru, arahkan route di `routes/web.php` ke Controller fitur Anda menggantikan view `placeholder`.
+
+---
+
+## 🧪 Menjalankan Automated Tests
+
+Pastikan seluruh pengujian tetap hijau (*passing*) sebelum melakukan *push*:
+```bash
+php artisan test
+```
+Semua 23 pengujian unit & feature saat ini berstatus **100% PASSING**.
