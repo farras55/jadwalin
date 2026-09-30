@@ -4,12 +4,15 @@
 
 @layer base {
     :root {
-        --primary: #0B6B5A;
-        --primary-dark: #085245;
-        --background: #F8F9FC;
+        --primary: #6C5CE7;
+        --primary-hover: #4F46E5;
+        --primary-dark: #4F46E5;
+        --secondary: #A29BFE;
+        --background: #F5F3FF;
         --surface: #ffffff;
-        --text: #1e293b;
-        --muted: #64748b;
+        --text: #2D2A3E;
+        --border: #E2E0F7;
+        --muted: #7C7896;
     }
 
     body {
