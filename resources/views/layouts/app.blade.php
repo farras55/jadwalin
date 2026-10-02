@@ -15,8 +15,8 @@
     {{-- Tailwind CSS & JS via Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    {{-- Lucide Icons (Pinned Version) --}}
-    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    {{-- Lucide Icons (Bundled Locally for Offline Reliability) --}}
+    <script src="{{ asset('js/lucide.min.js') }}"></script>
     
     <style>
         :root {
