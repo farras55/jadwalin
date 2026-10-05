@@ -156,20 +156,109 @@ classDiagram
     Manager <|-- Employee : Berada di Departemen yang Sama
 ```
 
-### 3.2 Matriks Kebutuhan Fungsional (Functional Requirements)
+### 3.2 Diagram Use Case Sistem (Use Case Diagram)
+Diagram Use Case memodelkan interaksi antara pengguna (*actors*) dengan kapabilitas fungsional platform *Jadwalin* dalam batasan sistem (*system boundary*). Model ini merefleksikan 18 fungsionalitas utama yang terbebas dari anti-pattern *functional decomposition*, di mana logika komputasi internal (filter ketersediaan, pengecekan kuota, dan peringatan anti-bentrok) telah diintegrasikan sebagai bagian dari skenario alur kerja penyusunan jadwal (*Smart Scheduling Builder*).
+
+```mermaid
+graph LR
+    subgraph SistemJadwalin ["Sistem Jadwalin (System Boundary)"]
+        direction TB
+        
+        subgraph GroupAuth ["Akses & Otentikasi"]
+            UC01(["UC-01: Login / Masuk Sistem"])
+        end
+
+        subgraph GroupEmp ["Karyawan (Employee Self-Service)"]
+            UC02(["UC-02: Melihat Jadwal Shift & Riwayat"])
+            UC03(["UC-03: Mengajukan Ketersediaan Waktu"])
+            UC04(["UC-04: Melakukan Presensi Mandiri"])
+            UC05(["UC-05: Mengelola Pertukaran Shift"])
+            UC06(["UC-06: Mengklaim Open Shift"])
+        end
+
+        subgraph GroupMgr ["Operasional & Penjadwalan (Manager)"]
+            UC07(["UC-07: Mengelola Template Shift"])
+            UC08(["UC-08: Menyusun Jadwal Kerja Tim"])
+            UC09(["UC-09: Memvalidasi Ketersediaan Waktu Staf"])
+            UC10(["UC-10: Memvalidasi Pertukaran Shift Tim"])
+            UC11(["UC-11: Menerbitkan & Mengelola Open Shift"])
+            UC12(["UC-12: Memantau Presensi Tim"])
+            UC13(["UC-13: Mengekspor Laporan Timesheet Dept"])
+        end
+
+        subgraph GroupAdm ["Administrasi & Tata Kelola (Superadmin)"]
+            UC14(["UC-14: Mengelola Master Data Perusahaan"])
+            UC15(["UC-15: Mengelola Departemen & Posisi"])
+            UC16(["UC-16: Mengelola Akun Pengguna & Peran"])
+            UC17(["UC-17: Mengatur Parameter Ketenagakerjaan"])
+            UC18(["UC-18: Mengekspor Laporan Timesheet Global"])
+        end
+    end
+
+    ActorEmp["fa:fa-user Employee<br/>(Karyawan)"]
+    ActorMgr["fa:fa-user-tie Manager<br/>(Manajer Operasional)"]
+    ActorAdm["fa:fa-user-shield Superadmin / Owner<br/>(Administrator Sistem)"]
+
+    ActorEmp --- UC01
+    ActorEmp --- UC02
+    ActorEmp --- UC03
+    ActorEmp --- UC04
+    ActorEmp --- UC05
+    ActorEmp --- UC06
+
+    ActorMgr --- UC01
+    ActorMgr --- UC07
+    ActorMgr --- UC08
+    ActorMgr --- UC09
+    ActorMgr --- UC10
+    ActorMgr --- UC11
+    ActorMgr --- UC12
+    ActorMgr --- UC13
+
+    ActorAdm --- UC01
+    ActorAdm --- UC14
+    ActorAdm --- UC15
+    ActorAdm --- UC16
+    ActorAdm --- UC17
+    ActorAdm --- UC18
+```
+
+#### Tabel Spesifikasi & Definisi 18 Use Case:
+| Kode UC | Nama Use Case | Aktor Primer | Deskripsi Fungsional | Hasil Akhir / Post-condition |
+| :--- | :--- | :--- | :--- | :--- |
+| **UC-01** | Login / Masuk Sistem | Semua Aktor | Memverifikasi kredensial pengguna dan mengarahkan ke dashboard yang sesuai peran (RBAC). | Pengguna terotentikasi dan sesi aktif tersimpan. |
+| **UC-02** | Melihat Jadwal Shift & Riwayat | Employee | Menampilkan kalender kerja mingguan serta rekap riwayat jam kerja presensi personal. | Informasi jadwal personal ditampilkan secara interaktif. |
+| **UC-03** | Mengajukan Ketersediaan Waktu | Employee | Mendaftarkan waktu halangan kerja (spesifik/rutin) yang otomatis diproteksi *buffer* 30 menit. | Data pengajuan tersimpan dengan status `pending`. |
+| **UC-04** | Melakukan Presensi Mandiri | Employee | Mencatat kehadiran *Clock-In* dan *Clock-Out* secara mandiri berbasis toleransi *grace period*. | Waktu aktual dan durasi kerja tercatat ke tabel `shift_assignments`. |
+| **UC-05** | Mengelola Pertukaran Shift | Employee | Mengajukan pertukaran jadwal ke rekan tertentu dan mengonfirmasi persetujuan dari rekan target. | Record `shift_swaps` tercipta dan diteruskan ke tahap persetujuan manajer. |
+| **UC-06** | Mengklaim Open Shift | Employee | Mengambil slot shift kosong/lembur dengan jaminan pencegahan *race condition* (*row lock*). | Penugasan shift berhasil dialokasikan kepada karyawan pengklaim tercepat. |
+| **UC-07** | Mengelola Template Shift | Manager | Menentukan master jam kerja rutin, kode warna visual, durasi, dan default kuota departemen. | Template tersimpan pada tabel `shift_templates`. |
+| **UC-08** | Menyusun Jadwal Kerja Tim | Manager | Menginput kebutuhan kuota harian & staf per divisi, lalu mengeksekusi *Smart Scheduling Builder*. | Draf penugasan shift mingguan terbentuk tanpa konflik waktu. |
+| **UC-09** | Memvalidasi Ketersediaan Waktu Staf | Manager | Menyetujui atau menolak permohonan halangan kerja yang diajukan oleh staf divisi. | Status ketersediaan diperbarui (`approved`/`rejected`). |
+| **UC-10** | Memvalidasi Pertukaran Shift Tim | Manager | Meninjau kesepakatan tukar shift antar staf dan memberikan persetujuan final secara atomik. | Penugasan jadwal bertukar pemilik secara transaksional di basis data. |
+| **UC-11** | Menerbitkan & Mengelola Open Shift | Manager | Menyiarkan slot shift kosong yang belum terpenuhi kepada staf divisi yang memenuhi kualifikasi. | Shift berstatus `open_shift = true` dan terlihat di dashboard staf. |
+| **UC-12** | Memantau Presensi Tim | Manager | Memantau kehadiran langsung seluruh anggota tim kerja (*Present*, *Late*, *Absent*). | Dasbor monitoring presensi realtime terbarui. |
+| **UC-13** | Mengekspor Laporan Timesheet Dept | Manager | Menyaring dan mengunduh rekapitulasi jam kerja reguler dan lembur staf departemen. | Berkas spreadsheet (Excel) atau PDF terunduh. |
+| **UC-14** | Mengelola Master Data Perusahaan | Superadmin | Mengelola identitas organisasi, profil tenant, outlet cabang, dan zona waktu operasional. | Master data perusahaan tersimpan di tabel `companies`. |
+| **UC-15** | Mengelola Departemen & Posisi | Superadmin | Melakukan CRUD struktur divisi organisasi dan jabatan kerja operasional. | Entitas `departments` dan `positions` terbarui. |
+| **UC-16** | Mengelola Akun Pengguna & Peran | Superadmin | Menambah pengguna baru, mengatur peranan RBAC, menugaskan departemen/posisi, dan reset sandi. | Entitas `users` aktif dengan hak akses yang terisolasi. |
+| **UC-17** | Mengatur Parameter Ketenagakerjaan | Superadmin | Mengonfigurasi batas reguler 40 jam, batas lembur 18 jam, *auto-buffer*, dan *grace period*. | Konfigurasi tersimpan pada tabel `company_settings`. |
+| **UC-18** | Mengekspor Laporan Timesheet Global | Superadmin | Menghasilkan dan mengunduh laporan rekapitulasi kerja komprehensif seluruh departemen/cabang. | Berkas laporan konsolidasian global diterbitkan. |
+
+### 3.3 Matriks Kebutuhan Fungsional (Functional Requirements)
 | Kode FR | Modul | Deskripsi Kebutuhan | Aktor Terkait |
 | :--- | :--- | :--- | :--- |
 | **FR-01** | Autentikasi | Sistem menyediakan fitur masuk (*Login*) dan keluar (*Logout*) dengan proteksi sesi dan hashing kata sandi aman. | Semua Aktor |
 | **FR-02** | Pengalihan Peran | Sistem mengarahkan pengguna secara otomatis ke dashboard spesifik perannya pasca login (`/dashboard` &rarr; `/admin`, `/manager`, `/employee`). | Semua Aktor |
 | **FR-03** | Master Perusahaan | Super Admin dapat mengelola nama, alamat, surel, kontak, zona waktu (*timezone*), dan status operasional perusahaan. | Super Admin |
-| **FR-04** | Pengaturan Regulasi| Super Admin/Manajer dapat mengonfigurasi batas reguler (40 jam/minggu), batas lembur (18 jam/minggu), *buffer* (30 mnt), dan *grace period* (15 mnt). | Super Admin, Manager |
+| **FR-04** | Pengaturan Regulasi| Super Admin dapat mengonfigurasi batas reguler (40 jam/minggu), batas lembur (18 jam/minggu), *buffer* (30 mnt), dan *grace period* (15 mnt) tingkat perusahaan. | Super Admin |
 | **FR-05** | Master Organisasi | Super Admin dapat melakukan CRUD Departemen dan Posisi/Jabatan kerja operasional. | Super Admin |
 | **FR-06** | Manajemen Pengguna | Super Admin dapat menambah akun, menentukan peran (*role*), menugaskan departemen/jabatan, dan mengatur status keaktifan staf. | Super Admin |
 | **FR-07** | Input Ketersediaan | Karyawan dapat mendaftarkan jadwal halangan kerja (spesifik tanggal atau berulang mingguan) beserta alasan. | Karyawan |
 | **FR-08** | Auto-Buffer | Sistem otomatis menambahkan *buffer time* 30 menit sebelum dan sesudah jadwal halangan untuk mencegah penugasan mepet. | Sistem (Otomatis) |
 | **FR-09** | Validasi Halangan | Manajer dapat menyetujui (*Approve*) atau menolak (*Reject*) jadwal ketersediaan yang diajukan stafnya. | Manager |
 | **FR-10** | Template Shift | Manajer dapat mendefinisikan template master shift (judul, jam mulai, jam selesai, kuota default, kode warna visual). | Manager |
-| **FR-11** | Smart Scheduling | Manajer dapat menjalankan pembuat jadwal otomatis yang menyaring bentrok ketersediaan dan mengecualikan staf *overlimit*. | Manager |
+| **FR-11** | Smart Scheduling | Manajer mengonfigurasi kebutuhan kuota shift harian dan jumlah staf per divisi/shift, lalu mengeksekusi *Smart Scheduling Builder* yang menyaring bentrok ketersediaan dan mengecualikan staf *overlimit*. | Manager |
 | **FR-12** | Penerbitan Roster | Manajer dapat meninjau draf hasil *generate* dan mengubah status jadwal dari *draft* menjadi *published*. | Manager |
 | **FR-13** | Kalender Shift Staf| Karyawan dapat melihat seluruh jadwal shift miliknya yang sudah berstatus *published* dalam tampilan kalender mingguan. | Karyawan |
 | **FR-14** | Permintaan Swap | Karyawan dapat memilih shift kerjanya dan mengajukan pertukaran kepada rekan kerja tertentu (*Requester* &rarr; *Target*). | Karyawan |
@@ -180,12 +269,12 @@ classDiagram
 | **FR-19** | Presensi Mandiri | Karyawan dapat mencatat *Clock-In* saat mulai bekerja dan *Clock-Out* saat mengakhiri tugas secara mandiri dari perangkat mobile. | Karyawan |
 | **FR-20** | Grace Period & Keterlambatan | Sistem menghitung selisih menit keterlambatan jika karyawan *Clock-In* melebihi *grace period* (15 menit) dan mencatat status *Late*. | Sistem (Otomatis) |
 | **FR-21** | Auto Clock-Out | Sistem secara terjadwal otomatis menutup penugasan shift yang melewati batas akhir operasional jika staf lupa *Clock-Out*. | Sistem (Scheduler) |
-| **FR-22** | Monitoring Absensi | Manajer dapat memantau status kehadiran seluruh anggota tim secara langsung (*realtime*), termasuk status ketidakhadiran (*Absent*). | Manager |
+| **FR-22** | Monitoring Absensi | Manajer dapat memantau status kehadiran seluruh anggota tim secara langsung (*realtime*), termasuk status keterlambatan (*Late*) dan ketidakhadiran (*Absent*). | Manager |
 | **FR-23** | Kalkulasi Jam Kerja | Sistem otomatis memisahkan jam reguler dan jam lembur sesuai durasi kerja aktual dan regulasi PP No. 35/2021. | Sistem (Otomatis) |
-| **FR-24** | Ekspor Laporan | Manajer dapat memfilter periode bulan/tahun dan mengunduh laporan rekapitulasi *timesheet* dalam format Excel (*Spreadsheet*) atau PDF. | Manager |
+| **FR-24** | Ekspor Laporan | Manajer dan Super Admin dapat memfilter periode bulan/tahun dan mengunduh laporan rekapitulasi *timesheet* (Departemen / Global) dalam format Excel (*Spreadsheet*) atau PDF. | Manager, Super Admin |
 | **FR-25** | Audit Trail Log | Sistem merekam setiap manipulasi data kritis (tukar shift, publikasi jadwal, hapus shift) lengkap dengan *old* & *new values*, IP, dan aktor. | Sistem (Otomatis) |
 
-### 3.3 Kebutuhan Non-Fungsional (Non-Functional Requirements)
+### 3.4 Kebutuhan Non-Fungsional (Non-Functional Requirements)
 1. **Performa & Waktu Tanggap (Performance)**:
    - Waktu respons pemrosesan HTTP untuk operasi CRUD rata-rata di bawah 300 milidetik.
    - Waktu komputasi algoritma *Smart Scheduling Builder* untuk menghasilkan draf roster 50 karyawan selama 1 pekan maksimal 3 detik.
@@ -364,6 +453,95 @@ sequenceDiagram
      - Mengisi `clock_out_time = end_time` (waktu jadwal normal).
      - Menandai catatan: `manager_notes = "Sistem: Ditutup otomatis karena staf tidak melakukan clock-out mandiri"`.
      - Mengirim notifikasi peninjauan anomali kepada Manajer.
+
+---
+
+### 4.6 Perancangan Diagram Aktivitas (Activity Diagrams — Pemetaan 1-to-1 dari 18 Use Case)
+
+Pemodelan diagram aktivitas pada platform *Jadwalin* dirancang dengan gaya visual standar industri mengacu pada referensi proyek sistem informasi multi-lajur (*Multi-Lane Swimlane*), yang memisahkan tanggung jawab antarmuka pengguna (*User/Actor Lane*) dan logika komputasi server (*System Lane*). Setiap *Use Case* yang didefinisikan pada Bab 3.2 (total 18 *Use Case*) dipetakan secara **1-to-1** menjadi satu unit *Activity Diagram* mandiri pada berkas visual [Jadwalin.drawio.xml](file:///d:/POLINEMB/SEMESTER%205/PBL/jadwalin/docs/Jadwalin.drawio.xml). Diagram-diagram tersebut dikelompokkan ke dalam 3 halaman terpisah berdasarkan peran otorisasi pengguna:
+
+#### 1. Halaman `Act-Karyawan` (5 Diagram Aktivitas Layanan Mandiri Karyawan)
+Memodelkan 5 Use Case khusus peran Karyawan (*Employee*):
+1. **UC-02: Melihat Jadwal Shift & Riwayat**:
+   - Membuka kalender shift mingguan/bulanan, melihat penugasan terpublikasi, serta meninjau rincian jam kerja reguler dan lembur personal.
+2. **UC-03: Mengajukan Ketersediaan Waktu**:
+   - Penginputan rentang waktu halangan (kuliah/agenda pribadi).
+   - Eksekusi algoritma *Auto-Buffer* (-30m awal & +30m akhir) dan validasi deteksi bentrok jadwal terbit sebelum disimpan berstatus `pending_manager`.
+3. **UC-04: Melakukan Presensi Mandiri**:
+   - Pencatatan *Clock-In* dengan verifikasi waktu server & geolokasi, evaluasi batas toleransi *Grace Period* 15 menit (`Present` vs `Late`).
+   - Pencatatan *Clock-Out* disertai otomatisasi pemisahan jam kerja reguler vs jam lembur ke dalam *timesheet*.
+4. **UC-05: Mengelola Pertukaran Shift**:
+   - Alur *Two-Phase Shift Swap*: Pemohon mengajukan tukar guling ke rekan kerja spesifik.
+   - Persetujuan Fase 1 oleh Rekan Target (*Peer Approval*) dan eskalasi ke persetujuan Fase 2 oleh Manajer Operasional.
+5. **UC-06: Mengklaim Open Shift**:
+   - Penjelajahan siaran jadwal kosong oleh staf yang memenuhi kualifikasi.
+   - Penguncian baris basis data (`lockForUpdate()`) untuk eliminasi *race condition* dan pembentukan alokasi shift secara atomik.
+
+#### 2. Halaman `Act-Manajer` (7 Diagram Aktivitas Operasional & Penjadwalan)
+Memodelkan 7 Use Case khusus peran Manajer Operasional:
+1. **UC-07: Mengelola Template Shift**:
+   - Pembuatan dan pembaruan master template shift divisi (nama, jam kerja, kuota default, kode warna visual).
+2. **UC-08: Menyusun Jadwal Kerja Tim**:
+   - Alur kerja *Smart Scheduling Builder*: penentuan kuota harian, pemuatan ketersediaan staf, alokasi penugasan (manual/auto), evaluasi *Hard Constraints* (PP 35/2021: 40h reg, 14h OT, rest 11h, RDO), serta penerbitan (*Publish*) jadwal.
+3. **UC-09: Memvalidasi Ketersediaan Waktu Staf**:
+   - Peninjauan daftar pengajuan halangan staf departemen, verifikasi alasan dan jeda buffer 30m, serta keputusan *Approve* (mengaktifkan blokade jadwal) atau *Reject*.
+4. **UC-10: Memvalidasi Pertukaran Shift Tim**:
+   - Persetujuan final (Fase 2) manajer atas permohonan swap yang telah disetujui rekan kerja.
+   - Simulasi batas jam kerja mingguan dan eksekusi mutasi jadwal secara atomik (`DB::transaction`).
+5. **UC-11: Menerbitkan & Mengelola Open Shift**:
+   - Identifikasi slot kosong, pembuatan entri `open_shifts`, penyaringan otomatis kandidat staf yang relevan tanpa bentrok jadwal, dan penyiaran *broadcast push notification*.
+6. **UC-12: Memantau Presensi Tim**:
+   - Pemantauan status absensi langsung (*Present*, *Late*, *Absent*), deteksi dini keterlambatan parah / mangkir (*No-Show*), serta eksekusi tindakan korektif manajer.
+7. **UC-13: Mengekspor Laporan Timesheet Dept**:
+   - Penyaringan data presensi dan jam kerja staf divisi spesifik, kalkulasi lembur & penalti keterlambatan, dan pengunduhan berkas Excel/PDF.
+
+#### 3. Halaman `Act-Superadmin` (6 Diagram Aktivitas Tata Kelola Sistem & Master Data)
+Memodelkan 6 Use Case tingkat Administrator Sistem & Autentikasi:
+1. **UC-01: Login / Masuk Sistem & Pengalihan Peran**:
+   - Verifikasi kredensial terpusat dengan proteksi *rate limiting*, regenerasi sesi, pengecekan *Role-Based Access Control*, dan pengalihan dinamis ke dashboard perannya (`/admin`, `/manager`, atau `/employee`).
+2. **UC-14: Mengelola Master Data Perusahaan**:
+   - Pemeliharaan identitas profil bisnis tenant, kontak, alamat, zona waktu operasional (WIB/WITA/WIT), dan status keaktifan lisensi.
+3. **UC-15: Mengelola Departemen & Posisi**:
+   - CRUD struktur divisi kerja dan master jabatan operasional beserta integritas relasi referensialnya.
+4. **UC-16: Mengelola Akun Pengguna & Peran**:
+   - Pendaftaran pengguna baru, penugasan divisi/posisi, penetapan hak akses peran RBAC, hashing kata sandi aman (Bcrypt), dan pengiriman kredensial aktivasi.
+5. **UC-17: Mengatur Parameter Ketenagakerjaan**:
+   - Konfigurasi kebijakan kepatuhan per perusahaan pada `company_settings` (batas reguler 40 jam, batas lembur 14 jam, jeda istirahat 11 jam, *grace period* 15 menit, dan *auto-buffer* 30 menit).
+6. **UC-18: Mengekspor Laporan Timesheet Global**:
+   - Agregasi data komprehensif seluruh cabang dan departemen, integrasi riwayat kepatuhan dari `shift_assignments` dan jejak mutasi dari `audit_logs`, serta ekspor dokumen konsolidasian (Excel/PDF).
+
+---
+
+### 4.7 Perancangan Diagram Sekuensial (Sequence Diagrams — Pemetaan 1-to-1 dari 18 Use Case)
+
+Pemodelan diagram sekuensial pada platform *Jadwalin* dirancang mengadopsi pola arsitektur standar **Boundary-Control-Entity (BCE)** yang mengacu pada format proyek sistem informasi PBL Petlink. Setiap Use Case dipetakan secara **1-to-1** menjadi satu unit *Sequence Diagram* mandiri pada berkas visual [Jadwalin.drawio.xml](file:///d:/POLINEMB/SEMESTER%205/PBL/jadwalin/docs/Jadwalin.drawio.xml) dan dikelompokkan ke dalam 3 halaman terpisah sesuai peran otorisasi pengguna:
+
+#### 1. Halaman `Seq-Karyawan` (5 Sequence Diagram Layanan Mandiri Karyawan)
+Memodelkan interaksi objek untuk 5 Use Case peran Karyawan (*Employee*):
+1. **UC-02: Melihat Jadwal Shift & Riwayat**: Alur permintaan jadwal mingguan/bulanan dari `Karyawan` &rarr; `Web Panel (Mobile)` &rarr; `ScheduleController` &rarr; `ShiftAssignments DB`, kalkulasi akumulasi jam reguler/lembur, dan perenderan kalender shift visual berpenanda warna.
+2. **UC-03: Mengajukan Ketersediaan Waktu**: Alur penginputan halangan kerja dengan kalkulasi otomatis *Auto-Buffer* (&plusmn;30 menit), evaluasi percabangan (*alt*) bentrok dengan jadwal *published*, penyimpanan record ke `availabilities` berstatus `pending_manager`, dan notifikasi ke manajer.
+3. **UC-04: Melakukan Presensi Mandiri (Clock-In/Clock-Out)**: Alur pencatatan presensi mobile dengan evaluasi batas toleransi *Grace Period* 15 menit (`Present` vs `Late`), dilanjutkan dengan pencatatan *Clock-Out* serta pemisahan otomatis durasi kerja reguler vs lembur sesuai PP No. 35/2021.
+4. **UC-05: Mengelola Pertukaran Shift (Two-Phase Shift Swap)**: Alur kolaborasi pertukaran jadwal multi-aktor (`Pemohon`, `Web Panel`, `SwapController`, `Rekan Target`, `Manajer`, `Database (Atomic)`), melalui persetujuan Fase 1 rekan kerja, eskalasi ke persetujuan Fase 2 manajer, dan eksekusi transaksi atomik di basis data.
+5. **UC-06: Mengklaim Open Shift (Pessimistic Concurrency Lock)**: Alur perebutan klaim shift kosong dengan isolasi konkurensi tingkat baris (`lockForUpdate()`), evaluasi kuota sisa secara mikrodetik, dan penjaminan keberhasilan klaim (Status 200) atau penolakan tertib (Status 409 Conflict) tanpa slot ganda.
+
+#### 2. Halaman `Seq-Manajer` (7 Sequence Diagram Operasional & Penjadwalan)
+Memodelkan interaksi objek untuk 7 Use Case peran Manajer Operasional:
+1. **UC-07: Mengelola Template Shift**: Alur definisi master shift operasional divisi, validasi rentang jam kerja dan keunikan judul, penyimpanan ke `shift_templates`, dan pembaruan memori cache template.
+2. **UC-08: Menyusun Jadwal Kerja Tim (Smart Scheduling Builder)**: Alur eksekusi algoritma penjadwalan cerdas, pemuatan batasan halangan staf *approved*, evaluasi pembatas mutlak (*Hard Constraints* PP 35/2021: 40h reg, 18h OT, jeda 11h, 1 hari libur RDO), peninjauan draf roster, dan penerbitan jadwal (*Publish*).
+3. **UC-09: Memvalidasi Ketersediaan Waktu Staf**: Alur peninjauan permohonan halangan kerja divisi berstatus pending, keputusan *Approve* (mengaktifkan blokade jadwal) atau *Reject* (dengan alasan), dan pengiriman notifikasi keputusan ke staf.
+4. **UC-10: Memvalidasi Pertukaran Shift Tim (Final Approval)**: Alur peninjauan kesepakatan swap rekan kerja, simulasi beban batas jam kerja mingguan, dan eksekusi mutasi jadwal secara atomik (`DB::transaction`).
+5. **UC-11: Menerbitkan & Mengelola Open Shift**: Alur identifikasi slot kosong, pembuatan entri `shifts` terbuka, penyaringan otomatis kandidat staf yang relevan tanpa bentrok jadwal, dan penyiaran broadcast notifikasi.
+6. **UC-12: Memantau Presensi Tim Realtime**: Alur pemantauan status absensi langsung (`Present`, `Late`, `Absent`), deteksi dini keterlambatan parah / *No-Show*, dan pencatatan aksi korektif manajer.
+7. **UC-13: Mengekspor Laporan Timesheet Dept**: Alur penyaringan data presensi divisi, agregasi total jam reguler, jam lembur, dan keterlambatan, pengunduhan berkas Excel/PDF, serta pencatatan audit log.
+
+#### 3. Halaman `Seq-Superadmin` (6 Sequence Diagram Tata Kelola Sistem & Autentikasi)
+Memodelkan interaksi objek untuk 6 Use Case tingkat Administrator Sistem & Autentikasi:
+1. **UC-01: Login / Masuk Sistem & Pengalihan Peran**: Alur autentikasi kredensial hash Bcrypt, pencatatan *failed attempts*, regenerasi ID sesi, pencatatan jejak audit, dan pengalihan dinamis ke dashboard perannya (`/admin`, `/manager`, atau `/employee`).
+2. **UC-14: Mengelola Master Data Perusahaan**: Alur pemeliharaan profil bisnis tenant, validasi format surel dan zona waktu operasional (WIB/WITA/WIT), dan pembaruan data pada tabel `companies`.
+3. **UC-15: Mengelola Departemen & Posisi**: Alur CRUD struktur divisi dan jabatan kerja, validasi integritas relasi Foreign Key, dan pembaruan bagan hirarki organisasi.
+4. **UC-16: Mengelola Akun Pengguna & Peran (RBAC)**: Alur registrasi staf baru, hashing kata sandi aman (Bcrypt cost 12), penetapan peran otorisasi Spatie RBAC, dan penerbitan kredensial.
+5. **UC-17: Mengatur Parameter Regulasi Ketenagakerjaan**: Alur konfigurasi kebijakan kepatuhan per tenant pada `company_settings` (40 jam reguler, 18 jam lembur, jeda istirahat 11 jam, grace period 15 menit, dan auto-buffer 30 menit).
+6. **UC-18: Mengekspor Laporan Timesheet Global**: Alur agregasi komprehensif data jam kerja seluruh cabang dan departemen, integrasi riwayat kepatuhan dan jejak audit, serta ekspor dokumen konsolidasian (Excel/PDF).
 
 ---
 
