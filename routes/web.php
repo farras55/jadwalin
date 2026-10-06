@@ -150,14 +150,9 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee
         ]);
     })->name('swaps');
 
-    Route::get('/attendance', function () {
-        return view('placeholder', [
-            'title' => 'Presensi / Absensi',
-            'subtitle' => 'Catat kehadiran Clock-In dan Clock-Out kerja mandiri.',
-            'icon' => 'fingerprint',
-            'roleTitle' => 'Karyawan',
-        ]);
-    })->name('attendance');
+    Route::get('/attendance', [\App\Http\Controllers\Employee\AttendanceController::class, 'index'])->name('attendance');
+    Route::post('/attendance/clock-in', [\App\Http\Controllers\Employee\AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
+    Route::post('/attendance/clock-out', [\App\Http\Controllers\Employee\AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
 
     Route::get('/timesheet', function () {
         return view('placeholder', [

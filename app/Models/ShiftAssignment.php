@@ -12,6 +12,7 @@ class ShiftAssignment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'date',
         'company_id',
         'shift_id',
         'user_id',
