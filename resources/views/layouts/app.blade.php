@@ -30,6 +30,8 @@
             --bg-body: #F5F3FF;
         }
 
+        [x-cloak] { display: none !important; }
+
         body { 
             background-color: var(--bg-body); 
             color: var(--c-ink); 

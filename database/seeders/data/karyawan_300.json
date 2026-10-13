@@ -1,0 +1,3002 @@
+[
+  {
+    "id_karyawan": "00001",
+    "nama": "Slamet Pratama Ii",
+    "jenis_kelamin": "P",
+    "umur": 50,
+    "departemen": "R&D",
+    "jabatan": "Admin",
+    "kota": "Malang",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00002",
+    "nama": "Nina Putra",
+    "jenis_kelamin": "P",
+    "umur": 22,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00003",
+    "nama": "Luthfi Kusuma Iii",
+    "jenis_kelamin": "P",
+    "umur": 25,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00004",
+    "nama": "Rio Iskandar",
+    "jenis_kelamin": "P",
+    "umur": 47,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00005",
+    "nama": "Putra Eka",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4239552
+  },
+  {
+    "id_karyawan": "00006",
+    "nama": "Tito Halim",
+    "jenis_kelamin": "L",
+    "umur": 45,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00007",
+    "nama": "Siti Halim",
+    "jenis_kelamin": "P",
+    "umur": 42,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00008",
+    "nama": "Agus Halim",
+    "jenis_kelamin": "L",
+    "umur": 40,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00009",
+    "nama": "Eka Kurniawan",
+    "jenis_kelamin": "P",
+    "umur": 28,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00010",
+    "nama": "Wicaksono Agus",
+    "jenis_kelamin": "P",
+    "umur": 23,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00011",
+    "nama": "Andi Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 35,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00012",
+    "nama": "Kurniawan Dina",
+    "jenis_kelamin": "L",
+    "umur": 23,
+    "departemen": "IT",
+    "jabatan": "Admin",
+    "kota": "Denpasar",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00013",
+    "nama": "Bayu Hartati",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00014",
+    "nama": "Dewi Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 47,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00015",
+    "nama": "Ningsih Yuli",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00016",
+    "nama": "Luthfi Susanto Iii",
+    "jenis_kelamin": "L",
+    "umur": 25,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 3602426
+  },
+  {
+    "id_karyawan": "00017",
+    "nama": "Budi Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 5449170
+  },
+  {
+    "id_karyawan": "00018",
+    "nama": "Hartono Iskandar Jr",
+    "jenis_kelamin": "L",
+    "umur": 38,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00019",
+    "nama": "Rahma Tito",
+    "jenis_kelamin": "P",
+    "umur": 21,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00020",
+    "nama": "Wahyu Prasetyo",
+    "jenis_kelamin": "P",
+    "umur": 26,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00021",
+    "nama": "Eka Halim",
+    "jenis_kelamin": "L",
+    "umur": 31,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00022",
+    "nama": "Tito Susanto Iii",
+    "jenis_kelamin": "P",
+    "umur": 32,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00023",
+    "nama": "Andi Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 46,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00248",
+    "nama": "Ayu Sari",
+    "jenis_kelamin": "L",
+    "umur": 41,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00025",
+    "nama": "Halim Putri",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00026",
+    "nama": "Dewi Manan",
+    "jenis_kelamin": "P",
+    "umur": 49,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00027",
+    "nama": "Tito Iskandar Iii",
+    "jenis_kelamin": "P",
+    "umur": 24,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00028",
+    "nama": "Dina Kusuma",
+    "jenis_kelamin": "P",
+    "umur": 58,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00029",
+    "nama": "Tito Sari",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00030",
+    "nama": "Rahma Luthfi",
+    "jenis_kelamin": "L",
+    "umur": 41,
+    "departemen": "IT",
+    "jabatan": "Admin",
+    "kota": "Banjarmasin",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00031",
+    "nama": "Slamet Putra",
+    "jenis_kelamin": "L",
+    "umur": 25,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00032",
+    "nama": "Halim Rina",
+    "jenis_kelamin": "L",
+    "umur": 54,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00033",
+    "nama": "Rio Kurniawan",
+    "jenis_kelamin": "P",
+    "umur": 47,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00034",
+    "nama": "Putri Irawan Jr",
+    "jenis_kelamin": "L",
+    "umur": 43,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00035",
+    "nama": "Dina Wicaksono",
+    "jenis_kelamin": "P",
+    "umur": 21,
+    "departemen": "HR",
+    "jabatan": "Admin",
+    "kota": "Pontianak",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00036",
+    "nama": "Luthfi Rahma",
+    "jenis_kelamin": "P",
+    "umur": 37,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00037",
+    "nama": "Wicaksono Dina",
+    "jenis_kelamin": "P",
+    "umur": 55,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00038",
+    "nama": "Rina Irawan Ii",
+    "jenis_kelamin": "P",
+    "umur": 48,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00039",
+    "nama": "Dina Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00040",
+    "nama": "Eka Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 26,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00041",
+    "nama": "Ningsih Ayu",
+    "jenis_kelamin": "L",
+    "umur": 28,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00042",
+    "nama": "Ayu Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 50,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00043",
+    "nama": "Luthfi Saputra Ii",
+    "jenis_kelamin": "L",
+    "umur": 19,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00138",
+    "nama": "Tito Putra Jr",
+    "jenis_kelamin": "L",
+    "umur": 43,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00045",
+    "nama": "Ayu Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 42,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00046",
+    "nama": "Putri Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 23,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00047",
+    "nama": "Ayu Saputra Ii",
+    "jenis_kelamin": "L",
+    "umur": 43,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00048",
+    "nama": "Ningsih Tito",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00049",
+    "nama": "Prasetyo Putri",
+    "jenis_kelamin": "L",
+    "umur": 45,
+    "departemen": "R&D",
+    "jabatan": "Manager",
+    "kota": "Depok",
+    "gaji": 14798308
+  },
+  {
+    "id_karyawan": "00050",
+    "nama": "Sari Budi",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00051",
+    "nama": "Hidayat Slamet",
+    "jenis_kelamin": "P",
+    "umur": 27,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00052",
+    "nama": "Slamet Irawan",
+    "jenis_kelamin": "L",
+    "umur": 25,
+    "departemen": "IT",
+    "jabatan": "Supervisor",
+    "kota": "Purwokerto",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00053",
+    "nama": "Putri Halim Iii",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00054",
+    "nama": "Luthfi Pratama",
+    "jenis_kelamin": "L",
+    "umur": 50,
+    "departemen": "Administrasi",
+    "jabatan": "Admin",
+    "kota": "Banjarmasin",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00055",
+    "nama": "Ayu Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 35,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00056",
+    "nama": "Kusuma Tito",
+    "jenis_kelamin": "P",
+    "umur": 23,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00057",
+    "nama": "Susanto Rina",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00058",
+    "nama": "Dina Rahma Iii",
+    "jenis_kelamin": "L",
+    "umur": 24,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00059",
+    "nama": "Ningsih Rio",
+    "jenis_kelamin": "P",
+    "umur": 42,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00060",
+    "nama": "Wahyu Hidayat Ii",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00061",
+    "nama": "Susanto Bayu",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00062",
+    "nama": "Budi Manan",
+    "jenis_kelamin": "P",
+    "umur": 58,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00063",
+    "nama": "Dewi Santoso Ii",
+    "jenis_kelamin": "P",
+    "umur": 23,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00064",
+    "nama": "Andi Firmansyah",
+    "jenis_kelamin": "P",
+    "umur": 32,
+    "departemen": "IT",
+    "jabatan": "Manager",
+    "kota": "Semarang",
+    "gaji": 14896569
+  },
+  {
+    "id_karyawan": "00065",
+    "nama": "Putri Irawan",
+    "jenis_kelamin": "L",
+    "umur": 33,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00066",
+    "nama": "Siti Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bogor",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00067",
+    "nama": "Budi Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 30,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00068",
+    "nama": "Rio Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 25,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4982097
+  },
+  {
+    "id_karyawan": "00069",
+    "nama": "Firmansyah Nina",
+    "jenis_kelamin": "P",
+    "umur": 48,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00070",
+    "nama": "Wijaya Hartono",
+    "jenis_kelamin": "P",
+    "umur": 25,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00071",
+    "nama": "Dewi Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 44,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 5250440
+  },
+  {
+    "id_karyawan": "00072",
+    "nama": "Rio Santoso Iii",
+    "jenis_kelamin": "L",
+    "umur": 53,
+    "departemen": "Produksi",
+    "jabatan": "Admin",
+    "kota": "Semarang",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00073",
+    "nama": "Prasetyo Siti",
+    "jenis_kelamin": "L",
+    "umur": 41,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00074",
+    "nama": "Rio Iskandar",
+    "jenis_kelamin": "P",
+    "umur": 39,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00075",
+    "nama": "Luthfi Firmansyah",
+    "jenis_kelamin": "L",
+    "umur": 59,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00076",
+    "nama": "Dina Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 57,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00077",
+    "nama": "Agus Halim",
+    "jenis_kelamin": "P",
+    "umur": 43,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4875851
+  },
+  {
+    "id_karyawan": "00078",
+    "nama": "Ayu Rahma Ii",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00079",
+    "nama": "Yuli Sari Iii",
+    "jenis_kelamin": "P",
+    "umur": 47,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00080",
+    "nama": "Susanto Wahyu",
+    "jenis_kelamin": "P",
+    "umur": 21,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Bogor",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00081",
+    "nama": "Rafi Hidayat",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00082",
+    "nama": "Santoso Tito",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00083",
+    "nama": "Halim Bayu",
+    "jenis_kelamin": "P",
+    "umur": 33,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00084",
+    "nama": "Slamet Sari",
+    "jenis_kelamin": "L",
+    "umur": 36,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00085",
+    "nama": "Rafi Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "Finance",
+    "jabatan": "Supervisor",
+    "kota": "Solo",
+    "gaji": 6659470
+  },
+  {
+    "id_karyawan": "00086",
+    "nama": "Rina Santoso",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00087",
+    "nama": "Luthfi Wicaksono",
+    "jenis_kelamin": "P",
+    "umur": 35,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00088",
+    "nama": "Dewi Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 33,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00089",
+    "nama": "Rio Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 55,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 3535258
+  },
+  {
+    "id_karyawan": "00090",
+    "nama": "Manan Rafi",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00091",
+    "nama": "Sari Putri",
+    "jenis_kelamin": "P",
+    "umur": 39,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00092",
+    "nama": "Wicaksono Siti",
+    "jenis_kelamin": "P",
+    "umur": 55,
+    "departemen": "Finance",
+    "jabatan": "Manager",
+    "kota": "Makassar",
+    "gaji": 11860405
+  },
+  {
+    "id_karyawan": "00093",
+    "nama": "Rio Prasetyo",
+    "jenis_kelamin": "P",
+    "umur": 60,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00094",
+    "nama": "Prasetyo Dina",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00095",
+    "nama": "Yuli Halim",
+    "jenis_kelamin": "L",
+    "umur": 40,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00096",
+    "nama": "Kurniawan Bayu",
+    "jenis_kelamin": "P",
+    "umur": 42,
+    "departemen": "Produksi",
+    "jabatan": "Supervisor",
+    "kota": "Malang",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00097",
+    "nama": "Hartono Firmansyah",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00098",
+    "nama": "Rafi Kurniawan",
+    "jenis_kelamin": "P",
+    "umur": 30,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00099",
+    "nama": "Eka Saputra",
+    "jenis_kelamin": "P",
+    "umur": 57,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00100",
+    "nama": "Tito Kusuma",
+    "jenis_kelamin": "P",
+    "umur": 59,
+    "departemen": "Sales",
+    "jabatan": "Manager",
+    "kota": "Medan",
+    "gaji": 14369506
+  },
+  {
+    "id_karyawan": "00101",
+    "nama": "Hartati Siti",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00102",
+    "nama": "Halim Yuli",
+    "jenis_kelamin": "P",
+    "umur": 39,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00103",
+    "nama": "Dina Kurniawan",
+    "jenis_kelamin": "P",
+    "umur": 22,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00104",
+    "nama": "Dewi Putra",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Bogor",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00105",
+    "nama": "Putri Sari",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4942064
+  },
+  {
+    "id_karyawan": "00106",
+    "nama": "Ayu Hartati",
+    "jenis_kelamin": "L",
+    "umur": 37,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 5895878
+  },
+  {
+    "id_karyawan": "00107",
+    "nama": "Wijaya Ayu",
+    "jenis_kelamin": "P",
+    "umur": 40,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00108",
+    "nama": "Dewi Wicaksono21",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00109",
+    "nama": "Luthfi Hartati Jr",
+    "jenis_kelamin": "P",
+    "umur": 44,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00110",
+    "nama": "Nina Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 27,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00111",
+    "nama": "Rafi Ningsih90",
+    "jenis_kelamin": "P",
+    "umur": 31,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00112",
+    "nama": "Saputra Rio",
+    "jenis_kelamin": "P",
+    "umur": 31,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00113",
+    "nama": "Halim Dina",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00114",
+    "nama": "Ayu Kusuma Ii",
+    "jenis_kelamin": "L",
+    "umur": 23,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00115",
+    "nama": "Hartono Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00116",
+    "nama": "Santoso Dina",
+    "jenis_kelamin": "P",
+    "umur": 46,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00117",
+    "nama": "Rafi Susanto",
+    "jenis_kelamin": "P",
+    "umur": 41,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00118",
+    "nama": "Rio Halim 9",
+    "jenis_kelamin": "L",
+    "umur": 38,
+    "departemen": "Administrasi",
+    "jabatan": "Supervisor",
+    "kota": "Jakarta",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00119",
+    "nama": "Andi Rahma",
+    "jenis_kelamin": "P",
+    "umur": 47,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00120",
+    "nama": "Sari Putri",
+    "jenis_kelamin": "P",
+    "umur": 33,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00121",
+    "nama": "Hartono Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 24,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00122",
+    "nama": "Luthfi Prasetyo 64",
+    "jenis_kelamin": "P",
+    "umur": 58,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00123",
+    "nama": "Manan Ayu",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00017",
+    "nama": "Budi Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 5449170
+  },
+  {
+    "id_karyawan": "00125",
+    "nama": "Irawan Slamet",
+    "jenis_kelamin": "P",
+    "umur": 47,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00126",
+    "nama": "Budi Santoso",
+    "jenis_kelamin": "P",
+    "umur": 53,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Bogor",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00127",
+    "nama": "Putra Putri",
+    "jenis_kelamin": "P",
+    "umur": 35,
+    "departemen": "IT",
+    "jabatan": "Admin",
+    "kota": "Bandung",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00128",
+    "nama": "Budi Irawan",
+    "jenis_kelamin": "L",
+    "umur": 28,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00129",
+    "nama": "Tito Hartati",
+    "jenis_kelamin": "P",
+    "umur": 43,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00130",
+    "nama": "Kusuma Bayu",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00131",
+    "nama": "Rio Santoso",
+    "jenis_kelamin": "P",
+    "umur": 31,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00132",
+    "nama": "Wijaya Nina",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00133",
+    "nama": "Rina Manan Ii",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00134",
+    "nama": "Rio Sari",
+    "jenis_kelamin": "L",
+    "umur": 36,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00135",
+    "nama": "Rina Irawan",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00136",
+    "nama": "Rina Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 25,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00137",
+    "nama": "Rafi Iskandar",
+    "jenis_kelamin": "P",
+    "umur": 57,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00138",
+    "nama": "Tito Putra Jr",
+    "jenis_kelamin": "L",
+    "umur": 43,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00139",
+    "nama": "Wahyu Sari",
+    "jenis_kelamin": "L",
+    "umur": 39,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00140",
+    "nama": "Luthfi Halim",
+    "jenis_kelamin": "P",
+    "umur": 24,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00141",
+    "nama": "Bayu Santoso",
+    "jenis_kelamin": "L",
+    "umur": 48,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00142",
+    "nama": "Yuli Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00143",
+    "nama": "Eka Putra Jr",
+    "jenis_kelamin": "L",
+    "umur": 40,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00144",
+    "nama": "Hartono Rahma",
+    "jenis_kelamin": "P",
+    "umur": 20,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00145",
+    "nama": "Iskandar Eka",
+    "jenis_kelamin": "P",
+    "umur": 59,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00146",
+    "nama": "Rafi Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00147",
+    "nama": "Ayu Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00148",
+    "nama": "Firmansyah Bayu79",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 3549082
+  },
+  {
+    "id_karyawan": "00149",
+    "nama": "Halim Wahyu",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00150",
+    "nama": "Rina Manan",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00151",
+    "nama": "Agus Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 40,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 3501076
+  },
+  {
+    "id_karyawan": "00152",
+    "nama": "Slamet Irawan",
+    "jenis_kelamin": "L",
+    "umur": 24,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00153",
+    "nama": "Slamet Pratama",
+    "jenis_kelamin": "L",
+    "umur": 58,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00154",
+    "nama": "Siti Putra",
+    "jenis_kelamin": "P",
+    "umur": 45,
+    "departemen": "Marketing",
+    "jabatan": "Supervisor",
+    "kota": "Bandung",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00155",
+    "nama": "Santoso Luthfi",
+    "jenis_kelamin": "L",
+    "umur": 38,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00156",
+    "nama": "Putri Irawan",
+    "jenis_kelamin": "L",
+    "umur": 53,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00157",
+    "nama": "Rafi Irawan",
+    "jenis_kelamin": "L",
+    "umur": 56,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00158",
+    "nama": "Hartono Irawan",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00159",
+    "nama": "Yuli Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00160",
+    "nama": "Kurniawan Nina12",
+    "jenis_kelamin": "L",
+    "umur": 28,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00161",
+    "nama": "Prasetyo Dina",
+    "jenis_kelamin": "L",
+    "umur": 29,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00162",
+    "nama": "Hartono Susanto",
+    "jenis_kelamin": "L",
+    "umur": 26,
+    "departemen": "IT",
+    "jabatan": "Admin",
+    "kota": "Purwokerto",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00163",
+    "nama": "Nina Hartati",
+    "jenis_kelamin": "L",
+    "umur": 25,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00164",
+    "nama": "Firmansyah Ayu",
+    "jenis_kelamin": "P",
+    "umur": 39,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00165",
+    "nama": "Bayu Wicaksono Ii",
+    "jenis_kelamin": "L",
+    "umur": 45,
+    "departemen": "Sales",
+    "jabatan": "Manager",
+    "kota": "Pontianak",
+    "gaji": 11462239
+  },
+  {
+    "id_karyawan": "00166",
+    "nama": "Slamet Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 59,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00167",
+    "nama": "Budi Ningsih Jr",
+    "jenis_kelamin": "L",
+    "umur": 31,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00168",
+    "nama": "Siti Wijaya",
+    "jenis_kelamin": "P",
+    "umur": 58,
+    "departemen": "R&D",
+    "jabatan": "Manager",
+    "kota": "Surabaya",
+    "gaji": 15000000
+  },
+  {
+    "id_karyawan": "00169",
+    "nama": "Slamet Manan",
+    "jenis_kelamin": "P",
+    "umur": 58,
+    "departemen": "Administrasi",
+    "jabatan": "Manager",
+    "kota": "Solo",
+    "gaji": 15000000
+  },
+  {
+    "id_karyawan": "00170",
+    "nama": "Slamet Saputra",
+    "jenis_kelamin": "P",
+    "umur": 20,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00171",
+    "nama": "Hartono Halim",
+    "jenis_kelamin": "P",
+    "umur": 49,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00172",
+    "nama": "Ayu Santoso",
+    "jenis_kelamin": "P",
+    "umur": 46,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00173",
+    "nama": "Dina Hartati",
+    "jenis_kelamin": "L",
+    "umur": 42,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00174",
+    "nama": "Bayu Manan",
+    "jenis_kelamin": "L",
+    "umur": 49,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00175",
+    "nama": "Santoso Slamet",
+    "jenis_kelamin": "P",
+    "umur": 21,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 5141822
+  },
+  {
+    "id_karyawan": "00176",
+    "nama": "Wahyu Rahma Iii",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00177",
+    "nama": "Agus Susanto",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00178",
+    "nama": "Wicaksono Agus",
+    "jenis_kelamin": "L",
+    "umur": 31,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00179",
+    "nama": "Susanto Andi",
+    "jenis_kelamin": "L",
+    "umur": 47,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00180",
+    "nama": "Nina Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 39,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00181",
+    "nama": "Andi Manan",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00182",
+    "nama": "Kurniawan Nina",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00183",
+    "nama": "Rio Halim Jr",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4520688
+  },
+  {
+    "id_karyawan": "00184",
+    "nama": "Kusuma Slamet",
+    "jenis_kelamin": "L",
+    "umur": 58,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00185",
+    "nama": "Agus Firmansyah",
+    "jenis_kelamin": "P",
+    "umur": 53,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00186",
+    "nama": "Rio Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00187",
+    "nama": "Luthfi Saputra",
+    "jenis_kelamin": "P",
+    "umur": 25,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00188",
+    "nama": "Hartono Manan Iii",
+    "jenis_kelamin": "P",
+    "umur": 18,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00189",
+    "nama": "Halim Luthfi36",
+    "jenis_kelamin": "P",
+    "umur": 31,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00190",
+    "nama": "Wahyu Irawan Ii",
+    "jenis_kelamin": "L",
+    "umur": 44,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00191",
+    "nama": "Bayu Sari",
+    "jenis_kelamin": "P",
+    "umur": 43,
+    "departemen": "Marketing",
+    "jabatan": "Supervisor",
+    "kota": "Manado",
+    "gaji": 8246416
+  },
+  {
+    "id_karyawan": "00192",
+    "nama": "Santoso Andi",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00193",
+    "nama": "Budi Kurniawan Iii",
+    "jenis_kelamin": "L",
+    "umur": 38,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00194",
+    "nama": "Iskandar Bayu",
+    "jenis_kelamin": "L",
+    "umur": 29,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00195",
+    "nama": "Andi Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 5647198
+  },
+  {
+    "id_karyawan": "00196",
+    "nama": "Budi Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00197",
+    "nama": "Bayu Halim",
+    "jenis_kelamin": "L",
+    "umur": 60,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00198",
+    "nama": "Rina Manan",
+    "jenis_kelamin": "L",
+    "umur": 26,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00199",
+    "nama": "Wahyu Iskandar",
+    "jenis_kelamin": "P",
+    "umur": 53,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00200",
+    "nama": "Andi Wijaya Jr",
+    "jenis_kelamin": "L",
+    "umur": 47,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00201",
+    "nama": "Rafi Hartati",
+    "jenis_kelamin": "L",
+    "umur": 31,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Unknown",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00202",
+    "nama": "Rio Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 39,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00203",
+    "nama": "Luthfi Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00204",
+    "nama": "Bayu Ningsih",
+    "jenis_kelamin": "P",
+    "umur": 26,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00205",
+    "nama": "Wicaksono Bayu",
+    "jenis_kelamin": "L",
+    "umur": 59,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00206",
+    "nama": "Dewi Susanto",
+    "jenis_kelamin": "L",
+    "umur": 43,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00207",
+    "nama": "Eka Wicaksono",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Operasional",
+    "jabatan": "Manager",
+    "kota": "Bandung",
+    "gaji": 15000000
+  },
+  {
+    "id_karyawan": "00208",
+    "nama": "Hartono Halim",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00209",
+    "nama": "Bayu Hidayat",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "R&D",
+    "jabatan": "Supervisor",
+    "kota": "Tangerang",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00210",
+    "nama": "Luthfi Hartati",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00211",
+    "nama": "Putri Pratama",
+    "jenis_kelamin": "L",
+    "umur": 28,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00212",
+    "nama": "Luthfi Hidayat",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 3709778
+  },
+  {
+    "id_karyawan": "00213",
+    "nama": "Ayu Hartati",
+    "jenis_kelamin": "P",
+    "umur": 47,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00214",
+    "nama": "Eka Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 27,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00215",
+    "nama": "Wahyu Kusuma Jr",
+    "jenis_kelamin": "P",
+    "umur": 35,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00216",
+    "nama": "Slamet Saputra",
+    "jenis_kelamin": "P",
+    "umur": 50,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00217",
+    "nama": "Wicaksono Putri",
+    "jenis_kelamin": "L",
+    "umur": 50,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00218",
+    "nama": "Rio Manan",
+    "jenis_kelamin": "L",
+    "umur": 49,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00219",
+    "nama": "Luthfi Halim Ii",
+    "jenis_kelamin": "P",
+    "umur": 57,
+    "departemen": "Finance",
+    "jabatan": "Supervisor",
+    "kota": "Salatiga",
+    "gaji": 6372413
+  },
+  {
+    "id_karyawan": "00220",
+    "nama": "Kusuma Tito",
+    "jenis_kelamin": "P",
+    "umur": 54,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00221",
+    "nama": "Agus Manan",
+    "jenis_kelamin": "L",
+    "umur": 32,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00222",
+    "nama": "Tito Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 60,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 3377038
+  },
+  {
+    "id_karyawan": "00223",
+    "nama": "Kurniawan Agus",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00224",
+    "nama": "Rina Prasetyo Ii",
+    "jenis_kelamin": "L",
+    "umur": 35,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00225",
+    "nama": "Hartono Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 24,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00226",
+    "nama": "Wicaksono Ayu",
+    "jenis_kelamin": "P",
+    "umur": 30,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00227",
+    "nama": "Hartono Pratama",
+    "jenis_kelamin": "L",
+    "umur": 57,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00228",
+    "nama": "Dewi Pratama",
+    "jenis_kelamin": "L",
+    "umur": 48,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 5940261
+  },
+  {
+    "id_karyawan": "00229",
+    "nama": "Tito Iskandar",
+    "jenis_kelamin": "P",
+    "umur": 21,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00230",
+    "nama": "Wijaya Hartono",
+    "jenis_kelamin": "L",
+    "umur": 42,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00231",
+    "nama": "Bayu Firmansyah",
+    "jenis_kelamin": "P",
+    "umur": 64,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00232",
+    "nama": "Rio Sari Jr",
+    "jenis_kelamin": "L",
+    "umur": 54,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00233",
+    "nama": "Eka Hartati",
+    "jenis_kelamin": "L",
+    "umur": 26,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00234",
+    "nama": "Tito Firmansyah",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00235",
+    "nama": "Putri Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 32,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00236",
+    "nama": "Slamet Putra Iii",
+    "jenis_kelamin": "P",
+    "umur": 59,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00237",
+    "nama": "Yuli Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 57,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00238",
+    "nama": "Luthfi Sari",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Medan",
+    "gaji": 3311665
+  },
+  {
+    "id_karyawan": "00239",
+    "nama": "Dewi Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 39,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 3728723
+  },
+  {
+    "id_karyawan": "00240",
+    "nama": "Siti Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 58,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00241",
+    "nama": "Kusuma Nina",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00242",
+    "nama": "Tito Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 50,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 3921441
+  },
+  {
+    "id_karyawan": "00243",
+    "nama": "Rafi Saputra",
+    "jenis_kelamin": "L",
+    "umur": 58,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00244",
+    "nama": "Slamet Wicaksono",
+    "jenis_kelamin": "L",
+    "umur": 31,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Unknown",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00245",
+    "nama": "Nina Iskandar",
+    "jenis_kelamin": "L",
+    "umur": 59,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Medan",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00246",
+    "nama": "Wijaya Yuli",
+    "jenis_kelamin": "P",
+    "umur": 32,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00247",
+    "nama": "Santoso Eka",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00248",
+    "nama": "Ayu Sari",
+    "jenis_kelamin": "L",
+    "umur": 41,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Makassar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00249",
+    "nama": "Yuli Irawan Ii",
+    "jenis_kelamin": "L",
+    "umur": 19,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00250",
+    "nama": "Ayu Pratama Ii",
+    "jenis_kelamin": "P",
+    "umur": 35,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00251",
+    "nama": "Hartono Susanto",
+    "jenis_kelamin": "L",
+    "umur": 51,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00252",
+    "nama": "Nina Wicaksono Ii",
+    "jenis_kelamin": "P",
+    "umur": 26,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Bogor",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00253",
+    "nama": "Rafi Manan",
+    "jenis_kelamin": "L",
+    "umur": 55,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00254",
+    "nama": "Luthfi Irawan",
+    "jenis_kelamin": "L",
+    "umur": 30,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00255",
+    "nama": "Rafi Ningsih6",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Medan",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00256",
+    "nama": "Wicaksono Dewi",
+    "jenis_kelamin": "P",
+    "umur": 49,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00257",
+    "nama": "Hartono Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 49,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4850958
+  },
+  {
+    "id_karyawan": "00258",
+    "nama": "Prasetyo Putri",
+    "jenis_kelamin": "L",
+    "umur": 53,
+    "departemen": "Marketing",
+    "jabatan": "Manager",
+    "kota": "Depok",
+    "gaji": 15000000
+  },
+  {
+    "id_karyawan": "00259",
+    "nama": "Siti Putra",
+    "jenis_kelamin": "L",
+    "umur": 45,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00260",
+    "nama": "Yuli Saputra Ii",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00261",
+    "nama": "Dewi Prasetyo Jr",
+    "jenis_kelamin": "L",
+    "umur": 39,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00262",
+    "nama": "Hartono Iskandar Jr",
+    "jenis_kelamin": "P",
+    "umur": 55,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Bandung",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00263",
+    "nama": "Putri Rahma",
+    "jenis_kelamin": "L",
+    "umur": 41,
+    "departemen": "Marketing",
+    "jabatan": "Supervisor",
+    "kota": "Surabaya",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00264",
+    "nama": "Rio Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 20,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00265",
+    "nama": "Nina Sari Ii",
+    "jenis_kelamin": "P",
+    "umur": 53,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Pontianak",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00266",
+    "nama": "Iskandar Slamet",
+    "jenis_kelamin": "P",
+    "umur": 43,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00267",
+    "nama": "Wahyu Manan",
+    "jenis_kelamin": "L",
+    "umur": 38,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Yogyakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00268",
+    "nama": "Siti Halim",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00269",
+    "nama": "Hartono Prasetyo",
+    "jenis_kelamin": "P",
+    "umur": 34,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00270",
+    "nama": "Eka Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 35,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Medan",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00271",
+    "nama": "Andi Irawan",
+    "jenis_kelamin": "P",
+    "umur": 38,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00272",
+    "nama": "Siti Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Palembang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00273",
+    "nama": "Andi Rahma Ii",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00274",
+    "nama": "Nina Firmansyah Iii",
+    "jenis_kelamin": "L",
+    "umur": 20,
+    "departemen": "HR",
+    "jabatan": "Supervisor",
+    "kota": "Depok",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00275",
+    "nama": "Luthfi Wicaksono Jr",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00276",
+    "nama": "Rio Ningsih",
+    "jenis_kelamin": "P",
+    "umur": 40,
+    "departemen": "Finance",
+    "jabatan": "Staff",
+    "kota": "Medan",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00277",
+    "nama": "Tito Irawan",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Depok",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00278",
+    "nama": "Kusuma Bayu",
+    "jenis_kelamin": "P",
+    "umur": 25,
+    "departemen": "Operasional",
+    "jabatan": "Supervisor",
+    "kota": "Bandung",
+    "gaji": 9359627
+  },
+  {
+    "id_karyawan": "00279",
+    "nama": "Rina Saputra Jr",
+    "jenis_kelamin": "P",
+    "umur": 40,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Tangerang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00280",
+    "nama": "Bayu Wicaksono Iii",
+    "jenis_kelamin": "L",
+    "umur": 62,
+    "departemen": "Administrasi",
+    "jabatan": "Supervisor",
+    "kota": "Bekasi",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00281",
+    "nama": "Eka Ningsih",
+    "jenis_kelamin": "L",
+    "umur": 48,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00282",
+    "nama": "Luthfi Hidayat",
+    "jenis_kelamin": "P",
+    "umur": 23,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Salatiga",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00283",
+    "nama": "Nina Putra Iii",
+    "jenis_kelamin": "L",
+    "umur": 21,
+    "departemen": "IT",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 5933780
+  },
+  {
+    "id_karyawan": "00284",
+    "nama": "Ayu Sari Iii",
+    "jenis_kelamin": "P",
+    "umur": 24,
+    "departemen": "Finance",
+    "jabatan": "Admin",
+    "kota": "Bogor",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00285",
+    "nama": "Rafi Firmansyah",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "R&D",
+    "jabatan": "Supervisor",
+    "kota": "Bogor",
+    "gaji": 8000000
+  },
+  {
+    "id_karyawan": "00286",
+    "nama": "Dewi Manan Iii",
+    "jenis_kelamin": "L",
+    "umur": 38,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00287",
+    "nama": "Nina Susanto Jr",
+    "jenis_kelamin": "P",
+    "umur": 59,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Purwokerto",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00288",
+    "nama": "Saputra Putri",
+    "jenis_kelamin": "P",
+    "umur": 31,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Bekasi",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00023",
+    "nama": "Andi Prasetyo",
+    "jenis_kelamin": "L",
+    "umur": 46,
+    "departemen": "Operasional",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00292",
+    "nama": "Rahma Rafi51",
+    "jenis_kelamin": "L",
+    "umur": 53,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00291",
+    "nama": "Hartono Rahma",
+    "jenis_kelamin": "L",
+    "umur": 58,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Manado",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00292",
+    "nama": "Rahma Rafi51",
+    "jenis_kelamin": "L",
+    "umur": 53,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Surabaya",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00293",
+    "nama": "Eka Wijaya",
+    "jenis_kelamin": "L",
+    "umur": 28,
+    "departemen": "Produksi",
+    "jabatan": "Staff",
+    "kota": "Banjarmasin",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00294",
+    "nama": "Halim Luthfi",
+    "jenis_kelamin": "L",
+    "umur": 52,
+    "departemen": "Marketing",
+    "jabatan": "Staff",
+    "kota": "Bogor",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00295",
+    "nama": "Rahma Tito",
+    "jenis_kelamin": "P",
+    "umur": 23,
+    "departemen": "Sales",
+    "jabatan": "Staff",
+    "kota": "Semarang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00296",
+    "nama": "Slamet Ningsih",
+    "jenis_kelamin": "P",
+    "umur": 62,
+    "departemen": "R&D",
+    "jabatan": "Staff",
+    "kota": "Malang",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00297",
+    "nama": "Andi Santoso",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Administrasi",
+    "jabatan": "Admin",
+    "kota": "Purwokerto",
+    "gaji": 4750000
+  },
+  {
+    "id_karyawan": "00298",
+    "nama": "Putri Kurniawan",
+    "jenis_kelamin": "L",
+    "umur": 22,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Jakarta",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00299",
+    "nama": "Hartono Sari",
+    "jenis_kelamin": "P",
+    "umur": 46,
+    "departemen": "Administrasi",
+    "jabatan": "Staff",
+    "kota": "Denpasar",
+    "gaji": 4500000
+  },
+  {
+    "id_karyawan": "00300",
+    "nama": "Nina Kurniawan Iii",
+    "jenis_kelamin": "P",
+    "umur": 56,
+    "departemen": "HR",
+    "jabatan": "Staff",
+    "kota": "Solo",
+    "gaji": 4500000
+  }
+]
