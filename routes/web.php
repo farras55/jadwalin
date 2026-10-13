@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -86,14 +87,14 @@ Route::middleware(['auth', 'role:manager'])
             return view('dashboard', ['roleTitle' => 'Manager']);
         })->name('dashboard');
 
-        Route::get('/shifts', function () {
-            return view('placeholder', [
-                'title' => 'Jadwal Kerja Tim',
-                'subtitle' => 'Penyusunan jadwal roster tim, plotting shift mingguan, dan auto-scheduling.',
-                'icon' => 'calendar',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('shifts.index');
+        // PBL-17: Smart Scheduling Builder
+        Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
+        Route::post('/shifts/generate', [ShiftController::class, 'generate'])->name('shifts.generate');
+        Route::post('/shifts/publish', [ShiftController::class, 'publish'])->name('shifts.publish');
+        Route::delete('/shifts/drafts', [ShiftController::class, 'clearDrafts'])->name('shifts.clear-drafts');
+        Route::put('/shifts/{shift}', [ShiftController::class, 'update'])->name('shifts.update');
+        Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
+        Route::put('/shift-templates/{template}', [ShiftController::class, 'updateTemplate'])->name('shifts.templates.update');
 
         Route::get('/swaps', function () {
             return view('placeholder', [

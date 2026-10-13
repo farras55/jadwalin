@@ -13,6 +13,10 @@ class JadwalinSeeder extends Seeder
      */
     public function run(): void
     {
+        if (DB::table('companies')->where('email', 'kontak@senjawisata.co.id')->exists()) {
+            return;
+        }
+
         $now = now();
 
         // 1. Perusahaan dummy
