@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
@@ -56,15 +59,24 @@ Route::middleware(['auth', 'role:superadmin'])
         Route::resource('positions', PositionController::class)
             ->only(['index', 'store', 'destroy']);
 
-        Route::get('/shifts', function () {
-            return view('placeholder', [
-                'title' => 'Master Shift',
-                'subtitle' => 'Pengaturan template shift, durasi kerja, dan toleransi keterlambatan.',
-                'icon' => 'calendar-days',
-                'roleTitle' => 'Super Admin',
-            ]);
-        })->name('shifts.index');
+        // ==========================================
+        // Shift Template CRUD - PBL-18
+        // ==========================================
+        Route::get('/shifts', [ShiftTemplateController::class, 'index'])
+            ->name('shifts.index');
 
+        Route::post('/shifts', [ShiftTemplateController::class, 'store'])
+            ->name('shifts.store');
+
+        Route::put('/shifts/{shift}', [ShiftTemplateController::class, 'update'])
+            ->name('shifts.update');
+
+        Route::delete('/shifts/{shift}', [ShiftTemplateController::class, 'destroy'])
+            ->name('shifts.destroy');
+
+        // ==========================================
+        // Platform Settings
+        // ==========================================
         Route::get('/settings', function () {
             return view('placeholder', [
                 'title' => 'Pengaturan Platform',
@@ -77,9 +89,20 @@ Route::middleware(['auth', 'role:superadmin'])
         // ==========================================
         // Timesheet Report & Export - PBL-21
         // ==========================================
-        Route::get('/reports/timesheet', [TimesheetReportController::class, 'index'])->name('reports.timesheet');
-        Route::get('/reports/timesheet/export-excel', [TimesheetReportController::class, 'exportExcel'])->name('reports.timesheet.export-excel');
-        Route::get('/reports/timesheet/export-pdf', [TimesheetReportController::class, 'exportPdf'])->name('reports.timesheet.export-pdf');
+        Route::get(
+            '/reports/timesheet',
+            [TimesheetReportController::class, 'index']
+        )->name('reports.timesheet');
+
+        Route::get(
+            '/reports/timesheet/export-excel',
+            [TimesheetReportController::class, 'exportExcel']
+        )->name('reports.timesheet.export-excel');
+
+        Route::get(
+            '/reports/timesheet/export-pdf',
+            [TimesheetReportController::class, 'exportPdf']
+        )->name('reports.timesheet.export-pdf');
     });
 
 // ==========================================
@@ -122,13 +145,28 @@ Route::middleware(['auth', 'role:manager'])
         })->name('dashboard');
 
         // PBL-17: Smart Scheduling Builder
-        Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
-        Route::post('/shifts/generate', [ShiftController::class, 'generate'])->name('shifts.generate');
-        Route::post('/shifts/publish', [ShiftController::class, 'publish'])->name('shifts.publish');
-        Route::delete('/shifts/drafts', [ShiftController::class, 'clearDrafts'])->name('shifts.clear-drafts');
-        Route::put('/shifts/{shift}', [ShiftController::class, 'update'])->name('shifts.update');
-        Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
-        Route::put('/shift-templates/{template}', [ShiftController::class, 'updateTemplate'])->name('shifts.templates.update');
+        Route::get('/shifts', [ShiftController::class, 'index'])
+            ->name('shifts.index');
+
+        Route::post('/shifts/generate', [ShiftController::class, 'generate'])
+            ->name('shifts.generate');
+
+        Route::post('/shifts/publish', [ShiftController::class, 'publish'])
+            ->name('shifts.publish');
+
+        Route::delete('/shifts/drafts', [ShiftController::class, 'clearDrafts'])
+            ->name('shifts.clear-drafts');
+
+        Route::put('/shifts/{shift}', [ShiftController::class, 'update'])
+            ->name('shifts.update');
+
+        Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])
+            ->name('shifts.destroy');
+
+        Route::put(
+            '/shift-templates/{template}',
+            [ShiftController::class, 'updateTemplate']
+        )->name('shifts.templates.update');
 
         Route::get('/swaps', function () {
             return view('placeholder', [
@@ -211,20 +249,21 @@ Route::middleware(['auth', 'role:employee'])
             ]);
         })->name('swaps');
 
-        Route::get('/attendance', [
-            \App\Http\Controllers\Employee\AttendanceController::class,
-            'index',
-        ])->name('attendance');
+        // Employee Attendance
+        Route::get(
+            '/attendance',
+            [\App\Http\Controllers\Employee\AttendanceController::class, 'index']
+        )->name('attendance');
 
-        Route::post('/attendance/clock-in', [
-            \App\Http\Controllers\Employee\AttendanceController::class,
-            'clockIn',
-        ])->name('attendance.clock-in');
+        Route::post(
+            '/attendance/clock-in',
+            [\App\Http\Controllers\Employee\AttendanceController::class, 'clockIn']
+        )->name('attendance.clock-in');
 
-        Route::post('/attendance/clock-out', [
-            \App\Http\Controllers\Employee\AttendanceController::class,
-            'clockOut',
-        ])->name('attendance.clock-out');
+        Route::post(
+            '/attendance/clock-out',
+            [\App\Http\Controllers\Employee\AttendanceController::class, 'clockOut']
+        )->name('attendance.clock-out');
 
         Route::get('/timesheet', function () {
             return view('placeholder', [
@@ -235,25 +274,26 @@ Route::middleware(['auth', 'role:employee'])
             ]);
         })->name('timesheet');
 
-                Route::get('/availability', [
-            \App\Http\Controllers\Employee\AvailabilityController::class,
-            'index',
-        ])->name('availability');
+        // Employee Availability
+        Route::get(
+            '/availability',
+            [\App\Http\Controllers\Employee\AvailabilityController::class, 'index']
+        )->name('availability');
 
-        Route::get('/availability/create', [
-            \App\Http\Controllers\Employee\AvailabilityController::class,
-            'create',
-        ])->name('availability.create');
+        Route::get(
+            '/availability/create',
+            [\App\Http\Controllers\Employee\AvailabilityController::class, 'create']
+        )->name('availability.create');
 
-        Route::post('/availability', [
-            \App\Http\Controllers\Employee\AvailabilityController::class,
-            'store',
-        ])->name('availability.store');
+        Route::post(
+            '/availability',
+            [\App\Http\Controllers\Employee\AvailabilityController::class, 'store']
+        )->name('availability.store');
 
-        Route::delete('/availability/{availability}', [
-            \App\Http\Controllers\Employee\AvailabilityController::class,
-            'destroy',
-        ])->name('availability.destroy');
+        Route::delete(
+            '/availability/{availability}',
+            [\App\Http\Controllers\Employee\AvailabilityController::class, 'destroy']
+        )->name('availability.destroy');
     });
 
 // ==========================================
@@ -270,4 +310,5 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
+// Authentication routes
 require __DIR__ . '/auth.php';
