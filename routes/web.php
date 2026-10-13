@@ -185,14 +185,25 @@ Route::middleware(['auth', 'role:employee'])
             ]);
         })->name('timesheet');
 
-        Route::get('/availability', function () {
-            return view('placeholder', [
-                'title' => 'Ketersediaan Waktu',
-                'subtitle' => 'Atur jadwal preferensi waktu luang dan hari libur Anda.',
-                'icon' => 'calendar-check',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('availability');
+                Route::get('/availability', [
+            \App\Http\Controllers\Employee\AvailabilityController::class,
+            'index',
+        ])->name('availability');
+
+        Route::get('/availability/create', [
+            \App\Http\Controllers\Employee\AvailabilityController::class,
+            'create',
+        ])->name('availability.create');
+
+        Route::post('/availability', [
+            \App\Http\Controllers\Employee\AvailabilityController::class,
+            'store',
+        ])->name('availability.store');
+
+        Route::delete('/availability/{availability}', [
+            \App\Http\Controllers\Employee\AvailabilityController::class,
+            'destroy',
+        ])->name('availability.destroy');
     });
 
 // ==========================================
