@@ -1,10 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\DepartmentController;
-use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Manager\ShiftController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -92,7 +90,35 @@ Route::middleware(['auth', 'role:manager'])
     ->name('manager.')
     ->group(function () {
         Route::get('/dashboard', function () {
-            return view('dashboard', ['roleTitle' => 'Manager']);
+            $manager = auth()->user();
+
+            $pendingAvailabilityCount = \App\Models\Availability::where('company_id', $manager->company_id)
+                ->where('status', 'pending_manager')
+                ->whereHas('user', function ($query) use ($manager) {
+                    if (! $manager->is_global_manager) {
+                        $query->where('department_id', $manager->department_id);
+                    }
+                })
+                ->count();
+
+            $pendingAvailability = \App\Models\Availability::with([
+                'user.position',
+            ])
+                ->where('company_id', $manager->company_id)
+                ->where('status', 'pending_manager')
+                ->whereHas('user', function ($query) use ($manager) {
+                    if (! $manager->is_global_manager) {
+                        $query->where('department_id', $manager->department_id);
+                    }
+                })
+                ->orderBy('start_time')
+                ->first();
+
+            return view('dashboard', [
+                'roleTitle' => 'Manager',
+                'pendingAvailabilityCount' => $pendingAvailabilityCount,
+                'pendingAvailability' => $pendingAvailability,
+            ]);
         })->name('dashboard');
 
         // PBL-17: Smart Scheduling Builder
@@ -139,6 +165,21 @@ Route::middleware(['auth', 'role:manager'])
                 'roleTitle' => 'Manager',
             ]);
         })->name('employees.index');
+        
+        Route::get('/availability', [
+            AvailabilityApprovalController::class,
+            'index',
+        ])->name('availability.index');
+
+        Route::post('/availability/{availability}/approve', [
+            AvailabilityApprovalController::class,
+            'approve',
+        ])->name('availability.approve');
+
+        Route::post('/availability/{availability}/reject', [
+            AvailabilityApprovalController::class,
+            'reject',
+        ])->name('availability.reject');
     });
 
 // ==========================================

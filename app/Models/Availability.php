@@ -20,6 +20,8 @@ class Availability extends Model
         'reason',
         'status',
         'approved_by',
+        'approved_at',
+        'rejection_reason',
     ];
 
     protected function casts(): array
@@ -29,6 +31,7 @@ class Availability extends Model
             'day_of_week' => 'integer',
             'start_time' => 'datetime',
             'end_time' => 'datetime',
+            'approved_at' => 'datetime',
         ];
     }
 
