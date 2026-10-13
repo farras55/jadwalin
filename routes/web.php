@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
+use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -74,6 +75,13 @@ Route::middleware(['auth', 'role:superadmin'])
                 'roleTitle' => 'Super Admin',
             ]);
         })->name('settings.index');
+
+        // ==========================================
+        // Timesheet Report & Export - PBL-21
+        // ==========================================
+        Route::get('/reports/timesheet', [TimesheetReportController::class, 'index'])->name('reports.timesheet');
+        Route::get('/reports/timesheet/export-excel', [TimesheetReportController::class, 'exportExcel'])->name('reports.timesheet.export-excel');
+        Route::get('/reports/timesheet/export-pdf', [TimesheetReportController::class, 'exportPdf'])->name('reports.timesheet.export-pdf');
     });
 
 // ==========================================
