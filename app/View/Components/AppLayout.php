@@ -106,6 +106,7 @@ class AppLayout extends Component
                 ['label' => 'Kelola Pengguna', 'icon' => 'users', 'route' => 'admin.users.index', 'fallback' => '/admin/users', 'active_pattern' => 'admin/users*'],
                 ['label' => 'Departemen & Posisi', 'icon' => 'briefcase', 'route' => 'admin.departments.index', 'fallback' => '/admin/departments', 'active_pattern' => 'admin/departments*'],
                 ['label' => 'Master Shift', 'icon' => 'calendar-days', 'route' => 'admin.shifts.index', 'fallback' => '/admin/shifts', 'active_pattern' => 'admin/shifts*'],
+                ['label' => 'Rekap Timesheet', 'icon' => 'file-spreadsheet', 'route' => 'admin.reports.timesheet', 'fallback' => '/admin/reports/timesheet', 'active_pattern' => 'admin/reports/timesheet*'],
                 ['label' => 'Pengaturan Platform', 'icon' => 'settings', 'route' => 'admin.settings.index', 'fallback' => '/admin/settings', 'active_pattern' => 'admin/settings*'],
             ],
             'manager' => [
