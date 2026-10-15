@@ -315,11 +315,14 @@ class ShiftController extends Controller
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         }
 
+        $overwritePublished = $request->boolean('overwrite_published');
+
         $publishedCount = $builder->publishWeeklyRoster(
             $user->company_id,
             $targetDeptIds,
             $startDate,
-            $endDate
+            $endDate,
+            $overwritePublished
         );
 
         $primaryDeptId = $targetDeptIds[0] ?? $user->department_id;
@@ -332,11 +335,15 @@ class ShiftController extends Controller
             ])->with('warning', 'Tidak ada draf jadwal yang perlu diterbitkan pada periode ini.');
         }
 
+        $successMessage = $overwritePublished
+            ? sprintf('Berhasil menerbitkan %d shift kerja baru dan menimpa jadwal terbit sebelumnya. Roster kini resmi aktif untuk staf!', $publishedCount)
+            : sprintf('Berhasil menerbitkan %d shift kerja. Roster kini resmi aktif untuk staf!', $publishedCount);
+
         return redirect()->route('manager.shifts.index', [
             'department_id' => $primaryDeptId,
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate->format('Y-m-d'),
-        ])->with('success', sprintf('Berhasil menerbitkan %d shift kerja. Roster kini resmi aktif untuk staf!', $publishedCount));
+        ])->with('success', $successMessage);
     }
 
     /**
