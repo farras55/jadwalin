@@ -249,7 +249,7 @@ graph LR
 | Kode FR | Modul | Deskripsi Kebutuhan | Aktor Terkait |
 | :--- | :--- | :--- | :--- |
 | **FR-01** | Autentikasi | Sistem menyediakan fitur masuk (*Login*) dan keluar (*Logout*) dengan proteksi sesi dan hashing kata sandi aman. | Semua Aktor |
-| **FR-02** | Pengalihan Peran | Sistem mengarahkan pengguna secara otomatis ke dashboard spesifik perannya pasca login (`/dashboard` &rarr; `/admin`, `/manager`, `/employee`). | Semua Aktor |
+| **FR-02** | Pengalihan Peran | Sistem mengarahkan pengguna secara otomatisc ke dashboard spesifik perannya pasca login (`/dashboard` &rarr; `/admin`, `/manager`, `/employee`). | Semua Aktor |
 | **FR-03** | Master Perusahaan | Super Admin dapat mengelola nama, alamat, surel, kontak, zona waktu (*timezone*), dan status operasional perusahaan. | Super Admin |
 | **FR-04** | Pengaturan Regulasi| Super Admin dapat mengonfigurasi batas reguler (40 jam/minggu), batas lembur (18 jam/minggu), *buffer* (30 mnt), dan *grace period* (15 mnt) tingkat perusahaan. | Super Admin |
 | **FR-05** | Master Organisasi | Super Admin dapat melakukan CRUD Departemen dan Posisi/Jabatan kerja operasional. | Super Admin |

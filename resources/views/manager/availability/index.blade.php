@@ -1,6 +1,26 @@
 <x-app-layout>
 
-<div class="min-h-screen bg-slate-50 py-8">
+<div 
+    class="min-h-screen bg-slate-50 py-8"
+    x-data="{
+        showRejectModal: false,
+        rejectUrl: '',
+        rejectionReason: '',
+
+        openRejectModal(id) {
+            this.rejectUrl = '{{ url('/manager/availability') }}/' + id + '/reject';
+            this.rejectionReason = '';
+            this.showRejectModal = true;
+        },
+
+        closeRejectModal() {
+            this.showRejectModal = false;
+            this.rejectUrl = '';
+            this.rejectionReason = '';
+        }
+    }"
+    @keydown.escape.window="closeRejectModal()"
+>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {{-- Header --}}
@@ -430,33 +450,13 @@
             @endif
         </div>
     </div>
-</div>
 
-{{-- Reject Modal --}}
-<div
-    x-data="{
-        showRejectModal: false,
-        rejectUrl: '',
-        rejectionReason: '',
-
-        openRejectModal(id) {
-            this.rejectUrl = '{{ url('/manager/availability') }}/' + id + '/reject';
-            this.rejectionReason = '';
-            this.showRejectModal = true;
-        },
-
-        closeRejectModal() {
-            this.showRejectModal = false;
-            this.rejectUrl = '';
-            this.rejectionReason = '';
-        }
-    }"
-    @keydown.escape.window="closeRejectModal()"
->
+    {{-- Reject Modal --}}
     <div
         x-show="showRejectModal"
         x-cloak
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+        style="display: none;"
     >
         <div
             @click.outside="closeRejectModal()"
