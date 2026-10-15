@@ -610,15 +610,36 @@ class ScheduleBuilderService
         int $companyId,
         int|array $departmentId,
         CarbonInterface $startDate,
-        CarbonInterface $endDate
+        CarbonInterface $endDate,
+        bool $overwritePublished = false
     ): int {
         $departmentIds = is_array($departmentId) ? $departmentId : [$departmentId];
 
-        return Shift::where('company_id', $companyId)
-            ->whereIn('department_id', $departmentIds)
-            ->where('status', 'draft')
-            ->whereBetween('start_time', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()])
-            ->update(['status' => 'published']);
+        return DB::transaction(function () use ($companyId, $departmentIds, $startDate, $endDate, $overwritePublished) {
+            $rangeStart = $startDate->copy()->startOfDay();
+            $rangeEnd = $endDate->copy()->endOfDay();
+
+            if ($overwritePublished) {
+                $oldPublishedIds = Shift::where('company_id', $companyId)
+                    ->whereIn('department_id', $departmentIds)
+                    ->where('status', 'published')
+                    ->whereBetween('start_time', [$rangeStart, $rangeEnd])
+                    ->pluck('id');
+
+                if ($oldPublishedIds->isNotEmpty()) {
+                    $oldPublishedIds->chunk(500)->each(function ($chunk) {
+                        ShiftAssignment::whereIn('shift_id', $chunk)->delete();
+                        Shift::whereIn('id', $chunk)->delete();
+                    });
+                }
+            }
+
+            return Shift::where('company_id', $companyId)
+                ->whereIn('department_id', $departmentIds)
+                ->where('status', 'draft')
+                ->whereBetween('start_time', [$rangeStart, $rangeEnd])
+                ->update(['status' => 'published']);
+        });
     }
 
     /**

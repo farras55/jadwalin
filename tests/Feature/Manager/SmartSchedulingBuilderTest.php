@@ -346,6 +346,106 @@ class SmartSchedulingBuilderTest extends TestCase
     }
 
     /**
+     * Skenario 6b: Manager menerbitkan draf dengan opsi menimpa jadwal terbit sebelumnya (Overwrite Mode)
+     */
+    public function test_manager_can_publish_and_overwrite_existing_published_shifts(): void
+    {
+        $company = $this->createCompany();
+        $department = $this->createDepartment($company);
+        $manager = $this->createManager($company, $department);
+
+        $monday = now()->startOfWeek(CarbonInterface::MONDAY);
+
+        // Shift lama yang sudah published
+        $oldPublished = Shift::create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'title' => 'Shift Lama Terbit',
+            'start_time' => $monday->copy()->setTime(8, 0),
+            'end_time' => $monday->copy()->setTime(16, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        // Draf baru
+        $newDraft = Shift::create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'title' => 'Shift Baru Draf',
+            'start_time' => $monday->copy()->setTime(9, 0),
+            'end_time' => $monday->copy()->setTime(17, 0),
+            'quota' => 2,
+            'status' => 'draft',
+        ]);
+
+        $response = $this
+            ->actingAs($manager)
+            ->post(route('manager.shifts.publish'), [
+                'department_id' => $department->id,
+                'week_start' => $monday->format('Y-m-d'),
+                'overwrite_published' => '1',
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        // Shift lama harus terhapus, shift baru berstatus published
+        $this->assertDatabaseMissing('shifts', ['id' => $oldPublished->id]);
+        $this->assertDatabaseHas('shifts', ['id' => $newDraft->id, 'status' => 'published']);
+        $this->assertEquals(1, Shift::where('department_id', $department->id)->where('status', 'published')->count());
+    }
+
+    /**
+     * Skenario 6b: Manager dapat menerbitkan draf tanpa menimpa (tetap dobel/shift tambahan)
+     */
+    public function test_manager_can_publish_and_keep_both_published_shifts_when_not_overwritten(): void
+    {
+        $company = $this->createCompany();
+        $department = $this->createDepartment($company);
+        $manager = $this->createManager($company, $department);
+
+        $monday = now()->startOfWeek(CarbonInterface::MONDAY);
+
+        // Shift lama yang sudah published
+        $oldPublished = Shift::create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'title' => 'Shift Lama Terbit',
+            'start_time' => $monday->copy()->setTime(8, 0),
+            'end_time' => $monday->copy()->setTime(16, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        // Draf baru
+        $newDraft = Shift::create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'title' => 'Shift Baru Draf',
+            'start_time' => $monday->copy()->setTime(9, 0),
+            'end_time' => $monday->copy()->setTime(17, 0),
+            'quota' => 2,
+            'status' => 'draft',
+        ]);
+
+        $response = $this
+            ->actingAs($manager)
+            ->post(route('manager.shifts.publish'), [
+                'department_id' => $department->id,
+                'week_start' => $monday->format('Y-m-d'),
+                'overwrite_published' => '0',
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        // Kedua shift harus tetap ada dan berstatus published (total 2)
+        $this->assertDatabaseHas('shifts', ['id' => $oldPublished->id, 'status' => 'published']);
+        $this->assertDatabaseHas('shifts', ['id' => $newDraft->id, 'status' => 'published']);
+        $this->assertEquals(2, Shift::where('department_id', $department->id)->where('status', 'published')->count());
+    }
+
+    /**
      * Skenario 7 (Revisi): Global Manager dapat melihat selector multi-departemen, Regular Manager terkunci pada departemennya
      */
     public function test_global_manager_and_regular_manager_view_differences(): void
