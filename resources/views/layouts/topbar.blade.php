@@ -81,12 +81,14 @@
 
                 @auth
                 <div class="border-t border-[#E2E0F7] my-1"></div>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" x-data="{ loggingOut: false }" @submit="if(loggingOut) { $event.preventDefault(); return false; } loggingOut = true;">
                     @csrf
                     <button type="submit" 
+                            :disabled="loggingOut"
+                            :class="loggingOut ? 'opacity-50 cursor-not-allowed' : ''"
                             class="w-full flex items-center gap-2.5 px-4 py-2 text-[12.5px] text-red-600 hover:bg-red-50 transition text-left">
                         <i data-lucide="log-out" class="h-4 w-4 text-red-500"></i>
-                        <span>Keluar</span>
+                        <span x-text="loggingOut ? 'Memproses Keluar...' : 'Keluar'">Keluar</span>
                     </button>
                 </form>
                 @endauth

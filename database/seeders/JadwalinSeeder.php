@@ -86,7 +86,7 @@ class JadwalinSeeder extends Seeder
                 'company_id' => $companyId,
                 'department_id' => $deptId,
                 'position_id' => null,
-                'is_global_manager' => false,
+                'is_global_manager' => true,
                 'name' => 'Siti Nurhaliza',
                 'email' => 'manager@senjawisata.co.id',
                 'email_verified_at' => $now,

@@ -51,7 +51,7 @@ class ShiftTemplateController extends Controller
                     ->where('company_id', $user->company_id),
             ],
             'start_time' => ['required', 'date_format:H:i'],
-            'end_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'different:start_time'],
             'default_quota' => ['required', 'integer', 'min:1'],
             'color_code' => [
                 'required',
@@ -63,6 +63,7 @@ class ShiftTemplateController extends Controller
             'department_id.exists' => 'Departemen tidak valid.',
             'start_time.date_format' => 'Format jam mulai harus HH:MM.',
             'end_time.date_format' => 'Format jam selesai harus HH:MM.',
+            'end_time.different' => 'Jam selesai tidak boleh sama dengan jam mulai.',
             'default_quota.min' => 'Kuota minimal 1 orang.',
             'color_code.regex' => 'Kode warna harus berupa hex, misalnya #6C5CE7.',
         ]);
@@ -102,7 +103,7 @@ class ShiftTemplateController extends Controller
                     ->where('company_id', $user->company_id),
             ],
             'start_time' => ['required', 'date_format:H:i'],
-            'end_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'different:start_time'],
             'default_quota' => ['required', 'integer', 'min:1'],
             'color_code' => [
                 'required',
@@ -114,6 +115,7 @@ class ShiftTemplateController extends Controller
             'department_id.exists' => 'Departemen tidak valid.',
             'start_time.date_format' => 'Format jam mulai harus HH:MM.',
             'end_time.date_format' => 'Format jam selesai harus HH:MM.',
+            'end_time.different' => 'Jam selesai tidak boleh sama dengan jam mulai.',
             'default_quota.min' => 'Kuota minimal 1 orang.',
             'color_code.regex' => 'Kode warna harus berupa hex, misalnya #6C5CE7.',
         ]);

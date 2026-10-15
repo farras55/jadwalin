@@ -9,7 +9,7 @@
         </p>
     </div>
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" x-data="{ isSubmitting: false }" @submit="if(isSubmitting) { $event.preventDefault(); return false; } isSubmitting = true;">
         @csrf
 
         <!-- Email Address -->
@@ -51,7 +51,7 @@
                     </svg>
                 </div>
                 
-                <input id="password" :type="show ? 'text' : 'password'" name="password" required autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+                <input id="password" type="password" :type="show ? 'text' : 'password'" name="password" required autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
                     class="block w-full pl-10 pr-10 py-2.5 bg-[#F5F3FF]/40 border border-[#E2E0F7] rounded-lg text-[14px] text-[#2D2A3E] placeholder-slate-400 tracking-widest focus:bg-white focus:border-[#6C5CE7] focus:ring focus:ring-[#6C5CE7]/20 transition-colors shadow-none" />
                 
                 <!-- Toggle Password Visibility -->
@@ -74,12 +74,24 @@
         </div>
 
         <div class="mt-7">
-            <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#6C5CE7] hover:bg-[#4F46E5] text-white text-[14px] font-bold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] focus:ring-offset-2 shadow-sm">
-                Masuk ke Workspace
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M5 12h14"></path>
-                    <path d="m12 5 7 7-7 7"></path>
-                </svg>
+            <button type="submit" 
+                    :disabled="isSubmitting"
+                    :class="isSubmitting ? 'opacity-75 cursor-not-allowed' : ''"
+                    class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#6C5CE7] hover:bg-[#4F46E5] text-white text-[14px] font-bold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] focus:ring-offset-2 shadow-sm">
+                <span x-show="!isSubmitting" class="flex items-center gap-2">
+                    <span>Masuk ke Workspace</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </span>
+                <span x-show="isSubmitting" x-cloak class="flex items-center gap-2" style="display: none;">
+                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span>Memproses Masuk...</span>
+                </span>
             </button>
         </div>
         

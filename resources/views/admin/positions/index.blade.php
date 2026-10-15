@@ -14,17 +14,30 @@
                     Kelola jabatan kerja berdasarkan department.
                 </p>
             </div>
-            <div>
-                <a href="{{ route('admin.departments.index') }}" 
-                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-[#7C7896] hover:text-[#2D2A3E] bg-white border border-[#E2E0F7] hover:bg-[#F5F3FF] transition shadow-2xs">
-                    <i data-lucide="arrow-left" class="h-4 w-4"></i>
-                    <span>Kembali ke Department</span>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.departments.create') }}" 
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#6C5CE7] hover:bg-[#4F46E5] transition shadow-sm">
+                    <i data-lucide="plus" class="h-4 w-4"></i>
+                    <span>Tambah Department</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
     <div class="space-y-6">
+        {{-- Navigation Tabs --}}
+        <div class="flex items-center gap-2 border-b border-[#E2E0F7] pb-3">
+            <a href="{{ route('admin.departments.index') }}" 
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#7C7896] hover:text-[#2D2A3E] hover:bg-[#F5F3FF] transition">
+                <i data-lucide="building-2" class="h-4 w-4"></i>
+                <span>Daftar Departemen</span>
+            </a>
+            <a href="{{ route('admin.positions.index') }}" 
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#6C5CE7] text-white shadow-sm transition">
+                <i data-lucide="briefcase" class="h-4 w-4"></i>
+                <span>Posisi Jabatan</span>
+            </a>
+        </div>
         {{-- Flash Messages --}}
         @if (session('success'))
             <div class="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm shadow-2xs">
