@@ -72,6 +72,9 @@ jobs:
       - name: Run database migrations
         run: php artisan migrate --force
 
+      - name: Seed database for Playwright tests
+        run: php artisan db:seed --class=JadwalinSeeder --force
+
       - name: Run Playwright tests
         run: npx playwright test
         env:
