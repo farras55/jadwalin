@@ -2,9 +2,14 @@ name: Playwright Tests
 
 on:
   push:
-    branches: [main, master, 'feat/**']
+    branches:
+      - main
+      - master
+      - 'feat/**'
   pull_request:
-    branches: [main, master]
+    branches:
+      - main
+      - master
 
 jobs:
   test:
@@ -37,16 +42,50 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
 
       - name: Prepare Laravel environment
         run: |
           cp .env.example .env
           php artisan key:generate
+          php artisan config:clear
+          php artisan route:clear
+          php artisan view:clear
+
+      - name: Check Laravel login endpoint
+        run: |
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/laravel-server.log 2>&1 &
+          echo $! > /tmp/laravel-server.pid
+
+          for i in $(seq 1 30); do
+            if curl --silent --show-error --fail \
+              http://127.0.0.1:8000/login \
+              --output /tmp/login-response.html; then
+              echo "Login endpoint is responding."
+              exit 0
+            fi
+
+            if ! kill -0 "$(cat /tmp/laravel-server.pid)" 2>/dev/null; then
+              echo "Laravel server stopped unexpectedly."
+              cat /tmp/laravel-server.log
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+          echo "Laravel login endpoint did not become ready."
+          cat /tmp/laravel-server.log
+          exit 1
 
       - name: Run Playwright tests
         run: npx playwright test
+        env:
+          CI: true
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
