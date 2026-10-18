@@ -51,35 +51,66 @@ jobs:
       - name: Prepare Laravel environment
         run: |
           cp .env.example .env
+          mkdir -p database
+          touch database/database.sqlite
+
           php artisan key:generate
+
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=${GITHUB_WORKSPACE}/database/database.sqlite" >> .env
+
+          echo "SESSION_DRIVER=file" >> .env
+          echo "CACHE_STORE=file" >> .env
+          echo "CACHE_DRIVER=file" >> .env
+          echo "QUEUE_CONNECTION=sync" >> .env
+
           php artisan config:clear
           php artisan route:clear
           php artisan view:clear
 
+      - name: Run database migrations
+        run: php artisan migrate --force
+
       - name: Check Laravel login endpoint
         run: |
-          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/laravel-server.log 2>&1 &
+          set -eu
+
+          php artisan serve --host=127.0.0.1 --port=8000 \
+            > /tmp/laravel-server.log 2>&1 &
           echo $! > /tmp/laravel-server.pid
 
           for i in $(seq 1 30); do
-            if curl --silent --show-error --fail \
-              http://127.0.0.1:8000/login \
-              --output /tmp/login-response.html; then
-              echo "Login endpoint is responding."
+            status=$(curl --silent --output /tmp/login-response.html \
+              --write-out "%{http_code}" \
+              http://127.0.0.1:8000/login || true)
+
+            if [ "$status" = "200" ]; then
+              echo "Laravel login endpoint is responding."
               exit 0
+            fi
+
+            if [ "$status" = "500" ]; then
+              echo "Laravel returned HTTP 500."
+              break
             fi
 
             if ! kill -0 "$(cat /tmp/laravel-server.pid)" 2>/dev/null; then
               echo "Laravel server stopped unexpectedly."
-              cat /tmp/laravel-server.log
-              exit 1
+              break
             fi
 
             sleep 2
           done
 
-          echo "Laravel login endpoint did not become ready."
-          cat /tmp/laravel-server.log
+          echo "Login endpoint check failed."
+          echo "----- Laravel server log -----"
+          cat /tmp/laravel-server.log || true
+          echo "----- Laravel application log -----"
+          if [ -f storage/logs/laravel.log ]; then
+            tail -n 100 storage/logs/laravel.log
+          else
+            echo "storage/logs/laravel.log was not created."
+          fi
           exit 1
 
       - name: Run Playwright tests
