@@ -4,16 +4,16 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
 
-  // Jalankan tes secara berurutan agar mengurangi konflik antar tes.
+  // Jalankan tes secara berurutan.
   fullyParallel: false,
 
-  // Gagal di CI jika terdapat test.only yang tertinggal.
+  // Cegah test.only tertinggal di CI.
   forbidOnly: !!process.env.CI,
 
   // Ulangi tes yang gagal saat berjalan di CI.
   retries: process.env.CI ? 2 : 0,
 
-  // Gunakan satu worker untuk menghindari konflik antar tes.
+  // Gunakan satu worker untuk mengurangi konflik.
   workers: 1,
 
   // Reporter hasil pengujian.
@@ -25,7 +25,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  // Browser yang digunakan untuk pengujian.
+  // Browser untuk pengujian.
   projects: [
     {
       name: 'chromium',
@@ -33,20 +33,16 @@ export default defineConfig({
     },
   ],
 
-  // Jalankan server Laravel sebelum tes dimulai.
+  // Playwright menjadi satu-satunya pengelola server.
   webServer: {
     command: 'php artisan serve --host=127.0.0.1 --port=8000',
-
-    // Gunakan endpoint login untuk memeriksa kesiapan server.
     url: 'http://127.0.0.1:8000/login',
 
-    // Di CI, jalankan server baru; secara lokal, boleh gunakan server yang aktif.
+    // CI harus menjalankan server sendiri.
+    // Lokal boleh menggunakan server yang sudah aktif.
     reuseExistingServer: !process.env.CI,
 
-    // Batas waktu startup server.
     timeout: 120000,
-
-    // Tampilkan output server jika terjadi masalah.
     stdout: 'pipe',
     stderr: 'pipe',
   },
