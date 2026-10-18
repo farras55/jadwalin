@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
 
-  // Jalankan tes secara berurutan agar server Laravel tidak deadlock.
+  // Jalankan tes secara berurutan agar mengurangi konflik antar tes.
   fullyParallel: false,
 
   // Gagal di CI jika terdapat test.only yang tertinggal.
@@ -36,15 +36,17 @@ export default defineConfig({
   // Jalankan server Laravel sebelum tes dimulai.
   webServer: {
     command: 'php artisan serve --host=127.0.0.1 --port=8000',
-    url: 'http://127.0.0.1:8000',
 
-    // Di CI, jalankan server baru; secara lokal, boleh gunakan server yang sudah aktif.
+    // Gunakan endpoint login untuk memeriksa kesiapan server.
+    url: 'http://127.0.0.1:8000/login',
+
+    // Di CI, jalankan server baru; secara lokal, boleh gunakan server yang aktif.
     reuseExistingServer: !process.env.CI,
 
-    // Beri waktu hingga 120 detik untuk startup server.
+    // Batas waktu startup server.
     timeout: 120000,
 
-    // Tampilkan output server jika ada masalah saat startup.
+    // Tampilkan output server jika terjadi masalah.
     stdout: 'pipe',
     stderr: 'pipe',
   },
