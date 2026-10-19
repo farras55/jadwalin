@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
@@ -76,16 +77,13 @@ Route::middleware(['auth', 'role:superadmin'])
             ->name('shifts.destroy');
 
         // ==========================================
-        // Platform Settings
+        // Company Settings - PBL-24
         // ==========================================
-        Route::get('/settings', function () {
-            return view('placeholder', [
-                'title' => 'Pengaturan Platform',
-                'subtitle' => 'Konfigurasi sistem, zona waktu server, dan preferensi aplikasi.',
-                'icon' => 'settings',
-                'roleTitle' => 'Super Admin',
-            ]);
-        })->name('settings.index');
+        Route::get('/settings', [CompanySettingController::class, 'edit'])
+            ->name('settings.index');
+
+        Route::put('/settings', [CompanySettingController::class, 'update'])
+            ->name('settings.update');
 
         // ==========================================
         // Timesheet Report & Export - PBL-21
