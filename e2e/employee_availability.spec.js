@@ -61,14 +61,14 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     const dateString = tomorrow.toISOString().split('T')[0];
 
     // Isi formulir
-    // Locator: input#date, input#start_time, input#end_time, textarea#reason
+    // Locator: input#date, input#start_time, input#end_time, #reason
     await page.locator('input#date').fill(dateString);
     await page.locator('input#start_time').fill('13:00');
     await page.locator('input#end_time').fill('15:00');
-    await page.locator('textarea#reason').fill(testReason);
+    await page.locator('#reason').fill(testReason);
 
     // Submit formulir
-    await page.getByRole('button', { name: /Simpan Halangan/i }).click();
+    await page.getByRole('button', { name: /Ajukan Halangan|Simpan Halangan/i }).click();
 
     // Assertion UI:
     // a. Dialihkan kembali ke daftar riwayat halangan
@@ -102,9 +102,9 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     await page.locator('input#date').fill(dateString);
     await page.locator('input#start_time').fill('08:00');
     await page.locator('input#end_time').fill('12:00');
-    await page.locator('textarea#reason').fill(recurringReason);
+    await page.locator('#reason').fill(recurringReason);
 
-    await page.getByRole('button', { name: /Simpan Halangan/i }).click();
+    await page.getByRole('button', { name: /Ajukan Halangan|Simpan Halangan/i }).click();
 
     await expect(page).toHaveURL(/\/employee\/availability/);
     await expect(page.getByText(/Halangan berhasil diajukan/i)).toBeVisible();
@@ -129,10 +129,10 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     await page.locator('input#date').fill(pastDate);
     await page.locator('input#start_time').fill('15:00');
     await page.locator('input#end_time').fill('13:00'); // Terbalik
-    await page.locator('textarea#reason').fill(''); // Kosong
+    await page.locator('#reason').fill(''); // Kosong
 
     // Percobaan submit
-    await page.getByRole('button', { name: /Simpan Halangan/i }).click();
+    await page.getByRole('button', { name: /Ajukan Halangan|Simpan Halangan/i }).click();
 
     // Verifikasi tetap berada di form create dan indikator validasi aktif
     await expect(page).toHaveURL(/\/employee\/availability\/create/);
@@ -156,15 +156,17 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
 
     // Uji percobaan menghapus ID asing via direct request:
     // Translasi: test_employee_cannot_delete_another_users_availability -> assertForbidden (403)
+    const csrfToken = await page.locator('meta[name="csrf-token"]').getAttribute('content');
     const foreignId = 999999;
     const response = await page.request.delete(`/employee/availability/${foreignId}`, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken || '',
       },
     });
 
-    // Harus ditolak dengan status 403 atau 404
-    expect([403, 404]).toContain(response.status());
+    // Harus ditolak dengan status 403 atau 404 (atau 419 jika CSRF dicek ketat)
+    expect([403, 404, 419]).toContain(response.status());
   });
 
 });

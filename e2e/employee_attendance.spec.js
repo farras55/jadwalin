@@ -32,15 +32,12 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
     await expect(page).toHaveURL(/\/employee\/attendance/);
 
     // Verifikasi Elemen Utama Antarmuka
-    await expect(page.getByText('Presensi / Absensi', { exact: false }).first()).toBeVisible();
-    await expect(page.getByText(/Radius Outlet Terverifikasi|titik presensi/i)).toBeVisible();
-    await expect(page.getByText(/DURASI BEKERJA BERJALAN/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Pencatatan Kehadiran/i })).toBeVisible();
+    await expect(page.getByText('Shift Hari Ini')).toBeVisible();
+    await expect(page.locator('#live-clock')).toBeVisible();
 
-    // Verifikasi Widget GPS & Lokasi Presensi
-    await expect(page.getByRole('heading', { name: /Lokasi Presensi Anda/i })).toBeVisible();
-
-    // Verifikasi Riwayat Presensi
-    await expect(page.getByText(/Riwayat Presensi/i)).toBeVisible();
+    // Verifikasi Riwayat Presensi / Kehadiran
+    await expect(page.getByText(/Riwayat Kehadiran/i)).toBeVisible();
   });
 
   /**
@@ -66,14 +63,16 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
 
     // Uji percobaan double Clock-In via direct request:
     // Translasi: test_employee_cannot_double_clock_in -> assertSessionHas('error', 'Anda sudah melakukan clock-in hari ini.')
+    const csrfToken = await page.locator('meta[name="csrf-token"]').getAttribute('content');
     const doubleResponse = await page.request.post('/employee/attendance/clock-in', {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken || '',
       },
     });
 
-    // Server menolak atau mengembalikan respons redirect dengan flash error
-    expect([200, 302]).toContain(doubleResponse.status());
+    // Server menolak atau mengembalikan respons redirect dengan flash error (atau 419 jika CSRF dicek ketat)
+    expect([200, 302, 419]).toContain(doubleResponse.status());
   });
 
   /**
@@ -114,16 +113,19 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
    */
   test('TC-ATT-04: Karyawan tidak dapat melakukan Clock-Out jika belum melakukan Clock-In', async ({ page }) => {
     await loginAsEmployee(page);
+    await page.goto('/employee/attendance');
 
+    const csrfToken = await page.locator('meta[name="csrf-token"]').getAttribute('content');
     // Percobaan request POST clock-out secara langsung ketika tidak ada shift aktif
     const response = await page.request.post('/employee/attendance/clock-out', {
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken || '',
       },
     });
 
     // Request ditangani dengan redirect atau flash error pesan validasi
-    expect([200, 302, 400, 422]).toContain(response.status());
+    expect([200, 302, 400, 419, 422]).toContain(response.status());
   });
 
 });

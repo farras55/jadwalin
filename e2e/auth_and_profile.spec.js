@@ -105,13 +105,13 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
     await expect(page.getByText(/Kelola identitas profil, nomor kontak, serta keamanan akun Anda/i)).toBeVisible();
 
     // Verifikasi Kartu Identitas Pengguna
-    await expect(page.getByText('Dewi Lestari', { exact: false })).toBeVisible();
+    await expect(page.getByText('Dewi Lestari', { exact: false }).first()).toBeVisible();
     await expect(page.getByText('karyawan@senjawisata.co.id')).toBeVisible();
     await expect(page.getByText(/PT Senja Wisata Nusantara/i)).toBeVisible();
 
     // Verifikasi Form Informasi Profil & Form Keamanan
     await expect(page.getByRole('heading', { name: /Informasi Profil/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Perbarui Kata Sandi/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Perbarui Kata Sandi|Keamanan & Kata Sandi/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Hapus Akun/i })).toBeVisible();
   });
 
@@ -131,7 +131,7 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
       await saveBtn.click();
 
       // Verifikasi indikator tersimpan / notifikasi sukses
-      await expect(page.getByText(/Tersimpan|Saved|Profil berhasil diperbarui/i).first()).toBeVisible();
+      await expect(page.getByText(/Tersimpan|Saved|berhasil disimpan|Profil berhasil diperbarui/i).first()).toBeVisible();
     }
   });
 
@@ -146,8 +146,8 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
       const saveBtn = page.locator('form', { has: phoneInput }).getByRole('button', { name: /Simpan|Save/i });
       await saveBtn.click();
 
-      // Verifikasi pesan error validasi muncul
-      await expect(page.locator('.text-red-600').first()).toBeVisible();
+      // Verifikasi pesan error validasi muncul di dalam form profil
+      await expect(page.locator('form', { has: phoneInput }).locator('.text-red-600').first()).toBeVisible();
     }
   });
 
@@ -164,11 +164,11 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
       await newPasswordInput.fill('passwordBaru12345');
       await confirmPasswordInput.fill('passwordBaru12345');
 
-      const submitBtn = page.locator('form', { has: currentPasswordInput }).getByRole('button', { name: /Simpan|Save/i });
+      const submitBtn = page.locator('form', { has: currentPasswordInput }).getByRole('button', { name: /Perbarui Sandi|Simpan|Save/i });
       await submitBtn.click();
 
       // Verifikasi pesan error kata sandi saat ini tidak cocok
-      await expect(page.locator('.text-red-600').first()).toBeVisible();
+      await expect(page.locator('form', { has: currentPasswordInput }).locator('.text-red-600').first()).toBeVisible();
     }
   });
 

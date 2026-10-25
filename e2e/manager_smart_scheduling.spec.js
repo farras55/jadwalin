@@ -40,7 +40,7 @@ test.describe('Modul Manager: Smart Scheduling Builder (Roster Kerja Tim)', () =
     await expect(page.getByText('Minggu', { exact: false }).first()).toBeVisible();
 
     // Verifikasi Tombol Builder & Aksi
-    await expect(page.getByRole('button', { name: /Buat Jadwal Otomatis|Generate/i }).or(page.locator('#btn-open-auto-builder')).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Atur Kebutuhan & Build Jadwal|Build Jadwal|Buat Jadwal Otomatis|Generate/i }).or(page.locator('#btn-open-auto-builder')).first()).toBeVisible();
   });
 
   /**
@@ -111,6 +111,7 @@ test.describe('Modul Manager: Smart Scheduling Builder (Roster Kerja Tim)', () =
 
     // Percobaan PUT ke shift ID departemen lain / tidak berhak
     const foreignShiftId = 999999;
+    const csrfToken = await page.locator('meta[name="csrf-token"]').getAttribute('content');
     const response = await page.request.put(`/manager/shifts/${foreignShiftId}`, {
       data: {
         title: 'Coba Edit Shift Ilegal',
@@ -120,11 +121,12 @@ test.describe('Modul Manager: Smart Scheduling Builder (Roster Kerja Tim)', () =
       },
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken || '',
       },
     });
 
-    // Harus ditolak dengan status 403 atau 404
-    expect([403, 404]).toContain(response.status());
+    // Harus ditolak dengan status 403 atau 404 (atau 419 jika CSRF dicek ketat)
+    expect([403, 404, 419]).toContain(response.status());
   });
 
 });

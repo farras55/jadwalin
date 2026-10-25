@@ -51,7 +51,7 @@ test.describe('Modul Admin: Rekapitulasi Timesheet & Ekspor Laporan (PBL-21)', (
 
     // Verifikasi KPI Cards (Karyawan, Jam Reguler, Jam Lembur, Keterlambatan)
     await expect(page.getByText('Karyawan & Kehadiran', { exact: true })).toBeVisible();
-    await expect(page.getByText('Jam Kerja Reguler', { exact: true })).toBeVisible();
+    await expect(page.getByText('Jam Reguler', { exact: true })).toBeVisible();
     await expect(page.getByText('Jam Lembur (Overtime)', { exact: true })).toBeVisible();
     await expect(page.getByText('Keterlambatan Presensi', { exact: true })).toBeVisible();
 
