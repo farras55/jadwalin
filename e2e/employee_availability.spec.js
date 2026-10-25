@@ -150,6 +150,7 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     // Cari tombol aksi Hapus / Batalkan pada riwayat halangan yang pending
     const cancelBtn = page.getByRole('button', { name: /Batalkan|Hapus/i }).first();
     if (await cancelBtn.isVisible()) {
+      page.once('dialog', dialog => dialog.accept());
       await cancelBtn.click();
       await expect(page.getByText(/berhasil dibatalkan|berhasil dihapus/i)).toBeVisible();
     }
