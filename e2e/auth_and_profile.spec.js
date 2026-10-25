@@ -21,6 +21,9 @@ import { test, expect } from '@playwright/test';
  * Akun Pengujian: JadwalinSeeder (karyawan@senjawisata.co.id / password123)
  */
 
+/**
+ * @param {import('@playwright/test').Page} page
+ */
 async function loginAsEmployee(page) {
   await page.goto('/login');
   await page.locator('input#email').fill('karyawan@senjawisata.co.id');

@@ -11,6 +11,9 @@ import { test, expect } from '@playwright/test';
  * Akun Pengujian: JadwalinSeeder (Karyawan: karyawan@senjawisata.co.id)
  */
 
+/**
+ * @param {import('@playwright/test').Page} page
+ */
 async function loginAsEmployee(page) {
   await page.goto('/login');
   await page.locator('input#email').fill('karyawan@senjawisata.co.id');
@@ -37,7 +40,7 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
     await expect(page.locator('#live-clock').or(page.getByText(/Tidak ada shift yang ditugaskan/i)).first()).toBeVisible();
 
     // Verifikasi Riwayat Presensi / Kehadiran
-    await expect(page.getByText(/Riwayat Kehadiran/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Riwayat Kehadiran/i })).toBeVisible();
   });
 
   /**

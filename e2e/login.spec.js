@@ -41,6 +41,8 @@ test.describe('Modul Autentikasi: Skenario Login & Logout (F-01, F-02)', () => {
 
   /**
    * Helper untuk login dan memverifikasi dashboard tujuan.
+   * @param {import('@playwright/test').Page} page
+   * @param {{ email: string, password: string, dashboard: RegExp|string, role: RegExp|string }} account
    */
   async function loginAs(page, account) {
     await page.locator('#email').fill(account.email);

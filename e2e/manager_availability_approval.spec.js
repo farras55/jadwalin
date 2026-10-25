@@ -11,6 +11,9 @@ import { test, expect } from '@playwright/test';
  * Akun Pengujian: JadwalinSeeder (Manager: manager@senjawisata.co.id, Employee: karyawan@senjawisata.co.id)
  */
 
+/**
+ * @param {import('@playwright/test').Page} page
+ */
 async function loginAsManager(page) {
   await page.goto('/login');
   await page.locator('input#email').fill('manager@senjawisata.co.id');
@@ -19,6 +22,9 @@ async function loginAsManager(page) {
   await expect(page).toHaveURL(/\/manager\/dashboard/);
 }
 
+/**
+ * @param {import('@playwright/test').Page} page
+ */
 async function loginAsEmployee(page) {
   await page.goto('/login');
   await page.locator('input#email').fill('karyawan@senjawisata.co.id');
