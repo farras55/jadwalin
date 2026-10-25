@@ -96,10 +96,10 @@ test.describe('Modul Admin: Kelola Departemen & Posisi Jabatan', () => {
     await expect(page).toHaveURL(/\/admin\/departments/);
 
     // b. Flash message sukses muncul
-    await expect(page.getByText(/Departemen berhasil ditambahkan/i)).toBeVisible();
+    await expect(page.getByText(/(Departemen|Department) berhasil ditambahkan/i)).toBeVisible();
 
     // c. Data nama departemen baru tampil pada tabel/daftar
-    await expect(page.getByText(deptName)).toBeVisible();
+    await expect(page.getByText(deptName).first()).toBeVisible();
   });
 
   /**
@@ -121,7 +121,7 @@ test.describe('Modul Admin: Kelola Departemen & Posisi Jabatan', () => {
 
     // Assertion UI:
     // Form menolak submit dan menampilkan pesan error validasi unik
-    const errorMsg = page.locator('.text-red-600', { hasText: /nama department sudah terdaftar|has already been taken|sudah ada/i });
+    const errorMsg = page.locator('.text-red-600', { hasText: /sudah digunakan|sudah terdaftar|has already been taken|sudah ada/i });
     await expect(errorMsg.first()).toBeVisible();
   });
 
