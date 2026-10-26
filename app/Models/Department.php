@@ -15,7 +15,40 @@ class Department extends Model
         'company_id',
         'name',
         'description',
+        'latitude',
+        'longitude',
+        'address',
+        'radius_meters',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'radius_meters' => 'integer',
+        ];
+    }
+
+    public function getLatitudeAttribute($value): float
+    {
+        return $value !== null ? (float) $value : -6.2383200;
+    }
+
+    public function getLongitudeAttribute($value): float
+    {
+        return $value !== null ? (float) $value : 106.8122800;
+    }
+
+    public function getRadiusMetersAttribute($value): int
+    {
+        return $value ? (int) $value : 50;
+    }
+
+    public function getAddressAttribute($value): string
+    {
+        return $value ?: 'Jl. Suryo No. 12, Senopati, Kebayoran Baru';
+    }
 
     public function company(): BelongsTo
     {
