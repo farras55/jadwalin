@@ -1,125 +1,6 @@
 <x-app-layout>
-    {{-- Main Container with Alpine.js Reactive State --}}
-    <div 
-        x-data="{
-            // Konstanta konfigurasi interval polling (20 detik)
-            pollIntervalMs: 20000,
-            feedUrl: '{{ route('manager.attendance.feed') }}',
-            
-            // Status konektivitas dan kontrol request
-            isConnected: true,
-            isFetching: false,
-            isClientMounted: false,
-            pollTimer: null,
-            clockTimer: null,
-            isTabActive: true,
-            
-            // Waktu server & live clock
-            currentTimeStr: '{{ $serverTime }}',
-            currentDateStr: '{{ $serverDate }}',
-            lastSyncTime: '{{ $serverTime }}',
-            
-            // Metrik kehadiran agregat
-            metrics: {
-                scheduled: {{ $metrics['scheduled'] }},
-                total_scheduled: {{ $metrics['total_scheduled'] }},
-                on_time: {{ $metrics['on_time'] }},
-                late: {{ $metrics['late'] }},
-                absent: {{ $metrics['absent'] }},
-                not_started: {{ $metrics['not_started'] }},
-                not_present: {{ $metrics['not_present'] }},
-                on_leave: {{ $metrics['on_leave'] }}
-            },
-            
-            // Baris presensi staf
-            rows: @json($rows),
-            
-            init() {
-                this.isClientMounted = true;
-                this.startLiveClock();
-                this.setupVisibilityListener();
-                this.startPolling();
-                
-                this.$nextTick(() => {
-                    if (window.lucide) window.lucide.createIcons();
-                });
-            },
-            
-            startLiveClock() {
-                this.clockTimer = setInterval(() => {
-                    const now = new Date();
-                    const hh = String(now.getHours()).padStart(2, '0');
-                    const mm = String(now.getMinutes()).padStart(2, '0');
-                    const ss = String(now.getSeconds()).padStart(2, '0');
-                    this.currentTimeStr = hh + ':' + mm + ':' + ss;
-                }, 1000);
-            },
-            
-            setupVisibilityListener() {
-                document.addEventListener('visibilitychange', () => {
-                    this.isTabActive = !document.hidden;
-                    if (this.isTabActive && !this.isFetching) {
-                        this.fetchFeed();
-                    }
-                });
-            },
-            
-            startPolling() {
-                this.pollTimer = setInterval(() => {
-                    if (this.isTabActive && !this.isFetching) {
-                        this.fetchFeed();
-                    }
-                }, this.pollIntervalMs);
-            },
-            
-            destroy() {
-                if (this.pollTimer) clearInterval(this.pollTimer);
-                if (this.clockTimer) clearInterval(this.clockTimer);
-            },
-            
-            async fetchFeed() {
-                if (this.isFetching) return;
-                this.isFetching = true;
-                
-                try {
-                    const response = await fetch(this.feedUrl, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('HTTP status: ' + response.status);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (data.metrics) {
-                        this.metrics = data.metrics;
-                    }
-                    if (data.rows) {
-                        this.rows = data.rows;
-                    }
-                    if (data.server_time) {
-                        this.lastSyncTime = data.server_time;
-                    }
-                    
-                    this.isConnected = true;
-                    
-                    this.$nextTick(() => {
-                        if (window.lucide) window.lucide.createIcons();
-                    });
-                } catch (err) {
-                    console.warn('Realtime attendance polling error:', err);
-                    this.isConnected = false;
-                } finally {
-                    this.isFetching = false;
-                }
-            }
-        }"
-        class="space-y-6"
-    >
+    {{-- Main Container --}}
+    <div x-data="attendanceMonitor" class="space-y-6">
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -326,7 +207,6 @@
                     </thead>
                     <tbody class="divide-y divide-[#E2E0F7] text-xs">
                         {{-- 1. Server-Side Initial Render (Blade) --}}
-                        {{-- Ditampilkan sebelum Alpine.js mount untuk performa, SEO, dan test assertions --}}
                         @foreach ($rows as $row)
                             <tr x-show="!isClientMounted" class="hover:bg-[#F5F3FF]/40 transition">
                                 <td class="px-6 py-4">
@@ -406,7 +286,6 @@
                         @endforeach
 
                         {{-- 2. Client-Side Reactive Render (Alpine.js x-for) --}}
-                        {{-- Mengambil alih setelah JavaScript aktif dan diperbarui tiap polling realtime --}}
                         <template x-for="row in rows" :key="row.assignment_id">
                             <tr x-show="isClientMounted" class="hover:bg-[#F5F3FF]/40 transition" style="display: none;">
                                 <td class="px-6 py-4">
@@ -453,7 +332,6 @@
                                     </template>
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{-- Badge Tepat Waktu --}}
                                     <template x-if="row.status === 'on_time'">
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -461,7 +339,6 @@
                                         </span>
                                     </template>
 
-                                    {{-- Badge Terlambat --}}
                                     <template x-if="row.status === 'late'">
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
@@ -469,7 +346,6 @@
                                         </span>
                                     </template>
 
-                                    {{-- Badge Izin / Cuti --}}
                                     <template x-if="row.status === 'on_leave'">
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
@@ -477,7 +353,6 @@
                                         </span>
                                     </template>
 
-                                    {{-- Badge Belum Mulai --}}
                                     <template x-if="row.status === 'not_started'">
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
@@ -485,7 +360,6 @@
                                         </span>
                                     </template>
 
-                                    {{-- Badge Belum Hadir (Absent) --}}
                                     <template x-if="row.status === 'absent'">
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
@@ -500,4 +374,112 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('attendanceMonitor', () => ({
+                pollIntervalMs: 20000,
+                feedUrl: '{{ route('manager.attendance.feed') }}',
+                
+                isConnected: true,
+                isFetching: false,
+                isClientMounted: false,
+                pollTimer: null,
+                clockTimer: null,
+                isTabActive: true,
+                
+                currentTimeStr: '{{ $serverTime }}',
+                currentDateStr: '{{ $serverDate }}',
+                lastSyncTime: '{{ $serverTime }}',
+                
+                metrics: {!! json_encode($metrics) !!},
+                
+                rows: {!! json_encode($rows) !!},
+                
+                init() {
+                    this.isClientMounted = true;
+                    this.startLiveClock();
+                    this.setupVisibilityListener();
+                    this.startPolling();
+                    
+                    this.$nextTick(() => {
+                        if (window.lucide) window.lucide.createIcons();
+                    });
+                },
+                
+                startLiveClock() {
+                    this.clockTimer = setInterval(() => {
+                        const now = new Date();
+                        const hh = String(now.getHours()).padStart(2, '0');
+                        const mm = String(now.getMinutes()).padStart(2, '0');
+                        const ss = String(now.getSeconds()).padStart(2, '0');
+                        this.currentTimeStr = hh + ':' + mm + ':' + ss;
+                    }, 1000);
+                },
+                
+                setupVisibilityListener() {
+                    document.addEventListener('visibilitychange', () => {
+                        this.isTabActive = !document.hidden;
+                        if (this.isTabActive && !this.isFetching) {
+                            this.fetchFeed();
+                        }
+                    });
+                },
+                
+                startPolling() {
+                    this.pollTimer = setInterval(() => {
+                        if (this.isTabActive && !this.isFetching) {
+                            this.fetchFeed();
+                        }
+                    }, this.pollIntervalMs);
+                },
+                
+                destroy() {
+                    if (this.pollTimer) clearInterval(this.pollTimer);
+                    if (this.clockTimer) clearInterval(this.clockTimer);
+                },
+                
+                async fetchFeed() {
+                    if (this.isFetching) return;
+                    this.isFetching = true;
+                    
+                    try {
+                        const response = await fetch(this.feedUrl, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('HTTP status: ' + response.status);
+                        }
+                        
+                        const data = await response.json();
+                        
+                        if (data.metrics) {
+                            this.metrics = data.metrics;
+                        }
+                        if (data.rows) {
+                            this.rows = data.rows;
+                        }
+                        if (data.server_time) {
+                            this.lastSyncTime = data.server_time;
+                        }
+                        
+                        this.isConnected = true;
+                        
+                        this.$nextTick(() => {
+                            if (window.lucide) window.lucide.createIcons();
+                        });
+                    } catch (err) {
+                        console.warn('Realtime attendance polling error:', err);
+                        this.isConnected = false;
+                    } finally {
+                        this.isFetching = false;
+                    }
+                }
+            }));
+        });
+    </script>
 </x-app-layout>
