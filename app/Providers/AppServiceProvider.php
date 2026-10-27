@@ -28,14 +28,25 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('layouts.topbar', function ($view) {
             $unreadNotifCount = 0;
+            $latestNotifications = collect();
 
             if (auth()->check()) {
-                $unreadNotifCount = Notification::where('user_id', auth()->id())
+                $userId = auth()->id();
+
+                $unreadNotifCount = Notification::where('user_id', $userId)
                     ->where('is_read', false)
                     ->count();
+
+                $latestNotifications = Notification::where('user_id', $userId)
+                    ->orderByDesc('created_at')
+                    ->limit(5)
+                    ->get();
             }
 
-            $view->with('unreadNotifCount', $unreadNotifCount);
+            $view->with([
+                'unreadNotifCount' => $unreadNotifCount,
+                'latestNotifications' => $latestNotifications,
+            ]);
         });
     }
 }

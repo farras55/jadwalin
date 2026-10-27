@@ -82,16 +82,7 @@
                     </a>
                 </div>
 
-                {{-- 5 Notifikasi Terbaru --}}
-                @php
-                    $latestNotifications = auth()->check()
-                        ? \App\Models\Notification::where('user_id', auth()->id())
-                            ->orderByDesc('created_at')
-                            ->limit(5)
-                            ->get()
-                        : collect();
-                @endphp
-
+                {{-- 5 Notifikasi Terbaru (disediakan via View Composer AppServiceProvider) --}}
                 @forelse($latestNotifications as $notification)
                     <div class="px-4 py-3 border-b border-gray-100 hover:bg-[#F9F8FF] transition">
                         <div class="flex items-start gap-3">
