@@ -1,13 +1,17 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
-use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\AvailabilityController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
+use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShiftSwapController;
+use App\Models\Availability;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -114,7 +118,7 @@ Route::middleware(['auth', 'role:manager'])
         Route::get('/dashboard', function () {
             $manager = auth()->user();
 
-            $pendingAvailabilityCount = \App\Models\Availability::where('company_id', $manager->company_id)
+            $pendingAvailabilityCount = Availability::where('company_id', $manager->company_id)
                 ->where('status', 'pending_manager')
                 ->whereHas('user', function ($query) use ($manager) {
                     if (! $manager->is_global_manager) {
@@ -123,7 +127,7 @@ Route::middleware(['auth', 'role:manager'])
                 })
                 ->count();
 
-            $pendingAvailability = \App\Models\Availability::with([
+            $pendingAvailability = Availability::with([
                 'user.position',
             ])
                 ->where('company_id', $manager->company_id)
@@ -167,14 +171,13 @@ Route::middleware(['auth', 'role:manager'])
             [ShiftController::class, 'updateTemplate']
         )->name('shifts.templates.update');
 
-        Route::get('/swaps', function () {
-            return view('placeholder', [
-                'title' => 'Persetujuan Tukar Shift',
-                'subtitle' => 'Verifikasi dan setujui permohonan pergantian shift antar karyawan.',
-                'icon' => 'arrow-left-right',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('swaps.index');
+        // PBL-22: Shift Swap Approvals (Manager)
+        Route::get('/swaps', [ShiftSwapController::class, 'indexManager'])
+            ->name('swaps.index');
+        Route::post('/swaps/{swap}/approve', [ShiftSwapController::class, 'approveManager'])
+            ->name('swaps.approve');
+        Route::post('/swaps/{swap}/reject', [ShiftSwapController::class, 'rejectManager'])
+            ->name('swaps.reject');
 
         Route::get('/attendance', function () {
             return view('placeholder', [
@@ -202,7 +205,7 @@ Route::middleware(['auth', 'role:manager'])
                 'roleTitle' => 'Manager',
             ]);
         })->name('employees.index');
-        
+
         Route::get('/availability', [
             AvailabilityApprovalController::class,
             'index',
@@ -239,29 +242,28 @@ Route::middleware(['auth', 'role:employee'])
             ]);
         })->name('schedule');
 
-        Route::get('/swaps', function () {
-            return view('placeholder', [
-                'title' => 'Tukar Shift',
-                'subtitle' => 'Ajukan permintaan tukar shift atau klaim shift rekan kerja.',
-                'icon' => 'arrow-left-right',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('swaps');
+        // PBL-22: Shift Swap & Transfer (Employee)
+        Route::get('/swaps', [ShiftSwapController::class, 'indexEmployee'])
+            ->name('swaps');
+        Route::post('/swaps', [ShiftSwapController::class, 'requestSwap'])
+            ->name('swaps.request');
+        Route::post('/swaps/{swap}/respond', [ShiftSwapController::class, 'respondSwap'])
+            ->name('swaps.respond');
 
         // Employee Attendance
         Route::get(
             '/attendance',
-            [\App\Http\Controllers\Employee\AttendanceController::class, 'index']
+            [AttendanceController::class, 'index']
         )->name('attendance');
 
         Route::post(
             '/attendance/clock-in',
-            [\App\Http\Controllers\Employee\AttendanceController::class, 'clockIn']
+            [AttendanceController::class, 'clockIn']
         )->name('attendance.clock-in');
 
         Route::post(
             '/attendance/clock-out',
-            [\App\Http\Controllers\Employee\AttendanceController::class, 'clockOut']
+            [AttendanceController::class, 'clockOut']
         )->name('attendance.clock-out');
 
         Route::get('/timesheet', function () {
@@ -276,22 +278,22 @@ Route::middleware(['auth', 'role:employee'])
         // Employee Availability
         Route::get(
             '/availability',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'index']
+            [AvailabilityController::class, 'index']
         )->name('availability');
 
         Route::get(
             '/availability/create',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'create']
+            [AvailabilityController::class, 'create']
         )->name('availability.create');
 
         Route::post(
             '/availability',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'store']
+            [AvailabilityController::class, 'store']
         )->name('availability.store');
 
         Route::delete(
             '/availability/{availability}',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'destroy']
+            [AvailabilityController::class, 'destroy']
         )->name('availability.destroy');
     });
 
@@ -310,4 +312,4 @@ Route::middleware('auth')->group(function () {
 });
 
 // Authentication routes
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
