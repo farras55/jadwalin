@@ -35,10 +35,10 @@
     <div class="flex items-center gap-2 md:gap-3">
 
         {{-- Notifikasi --}}
-        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+        <div class="relative" x-data="{ showNotif: false }" @click.outside="showNotif = false">
             <button
                 type="button"
-                @click="open = !open"
+                @click="showNotif = !showNotif"
                 class="relative text-slate-400 hover:text-slate-700 transition p-2 rounded-lg hover:bg-[#F5F3FF]"
                 title="Notifikasi"
             >
@@ -53,7 +53,7 @@
 
             {{-- Dropdown Notifikasi --}}
             <div
-                x-show="open"
+                x-show="showNotif"
                 x-transition:enter="transition ease-out duration-100"
                 x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100"
