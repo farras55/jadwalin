@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Manager\TeamEmployeeController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
@@ -342,6 +343,20 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+});
+
+// ==========================================
+// 5. Notification Routes - PBL-20
+// ==========================================
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
+
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.read-all');
 });
 
 // Authentication routes

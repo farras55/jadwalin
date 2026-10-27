@@ -33,10 +33,119 @@
 
     {{-- Bagian Kanan Navbar --}}
     <div class="flex items-center gap-2 md:gap-3">
-        <button type="button" class="relative text-slate-400 hover:text-slate-700 transition p-2 rounded-lg hover:bg-[#F5F3FF]" title="Notifikasi">
-            <i data-lucide="bell" class="h-5 w-5"></i>
-            <span class="absolute top-1.5 right-1.5 h-2 w-2 bg-[#6C5CE7] rounded-full border-2 border-white"></span>
-        </button>
+
+        {{-- Notifikasi --}}
+        <div class="relative" x-data="{ showNotif: false }" @click.outside="showNotif = false">
+            <button
+                type="button"
+                @click="showNotif = !showNotif"
+                class="relative text-slate-400 hover:text-slate-700 transition p-2 rounded-lg hover:bg-[#F5F3FF]"
+                title="Notifikasi"
+            >
+                <i data-lucide="bell" class="h-5 w-5"></i>
+
+                @if($unreadNotifCount > 0)
+                    <span class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white">
+                        {{ $unreadNotifCount > 99 ? '99+' : $unreadNotifCount }}
+                    </span>
+                @endif
+            </button>
+
+            {{-- Dropdown Notifikasi --}}
+            <div
+                x-show="showNotif"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="absolute right-0 mt-2 w-[340px] max-h-[400px] overflow-y-auto bg-white rounded-xl border border-[#E2E0F7] shadow-lg z-50"
+                style="display: none;"
+            >
+                {{-- Header Dropdown --}}
+                <div class="flex items-center justify-between px-4 py-3 border-b border-[#E2E0F7]">
+                    <div>
+                        <h3 class="text-sm font-bold text-[#2D2A3E]">
+                            Notifikasi
+                        </h3>
+                        <p class="text-[11px] text-[#7C7896] mt-0.5">
+                            {{ $unreadNotifCount }} belum dibaca
+                        </p>
+                    </div>
+
+                    <a
+                        href="{{ route('notifications.index') }}"
+                        class="text-[11px] font-medium text-[#6C5CE7] hover:underline"
+                    >
+                        Lihat Semua
+                    </a>
+                </div>
+
+                {{-- 5 Notifikasi Terbaru (disediakan via View Composer AppServiceProvider) --}}
+                @forelse($latestNotifications as $notification)
+                    <div class="px-4 py-3 border-b border-gray-100 hover:bg-[#F9F8FF] transition">
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1.5 h-2 w-2 shrink-0 rounded-full {{ $notification->is_read ? 'bg-gray-200' : 'bg-[#6C5CE7]' }}"></div>
+
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[12.5px] font-semibold text-[#2D2A3E] truncate">
+                                    {{ $notification->title }}
+                                </p>
+
+                                <p class="mt-1 text-[11.5px] leading-relaxed text-[#7C7896] line-clamp-2">
+                                    {{ $notification->message }}
+                                </p>
+
+                                <p class="mt-1.5 text-[10px] text-gray-400">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </p>
+
+                                @if(!$notification->is_read)
+                                    <form
+                                        action="{{ route('notifications.read', $notification) }}"
+                                        method="POST"
+                                        class="mt-2"
+                                    >
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <button
+                                            type="submit"
+                                            class="text-[10.5px] font-medium text-[#6C5CE7] hover:underline"
+                                        >
+                                            Tandai sudah dibaca
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="flex flex-col items-center justify-center px-6 py-10 text-center">
+                        <i data-lucide="inbox" class="h-8 w-8 text-gray-300 mb-2"></i>
+
+                        <p class="text-sm font-medium text-gray-500">
+                            Belum ada notifikasi
+                        </p>
+
+                        <p class="text-[11px] text-gray-400 mt-1">
+                            Notifikasi terbaru akan muncul di sini.
+                        </p>
+                    </div>
+                @endforelse
+
+                {{-- Footer --}}
+                <div class="border-t border-[#E2E0F7] px-4 py-2.5">
+                    <a
+                        href="{{ route('notifications.index') }}"
+                        class="block text-center text-[11px] font-medium text-[#6C5CE7] hover:underline"
+                    >
+                        Buka Pusat Notifikasi
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <button type="button" class="hidden md:block text-slate-400 hover:text-slate-700 transition p-2 rounded-lg hover:bg-[#F5F3FF]" title="Bantuan">
             <i data-lucide="help-circle" class="h-5 w-5"></i>
