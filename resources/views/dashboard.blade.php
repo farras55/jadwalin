@@ -510,7 +510,7 @@
 
                 <a href="{{ route('employee.schedule') }}"
                    class="inline-flex items-center gap-1 text-xs font-semibold text-[#6C5CE7] hover:underline">
-                    Jadwal saya
+                    Lihat jadwal lengkap
                     <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
                 </a>
             </div>
