@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Manager\TeamEmployeeController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
@@ -174,8 +175,10 @@ Route::middleware(['auth', 'role:manager'])
         // PBL-22: Shift Swap Approvals (Manager)
         Route::get('/swaps', [ShiftSwapController::class, 'indexManager'])
             ->name('swaps.index');
+
         Route::post('/swaps/{swap}/approve', [ShiftSwapController::class, 'approveManager'])
             ->name('swaps.approve');
+
         Route::post('/swaps/{swap}/reject', [ShiftSwapController::class, 'rejectManager'])
             ->name('swaps.reject');
 
@@ -197,15 +200,25 @@ Route::middleware(['auth', 'role:manager'])
             ]);
         })->name('timesheets.index');
 
-        Route::get('/employees', function () {
-            return view('placeholder', [
-                'title' => 'Data Karyawan Tim',
-                'subtitle' => 'Daftar staf, posisi, informasi kontak, dan ketersediaan bawahan.',
-                'icon' => 'users',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('employees.index');
+        // ==========================================
+        // PBL-25: Team Employee Management
+        // ==========================================
 
+        // Daftar karyawan dalam perusahaan/departemen manager
+        Route::get(
+            '/employees',
+            [TeamEmployeeController::class, 'index']
+        )->name('employees.index');
+
+        // Detail profil dan aktivitas shift karyawan
+        Route::get(
+            '/employees/{user}',
+            [TeamEmployeeController::class, 'show']
+        )->name('employees.show');
+
+        // ==========================================
+        // Availability Approval
+        // ==========================================
         Route::get('/availability', [
             AvailabilityApprovalController::class,
             'index',
@@ -245,8 +258,10 @@ Route::middleware(['auth', 'role:employee'])
         // PBL-22: Shift Swap & Transfer (Employee)
         Route::get('/swaps', [ShiftSwapController::class, 'indexEmployee'])
             ->name('swaps');
+
         Route::post('/swaps', [ShiftSwapController::class, 'requestSwap'])
             ->name('swaps.request');
+
         Route::post('/swaps/{swap}/respond', [ShiftSwapController::class, 'respondSwap'])
             ->name('swaps.respond');
 
