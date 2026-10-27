@@ -10,6 +10,7 @@ use App\Http\Controllers\Employee\AvailabilityController;
 use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\OpenShiftController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShiftSwapController;
 use App\Models\Availability;
@@ -180,6 +181,18 @@ Route::middleware(['auth', 'role:manager'])
         Route::post('/swaps/{swap}/reject', [ShiftSwapController::class, 'rejectManager'])
             ->name('swaps.reject');
 
+        // PBL-23: Open Shift Broadcast & Concurrency (Manager)
+        Route::get('/open-shifts', [OpenShiftController::class, 'indexManager'])
+            ->name('open-shifts.index');
+        Route::post('/open-shifts', [OpenShiftController::class, 'broadcast'])
+            ->name('open-shifts.broadcast');
+        Route::post('/open-shifts/{shift}/close', [OpenShiftController::class, 'closeBroadcast'])
+            ->name('open-shifts.close');
+        Route::post('/open-shifts/claims/{claim}/approve', [OpenShiftController::class, 'approveClaim'])
+            ->name('open-shifts.claims.approve');
+        Route::post('/open-shifts/claims/{claim}/reject', [OpenShiftController::class, 'rejectClaim'])
+            ->name('open-shifts.claims.reject');
+
         // PBL-27: Realtime Attendance Monitoring
         Route::get('/attendance', [AttendanceMonitorController::class, 'index'])
             ->name('attendance.index');
@@ -248,6 +261,12 @@ Route::middleware(['auth', 'role:employee'])
             ->name('swaps.request');
         Route::post('/swaps/{swap}/respond', [ShiftSwapController::class, 'respondSwap'])
             ->name('swaps.respond');
+
+        // PBL-23: Open Shift Claim (Employee)
+        Route::get('/open-shifts', [OpenShiftController::class, 'availableShifts'])
+            ->name('open-shifts');
+        Route::post('/open-shifts/{shift}/claim', [OpenShiftController::class, 'claim'])
+            ->name('open-shifts.claim');
 
         // Employee Attendance
         Route::get(
