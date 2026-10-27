@@ -11,6 +11,10 @@ use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Manager\AvailabilityApprovalController;
+use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShiftSwapController;
 use App\Models\Availability;
 use Illuminate\Support\Facades\Route;
 
@@ -171,14 +175,13 @@ Route::middleware(['auth', 'role:manager'])
             [ShiftController::class, 'updateTemplate']
         )->name('shifts.templates.update');
 
-        Route::get('/swaps', function () {
-            return view('placeholder', [
-                'title' => 'Persetujuan Tukar Shift',
-                'subtitle' => 'Verifikasi dan setujui permohonan pergantian shift antar karyawan.',
-                'icon' => 'arrow-left-right',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('swaps.index');
+        // PBL-22: Shift Swap Approvals (Manager)
+        Route::get('/swaps', [ShiftSwapController::class, 'indexManager'])
+            ->name('swaps.index');
+        Route::post('/swaps/{swap}/approve', [ShiftSwapController::class, 'approveManager'])
+            ->name('swaps.approve');
+        Route::post('/swaps/{swap}/reject', [ShiftSwapController::class, 'rejectManager'])
+            ->name('swaps.reject');
 
         // PBL-27: Realtime Attendance Monitoring
         Route::get('/attendance', [AttendanceMonitorController::class, 'index'])
@@ -241,14 +244,13 @@ Route::middleware(['auth', 'role:employee'])
             ]);
         })->name('schedule');
 
-        Route::get('/swaps', function () {
-            return view('placeholder', [
-                'title' => 'Tukar Shift',
-                'subtitle' => 'Ajukan permintaan tukar shift atau klaim shift rekan kerja.',
-                'icon' => 'arrow-left-right',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('swaps');
+        // PBL-22: Shift Swap & Transfer (Employee)
+        Route::get('/swaps', [ShiftSwapController::class, 'indexEmployee'])
+            ->name('swaps');
+        Route::post('/swaps', [ShiftSwapController::class, 'requestSwap'])
+            ->name('swaps.request');
+        Route::post('/swaps/{swap}/respond', [ShiftSwapController::class, 'respondSwap'])
+            ->name('swaps.respond');
 
         // Employee Attendance
         Route::get(
