@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AvailabilityController;
+use App\Http\Controllers\Employee\ScheduleController;
 use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
@@ -232,14 +233,9 @@ Route::middleware(['auth', 'role:employee'])
             return view('dashboard', ['roleTitle' => 'Karyawan']);
         })->name('dashboard');
 
-        Route::get('/schedule', function () {
-            return view('placeholder', [
-                'title' => 'Jadwal Saya',
-                'subtitle' => 'Kalender jadwal kerja dan penugasan shift harian Anda.',
-                'icon' => 'calendar',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('schedule');
+        // PBL-41: Employee Schedule Calendar
+        Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+        Route::get('/schedule/{assignment}', [ScheduleController::class, 'show'])->name('schedule.show');
 
         // PBL-22: Shift Swap & Transfer (Employee)
         Route::get('/swaps', [ShiftSwapController::class, 'indexEmployee'])
