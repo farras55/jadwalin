@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AvailabilityController;
+use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\ProfileController;
@@ -179,14 +180,12 @@ Route::middleware(['auth', 'role:manager'])
         Route::post('/swaps/{swap}/reject', [ShiftSwapController::class, 'rejectManager'])
             ->name('swaps.reject');
 
-        Route::get('/attendance', function () {
-            return view('placeholder', [
-                'title' => 'Presensi Tim',
-                'subtitle' => 'Monitoring kehadiran realtime staf, absensi lokasi GPS, dan bukti swafoto.',
-                'icon' => 'fingerprint',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('attendance.index');
+        // PBL-27: Realtime Attendance Monitoring
+        Route::get('/attendance', [AttendanceMonitorController::class, 'index'])
+            ->name('attendance.index');
+
+        Route::get('/attendance/feed', [AttendanceMonitorController::class, 'realtimeFeed'])
+            ->name('attendance.feed');
 
         Route::get('/timesheets', function () {
             return view('placeholder', [
