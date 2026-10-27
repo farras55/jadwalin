@@ -20,6 +20,7 @@ class Shift extends Model
         'end_time',
         'quota',
         'is_open_shift',
+        'is_global_broadcast',
         'requires_approval',
         'is_holiday',
         'status',
@@ -32,6 +33,7 @@ class Shift extends Model
             'end_time' => 'datetime',
             'quota' => 'integer',
             'is_open_shift' => 'boolean',
+            'is_global_broadcast' => 'boolean',
             'requires_approval' => 'boolean',
             'is_holiday' => 'boolean',
         ];
