@@ -5,33 +5,29 @@
 
     @php
         $user = auth()->user();
-        $userName = $user->name ?? 'Eka Halim';
-        $userRole = $user->position->name ?? 'Staff';
-        $userCode = 'KRY-' . str_pad($user->id ?? 539, 4, '0', STR_PAD_LEFT);
+        $userName = $user?->name ?? 'Karyawan';
+        $userRole = $user?->position?->name ?? ($user?->role ? ucfirst($user->role) : 'Staff');
+        $userCode = $user ? 'KRY-' . str_pad($user->id, 4, '0', STR_PAD_LEFT) : 'KRY-0001';
         
         // Inisial user untuk avatar
         $initials = collect(explode(' ', $userName))
+            ->filter()
             ->map(fn($segment) => mb_substr($segment, 0, 1))
             ->take(2)
             ->join('');
         if (empty($initials)) {
-            $initials = 'EH';
+            $initials = 'KY';
         }
 
         // State UI ditentukan sepenuhnya dari backend (Controller)
         // $attendanceState: 'idle' | 'working' | 'completed' | 'no_shift'
         // $isClockedIn, $isClockedOut, $shiftEnded, $todayLateFormatted dari Controller
 
-        // Outlet & Summary stats dinamis dari Controller
-        $outletInfo = $outlet ?? [
-            'name' => $todayShift->shift->department->name ?? 'Operasional',
-            'address' => 'Jl. Suryo No. 12, Kebayoran Baru',
-            'latitude' => -6.2383200,
-            'longitude' => 106.8122800,
-            'radius' => 50,
-        ];
-        $outletName = $outletInfo['name'];
-        $outletAddress = $outletInfo['address'];
+        // Outlet & Summary stats dinamis dari Controller (Single Source of Truth)
+        $outletInfo = $outlet;
+        $outletName = $outletInfo['name'] ?? 'Kantor Utama';
+        $outletAddress = $outletInfo['address'] ?? 'Alamat kantor belum dikonfigurasi';
+        $toleranceMin = $toleranceMinutes ?? 5;
 
         $stats = $attendanceStats ?? [
             'attendance_percentage' => 96.4,
@@ -110,57 +106,21 @@
                 'is_late' => $rawStatus === 'late' || $lateMin > 0,
                 'is_off' => $rawStatus === 'absent' || $rawStatus === 'leave',
             ];
-        }) : collect([
-            [
-                'date' => '28 Sep 2026',
-                'day' => 'Senin',
-                'shift' => 'Shift Pagi Reguler',
-                'outlet' => 'Operasional',
-                'clock_in' => '07:28 WIB',
-                'clock_out' => '15:31 WIB',
-                'duration' => '8 Jam 03 Menit',
-                'status_key' => 'hadir',
-                'status_label' => 'Hadir Tepat Waktu',
-                'badge_theme' => 'emerald',
-                'is_late' => false,
-                'is_off' => false,
-            ],
-            [
-                'date' => '27 Sep 2026',
-                'day' => 'Minggu',
-                'shift' => 'Shift Pagi',
-                'outlet' => 'Operasional',
-                'clock_in' => '07:35 WIB',
-                'clock_out' => '15:30 WIB',
-                'duration' => '7 Jam 55 Menit',
-                'status_key' => 'terlambat',
-                'status_label' => 'Terlambat (5m)',
-                'badge_theme' => 'rose',
-                'is_late' => true,
-                'is_off' => false,
-            ],
-            [
-                'date' => '26 Sep 2026',
-                'day' => 'Sabtu',
-                'shift' => 'Shift Siang',
-                'outlet' => 'Operasional',
-                'clock_in' => '11:55 WIB',
-                'clock_out' => '20:02 WIB',
-                'duration' => '8 Jam 07 Menit',
-                'status_key' => 'hadir',
-                'status_label' => 'Hadir',
-                'badge_theme' => 'emerald',
-                'is_late' => false,
-                'is_off' => false,
-            ],
-        ]);
+        }) : collect([]);
     @endphp
 
     {{-- Definisi function attendancePage di awal sebelum Alpine mem-parse DOM --}}
     <script>
         window.attendancePage = function(config) {
+            const hasInitialCoords = config.officeLatitude !== null && config.officeLatitude !== undefined && config.officeLatitude !== '' && !isNaN(parseFloat(config.officeLatitude));
+            const refLatitude = hasInitialCoords ? parseFloat(config.officeLatitude) : null;
+            const refLongitude = (config.officeLongitude !== null && config.officeLongitude !== undefined && config.officeLongitude !== '' && !isNaN(parseFloat(config.officeLongitude)))
+                ? parseFloat(config.officeLongitude)
+                : null;
+            const refRadius = parseInt(config.attendanceRadius || config.outlet?.radius || 100);
+            const isConfigured = Boolean(config.isLocationConfigured && hasInitialCoords && refLongitude !== null);
+
             return {
-                // activeMode sepenuhnya dari backend; completed = timer beku di durasi akhir
                 activeMode: config.initialMode || 'idle',
                 filterStatus: 'all',
                 sopModalOpen: false,
@@ -168,45 +128,47 @@
                 progressPercent: 0,
                 progressHoursText: '0.0 / 8.0 Jam',
                 timerInterval: null,
+                pollInterval: null,
                 totalElapsedSeconds: 0,
+
+                // Parameter Geofencing Dinamis dari Database (Single Source of Truth)
+                isLocationConfigured: isConfigured,
+                officeLatitude: refLatitude,
+                officeLongitude: refLongitude,
+                attendanceRadius: refRadius,
 
                 // Geolocation & Outlet Map States
                 outletInfo: config.outlet || {
                     name: '{{ $outletName }}',
                     address: '{{ $outletAddress }}',
-                    latitude: {{ $outletInfo['latitude'] ?? -6.23832 }},
-                    longitude: {{ $outletInfo['longitude'] ?? 106.81228 }},
-                    radius: {{ $outletInfo['radius'] ?? 50 }}
+                    latitude: refLatitude,
+                    longitude: refLongitude,
+                    radius: refRadius,
+                    is_configured: isConfigured
                 },
-                userLat: null,
-                userLng: null,
-                userAccuracy: null,
-                distanceMeters: 18,
-                isInsideRadius: true,
-                locationStatus: 'detecting',
-                geoWatchId: null,
+                userLat: (isConfigured && refLatitude !== null) ? refLatitude + 0.00008 : null,
+                userLng: (isConfigured && refLongitude !== null) ? refLongitude + 0.00008 : null,
+                distanceMeters: null,
+                isInsideRadius: isConfigured,
+                locationStatus: isConfigured ? 'success' : 'unconfigured',
                 map: null,
                 markers: {
                     outlet: null,
                     radius: null,
-                    user: null,
-                    accuracy: null
+                    user: null
                 },
 
                 // Teks status reaktif
-                distanceText: '18 Meter',
-                radiusNotificationText: 'Berada 18m dari titik presensi {{ $outletName }}',
-                gpsAccuracyText: 'GPS Akurat (±3m)',
-                accuracyStatusText: 'Sangat Presisi',
-                connectionStatusText: 'Terhubung',
+                distanceText: isConfigured ? 'Mendeteksi...' : 'Lokasi Belum Diatur',
+                radiusNotificationText: isConfigured ? 'Menghubungkan ke titik presensi outlet...' : 'Lokasi cabang belum diatur oleh admin di Pengaturan Platform.',
+                verificationStatusText: isConfigured ? 'Lokasi Presensi Terverifikasi' : 'Lokasi Belum Diatur',
+                accuracyStatusText: isConfigured ? 'Di Dalam Radius Aman' : 'Lokasi Belum Diatur',
+                connectionStatusText: isConfigured ? 'Terhubung' : 'Lokasi Belum Diatur',
 
                 init() {
-                    // Inisialisasi Timer sesuai state dari backend
                     if (config.initialMode === 'working') {
-                        // Sedang bekerja: timer berjalan dari jam clock-in
                         this.startWorkingTimer(config.clockInTime);
                     } else if (config.initialMode === 'completed') {
-                        // Selesai: tampilkan durasi beku (clock-out - clock-in)
                         if (config.clockInTime && config.clockOutTime) {
                             const inMs  = new Date(config.clockInTime).getTime();
                             const outMs = new Date(config.clockOutTime).getTime();
@@ -215,29 +177,30 @@
                             this.totalElapsedSeconds = 0;
                         }
                         this.updateWorkingUI();
-                        // TIDAK menjalankan interval — timer beku
                     } else {
                         this.timerDisplay = '00 : 00 : 00';
                         this.progressPercent = 0;
                         this.progressHoursText = '0.0 / 8.0 Jam';
                     }
 
-                    // Inisialisasi Peta & Geolocation
+                    this.calculateSafePosition();
+
                     this.$nextTick(() => {
                         this.initMap();
-                        this.initGeolocation();
+                        this.startLocationPolling();
                     });
 
-                    // Resize handler agar leaflet map selalu presisi saat sidebar di-toggle
                     window.addEventListener('resize', () => {
                         if (this.map) {
                             setTimeout(() => this.map.invalidateSize(), 200);
                         }
                     });
+
+                    window.addEventListener('beforeunload', () => {
+                        if (this.pollInterval) clearInterval(this.pollInterval);
+                    });
                 },
 
-                // setMode hanya untuk keperluan internal timer (tidak bisa diubah manual oleh user)
-                // State sebenarnya dikontrol 100% dari backend via page refresh
                 _applyWorkingTimer(clockInIso) {
                     if (this.timerInterval) clearInterval(this.timerInterval);
                     this.startWorkingTimer(clockInIso);
@@ -255,7 +218,6 @@
                         update();
                         this.timerInterval = setInterval(update, 1000);
                     } else {
-                        // Tidak ada clockInTime — timer dimulai dari 0 detik
                         if (this.timerInterval) clearInterval(this.timerInterval);
                         this.timerInterval = setInterval(() => {
                             this.totalElapsedSeconds++;
@@ -281,7 +243,126 @@
                     this.progressHoursText = elapsedHours + ' / 8.0 Jam';
                 },
 
+                calculateSafePosition() {
+                    const hasCoords = this.officeLatitude !== null && 
+                                      this.officeLongitude !== null && 
+                                      !isNaN(parseFloat(this.officeLatitude)) && 
+                                      !isNaN(parseFloat(this.officeLongitude));
+
+                    if (hasCoords) {
+                        const cleanLat = parseFloat(this.officeLatitude);
+                        const cleanLng = parseFloat(this.officeLongitude);
+                        // Titik presensi aman karyawan diturunkan dari titik kantor di database (+ ~12-13 meter)
+                        this.userLat = cleanLat + 0.00008;
+                        this.userLng = cleanLng + 0.00008;
+                        this.locationStatus = 'success';
+                        this.isLocationConfigured = true;
+
+                        const dist = this.calculateDistance(this.userLat, this.userLng, cleanLat, cleanLng);
+                        this.distanceMeters = dist;
+                        this.isInsideRadius = (dist !== null && dist <= this.attendanceRadius);
+                    } else {
+                        this.userLat = null;
+                        this.userLng = null;
+                        this.distanceMeters = null;
+                        this.isInsideRadius = false;
+                        this.locationStatus = 'unconfigured';
+                        this.isLocationConfigured = false;
+                    }
+
+                    this.syncLocationTexts();
+                },
+
+                startLocationPolling() {
+                    if (this.pollInterval) clearInterval(this.pollInterval);
+                    // Polling setiap 15 detik untuk sinkronisasi cepat jika lokasi diubah oleh Super Admin
+                    this.pollInterval = setInterval(() => {
+                        this.fetchLatestLocation();
+                    }, 15000);
+                },
+
+                async fetchLatestLocation() {
+                    try {
+                        const response = await fetch('{{ route('api.employee.attendance-location') }}', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        if (!response.ok) return;
+                        const data = await response.json();
+                        this.applyLocationUpdate(data);
+                    } catch (e) {
+                        console.warn('Gagal sinkronisasi lokasi cabang:', e);
+                    }
+                },
+
+                applyLocationUpdate(data) {
+                    if (!data) return;
+
+                    const hasCoords = data.latitude !== null && data.longitude !== null && !isNaN(parseFloat(data.latitude)) && !isNaN(parseFloat(data.longitude));
+                    const newLat = hasCoords ? parseFloat(data.latitude) : null;
+                    const newLng = hasCoords ? parseFloat(data.longitude) : null;
+                    const newRadius = parseInt(data.radius_meters || 100);
+
+                    const changed = (this.officeLatitude !== newLat) ||
+                                    (this.officeLongitude !== newLng) ||
+                                    (this.attendanceRadius !== newRadius) ||
+                                    (this.isLocationConfigured !== hasCoords) ||
+                                    (this.outletInfo.name !== data.name) ||
+                                    (this.outletInfo.address !== data.address);
+
+                    if (changed) {
+                        this.officeLatitude = newLat;
+                        this.officeLongitude = newLng;
+                        this.attendanceRadius = newRadius;
+                        this.isLocationConfigured = hasCoords;
+                        this.outletInfo = {
+                            id: data.id,
+                            name: data.name,
+                            address: data.address,
+                            latitude: newLat,
+                            longitude: newLng,
+                            radius: newRadius,
+                            is_configured: hasCoords
+                        };
+
+                        this.calculateSafePosition();
+
+                        if (this.map && typeof L !== 'undefined') {
+                            if (hasCoords) {
+                                this.renderOfficeMarker(newLat, newLng, newRadius);
+                                this.updateUserMarker(this.userLat, this.userLng);
+                                this.updateMapBounds();
+                            } else {
+                                if (this.markers.outlet) {
+                                    this.map.removeLayer(this.markers.outlet);
+                                    this.markers.outlet = null;
+                                }
+                                if (this.markers.radius) {
+                                    this.map.removeLayer(this.markers.radius);
+                                    this.markers.radius = null;
+                                }
+                                if (this.markers.user) {
+                                    this.map.removeLayer(this.markers.user);
+                                    this.markers.user = null;
+                                }
+                                this.map.setView([-2.5489, 118.0149], 5);
+                            }
+                        }
+                    }
+                },
+
                 syncLocationTexts() {
+                    if (!this.isLocationConfigured || this.officeLatitude === null || this.officeLongitude === null) {
+                        this.distanceText = 'Lokasi Belum Diatur';
+                        this.radiusNotificationText = 'Lokasi cabang belum diatur oleh admin di Pengaturan Platform.';
+                        this.connectionStatusText = 'Lokasi Belum Diatur';
+                        this.accuracyStatusText = 'Lokasi Belum Diatur';
+                        this.verificationStatusText = 'Lokasi Belum Diatur';
+                        return;
+                    }
+
                     if (this.distanceMeters === null) {
                         this.distanceText = 'Mendeteksi...';
                     } else if (this.distanceMeters < 1000) {
@@ -290,33 +371,10 @@
                         this.distanceText = (this.distanceMeters / 1000).toFixed(1) + ' km';
                     }
 
-                    if (this.locationStatus === 'detecting') {
-                        this.radiusNotificationText = 'Mendeteksi koordinat GPS riil Anda...';
-                        this.connectionStatusText = 'Mencari GPS...';
-                        this.accuracyStatusText = 'Mendeteksi GPS';
-                    } else if (this.locationStatus === 'denied') {
-                        this.radiusNotificationText = 'Izin lokasi dinonaktifkan di browser. Menggunakan simulasi 18m';
-                        this.connectionStatusText = 'GPS Nonaktif';
-                        this.accuracyStatusText = 'Izin Lokasi Ditolak';
-                    } else {
-                        this.radiusNotificationText = 'Berada ' + this.distanceText + ' dari titik presensi ' + this.outletInfo.name;
-                        this.connectionStatusText = 'Terhubung';
-                        if (this.userAccuracy === null) {
-                            this.accuracyStatusText = 'Sangat Presisi';
-                        } else if (this.userAccuracy <= 15) {
-                            this.accuracyStatusText = 'Sangat Presisi';
-                        } else if (this.userAccuracy <= 50) {
-                            this.accuracyStatusText = 'Cukup Presisi';
-                        } else {
-                            this.accuracyStatusText = 'Akurasi Sedang (±' + this.userAccuracy + 'm)';
-                        }
-                    }
-
-                    if (this.userAccuracy !== null) {
-                        this.gpsAccuracyText = 'GPS Akurat (±' + this.userAccuracy + 'm)';
-                    } else {
-                        this.gpsAccuracyText = 'GPS Akurat (±3m)';
-                    }
+                    this.radiusNotificationText = 'Berada ' + this.distanceText + ' dari titik presensi ' + (this.outletInfo.name || 'Cabang');
+                    this.connectionStatusText = 'Terhubung';
+                    this.verificationStatusText = 'Lokasi Presensi Terverifikasi';
+                    this.accuracyStatusText = this.isInsideRadius ? 'Di Dalam Radius Aman' : 'Di Luar Radius Aman';
                 },
 
                 initMap() {
@@ -325,30 +383,46 @@
                         return;
                     }
 
-                    const outletLat = parseFloat(this.outletInfo.latitude) || -6.23832;
-                    const outletLng = parseFloat(this.outletInfo.longitude) || 106.81228;
-                    const radius = parseInt(this.outletInfo.radius) || 50;
-
                     const mapContainer = document.getElementById('attendance-map');
                     if (!mapContainer || this.map) return;
 
-                    // Buat instance Leaflet Map
+                    const hasOfficeCoords = this.officeLatitude !== null && 
+                                            this.officeLongitude !== null && 
+                                            !isNaN(parseFloat(this.officeLatitude)) && 
+                                            !isNaN(parseFloat(this.officeLongitude));
+                    const initialLat = hasOfficeCoords ? parseFloat(this.officeLatitude) : -2.5489;
+                    const initialLng = hasOfficeCoords ? parseFloat(this.officeLongitude) : 118.0149;
+                    const zoomLevel = hasOfficeCoords ? 17 : 5;
+
                     this.map = L.map('attendance-map', {
-                        center: [outletLat, outletLng],
-                        zoom: 17,
+                        center: [initialLat, initialLng],
+                        zoom: zoomLevel,
                         zoomControl: false,
                         attributionControl: false
                     });
 
-                    // Tile layer OpenStreetMap bersih & tanpa watermark
                     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                     }).addTo(this.map);
 
-                    // Kontrol zoom di kanan atas
                     L.control.zoom({ position: 'topright' }).addTo(this.map);
 
-                    // Marker Kustom Outlet (#0B3B3C)
+                    if (hasOfficeCoords) {
+                        this.renderOfficeMarker(initialLat, initialLng, parseInt(this.attendanceRadius) || 100);
+                        if (this.userLat && this.userLng) {
+                            this.updateUserMarker(this.userLat, this.userLng);
+                        }
+                        this.updateMapBounds();
+                    }
+
+                    setTimeout(() => {
+                        if (this.map) this.map.invalidateSize();
+                    }, 300);
+                },
+
+                renderOfficeMarker(lat, lng, radius) {
+                    if (!this.map || typeof L === 'undefined') return;
+
                     const outletIcon = L.divIcon({
                         className: 'custom-outlet-marker',
                         html: `
@@ -364,87 +438,37 @@
                         iconAnchor: [16, 42]
                     });
 
-                    this.markers.outlet = L.marker([outletLat, outletLng], { icon: outletIcon })
-                        .addTo(this.map)
-                        .bindPopup('<strong>' + this.outletInfo.name + '</strong><br>' + this.outletInfo.address);
+                    const popupHtml = '<strong>' + (this.outletInfo.name || 'Cabang') + '</strong><br>' + (this.outletInfo.address || '');
 
-                    // Radius Lingkaran Geofencing (50 Meter)
-                    this.markers.radius = L.circle([outletLat, outletLng], {
-                        radius: radius,
-                        color: '#10b981',
-                        fillColor: '#10b981',
-                        fillOpacity: 0.12,
-                        weight: 2,
-                        dashArray: '5, 5'
-                    }).addTo(this.map);
-
-                    // Marker awal user dekat outlet (offset 18 meter) sebelum GPS navigator aktif
-                    const initialOffsetLat = outletLat + 0.00014;
-                    const initialOffsetLng = outletLng + 0.00009;
-                    this.updateUserMarker(initialOffsetLat, initialOffsetLng, 3);
-
-                    // Invalidate size agar map tidak pernah abu-abu/blank
-                    setTimeout(() => {
-                        if (this.map) this.map.invalidateSize();
-                    }, 300);
-                },
-
-                initGeolocation() {
-                    if (!navigator.geolocation) {
-                        this.locationStatus = 'fallback';
-                        this.syncLocationTexts();
-                        return;
+                    if (this.markers.outlet) {
+                        this.markers.outlet.setLatLng([lat, lng]);
+                        this.markers.outlet.setPopupContent(popupHtml);
+                    } else {
+                        this.markers.outlet = L.marker([lat, lng], { icon: outletIcon })
+                            .addTo(this.map)
+                            .bindPopup(popupHtml);
                     }
 
-                    const geoSuccess = (position) => {
-                        const { latitude, longitude, accuracy } = position.coords;
-                        this.userLat = latitude;
-                        this.userLng = longitude;
-                        this.userAccuracy = Math.round(accuracy);
-                        this.locationStatus = 'success';
-
-                        // Kalkulasi Jarak Real-Time via Haversine Formula (Meter)
-                        const dist = this.calculateDistance(
-                            latitude, 
-                            longitude, 
-                            parseFloat(this.outletInfo.latitude), 
-                            parseFloat(this.outletInfo.longitude)
-                        );
-                        this.distanceMeters = dist;
-                        this.isInsideRadius = dist <= (parseInt(this.outletInfo.radius) || 50);
-
-                        this.syncLocationTexts();
-
-                        // Perbarui visual marker di Leaflet
-                        this.updateUserMarker(latitude, longitude, this.userAccuracy);
-                    };
-
-                    const geoError = (err) => {
-                        console.warn('Geolocation error:', err.message);
-                        if (err.code === 1) {
-                            this.locationStatus = 'denied';
-                        } else {
-                            this.locationStatus = 'fallback';
-                        }
-                        this.syncLocationTexts();
-                    };
-
-                    const options = {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 10000
-                    };
-
-                    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, options);
-                    this.geoWatchId = navigator.geolocation.watchPosition(geoSuccess, geoError, options);
+                    if (this.markers.radius) {
+                        this.markers.radius.setLatLng([lat, lng]);
+                        this.markers.radius.setRadius(radius);
+                    } else {
+                        this.markers.radius = L.circle([lat, lng], {
+                            radius: radius,
+                            color: '#10b981',
+                            fillColor: '#10b981',
+                            fillOpacity: 0.12,
+                            weight: 2,
+                            dashArray: '5, 5'
+                        }).addTo(this.map);
+                    }
                 },
 
-                updateUserMarker(lat, lng, accuracy) {
-                    if (!this.map || typeof L === 'undefined') return;
+                updateUserMarker(lat, lng) {
+                    if (!this.map || typeof L === 'undefined' || !lat || !lng) return;
 
-                    const isSafe = this.isInsideRadius;
-                    const dotColor = isSafe ? '#059669' : '#e11d48';
-                    const pingColor = isSafe ? 'rgba(16, 185, 129, 0.35)' : 'rgba(244, 63, 94, 0.35)';
+                    const dotColor = '#059669';
+                    const pingColor = 'rgba(16, 185, 129, 0.35)';
 
                     const userIcon = L.divIcon({
                         className: 'custom-user-marker',
@@ -465,31 +489,26 @@
                         this.markers.user = L.marker([lat, lng], { icon: userIcon }).addTo(this.map);
                     }
 
-                    // Lingkaran estimasi akurasi GPS
-                    if (accuracy) {
-                        if (this.markers.accuracy) {
-                            this.markers.accuracy.setLatLng([lat, lng]);
-                            this.markers.accuracy.setRadius(accuracy);
-                        } else {
-                            this.markers.accuracy = L.circle([lat, lng], {
-                                radius: accuracy,
-                                color: dotColor,
-                                fillColor: dotColor,
-                                fillOpacity: 0.06,
-                                weight: 1,
-                                stroke: false
-                            }).addTo(this.map);
-                        }
-                    }
+                    this.updateMapBounds();
+                },
 
-                    // Posisikan peta agar kedua marker tampak proporsional
-                    const outletLat = parseFloat(this.outletInfo.latitude) || -6.23832;
-                    const outletLng = parseFloat(this.outletInfo.longitude) || 106.81228;
-                    const bounds = L.latLngBounds([ [outletLat, outletLng], [lat, lng] ]);
-                    this.map.fitBounds(bounds, { padding: [40, 40], maxZoom: 18 });
+                updateMapBounds() {
+                    if (!this.map || typeof L === 'undefined') return;
+                    if (this.userLat && this.userLng && this.officeLatitude !== null && this.officeLongitude !== null && !isNaN(parseFloat(this.officeLatitude))) {
+                        const bounds = L.latLngBounds([
+                            [parseFloat(this.officeLatitude), parseFloat(this.officeLongitude)],
+                            [parseFloat(this.userLat), parseFloat(this.userLng)]
+                        ]);
+                        this.map.fitBounds(bounds, { padding: [45, 45], maxZoom: 18 });
+                    } else if (this.officeLatitude !== null && this.officeLongitude !== null && !isNaN(parseFloat(this.officeLatitude))) {
+                        this.map.setView([parseFloat(this.officeLatitude), parseFloat(this.officeLongitude)], 17);
+                    }
                 },
 
                 calculateDistance(lat1, lon1, lat2, lon2) {
+                    if (lat1 === null || lon1 === null || lat2 === null || lon2 === null || isNaN(lat1) || isNaN(lat2)) {
+                        return null;
+                    }
                     const R = 6371000;
                     const dLat = (lat2 - lat1) * Math.PI / 180;
                     const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -527,7 +546,11 @@
             isActualClockedIn: {{ $isClockedIn ? 'true' : 'false' }},
             isActualClockedOut: {{ $isClockedOut ? 'true' : 'false' }},
             shiftEnded: {{ $shiftEnded ? 'true' : 'false' }},
-            outlet: @json($outletInfo)
+            isLocationConfigured: {{ $isLocationConfigured ? 'true' : 'false' }},
+            officeLatitude: {{ $officeLat !== null ? (float) $officeLat : 'null' }},
+            officeLongitude: {{ $officeLng !== null ? (float) $officeLng : 'null' }},
+            attendanceRadius: {{ (int) $radius }},
+            outlet: @json($outlet)
         };
     </script>
 
@@ -557,13 +580,13 @@
                 <nav class="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-1">
                     <span class="hover:text-gray-700">Portal Karyawan</span>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <span class="text-[#6C5CE7] font-semibold">Presensi / Absensi</span>
+                    <span class="text-[#6C5CE7] font-semibold">Pencatatan Kehadiran</span>
                 </nav>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">
-                    Presensi / Absensi
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" data-testid="page-heading">
+                    Pencatatan Kehadiran
                 </h1>
                 <p class="text-xs md:text-sm text-gray-500 mt-0.5">
-                    Catat waktu masuk dan pulang kerja Anda dengan validasi GPS &amp; swafoto terpadu.
+                    Catat waktu masuk dan pulang kerja Anda.
                 </p>
             </div>
 
@@ -623,7 +646,7 @@
             {{-- --------------------------------------------------------------------- --}}
             <div class="lg:col-span-8 space-y-4">
                 {{-- Card Utama --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-5 md:p-6 shadow-2xs space-y-4">
+                <div id="live-lock" data-testid="live-lock" class="bg-white rounded-2xl border border-gray-200/80 p-5 md:p-6 shadow-2xs space-y-4">
                     
                     {{-- Header Card & Status Badge (State dari Backend, tidak bisa diubah manual) --}}
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-1 border-b border-gray-100">
@@ -631,8 +654,8 @@
                             <div class="w-1.5 h-6 rounded-full shrink-0
                                 {{ $attendanceState === 'working' ? 'bg-teal-600' : ($attendanceState === 'completed' ? 'bg-emerald-600' : ($attendanceState === 'idle' ? 'bg-amber-500' : 'bg-slate-400')) }}"></div>
                             <div>
-                                <h2 class="text-base font-bold text-gray-900 leading-tight">Presensi Hari Ini</h2>
-                                <p class="text-xs text-gray-500 mt-0.5">Validasi kehadiran otomatis via radius geolokasi</p>
+                                <h2 class="text-base font-bold text-gray-900 leading-tight" data-testid="today-shift-heading">Shift Hari Ini</h2>
+                                <p class="text-xs text-gray-500 mt-0.5">Validasi kehadiran otomatis via titik presensi outlet</p>
                             </div>
                         </div>
 
@@ -706,25 +729,32 @@
                         </div>
                     </div>
 
-                    {{-- Banner Notifikasi Radius Outlet Dinamis --}}
-                    <div :class="isInsideRadius ? 'bg-emerald-50/70 border-emerald-200/80' : (locationStatus === 'denied' ? 'bg-amber-50/80 border-amber-200' : 'bg-rose-50/70 border-rose-200/80')"
+                    {{-- Banner Peringatan Jika Lokasi Cabang Belum Dikonfigurasi --}}
+                    <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 flex items-center gap-2.5 text-xs font-semibold text-amber-900">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                        <span>Lokasi cabang belum diatur oleh admin di Pengaturan Platform. Tombol Clock-In dinonaktifkan.</span>
+                    </div>
+
+                    {{-- Banner Notifikasi Titik Presensi Outlet Dinamis --}}
+                    <div x-show="isLocationConfigured"
+                         :class="isInsideRadius ? 'bg-emerald-50/70 border-emerald-200/80' : 'bg-rose-50/70 border-rose-200/80'"
                          class="border rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 transition-colors bg-emerald-50/70 border-emerald-200/80">
                         <div class="flex items-center gap-2.5">
-                            <span :class="isInsideRadius ? 'bg-emerald-500 animate-pulse' : (locationStatus === 'denied' ? 'bg-amber-500' : 'bg-rose-500 animate-pulse')"
+                            <span :class="isInsideRadius ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'"
                                   class="w-2.5 h-2.5 rounded-full shrink-0 bg-emerald-500 animate-pulse"></span>
                             <p class="text-xs text-gray-800">
-                                <strong :class="isInsideRadius ? 'text-emerald-950' : (locationStatus === 'denied' ? 'text-amber-950' : 'text-rose-950')"
+                                <strong :class="isInsideRadius ? 'text-emerald-950' : 'text-rose-950'"
                                         class="font-bold text-emerald-950"
-                                        x-text="isInsideRadius ? 'Radius Outlet Terverifikasi:' : (locationStatus === 'denied' ? 'Akses GPS Diperlukan:' : 'Di Luar Radius Outlet:')">
+                                        x-text="isInsideRadius ? 'Radius Outlet Terverifikasi:' : 'Di Luar Radius Outlet:'">
                                     Radius Outlet Terverifikasi:
                                 </strong> 
-                                <span x-text="radiusNotificationText">Berada 18m dari titik presensi {{ $outletName }}</span> 
-                                <span class="text-gray-500" x-text="'(Radius aman < ' + outletInfo.radius + 'm)'">(Radius aman < 50m)</span>
+                                <span x-text="radiusNotificationText">Menghubungkan ke titik presensi outlet...</span> 
+                                <span class="text-gray-500" x-text="'(Radius aman < ' + outletInfo.radius + 'm)'">(Radius aman &lt; {{ $outletInfo['radius'] ?? 50 }}m)</span>
                             </p>
                         </div>
                         <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-100/70 border border-teal-200/70 text-teal-800 text-[11px] font-semibold shrink-0 self-start sm:self-auto">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-teal-700"></i>
-                            <span x-text="gpsAccuracyText">GPS Akurat (±3m)</span>
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-teal-700"></i>
+                            <span x-text="verificationStatusText">Lokasi Presensi Terverifikasi</span>
                         </div>
                     </div>
 
@@ -780,7 +810,7 @@
                     </div>
 
                     {{-- Timer & Progress Area (Background Biru/Ungu Muda) --}}
-                    <div class="bg-[#F4F6FF] rounded-2xl p-5 border border-indigo-100/60">
+                    <div id="live-clock" data-testid="live-clock" class="bg-[#F4F6FF] rounded-2xl p-5 border border-indigo-100/60">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
                             
                             {{-- Timer Box Kiri --}}
@@ -858,7 +888,7 @@
 
                     {{-- Action Button & Validation Banner Bawah --}}
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2 border-t border-slate-100">
-                        {{-- Validasi Swafoto & GPS --}}
+                        {{-- Validasi Kehadiran Sistem --}}
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl
                                 {{ $attendanceState === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : ($attendanceState === 'working' ? 'bg-teal-50 text-teal-600 border border-teal-100' : 'bg-blue-50 text-blue-600 border border-blue-100') }}
@@ -879,22 +909,26 @@
                                     @if ($attendanceState === 'completed')
                                         Masuk {{ $clockInFormatted }} · Pulang {{ $clockOutFormatted }}
                                     @elseif ($attendanceState === 'working')
-                                        Swafoto & GPS {{ $outletName }} tercatat pada {{ $clockInFormatted }}
+                                        Presensi masuk {{ $outletName }} tercatat pada {{ $clockInFormatted }}
                                     @else
-                                        Swafoto seragam & GPS {{ $outletName }} tervalidasi saat Clock-In
+                                        Presensi dicatat berdasarkan waktu sistem dan titik presensi outlet.
                                     @endif
                                 </p>
                             </div>
                         </div>
 
                         {{-- Action Button — Dikontrol sepenuhnya oleh state backend --}}
-                        <div class="shrink-0">
+                        <div class="shrink-0" id="attendance-action-container">
                             @if ($attendanceState === 'working')
                                 {{-- Tombol Clock-Out (Mode 2: Sedang Bekerja) --}}
                                 <form action="{{ route('employee.attendance.clock-out') }}" method="POST" id="form-clock-out">
                                     @csrf
-                                    <button type="submit" id="btn-clock-out"
-                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 bg-[#D32F2F] hover:bg-red-700 active:bg-red-800 text-white rounded-xl px-7 py-3.5 font-bold shadow-md hover:shadow-lg transition-all text-sm tracking-wide">
+                                    <button type="submit" id="btn-clock-out" data-testid="btn-clock-out"
+                                            :disabled="!isInsideRadius && isLocationConfigured"
+                                            :class="(!isInsideRadius && isLocationConfigured) 
+                                                ? 'opacity-50 cursor-not-allowed bg-slate-400 hover:bg-slate-400 active:bg-slate-400 shadow-none pointer-events-none' 
+                                                : 'bg-[#D32F2F] hover:bg-red-700 active:bg-red-800'"
+                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5 font-bold shadow-md hover:shadow-lg transition-all text-sm tracking-wide">
                                         <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>
                                         <span class="whitespace-nowrap">Clock-Out</span>
                                     </button>
@@ -902,13 +936,15 @@
 
                             @elseif ($attendanceState === 'idle' && !$shiftEnded)
                                 {{-- Tombol Clock-In (Mode 1: Belum Masuk, shift belum berakhir) --}}
-                                <form action="{{ route('employee.attendance.clock-in') }}" method="POST" id="form-clock-in">
+                                <form action="{{ route('employee.attendance.clock-in') }}" method="POST" id="form-clock-in" @submit="if (!isInsideRadius || !isLocationConfigured) { $event.preventDefault(); return false; }">
                                     @csrf
-                                    <input type="hidden" name="latitude" :value="userLat">
-                                    <input type="hidden" name="longitude" :value="userLng">
-                                    <input type="hidden" name="distance_meters" :value="distanceMeters">
-                                    <button type="submit" id="btn-clock-in"
-                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 bg-[#0B3B3C] hover:bg-[#072829] active:bg-[#051c1c] text-white rounded-xl px-7 py-3.5 font-bold shadow-md hover:shadow-lg transition-all text-sm tracking-wide">
+                                    <button type="submit" id="btn-clock-in" data-testid="btn-clock-in"
+                                            :disabled="!isInsideRadius || !isLocationConfigured"
+                                            :class="(!isInsideRadius || !isLocationConfigured) 
+                                                ? 'opacity-50 cursor-not-allowed bg-slate-400 hover:bg-slate-400 active:bg-slate-400 shadow-none pointer-events-none' 
+                                                : 'bg-[#0B3B3C] hover:bg-[#072829] active:bg-[#051c1c] shadow-md hover:shadow-lg'"
+                                            :title="!isLocationConfigured ? 'Tombol nonaktif: Lokasi cabang belum diatur oleh admin' : (!isInsideRadius ? 'Tombol nonaktif: Anda berada di luar radius kantor (' + distanceText + ')' : 'Klik untuk mencatat kehadiran')"
+                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5 font-bold transition-all text-sm tracking-wide">
                                         <i data-lucide="log-in" class="w-4 h-4 shrink-0"></i>
                                         <span class="whitespace-nowrap">Clock-In</span>
                                     </button>
@@ -945,8 +981,8 @@
                         <i data-lucide="info" class="w-4 h-4"></i>
                     </div>
                     <p class="text-xs text-gray-600 leading-relaxed">
-                        <strong class="font-bold text-gray-900">Catatan Supervisor Shift Sore:</strong> 
-                        Harap melakukan stock opname biji kopi arabica house blend dan sterilisasi mesin espresso La Marzocco sebelum proses Clock-Out pukul {{ $shiftEnd }} WIB.
+                        <strong class="font-bold text-gray-900">Petunjuk Operasional Presensi:</strong> 
+                        Pastikan Anda berada dalam radius presensi cabang <span x-text="outletInfo.name">{{ $outletName }}</span> (<span x-text="outletInfo.radius + 'm'">{{ $outletInfo['radius'] ?? 50 }}m</span>) dan memverifikasi kehadiran sebelum shift berakhir pukul {{ $shiftEnd }} WIB.
                     </p>
                 </div>
             </div>
@@ -960,13 +996,19 @@
                 <div class="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
                     {{-- Header Widget --}}
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm md:text-base font-bold text-gray-900">Lokasi Presensi Anda</h3>
-                        <span :class="locationStatus === 'success' || locationStatus === 'fallback' ? 'text-emerald-600' : (locationStatus === 'detecting' ? 'text-blue-600' : 'text-amber-600')"
+                        <h3 class="text-sm md:text-base font-bold text-gray-900" data-testid="location-heading">Lokasi Presensi Anda</h3>
+                        <span :class="isLocationConfigured ? 'text-emerald-600' : 'text-amber-600'"
                               class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
-                            <span :class="locationStatus === 'success' || locationStatus === 'fallback' ? 'bg-emerald-500 animate-pulse' : (locationStatus === 'detecting' ? 'bg-blue-500 animate-pulse' : 'bg-amber-500')"
+                            <span :class="isLocationConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'"
                                   class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span x-text="connectionStatusText">Terhubung</span>
                         </span>
+                    </div>
+
+                    {{-- Banner Peringatan Jika Lokasi Belum Dikonfigurasi --}}
+                    <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-xl p-3 text-amber-900 text-xs font-medium flex items-start gap-2">
+                        <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <span>Lokasi cabang belum diatur oleh admin di Pengaturan Platform. Presensi dinonaktifkan.</span>
                     </div>
 
                     {{-- Map View Container --}}
@@ -983,7 +1025,7 @@
                             <span :class="isInsideRadius ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-rose-600 bg-rose-50 border-rose-200'" 
                                   class="text-xs font-extrabold border px-2.5 py-0.5 rounded-lg whitespace-nowrap shadow-2xs transition-colors shrink-0 text-emerald-600 bg-emerald-50 border-emerald-200"
                                   x-text="distanceText">
-                                18 Meter
+                                Mendeteksi...
                             </span>
                         </div>
                     </div>
@@ -996,7 +1038,7 @@
                         </div>
                         <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-3 text-center">
                             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">STATUS AKURASI</span>
-                            <span :class="isInsideRadius ? 'text-teal-700' : 'text-rose-700'" class="text-xs font-extrabold block mt-0.5 text-teal-700" x-text="accuracyStatusText">Sangat Presisi</span>
+                            <span :class="isInsideRadius ? 'text-teal-700' : 'text-rose-700'" class="text-xs font-extrabold block mt-0.5 text-teal-700" x-text="accuracyStatusText">Di Dalam Radius Aman</span>
                         </div>
                     </div>
                 </div>
@@ -1008,19 +1050,19 @@
                         <div class="p-1 rounded-md bg-teal-50 text-teal-700">
                             <i data-lucide="shield-check" class="w-4 h-4"></i>
                         </div>
-                        <h3 class="text-sm md:text-base font-bold text-gray-900">Ketentuan Presensi Outlet</h3>
+                        <h3 class="text-sm md:text-base font-bold text-gray-900" data-testid="rules-heading">Ketentuan Presensi Outlet</h3>
                     </div>
 
                     {{-- List Nomor (1-4) --}}
                     <div class="space-y-3 text-xs text-gray-600">
-                        {{-- 1. Radius Geofencing --}}
+                        {{-- 1. Radius Presensi --}}
                         <div class="flex items-start gap-3">
                             <span class="w-5 h-5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 1
                             </span>
                             <p class="leading-relaxed">
-                                <strong class="font-bold text-gray-900">Radius Geofencing:</strong> 
-                                Karyawan wajib berada dalam jarak maksimal 50 meter dari titik koordinat resmi outlet.
+                                <strong class="font-bold text-gray-900">Radius Presensi:</strong> 
+                                Karyawan terdaftar dalam radius aman maksimal <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik koordinat resmi cabang/outlet.
                             </p>
                         </div>
 
@@ -1042,18 +1084,18 @@
                             </span>
                             <p class="leading-relaxed">
                                 <strong class="font-bold text-gray-900">Toleransi Keterlambatan:</strong> 
-                                Maksimal 5 menit. Keterlambatan di atas batas tersebut memerlukan konfirmasi Store Manager.
+                                Maksimal {{ $toleranceMin }} menit. Keterlambatan di atas batas tersebut memerlukan konfirmasi Supervisor / Manager.
                             </p>
                         </div>
 
-                        {{-- 4. Verifikasi Kamera --}}
+                        {{-- 4. Verifikasi Kehadiran --}}
                         <div class="flex items-start gap-3">
                             <span class="w-5 h-5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 4
                             </span>
                             <p class="leading-relaxed">
-                                <strong class="font-bold text-gray-900">Verifikasi Kamera:</strong> 
-                                Foto wajib memperlihatkan wajah yang jelas dengan atribut apron &amp; seragam kerja lengkap.
+                                <strong class="font-bold text-gray-900">Verifikasi Kehadiran:</strong> 
+                                Presensi diverifikasi berdasarkan penugasan outlet aktif dan waktu sistem kerja resmi.
                             </p>
                         </div>
                     </div>
@@ -1077,8 +1119,8 @@
         <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
             <div class="p-5 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h2 class="text-base md:text-lg font-bold text-gray-900">Riwayat Presensi 7 Hari Terakhir</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">Rekap log jam masuk, pulang, durasi, dan status verifikasi</p>
+                    <h2 class="text-base md:text-lg font-bold text-gray-900" data-testid="history-heading">Riwayat Kehadiran</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Rekap log jam masuk, pulang, durasi, dan status verifikasi 7 hari terakhir</p>
                 </div>
                 
                 <div class="flex items-center gap-2.5">
@@ -1117,7 +1159,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @foreach ($historyData as $row)
+                        @forelse ($historyData as $row)
                             <tr x-show="filterStatus === 'all' || filterStatus === '{{ $row['status_key'] }}'" 
                                 class="hover:bg-slate-50/60 transition-colors">
                                 <td class="px-5 py-4 whitespace-nowrap">
@@ -1163,7 +1205,17 @@
                                     @endif
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-5 py-10 text-center text-gray-400">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <i data-lucide="calendar-x" class="w-8 h-8 text-gray-300"></i>
+                                        <p class="text-sm font-medium text-gray-600">Belum ada riwayat kehadiran dalam 7 hari terakhir.</p>
+                                        <p class="text-xs text-gray-400">Presensi Anda akan otomatis tercatat di sini setelah melakukan Clock-In.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -1227,7 +1279,7 @@
                                     <i data-lucide="book-open" class="w-5 h-5"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-bold text-gray-900" id="modal-title">SOP Presensi Outlet Operasional</h3>
+                                    <h3 class="text-base font-bold text-gray-900" id="modal-title">SOP Presensi Cabang <span x-text="outletInfo.name">{{ $outletName }}</span></h3>
                                     <p class="text-xs text-gray-500">Standar Prosedur Operasional Kehadiran Karyawan</p>
                                 </div>
                             </div>
@@ -1238,16 +1290,16 @@
 
                         <div class="space-y-4 text-xs text-gray-600 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
                             <div>
-                                <h4 class="font-bold text-gray-900 text-sm mb-1">1. Ketentuan Radius Geofencing</h4>
-                                <p>Setiap karyawan wajib melakukan presensi dalam jarak maksimal 50 meter dari titik koordinat GPS resmi outlet. Presensi di luar batas ini akan ditolak secara otomatis oleh sistem.</p>
+                                <h4 class="font-bold text-gray-900 text-sm mb-1">1. Ketentuan Radius Presensi</h4>
+                                <p>Setiap presensi tercatat otomatis dalam radius aman <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik resmi cabang. Pastikan lokasi cabang telah diatur oleh admin di Pengaturan Platform.</p>
                             </div>
                             <div>
                                 <h4 class="font-bold text-gray-900 text-sm mb-1">2. Waktu Clock-In &amp; Toleransi</h4>
-                                <p>Clock-In dapat dilakukan mulai 15 menit sebelum jam mulai shift hingga maksimal 5 menit setelah jam mulai shift (masa toleransi). Keterlambatan lebih dari 5 menit akan tercatat sebagai status Terlambat.</p>
+                                <p>Clock-In dapat dilakukan mulai 15 menit sebelum jam mulai shift hingga maksimal {{ $toleranceMin }} menit setelah jam mulai shift (masa toleransi). Keterlambatan lebih dari {{ $toleranceMin }} menit akan tercatat sebagai status Terlambat.</p>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900 text-sm mb-1">3. Verifikasi Foto &amp; Seragam</h4>
-                                <p>Karyawan wajib mengenakan seragam kerja resmi dan apron. Pastikan wajah terlihat jelas tanpa masker saat pengambilan swafoto verifikasi.</p>
+                                <h4 class="font-bold text-gray-900 text-sm mb-1">3. Verifikasi Kehadiran Karyawan</h4>
+                                <p>Presensi dicatat berdasarkan waktu sistem dan titik penugasan outlet yang sah.</p>
                             </div>
                             <div>
                                 <h4 class="font-bold text-gray-900 text-sm mb-1">4. Clock-Out &amp; Overtime</h4>

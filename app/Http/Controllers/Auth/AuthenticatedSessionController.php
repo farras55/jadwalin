@@ -48,6 +48,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('status', 'Anda telah berhasil keluar dari sistem.');
+        return redirect()->to(route('login', absolute: false))->with('status', 'Anda telah berhasil keluar dari sistem.');
     }
 }

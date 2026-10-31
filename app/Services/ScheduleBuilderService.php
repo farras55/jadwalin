@@ -19,13 +19,8 @@ class ScheduleBuilderService
      * Generate roster automatically using heuristic constraints, fairness rules,
      * and custom manager requirements (quota per shift, active days, dynamic date range).
      *
-     * @param int $companyId
-     * @param int|array $departmentId Single department ID or array of department IDs
-     * @param CarbonInterface $startDate
-     * @param CarbonInterface $endDate
-     * @param array|bool|null $requirementsOrOverwrite Custom requirements array, or boolean overwrite flag for backward compatibility
-     * @param bool $overwriteDrafts
-     * @return array
+     * @param  int|array  $departmentId  Single department ID or array of department IDs
+     * @param  array|bool|null  $requirementsOrOverwrite  Custom requirements array, or boolean overwrite flag for backward compatibility
      */
     public function generateWeeklyRoster(
         int $companyId,
@@ -78,7 +73,7 @@ class ScheduleBuilderService
 
             // 2. Proses Setiap Departemen Sasaran
             // Bersihkan draf lama di seluruh departemen sasaran dalam 1 query batch
-            if ($overwriteDrafts && !empty($departmentIds)) {
+            if ($overwriteDrafts && ! empty($departmentIds)) {
                 $draftShiftIds = Shift::where('company_id', $companyId)
                     ->whereIn('department_id', $departmentIds)
                     ->where('status', 'draft')
@@ -114,7 +109,7 @@ class ScheduleBuilderService
                     } elseif (
                         count($departmentIds) === 1 &&
                         is_array($requirements) &&
-                        !isset($requirements[$deptId]) &&
+                        ! isset($requirements[$deptId]) &&
                         isset($requirements[0]) &&
                         is_array($requirements[0])
                     ) {
@@ -123,19 +118,19 @@ class ScheduleBuilderService
                     }
                 }
 
-                if ($deptReqs && !empty($deptReqs)) {
+                if ($deptReqs && ! empty($deptReqs)) {
                     foreach ($deptReqs as $key => $reqItem) {
-                        if (!is_array($reqItem)) {
+                        if (! is_array($reqItem)) {
                             continue;
                         }
 
-                        $isEnabled = !empty($reqItem['enabled']) && $reqItem['enabled'] !== 'false' && $reqItem['enabled'] !== '0';
-                        if (!$isEnabled) {
+                        $isEnabled = ! empty($reqItem['enabled']) && $reqItem['enabled'] !== 'false' && $reqItem['enabled'] !== '0';
+                        if (! $isEnabled) {
                             continue;
                         }
 
                         $tmpl = null;
-                        $templateId = !empty($reqItem['template_id']) ? (int) $reqItem['template_id'] : (is_numeric($key) ? (int) $key : null);
+                        $templateId = ! empty($reqItem['template_id']) ? (int) $reqItem['template_id'] : (is_numeric($key) ? (int) $key : null);
                         if ($templateId && $existingTemplates->has($templateId)) {
                             $tmpl = $existingTemplates->get($templateId);
                         }
@@ -147,15 +142,15 @@ class ScheduleBuilderService
                         $days = isset($reqItem['days']) && is_array($reqItem['days']) ? array_map('intval', $reqItem['days']) : [1, 2, 3, 4, 5, 6, 7];
                         $colorCode = $reqItem['color_code'] ?? ($tmpl?->color_code ?? '#6C5CE7');
 
-                        $formattedStartTime = strlen($startTime) === 5 ? $startTime . ':00' : $startTime;
-                        $formattedEndTime = strlen($endTime) === 5 ? $endTime . ':00' : $endTime;
+                        $formattedStartTime = strlen($startTime) === 5 ? $startTime.':00' : $startTime;
+                        $formattedEndTime = strlen($endTime) === 5 ? $endTime.':00' : $endTime;
 
                         if ($tmpl) {
                             if (
                                 $tmpl->title !== $title ||
                                 $tmpl->start_time !== $formattedStartTime ||
                                 $tmpl->end_time !== $formattedEndTime ||
-                                (int)$tmpl->default_quota !== (int)$quota ||
+                                (int) $tmpl->default_quota !== (int) $quota ||
                                 $tmpl->color_code !== $colorCode
                             ) {
                                 $tmpl->update([
@@ -272,7 +267,9 @@ class ScheduleBuilderService
 
                     foreach ($userAssignments as $ea) {
                         $s = $ea->shift;
-                        if (!$s) continue;
+                        if (! $s) {
+                            continue;
+                        }
                         $dur = $s->start_time->diffInMinutes($s->end_time) / 60.0;
                         $totalHours += $dur;
                         $daysWorked[$s->start_time->format('Y-m-d')] = true;
@@ -300,7 +297,7 @@ class ScheduleBuilderService
 
                     foreach ($configuredShifts as $shiftConfig) {
                         // Cek apakah hari ini termasuk hari aktif shift
-                        if (!empty($shiftConfig['days']) && !in_array($dayOfWeekIso, $shiftConfig['days']) && !in_array((string)$dayOfWeekIso, $shiftConfig['days'])) {
+                        if (! empty($shiftConfig['days']) && ! in_array($dayOfWeekIso, $shiftConfig['days']) && ! in_array((string) $dayOfWeekIso, $shiftConfig['days'])) {
                             continue;
                         }
 
@@ -355,7 +352,7 @@ class ScheduleBuilderService
 
                             // HARD CONSTRAINT 1: RDO (Maksimal Hari Kerja Berturut-turut)
                             $alreadyWorkedToday = isset($tracker['days_worked'][$dateStr]);
-                            if (!$alreadyWorkedToday && count($tracker['days_worked']) >= $maxWorkingDays) {
+                            if (! $alreadyWorkedToday && count($tracker['days_worked']) >= $maxWorkingDays) {
                                 continue;
                             }
 
@@ -476,6 +473,7 @@ class ScheduleBuilderService
                             if (abs($a['total_hours'] - $b['total_hours']) > 0.01) {
                                 return $a['total_hours'] <=> $b['total_hours'];
                             }
+
                             return $a['days_count'] <=> $b['days_count'];
                         });
 
@@ -575,7 +573,7 @@ class ScheduleBuilderService
                 }
 
                 // Batch Insert Seluruh ShiftAssignment Departemen Ini dalam 1 Query Tunggal (Eliminasi ratusan INSERT)
-                if (!empty($deptPendingAssignments)) {
+                if (! empty($deptPendingAssignments)) {
                     foreach (array_chunk($deptPendingAssignments, 250) as $chunk) {
                         ShiftAssignment::insert($chunk);
                     }
@@ -610,15 +608,36 @@ class ScheduleBuilderService
         int $companyId,
         int|array $departmentId,
         CarbonInterface $startDate,
-        CarbonInterface $endDate
+        CarbonInterface $endDate,
+        bool $overwritePublished = false
     ): int {
         $departmentIds = is_array($departmentId) ? $departmentId : [$departmentId];
 
-        return Shift::where('company_id', $companyId)
-            ->whereIn('department_id', $departmentIds)
-            ->where('status', 'draft')
-            ->whereBetween('start_time', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()])
-            ->update(['status' => 'published']);
+        return DB::transaction(function () use ($companyId, $departmentIds, $startDate, $endDate, $overwritePublished) {
+            $rangeStart = $startDate->copy()->startOfDay();
+            $rangeEnd = $endDate->copy()->endOfDay();
+
+            if ($overwritePublished) {
+                $oldPublishedIds = Shift::where('company_id', $companyId)
+                    ->whereIn('department_id', $departmentIds)
+                    ->where('status', 'published')
+                    ->whereBetween('start_time', [$rangeStart, $rangeEnd])
+                    ->pluck('id');
+
+                if ($oldPublishedIds->isNotEmpty()) {
+                    $oldPublishedIds->chunk(500)->each(function ($chunk) {
+                        ShiftAssignment::whereIn('shift_id', $chunk)->delete();
+                        Shift::whereIn('id', $chunk)->delete();
+                    });
+                }
+            }
+
+            return Shift::where('company_id', $companyId)
+                ->whereIn('department_id', $departmentIds)
+                ->where('status', 'draft')
+                ->whereBetween('start_time', [$rangeStart, $rangeEnd])
+                ->update(['status' => 'published']);
+        });
     }
 
     /**

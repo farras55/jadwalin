@@ -16,7 +16,7 @@ class DepartmentPositionTest extends TestCase
     {
         return Company::create([
             'name' => $name,
-            'email' => strtolower(str_replace(' ', '', $name)) . '@example.com',
+            'email' => strtolower(str_replace(' ', '', $name)).'@example.com',
             'phone_number' => '081234567890',
             'address' => 'Jl. Test No. 1',
             'timezone' => 'Asia/Jakarta',

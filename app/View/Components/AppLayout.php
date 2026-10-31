@@ -48,7 +48,7 @@ class AppLayout extends Component
         ) ?: 'U';
 
         // Foto profil (jika ada file di storage, atau null)
-        $profilePhotoUrl = $user?->profile_photo ? asset('storage/' . $user->profile_photo) : null;
+        $profilePhotoUrl = $user?->profile_photo ? asset('storage/'.$user->profile_photo) : null;
 
         // Nama perusahaan / outlet
         $companyName = $user?->company?->name ?? config('app.name', 'Jadwalin');
@@ -58,15 +58,15 @@ class AppLayout extends Component
         $now = Carbon::now($timezone);
         $hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         $bulanPendek = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sept', 'Okt', 'Nov', 'Des'];
-        $tanggalStr = $hari[$now->dayOfWeek] . ', ' . $now->day . ' ' . $bulanPendek[$now->month - 1] . ' ' . $now->year;
+        $tanggalStr = $hari[$now->dayOfWeek].', '.$now->day.' '.$bulanPendek[$now->month - 1].' '.$now->year;
 
         // Daftar menu dinamis sesuai role
         $rawMenus = $this->getMenuDefinitions($userRole);
         $sidebarMenus = array_map(function ($menu) {
             $url = '#';
-            if (!empty($menu['route']) && Route::has($menu['route'])) {
+            if (! empty($menu['route']) && Route::has($menu['route'])) {
                 $url = route($menu['route']);
-            } elseif (!empty($menu['fallback'])) {
+            } elseif (! empty($menu['fallback'])) {
                 $url = url($menu['fallback']);
             }
 
@@ -112,6 +112,7 @@ class AppLayout extends Component
             'manager' => [
                 ['label' => 'Dashboard', 'icon' => 'layout-grid', 'route' => 'manager.dashboard', 'fallback' => '/manager/dashboard', 'active_pattern' => 'manager/dashboard*'],
                 ['label' => 'Jadwal Kerja Tim', 'icon' => 'calendar', 'route' => 'manager.shifts.index', 'fallback' => '/manager/shifts', 'active_pattern' => 'manager/shifts*'],
+                ['label' => 'Shift Terbuka (Open Shift)', 'icon' => 'megaphone', 'route' => 'manager.open-shifts.index', 'fallback' => '/manager/open-shifts', 'active_pattern' => 'manager/open-shifts*'],
                 ['label' => 'Persetujuan Ketersediaan', 'icon' => 'calendar-check', 'route' => 'manager.availability.index', 'fallback' => '/manager/availability', 'active_pattern' => 'manager/availability*'],
                 ['label' => 'Persetujuan Tukar Shift', 'icon' => 'arrow-left-right', 'route' => 'manager.swaps.index', 'fallback' => '/manager/swaps', 'active_pattern' => 'manager/swaps*'],
                 ['label' => 'Presensi Tim', 'icon' => 'fingerprint', 'route' => 'manager.attendance.index', 'fallback' => '/manager/attendance', 'active_pattern' => 'manager/attendance*'],
@@ -121,6 +122,7 @@ class AppLayout extends Component
             default => [
                 ['label' => 'Dashboard', 'icon' => 'layout-grid', 'route' => 'employee.dashboard', 'fallback' => '/employee/dashboard', 'active_pattern' => 'employee/dashboard*'],
                 ['label' => 'Jadwal Saya', 'icon' => 'calendar', 'route' => 'employee.schedule', 'fallback' => '/employee/schedule', 'active_pattern' => 'employee/schedule*'],
+                ['label' => 'Shift Terbuka (Open Shift)', 'icon' => 'megaphone', 'route' => 'employee.open-shifts', 'fallback' => '/employee/open-shifts', 'active_pattern' => 'employee/open-shifts*'],
                 ['label' => 'Tukar Shift', 'icon' => 'arrow-left-right', 'route' => 'employee.swaps', 'fallback' => '/employee/swaps', 'active_pattern' => 'employee/swaps*'],
                 ['label' => 'Presensi / Absensi', 'icon' => 'fingerprint', 'route' => 'employee.attendance', 'fallback' => '/employee/attendance', 'active_pattern' => 'employee/attendance*'],
                 ['label' => 'Timesheet', 'icon' => 'clock', 'route' => 'employee.timesheet', 'fallback' => '/employee/timesheet', 'active_pattern' => 'employee/timesheet*'],

@@ -19,7 +19,31 @@ class Company extends Model
         'address',
         'timezone',
         'status',
+        'office_latitude',
+        'office_longitude',
+        'attendance_radius_meters',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'office_latitude' => 'float',
+            'office_longitude' => 'float',
+            'attendance_radius_meters' => 'integer',
+        ];
+    }
+
+    public function getAttendanceRadiusMetersAttribute($value): ?int
+    {
+        return $value !== null ? (int) $value : (int) config('jadwalin.attendance.default_radius_meters', 100);
+    }
+
+    public function setAttendanceRadiusMetersAttribute($value): void
+    {
+        $this->attributes['attendance_radius_meters'] = ($value !== null && $value !== '')
+            ? (int) $value
+            : (int) config('jadwalin.attendance.default_radius_meters', 100);
+    }
 
     public function companySetting(): HasOne
     {
@@ -86,4 +110,3 @@ class Company extends Model
         return $this->hasMany(AuditLog::class);
     }
 }
-

@@ -250,7 +250,7 @@
 
     {{-- KONTROL FILTER TANGGAL DINAMIS & TOOLBAR AKSI --}}
     <div class="bg-white rounded-2xl border border-[#E2E0F7] p-4 shadow-2xs mb-6 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4"
-         x-data="{ showBuildModal: false, showPublishModal: false, showClearModal: false, publishScope: 'current', clearScope: 'current' }">
+         x-data="{ showBuildModal: false, showPublishModal: false, showClearModal: false, publishScope: 'current', clearScope: 'current', overwriteMode: '1' }">
         
         {{-- Pemilih Rentang Tanggal Dinamis --}}
         <div class="flex flex-wrap items-center gap-2.5">
@@ -1134,15 +1134,77 @@
                             </div>
                         @endif
 
+                        @php
+                            $existingPublished = $isGlobalManager ? $totalCompanyPublishedShifts : $publishedShiftsCount;
+                        @endphp
+                        @if ($existingPublished > 0)
+                            <div class="mb-4 bg-amber-50/70 p-3.5 rounded-2xl border border-amber-200/80">
+                                <div class="flex items-start gap-2.5 mb-3">
+                                    <div class="p-1.5 rounded-lg bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+                                        <i data-lucide="alert-triangle" class="h-4 w-4"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-amber-950">Perhatian: Jadwal Terbit Lama Terdeteksi</p>
+                                        <p class="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                                            Terdapat <strong>{{ $existingPublished }} shift resmi</strong> yang sudah aktif terbit pada periode ini. Tentukan metode penerbitan untuk menghindari kesalahan:
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    {{-- Opsi 1: Timpa & Gantikan Jadwal Lama (Direkomendasikan) --}}
+                                    <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all"
+                                           :class="overwriteMode === '1' ? 'bg-emerald-50/90 border-emerald-500 ring-1 ring-emerald-500 shadow-2xs' : 'bg-white border-slate-200 hover:border-slate-300'">
+                                        <input type="radio" name="overwrite_published" value="1" x-model="overwriteMode"
+                                               class="mt-0.5 text-emerald-600 focus:ring-emerald-500 h-4 w-4 border-slate-300 shrink-0">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <span class="text-xs font-bold text-slate-800">Timpa & Gantikan Jadwal Lama</span>
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Direkomendasikan</span>
+                                            </div>
+                                            <p class="text-[11px] text-slate-600 mt-0.5 leading-snug">
+                                                Hapus {{ $existingPublished }} shift terbit lama pada periode ini dan terbitkan draf baru sebagai penggantinya. <strong>Mencegah jadwal bertumpuk / dobel.</strong>
+                                            </p>
+                                        </div>
+                                    </label>
+
+                                    {{-- Opsi 2: Tetap Gabungkan / Dobel (Shift Tambahan) --}}
+                                    <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all"
+                                           :class="overwriteMode === '0' ? 'bg-amber-50/90 border-amber-500 ring-1 ring-amber-500 shadow-2xs' : 'bg-white border-slate-200 hover:border-slate-300'">
+                                        <input type="radio" name="overwrite_published" value="0" x-model="overwriteMode"
+                                               class="mt-0.5 text-amber-600 focus:ring-amber-500 h-4 w-4 border-slate-300 shrink-0">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <span class="text-xs font-bold text-slate-800">Tetap Gabungkan (Jadwal Dobel)</span>
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Shift Tambahan</span>
+                                            </div>
+                                            <p class="text-[11px] text-amber-900/80 mt-0.5 leading-snug">
+                                                Pertahankan {{ $existingPublished }} shift terbit lama dan terbitkan draf ini berdampingan. <strong>Perhatian: Karyawan berpotensi memiliki 2 jadwal kerja di hari yang sama.</strong>
+                                            </p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        @else
+                            <input type="hidden" name="overwrite_published" value="0">
+                        @endif
+
                         <div class="flex items-center justify-end gap-2 sm:gap-2.5 mt-5">
                             <button type="button" @click="showPublishModal = false"
                                     class="flex-1 sm:flex-initial px-3.5 py-2 text-xs font-semibold rounded-xl border border-[#E2E0F7] text-[#7C7896] hover:bg-slate-50 transition text-center">
                                 Batal
                             </button>
                             <button type="submit"
-                                    class="flex-1 sm:flex-initial px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center justify-center gap-1.5">
+                                    class="flex-1 sm:flex-initial px-4 py-2 text-xs font-bold rounded-xl text-white shadow-sm transition flex items-center justify-center gap-1.5 {{ $existingPublished > 0 ? '' : 'bg-emerald-600 hover:bg-emerald-700' }}"
+                                    @if ($existingPublished > 0)
+                                        :class="overwriteMode === '1' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-600 hover:bg-amber-700'"
+                                    @endif>
                                 <i data-lucide="check" class="h-3.5 w-3.5"></i>
-                                <span>Ya, Terbitkan</span>
+                                @if ($existingPublished > 0)
+                                    <span x-text="overwriteMode === '1' ? 'Ya, Timpa & Terbitkan' : 'Ya, Terbitkan Dobel'">Ya, Timpa & Terbitkan</span>
+                                @else
+                                    <span>Ya, Terbitkan</span>
+                                @endif
                             </button>
                         </div>
                     </form>

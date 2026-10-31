@@ -1,12 +1,21 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
-use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\AvailabilityController;
+use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
+use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\Manager\TeamEmployeeController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OpenShiftController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShiftSwapController;
+use App\Models\Availability;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -76,16 +85,16 @@ Route::middleware(['auth', 'role:superadmin'])
             ->name('shifts.destroy');
 
         // ==========================================
-        // Platform Settings
+        // Company Settings - PBL-24
         // ==========================================
-        Route::get('/settings', function () {
-            return view('placeholder', [
-                'title' => 'Pengaturan Platform',
-                'subtitle' => 'Konfigurasi sistem, zona waktu server, dan preferensi aplikasi.',
-                'icon' => 'settings',
-                'roleTitle' => 'Super Admin',
-            ]);
-        })->name('settings.index');
+        Route::get('/settings', [CompanySettingController::class, 'edit'])
+            ->name('settings.index');
+
+        Route::put('/settings', [CompanySettingController::class, 'update'])
+            ->name('settings.update');
+
+        Route::put('/settings/branch-location', [CompanySettingController::class, 'updateBranchLocation'])
+            ->name('settings.update-branch-location');
 
         // ==========================================
         // Timesheet Report & Export - PBL-21
@@ -116,7 +125,7 @@ Route::middleware(['auth', 'role:manager'])
         Route::get('/dashboard', function () {
             $manager = auth()->user();
 
-            $pendingAvailabilityCount = \App\Models\Availability::where('company_id', $manager->company_id)
+            $pendingAvailabilityCount = Availability::where('company_id', $manager->company_id)
                 ->where('status', 'pending_manager')
                 ->whereHas('user', function ($query) use ($manager) {
                     if (! $manager->is_global_manager) {
@@ -125,7 +134,7 @@ Route::middleware(['auth', 'role:manager'])
                 })
                 ->count();
 
-            $pendingAvailability = \App\Models\Availability::with([
+            $pendingAvailability = Availability::with([
                 'user.position',
             ])
                 ->where('company_id', $manager->company_id)
@@ -169,23 +178,34 @@ Route::middleware(['auth', 'role:manager'])
             [ShiftController::class, 'updateTemplate']
         )->name('shifts.templates.update');
 
-        Route::get('/swaps', function () {
-            return view('placeholder', [
-                'title' => 'Persetujuan Tukar Shift',
-                'subtitle' => 'Verifikasi dan setujui permohonan pergantian shift antar karyawan.',
-                'icon' => 'arrow-left-right',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('swaps.index');
+        // PBL-22: Shift Swap Approvals (Manager)
+        Route::get('/swaps', [ShiftSwapController::class, 'indexManager'])
+            ->name('swaps.index');
 
-        Route::get('/attendance', function () {
-            return view('placeholder', [
-                'title' => 'Presensi Tim',
-                'subtitle' => 'Monitoring kehadiran realtime staf, absensi lokasi GPS, dan bukti swafoto.',
-                'icon' => 'fingerprint',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('attendance.index');
+        Route::post('/swaps/{swap}/approve', [ShiftSwapController::class, 'approveManager'])
+            ->name('swaps.approve');
+
+        Route::post('/swaps/{swap}/reject', [ShiftSwapController::class, 'rejectManager'])
+            ->name('swaps.reject');
+
+        // PBL-23: Open Shift Broadcast & Concurrency (Manager)
+        Route::get('/open-shifts', [OpenShiftController::class, 'indexManager'])
+            ->name('open-shifts.index');
+        Route::post('/open-shifts', [OpenShiftController::class, 'broadcast'])
+            ->name('open-shifts.broadcast');
+        Route::post('/open-shifts/{shift}/close', [OpenShiftController::class, 'closeBroadcast'])
+            ->name('open-shifts.close');
+        Route::post('/open-shifts/claims/{claim}/approve', [OpenShiftController::class, 'approveClaim'])
+            ->name('open-shifts.claims.approve');
+        Route::post('/open-shifts/claims/{claim}/reject', [OpenShiftController::class, 'rejectClaim'])
+            ->name('open-shifts.claims.reject');
+
+        // PBL-27: Realtime Attendance Monitoring
+        Route::get('/attendance', [AttendanceMonitorController::class, 'index'])
+            ->name('attendance.index');
+
+        Route::get('/attendance/feed', [AttendanceMonitorController::class, 'realtimeFeed'])
+            ->name('attendance.feed');
 
         Route::get('/timesheets', function () {
             return view('placeholder', [
@@ -196,15 +216,25 @@ Route::middleware(['auth', 'role:manager'])
             ]);
         })->name('timesheets.index');
 
-        Route::get('/employees', function () {
-            return view('placeholder', [
-                'title' => 'Data Karyawan Tim',
-                'subtitle' => 'Daftar staf, posisi, informasi kontak, dan ketersediaan bawahan.',
-                'icon' => 'users',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('employees.index');
-        
+        // ==========================================
+        // PBL-25: Team Employee Management
+        // ==========================================
+
+        // Daftar karyawan dalam perusahaan/departemen manager
+        Route::get(
+            '/employees',
+            [TeamEmployeeController::class, 'index']
+        )->name('employees.index');
+
+        // Detail profil dan aktivitas shift karyawan
+        Route::get(
+            '/employees/{user}',
+            [TeamEmployeeController::class, 'show']
+        )->name('employees.show');
+
+        // ==========================================
+        // Availability Approval
+        // ==========================================
         Route::get('/availability', [
             AvailabilityApprovalController::class,
             'index',
@@ -241,29 +271,41 @@ Route::middleware(['auth', 'role:employee'])
             ]);
         })->name('schedule');
 
-        Route::get('/swaps', function () {
-            return view('placeholder', [
-                'title' => 'Tukar Shift',
-                'subtitle' => 'Ajukan permintaan tukar shift atau klaim shift rekan kerja.',
-                'icon' => 'arrow-left-right',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('swaps');
+        // PBL-22: Shift Swap & Transfer (Employee)
+        Route::get('/swaps', [ShiftSwapController::class, 'indexEmployee'])
+            ->name('swaps');
+
+        Route::post('/swaps', [ShiftSwapController::class, 'requestSwap'])
+            ->name('swaps.request');
+
+        Route::post('/swaps/{swap}/respond', [ShiftSwapController::class, 'respondSwap'])
+            ->name('swaps.respond');
+
+        // PBL-23: Open Shift Claim (Employee)
+        Route::get('/open-shifts', [OpenShiftController::class, 'availableShifts'])
+            ->name('open-shifts');
+        Route::post('/open-shifts/{shift}/claim', [OpenShiftController::class, 'claim'])
+            ->name('open-shifts.claim');
 
         // Employee Attendance
         Route::get(
             '/attendance',
-            [\App\Http\Controllers\Employee\AttendanceController::class, 'index']
+            [AttendanceController::class, 'index']
         )->name('attendance');
+
+        Route::get(
+            '/attendance/location',
+            [AttendanceController::class, 'location']
+        )->name('attendance.location');
 
         Route::post(
             '/attendance/clock-in',
-            [\App\Http\Controllers\Employee\AttendanceController::class, 'clockIn']
+            [AttendanceController::class, 'clockIn']
         )->name('attendance.clock-in');
 
         Route::post(
             '/attendance/clock-out',
-            [\App\Http\Controllers\Employee\AttendanceController::class, 'clockOut']
+            [AttendanceController::class, 'clockOut']
         )->name('attendance.clock-out');
 
         Route::get('/timesheet', function () {
@@ -278,24 +320,29 @@ Route::middleware(['auth', 'role:employee'])
         // Employee Availability
         Route::get(
             '/availability',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'index']
+            [AvailabilityController::class, 'index']
         )->name('availability');
 
         Route::get(
             '/availability/create',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'create']
+            [AvailabilityController::class, 'create']
         )->name('availability.create');
 
         Route::post(
             '/availability',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'store']
+            [AvailabilityController::class, 'store']
         )->name('availability.store');
 
         Route::delete(
             '/availability/{availability}',
-            [\App\Http\Controllers\Employee\AvailabilityController::class, 'destroy']
+            [AvailabilityController::class, 'destroy']
         )->name('availability.destroy');
     });
+
+// Dedicated API endpoint for employee attendance location polling
+Route::middleware('auth')
+    ->get('/api/employee/attendance-location', [AttendanceController::class, 'location'])
+    ->name('api.employee.attendance-location');
 
 // ==========================================
 // 4. Profile Routes
@@ -311,5 +358,19 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
+// ==========================================
+// 5. Notification Routes - PBL-20
+// ==========================================
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
+
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.read-all');
+});
+
 // Authentication routes
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

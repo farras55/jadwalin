@@ -141,6 +141,12 @@ class ShiftTemplateController extends Controller
     {
         $this->ensureCompanyAccess($shift);
 
+        if ($shift->shifts()->exists()) {
+            return redirect()
+                ->route('admin.shifts.index')
+                ->with('error', 'Template shift tidak dapat dihapus karena masih digunakan oleh jadwal kerja aktif.');
+        }
+
         $shift->delete();
 
         return redirect()

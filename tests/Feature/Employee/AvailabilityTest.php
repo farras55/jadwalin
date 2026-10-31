@@ -15,6 +15,7 @@ class AvailabilityTest extends TestCase
     use RefreshDatabase;
 
     protected $company;
+
     protected $user;
 
     protected function setUp(): void

@@ -6,7 +6,6 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
-use App\Models\TimesheetReport;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,7 +19,7 @@ class TimesheetReportTest extends TestCase
     {
         return Company::create([
             'name' => $name,
-            'email' => strtolower(str_replace(' ', '', $name)) . '@example.com',
+            'email' => strtolower(str_replace(' ', '', $name)).'@example.com',
             'phone_number' => '081298765432',
             'address' => 'Jl. Sudirman No. 45, Jakarta',
             'timezone' => 'Asia/Jakarta',

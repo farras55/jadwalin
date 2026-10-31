@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Shift;
 use App\Models\ShiftTemplate;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +18,7 @@ class ShiftTemplateTest extends TestCase
     {
         return Company::create([
             'name' => $name,
-            'email' => strtolower(str_replace(' ', '', $name)) . '@example.com',
+            'email' => strtolower(str_replace(' ', '', $name)).'@example.com',
             'phone_number' => '081234567890',
             'address' => 'Jl. Test No. 1',
             'timezone' => 'Asia/Jakarta',
@@ -39,7 +40,7 @@ class ShiftTemplateTest extends TestCase
         return Department::create([
             'company_id' => $company->id,
             'name' => $name,
-            'description' => 'Department ' . $name,
+            'description' => 'Department '.$name,
         ]);
     }
 
@@ -165,5 +166,39 @@ class ShiftTemplateTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['title', 'department_id', 'end_time', 'default_quota', 'color_code']);
+    }
+
+    public function test_admin_cannot_delete_shift_template_in_use_by_shifts(): void
+    {
+        $company = $this->createCompany();
+        $admin = $this->createSuperAdmin($company);
+        $dept = $this->createDepartment($company);
+
+        $template = ShiftTemplate::create([
+            'company_id' => $company->id,
+            'department_id' => $dept->id,
+            'title' => 'Shift Aktif Dipakai',
+            'start_time' => '08:00',
+            'end_time' => '16:00',
+            'default_quota' => 2,
+            'color_code' => '#6C5CE7',
+        ]);
+
+        Shift::create([
+            'company_id' => $company->id,
+            'department_id' => $dept->id,
+            'template_id' => $template->id,
+            'title' => 'Shift Aktif Dipakai',
+            'start_time' => now()->startOfWeek(),
+            'end_time' => now()->startOfWeek()->addHours(8),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.shifts.destroy', $template));
+        $response->assertRedirect(route('admin.shifts.index'));
+        $response->assertSessionHas('error');
+
+        $this->assertDatabaseHas('shift_templates', ['id' => $template->id]);
     }
 }

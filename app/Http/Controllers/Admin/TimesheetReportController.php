@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\TimesheetExport;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\TimesheetReport;
 use App\Models\User;
-use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Shuchkin\SimpleXLSXGen;
 
 class TimesheetReportController extends Controller
 {
@@ -36,7 +35,7 @@ class TimesheetReportController extends Controller
         $periodLabel = $data['periodLabel'];
         $totalMetrics = $data['totalMetrics'];
 
-        $filename = 'rekap_timesheet_' . $year . '_' . str_pad((string) $month, 2, '0', STR_PAD_LEFT);
+        $filename = 'rekap_timesheet_'.$year.'_'.str_pad((string) $month, 2, '0', STR_PAD_LEFT);
 
         $rows = [
             ['<b>REKAPITULASI TIMESHEET KARYAWAN</b>'],
@@ -88,18 +87,18 @@ class TimesheetReportController extends Controller
             '',
         ];
 
-        if (!app()->runningUnitTests()) {
+        if (! app()->runningUnitTests()) {
             while (ob_get_level() > 0) {
                 @ob_end_clean();
             }
         }
 
-        if (class_exists(\Shuchkin\SimpleXLSXGen::class)) {
-            $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($rows);
+        if (class_exists(SimpleXLSXGen::class)) {
+            $xlsx = SimpleXLSXGen::fromArray($rows);
 
             return response()->streamDownload(function () use ($xlsx) {
                 echo (string) $xlsx;
-            }, $filename . '.xlsx', [
+            }, $filename.'.xlsx', [
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition' => "attachment; filename=\"{$filename}.xlsx\"",
                 'Cache-Control' => 'max-age=0, no-cache, no-store, must-revalidate',
@@ -110,7 +109,7 @@ class TimesheetReportController extends Controller
         // Fallback CSV murni jika SimpleXLSXGen tidak tersedia
         return response()->streamDownload(function () use ($rows) {
             $handle = fopen('php://output', 'w');
-            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
 
             foreach ($rows as $row) {
                 $cleanRow = array_map(function ($val) {
@@ -120,7 +119,7 @@ class TimesheetReportController extends Controller
             }
 
             fclose($handle);
-        }, $filename . '.csv', [
+        }, $filename.'.csv', [
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
         ]);
@@ -132,26 +131,26 @@ class TimesheetReportController extends Controller
     public function exportPdf(Request $request)
     {
         $data = $this->getTimesheetData($request);
-        $filename = 'rekap_timesheet_' . $data['year'] . '_' . str_pad((string) $data['month'], 2, '0', STR_PAD_LEFT);
+        $filename = 'rekap_timesheet_'.$data['year'].'_'.str_pad((string) $data['month'], 2, '0', STR_PAD_LEFT);
 
-        if (!app()->runningUnitTests()) {
+        if (! app()->runningUnitTests()) {
             while (ob_get_level() > 0) {
                 @ob_end_clean();
             }
         }
 
-        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.reports.timesheet_pdf', $data)
+        if (class_exists(Pdf::class)) {
+            $pdf = Pdf::loadView('admin.reports.timesheet_pdf', $data)
                 ->setPaper('a4', 'landscape');
 
-            return $pdf->download($filename . '.pdf');
+            return $pdf->download($filename.'.pdf');
         }
 
         $html = view('admin.reports.timesheet_pdf', $data)->render();
 
         return response()->streamDownload(function () use ($html) {
             echo $html;
-        }, $filename . '.pdf', [
+        }, $filename.'.pdf', [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => "attachment; filename=\"{$filename}.pdf\"",
         ]);
@@ -185,15 +184,15 @@ class TimesheetReportController extends Controller
                 'timesheetReports' => fn ($q) => $q->where('period_month', $month)->where('period_year', $year),
                 'shiftAssignments' => function ($q) use ($month, $year) {
                     $q->with('shift')
-                      ->where(function ($query) use ($month, $year) {
-                          $query->where(function ($sub) use ($month, $year) {
-                              $sub->whereYear('clock_in_time', $year)
-                                  ->whereMonth('clock_in_time', $month);
-                          })->orWhereHas('shift', function ($sub) use ($month, $year) {
-                              $sub->whereYear('start_time', $year)
-                                  ->whereMonth('start_time', $month);
-                          });
-                      });
+                        ->where(function ($query) use ($month, $year) {
+                            $query->where(function ($sub) use ($month, $year) {
+                                $sub->whereYear('clock_in_time', $year)
+                                    ->whereMonth('clock_in_time', $month);
+                            })->orWhereHas('shift', function ($sub) use ($month, $year) {
+                                $sub->whereYear('start_time', $year)
+                                    ->whereMonth('start_time', $month);
+                            });
+                        });
                 },
             ])
             ->orderBy('name');
@@ -205,15 +204,16 @@ class TimesheetReportController extends Controller
             // Semua shift yang dijadwalkan pada periode terkait
             $scheduledShifts = $employee->shiftAssignments->filter(function ($assignment) use ($month, $year) {
                 $date = $assignment->clock_in_time ?? $assignment->shift?->start_time;
-                if (!$date) {
+                if (! $date) {
                     return false;
                 }
+
                 return (int) $date->format('n') === $month && (int) $date->format('Y') === $year;
             });
 
             // Shift yang dihadiri: clock_in_time dan clock_out_time tidak null
             $attendedShifts = $scheduledShifts->filter(function ($assignment) {
-                return !is_null($assignment->clock_in_time) && !is_null($assignment->clock_out_time);
+                return ! is_null($assignment->clock_in_time) && ! is_null($assignment->clock_out_time);
             });
 
             $totalRegularHours = (float) $attendedShifts->sum('regular_hours');
@@ -229,7 +229,7 @@ class TimesheetReportController extends Controller
             // Relasi timesheet_reports
             $timesheetReport = $employee->timesheetReports->first();
 
-            if (!$timesheetReport && $attendedShifts->isNotEmpty()) {
+            if (! $timesheetReport && $attendedShifts->isNotEmpty()) {
                 $timesheetReport = TimesheetReport::create([
                     'company_id' => $companyId,
                     'user_id' => $employee->id,
@@ -283,7 +283,7 @@ class TimesheetReportController extends Controller
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
 
-        $periodLabel = ($monthNames[$month] ?? 'Bulan ' . $month) . ' ' . $year;
+        $periodLabel = ($monthNames[$month] ?? 'Bulan '.$month).' '.$year;
         $selectedDepartment = $departmentId ? $departments->firstWhere('id', $departmentId) : null;
 
         return compact(
