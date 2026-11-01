@@ -58,7 +58,7 @@ Pada industri layanan operasional dinamis seperti Food & Beverage (F&B), kafe, r
 ## 2. ARSITEKTUR SISTEM & LANDASAN TEKNOLOGI
 
 ### 2.1 Arsitektur Tingkat Tinggi (High-Level Architecture)
-Jadwalin dibangun mengikuti arsitektur **Model-View-Controller (MVC)** modern berbasis **Laravel 11.x**, yang mengintegrasikan pemrosesan antarmuka sisi server (*Server-Driven Rendering*) yang cepat dan aman dengan reaktivitas sisi klien (*Client-Side Reactivity*) yang ringan.
+Jadwalin dibangun mengikuti arsitektur **Model-View-Controller (MVC)** modern berbasis **Laravel 13.x**, yang mengintegrasikan pemrosesan antarmuka sisi server (*Server-Driven Rendering*) yang cepat dan aman dengan reaktivitas sisi klien (*Client-Side Reactivity*) yang ringan.
 
 ```mermaid
 graph TD
@@ -105,13 +105,13 @@ graph TD
 ### 2.2 Komponen Teknologi (Technology Stack)
 | Layer | Teknologi | Versi | Peran & Alasan Pemilihan |
 | :--- | :--- | :--- | :--- |
-| **Backend Framework** | Laravel | 11.x (PHP 8.2+) | Standar industri enterprise, aman (proteksi injeksi SQL & CSRF bawaan), arsitektur service layer rapi, performa tinggi. |
+| **Backend Framework** | Laravel | 13.x (PHP 8.3+) | Standar industri enterprise, aman (proteksi injeksi SQL & CSRF bawaan), arsitektur service layer rapi, performa tinggi. |
 | **Database Engine** | PostgreSQL (Supabase) / SQLite / MySQL | PostgreSQL 15+ / SQLite 3 | Dukungan tipe data presisi mikrodetik (`timestamp(6)`), integritas *Foreign Key*, performansi *row locking* tinggi, dan skalabilitas *cloud multi-tenant*. |
 | **Frontend Styling** | Tailwind CSS | 3.4+ | *Utility-First CSS*, ukuran bundel sangat kecil, konsistensi tema warna ungu/indigo Jadwalin (`#6C5CE7`), implementasi *Mobile-First Design*. |
 | **Frontend Interactivity**| Alpine.js | 3.x | Reaktivitas deklaratif ringan tanpa *overhead* berat framework SPA (React/Vue), ideal untuk modal, dropdown, dan validasi form dinamis. |
 | **Ikonografi & Aset** | Lucide Icons | Latest | Ikon vektor berbasis SVG yang modern, tajam, dan seragam untuk visualisasi peran, jadwal, dan status. |
 | **Build Tooling** | Vite | 5.x | *Hot Module Replacement* (HMR) berkecepatan tinggi, *bundling* aset JavaScript dan CSS secara efisien. |
-| **Automated Testing** | PHPUnit & Pest PHP | 10.x / 11.x | Pengujian regresi otomatis (*Unit Testing* & *Feature Testing*), validasi alur RBAC, serta simulasi logika jadwal. |
+| **Automated Testing** | PHPUnit & Pest PHP | 12.x / 11.x | Pengujian regresi otomatis (*Unit Testing* & *Feature Testing*), validasi alur RBAC, serta simulasi logika jadwal. |
 
 ### 2.3 Strategi Isolasi Multi-Tenant (*Company-Scoped Isolation*)
 Sistem mengadopsi model *Shared Database, Shared Schema* dengan partisi logis berbasis `company_id`:

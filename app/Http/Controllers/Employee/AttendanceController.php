@@ -12,6 +12,58 @@ use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
 {
+    /**
+     * Menemukan penugasan shift aktif untuk karyawan:
+     * 1. Shift yang sedang berjalan (sudah clock-in, belum clock-out), mendukung shift lintas hari (overnight).
+     * 2. Shift hari ini yang belum clock-out (mendukung shift ganda / split shift berurutan).
+     * 3. Fallback ke penugasan hari ini yang paling baru (untuk tampilan status).
+     */
+    protected function getActiveAssignment($user)
+    {
+        $today = Carbon::today();
+
+        // 1. Shift in-progress (mendukung overnight shift kemarin malam)
+        $inProgress = ShiftAssignment::with(['shift.department', 'shift.company'])
+            ->where('user_id', $user->id)
+            ->whereNotNull('clock_in_time')
+            ->whereNull('clock_out_time')
+            ->latest('clock_in_time')
+            ->first();
+
+        if ($inProgress) {
+            return $inProgress;
+        }
+
+        // 2. Shift hari ini yang belum selesai (clock_out_time null)
+        $upcomingToday = ShiftAssignment::with(['shift.department', 'shift.company'])
+            ->where('user_id', $user->id)
+            ->whereNull('clock_out_time')
+            ->whereHas('shift', function ($query) use ($today) {
+                $query->whereDate('start_time', $today);
+            })
+            ->orderBy(
+                ShiftAssignment::select('start_time')
+                    ->from('shifts')
+                    ->whereColumn('shifts.id', 'shift_assignments.shift_id')
+                    ->limit(1),
+                'asc'
+            )
+            ->first();
+
+        if ($upcomingToday) {
+            return $upcomingToday;
+        }
+
+        // 3. Fallback: penugasan shift hari ini yang terakhir
+        return ShiftAssignment::with(['shift.department', 'shift.company'])
+            ->where('user_id', $user->id)
+            ->whereHas('shift', function ($query) use ($today) {
+                $query->whereDate('start_time', $today);
+            })
+            ->latest('id')
+            ->first();
+    }
+
     public function index()
     {
         $user = auth()->user();
@@ -19,28 +71,8 @@ class AttendanceController extends Controller
         $startOfMonth = $today->copy()->startOfMonth();
         $endOfMonth = $today->copy()->endOfMonth();
 
-        // 1. Ambil shift assignment aktif hari ini — selalu fresh dari DB, tidak pernah cache.
-        //    Fase 1: Cari assignment yang sudah di-clock-in hari ini (prioritas tertinggi,
-        //            karena user sudah hadir — data presensinya harus dipertahankan).
-        $todayShift = ShiftAssignment::with(['shift.department', 'shift.company'])
-            ->where('user_id', $user->id)
-            ->whereNotNull('clock_in_time')
-            ->whereDate('clock_in_time', $today)
-            ->latest('clock_in_time')
-            ->first();
-
-        //    Fase 2: Jika belum ada clock-in hari ini, ambil assignment terbaru yang
-        //            shift-nya dijadwalkan mulai hari ini (mencerminkan perubahan manager).
-        if (! $todayShift) {
-            $todayShift = ShiftAssignment::with(['shift.department', 'shift.company'])
-                ->where('user_id', $user->id)
-                ->whereHas('shift', function ($q) use ($today) {
-                    $q->whereDate('start_time', $today);
-                })
-                ->whereNull('clock_in_time')     // Belum clock-in (belum ada duplikat dengan Fase 1)
-                ->latest('updated_at')           // Perubahan manager tercermin via updated_at terbaru
-                ->first();
-        }
+        // 1. Ambil shift assignment aktif hari ini
+        $todayShift = $this->getActiveAssignment($user);
 
         // 2. Kalkulasi Top Summary Cards (Kehadiran Bulan Berjalan)
         $monthAssignments = ShiftAssignment::with(['shift.department'])
@@ -128,11 +160,11 @@ class AttendanceController extends Controller
         $companySetting = CompanySetting::where('company_id', $user->company_id)->first();
         $toleranceMinutes = (int) ($companySetting?->grace_period_minutes ?? 5);
 
-        // 5. Tentukan state presensi hari ini (sepenuhnya dari backend)
+        // 4. Tentukan state presensi hari ini (sepenuhnya dari backend)
         $isClockedIn = $todayShift && ! empty($todayShift->clock_in_time);
         $isClockedOut = $todayShift && ! empty($todayShift->clock_out_time);
 
-        // Apakah jam shift sudah lewat batas akhir? (shift ended = tidak bisa clock-in lagi)
+        // Apakah jam shift sudah lewat batas akhir?
         $shiftEnded = false;
         if ($todayShift && $todayShift->shift) {
             $shiftEndTime = Carbon::parse($todayShift->shift->end_time);
@@ -150,7 +182,7 @@ class AttendanceController extends Controller
             $attendanceState = 'idle';
         }
 
-        // 6. Format keterlambatan hari ini → Jam & Menit
+        // 5. Format keterlambatan hari ini → Jam & Menit
         $todayLateMinutes = (int) ($todayShift->late_minutes ?? 0);
         $todayLateHours = (int) floor($todayLateMinutes / 60);
         $todayLateRemMin = $todayLateMinutes % 60;
@@ -158,7 +190,7 @@ class AttendanceController extends Controller
             ? "{$todayLateHours} Jam ".str_pad($todayLateRemMin, 2, '0', STR_PAD_LEFT).' Menit'
             : "{$todayLateMinutes} Menit";
 
-        // 7. Riwayat 7 Hari Terakhir
+        // 6. Riwayat 7 Hari Terakhir
         $recentHistory = ShiftAssignment::with(['shift.department'])
             ->where('user_id', $user->id)
             ->where(function ($q) use ($today) {
@@ -210,15 +242,7 @@ class AttendanceController extends Controller
         $user = $request->user();
         abort_unless($user, 401);
 
-        $today = Carbon::today();
-        $todayShift = ShiftAssignment::with('shift.department')
-            ->where('user_id', $user->id)
-            ->whereHas('shift', function ($query) use ($today) {
-                $query->whereDate('start_time', $today);
-            })
-            ->latest('updated_at')
-            ->first();
-
+        $todayShift = $this->getActiveAssignment($user);
         $loc = $this->resolveAttendanceLocation($user, $todayShift);
 
         return response()->json([
@@ -269,14 +293,11 @@ class AttendanceController extends Controller
                     : ($company?->attendance_radius_meters !== null ? (int) $company->attendance_radius_meters : (int) config('jadwalin.attendance.default_radius_meters', 100))));
 
         $name = $targetDepartment?->name ?? $company?->name ?? config('jadwalin.attendance.default_name', 'Kantor Utama');
-        $address = ! empty($targetDepartment?->address)
-            ? $targetDepartment->address
-            : (! empty($company?->address) ? $company->address : 'Alamat kantor belum dikonfigurasi');
-
-        $isConfigured = ($latitude !== null && $longitude !== null);
+        $address = $targetDepartment?->address ?? $company?->address ?? config('jadwalin.attendance.default_address', '-');
+        $isConfigured = $latitude !== null && $longitude !== null;
 
         return [
-            'id' => $targetDepartment?->id,
+            'id' => $targetDepartment?->id ?? 0,
             'department' => $targetDepartment,
             'name' => $name,
             'address' => $address,
@@ -313,29 +334,11 @@ class AttendanceController extends Controller
     {
         $user = auth()->user();
         $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
-        $today = Carbon::today($timezone);
         $now = Carbon::now($timezone);
 
-        // Cari assignment yang shift-nya mulai hari ini dan belum clock-in
-        $assignment = ShiftAssignment::with('shift.department')
-            ->where('user_id', $user->id)
-            ->whereNull('clock_in_time')
-            ->whereHas('shift', function ($q) use ($today) {
-                $q->whereDate('start_time', $today);
-            })
-            ->latest('updated_at')
-            ->first();
+        $assignment = $this->getActiveAssignment($user);
 
-        // Fallback: mungkin user sudah punya clock_in hari ini (double-submit)
-        if (! $assignment) {
-            $alreadyClockedIn = ShiftAssignment::where('user_id', $user->id)
-                ->whereNotNull('clock_in_time')
-                ->whereDate('clock_in_time', $today)
-                ->exists();
-            if ($alreadyClockedIn) {
-                return back()->with('error', 'Anda sudah melakukan clock-in hari ini.');
-            }
-
+        if (! $assignment || ! $assignment->shift) {
             return back()->with('error', 'Tidak ada shift yang ditugaskan untuk Anda hari ini.');
         }
 
@@ -355,9 +358,9 @@ class AttendanceController extends Controller
         $startTime = Carbon::parse($assignment->shift->start_time, $timezone);
         $endTime = Carbon::parse($assignment->shift->end_time, $timezone);
 
-        // Jendela Clock-In: mulai H-15 menit sebelum shift dimulai
-        if ($now->lessThan($startTime->copy()->subMinutes(15))) {
-            return back()->with('error', 'Pencatatan masuk hanya dapat dilakukan mulai 15 menit sebelum jam kerja dimulai.');
+        // Batasi clock-in paling cepat 60 menit sebelum shift dimulai
+        if ($now->lt($startTime->copy()->subMinutes(60))) {
+            return back()->with('error', 'Clock In hanya dapat dilakukan paling cepat 60 menit sebelum shift dimulai.');
         }
 
         // Cegah Clock-In jika jam shift telah berakhir
@@ -368,7 +371,7 @@ class AttendanceController extends Controller
         $settings = CompanySetting::where('company_id', $user->company_id)->first();
         $gracePeriod = ($settings && $settings->grace_period_minutes !== null)
             ? (int) $settings->grace_period_minutes
-            : 5;
+            : 0;
 
         $toleranceLimit = $startTime->copy()->addMinutes($gracePeriod);
 
@@ -393,19 +396,11 @@ class AttendanceController extends Controller
     {
         $user = auth()->user();
         $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
-        $today = Carbon::today($timezone);
         $now = Carbon::now($timezone);
 
-        // Cari shift assignment hari ini
-        $assignment = ShiftAssignment::with('shift.department')
-            ->where('user_id', $user->id)
-            ->whereHas('shift', function ($query) use ($today) {
-                $query->whereDate('start_time', $today);
-            })
-            ->latest('updated_at')
-            ->first();
+        $assignment = $this->getActiveAssignment($user);
 
-        if (! $assignment) {
+        if (! $assignment || ! $assignment->shift) {
             return back()->with('error', 'Tidak ada shift yang ditugaskan untuk Anda hari ini.');
         }
 
@@ -421,14 +416,32 @@ class AttendanceController extends Controller
         $totalMinutes = Carbon::parse($assignment->clock_in_time)->diffInMinutes($now);
         $totalHours = round($totalMinutes / 60, 2);
 
-        $settings = CompanySetting::where('company_id', $user->company_id)->first();
-        $maxRegularHours = $settings->max_regular_hours ?? 8;
+        $shiftStart = Carbon::parse($assignment->shift->start_time, $timezone);
+        $shiftEnd = Carbon::parse($assignment->shift->end_time, $timezone);
+        $scheduledHours = round($shiftStart->diffInMinutes($shiftEnd) / 60, 2);
 
-        $regularHours = min($totalHours, $maxRegularHours);
-        $overtimeHours = max(0, round($totalHours - $maxRegularHours, 2));
+        $settings = CompanySetting::where('company_id', $user->company_id)->first();
+        // Plafon harian standar (jika max_regular_hours di database adalah batas mingguan misal 40, gunakan 8 jam)
+        $dailyRegularCap = ($settings && (int) $settings->max_regular_hours <= 12)
+            ? (int) $settings->max_regular_hours
+            : 8;
+
+        // Batas jam reguler adalah yang lebih kecil antara durasi jadwal shift dengan plafon harian
+        $regularThreshold = min($scheduledHours, $dailyRegularCap);
+
+        if ($assignment->is_overtime || optional($assignment->shift)->is_open_shift) {
+            // Skenario A: Shift lembur sukarela / Open Shift di hari libur -> 100% jam lembur
+            $regularHours = 0;
+            $overtimeHours = $totalHours;
+        } else {
+            // Skenario B: Shift reguler dengan penambahan jam di luar jadwal
+            $regularHours = min($totalHours, $regularThreshold);
+            $overtimeHours = max(0, round($totalHours - $regularThreshold, 2));
+        }
 
         $assignment->update([
             'clock_out_time' => $now,
+            'status' => 'completed',
             'regular_hours' => $regularHours,
             'overtime_hours' => $overtimeHours,
         ]);

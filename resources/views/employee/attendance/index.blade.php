@@ -673,7 +673,7 @@
                         @elseif ($attendanceState === 'no_shift')
                             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 font-semibold text-xs self-start sm:self-auto">
                                 <i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>
-                                Tidak Ada Shift Hari Ini
+                                Tidak Ada Shift Terjadwal
                             </span>
                         @elseif ($shiftEnded)
                             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 font-bold text-xs self-start sm:self-auto">

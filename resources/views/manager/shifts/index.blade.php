@@ -14,7 +14,7 @@
                             Manajer Departemen
                         </span>
                     @endif
-                    <span class="text-xs text-[#7C7896]">PP 35/2021 Compliant Engine</span>
+                    <span class="text-xs text-[#7C7896]">Smart Scheduling &amp; Anti-Conflict Engine</span>
                 </div>
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight mt-1.5">
                     Jadwal Kerja Tim (Roster)
@@ -355,7 +355,7 @@
                       loadingPercent: 15,
                       loadingSteps: [
                           { title: 'Inisialisasi & Preferensi Staf', desc: 'Menyaring ketersediaan, izin, cuti, dan preferensi waktu' },
-                          { title: 'Validasi Regulasi PP 35/2021', desc: 'Memvalidasi batas maksimal 40 jam kerja reguler per minggu' },
+                          { title: 'Validasi Batas Beban Kerja', desc: 'Memvalidasi batas maksimal jam kerja reguler agar staf tidak overwork' },
                           { title: 'Pemeriksaan Rest Period 11 Jam', desc: 'Menghitung jeda istirahat minimum antar pergantian shift' },
                           { title: 'Optimasi Alokasi Berkeadilan', desc: 'Mendistribusikan penugasan secara berimbang dan adil' },
                           { title: 'Finalisasi & Penyimpanan Draf', desc: 'Menyimpan draf jadwal baru ke database' }
@@ -612,7 +612,7 @@
                                 <svg class="h-3.5 w-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
-                                <span>Kepatuhan PP 35/2021 & istirahat 11 jam divalidasi otomatis • Harap tunggu</span>
+                                <span>Batas jam kerja &amp; jeda istirahat 11 jam divalidasi otomatis • Harap tunggu</span>
                             </div>
 
                         </div>
@@ -904,7 +904,7 @@
                         <div class="px-4 py-3 sm:px-6 sm:py-3.5 border-t border-[#E2E0F7] bg-white shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
                             <span class="text-[10px] sm:text-[11px] text-[#7C7896] flex items-center gap-1.5">
                                 <i data-lucide="shield-check" class="h-3.5 w-3.5 text-[#6C5CE7] shrink-0"></i>
-                                <span>Mematuhi batas 40h PP 35/2021 & rest period 11 jam</span>
+                                <span>Beban kerja seimbang &amp; jeda istirahat 11 jam terjaga otomatis</span>
                             </span>
                             
                             <div class="flex items-center justify-end gap-2 w-full sm:w-auto">

@@ -94,16 +94,18 @@
             }
         });
 
-        // Live Clock (WIB)
+        // Live Clock (Dynamic Timezone)
         (function() {
             const clockEl = document.getElementById('navbar-clock');
             if (!clockEl) return;
 
+            const companyTimezone = '{{ $timezone ?? "Asia/Jakarta" }}';
+
             function updateTime() {
                 const now = new Date();
-                const wibTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
-                const hh = String(wibTime.getHours()).padStart(2, '0');
-                const mm = String(wibTime.getMinutes()).padStart(2, '0');
+                const tzTime = new Date(now.toLocaleString('en-US', { timeZone: companyTimezone }));
+                const hh = String(tzTime.getHours()).padStart(2, '0');
+                const mm = String(tzTime.getMinutes()).padStart(2, '0');
                 clockEl.textContent = hh + ':' + mm;
             }
 

@@ -36,7 +36,7 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
 
     // Verifikasi Elemen Utama Antarmuka
     await expect(page.getByRole('heading', { name: /Pencatatan Kehadiran/i })).toBeVisible();
-    await expect(page.getByText('Shift Hari Ini')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Shift Hari Ini/i })).toBeVisible();
     await expect(page.locator('#live-clock').or(page.getByText(/Tidak ada shift yang ditugaskan/i)).first()).toBeVisible();
 
     // Verifikasi Riwayat Presensi / Kehadiran

@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -140,5 +141,39 @@ class DepartmentPositionTest extends TestCase
             ->get(route('admin.departments.index'));
 
         $response->assertStatus(403);
+    }
+
+    public function test_position_cannot_be_deleted_if_has_active_employees(): void
+    {
+        $company = $this->createCompany();
+        $superadmin = $this->createSuperadmin($company);
+
+        $department = Department::create([
+            'company_id' => $company->id,
+            'name' => 'Operations',
+        ]);
+
+        $position = Position::create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'name' => 'Barista',
+        ]);
+
+        // Karyawan aktif dengan posisi Barista
+        User::factory()->create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
+            'role' => 'employee',
+            'status' => 'active',
+        ]);
+
+        $response = $this
+            ->actingAs($superadmin)
+            ->delete(route('admin.positions.destroy', $position));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error', 'Posisi tidak dapat dihapus karena masih digunakan oleh karyawan aktif.');
+        $this->assertDatabaseHas('positions', ['id' => $position->id]);
     }
 }

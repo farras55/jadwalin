@@ -193,7 +193,7 @@
                 <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
                     <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Batas Kerja Mingguan') }}</span>
                     <span class="text-xs font-bold text-[#2D2A3E] mt-0.5 block">
-                        {{ $user->max_weekly_hours ? $user->max_weekly_hours . ' Jam / Minggu' : '40 Jam (PP 35/2021)' }}
+                        {{ $user->max_weekly_hours ? $user->max_weekly_hours . ' Jam / Minggu' : '40 Jam / Minggu (Batas Standar)' }}
                     </span>
                 </div>
             </div>

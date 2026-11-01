@@ -5,8 +5,10 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AvailabilityController;
+use App\Http\Controllers\Employee\ScheduleController;
 use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
@@ -15,7 +17,6 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpenShiftController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShiftSwapController;
-use App\Models\Availability;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,9 +39,9 @@ Route::middleware(['auth', 'role:superadmin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard', ['roleTitle' => 'Super Admin']);
-        })->name('dashboard');
+        // Dashboard Super Admin - PBL-38
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
         Route::get('/companies', function () {
             return view('placeholder', [
@@ -122,37 +123,9 @@ Route::middleware(['auth', 'role:manager'])
     ->prefix('manager')
     ->name('manager.')
     ->group(function () {
-        Route::get('/dashboard', function () {
-            $manager = auth()->user();
-
-            $pendingAvailabilityCount = Availability::where('company_id', $manager->company_id)
-                ->where('status', 'pending_manager')
-                ->whereHas('user', function ($query) use ($manager) {
-                    if (! $manager->is_global_manager) {
-                        $query->where('department_id', $manager->department_id);
-                    }
-                })
-                ->count();
-
-            $pendingAvailability = Availability::with([
-                'user.position',
-            ])
-                ->where('company_id', $manager->company_id)
-                ->where('status', 'pending_manager')
-                ->whereHas('user', function ($query) use ($manager) {
-                    if (! $manager->is_global_manager) {
-                        $query->where('department_id', $manager->department_id);
-                    }
-                })
-                ->orderBy('start_time')
-                ->first();
-
-            return view('dashboard', [
-                'roleTitle' => 'Manager',
-                'pendingAvailabilityCount' => $pendingAvailabilityCount,
-                'pendingAvailability' => $pendingAvailability,
-            ]);
-        })->name('dashboard');
+        // Dashboard Manager - PBL-38
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
         // PBL-17: Smart Scheduling Builder
         Route::get('/shifts', [ShiftController::class, 'index'])
@@ -191,12 +164,16 @@ Route::middleware(['auth', 'role:manager'])
         // PBL-23: Open Shift Broadcast & Concurrency (Manager)
         Route::get('/open-shifts', [OpenShiftController::class, 'indexManager'])
             ->name('open-shifts.index');
+
         Route::post('/open-shifts', [OpenShiftController::class, 'broadcast'])
             ->name('open-shifts.broadcast');
+
         Route::post('/open-shifts/{shift}/close', [OpenShiftController::class, 'closeBroadcast'])
             ->name('open-shifts.close');
+
         Route::post('/open-shifts/claims/{claim}/approve', [OpenShiftController::class, 'approveClaim'])
             ->name('open-shifts.claims.approve');
+
         Route::post('/open-shifts/claims/{claim}/reject', [OpenShiftController::class, 'rejectClaim'])
             ->name('open-shifts.claims.reject');
 
@@ -258,18 +235,13 @@ Route::middleware(['auth', 'role:employee'])
     ->prefix('employee')
     ->name('employee.')
     ->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard', ['roleTitle' => 'Karyawan']);
-        })->name('dashboard');
+        // Dashboard Karyawan - PBL-38
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
-        Route::get('/schedule', function () {
-            return view('placeholder', [
-                'title' => 'Jadwal Saya',
-                'subtitle' => 'Kalender jadwal kerja dan penugasan shift harian Anda.',
-                'icon' => 'calendar',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('schedule');
+        // PBL-41: Employee Schedule Calendar
+        Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule');
+        Route::get('/schedule/{assignment}', [ScheduleController::class, 'show'])->name('schedule.show');
 
         // PBL-22: Shift Swap & Transfer (Employee)
         Route::get('/swaps', [ShiftSwapController::class, 'indexEmployee'])
@@ -284,6 +256,7 @@ Route::middleware(['auth', 'role:employee'])
         // PBL-23: Open Shift Claim (Employee)
         Route::get('/open-shifts', [OpenShiftController::class, 'availableShifts'])
             ->name('open-shifts');
+
         Route::post('/open-shifts/{shift}/claim', [OpenShiftController::class, 'claim'])
             ->name('open-shifts.claim');
 

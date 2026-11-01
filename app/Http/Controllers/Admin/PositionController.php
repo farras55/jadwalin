@@ -76,6 +76,11 @@ class PositionController extends Controller
             abort(404);
         }
 
+        // Proteksi integritas relasional: tolak jika masih digunakan oleh karyawan aktif
+        if ($position->users()->where('status', 'active')->exists()) {
+            return back()->with('error', 'Posisi tidak dapat dihapus karena masih digunakan oleh karyawan aktif.');
+        }
+
         $position->delete();
 
         return redirect()

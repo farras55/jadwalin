@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Jadwalin - Smart Shift Scheduling &amp; Labor Compliance Platform</title>
+    <title>Jadwalin - Smart Shift Scheduling Platform untuk Bisnis Modern</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
 
     <!-- Google Fonts -->
@@ -149,7 +149,7 @@
                             <span class="text-brand-text">Jadwal</span><span class="text-brand-primary">in</span>
                         </span>
                         <span class="text-[10px] font-semibold tracking-wider text-brand-primary/80 uppercase mt-0.5">
-                            Shift Compliance
+                            Smart Shift Scheduling
                         </span>
                     </div>
                 </a>
@@ -280,7 +280,7 @@
                             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-primary"></span>
                         </span>
                         <span class="text-xs font-bold tracking-wide text-brand-primary uppercase">
-                            Smart Roster &amp; Labor Compliance B2B
+                            Platform Penjadwalan Roster Kerja Cerdas #1 untuk Bisnis Modern
                         </span>
                     </div>
 
@@ -294,12 +294,12 @@
 
                     <!-- Script / Handwritten Slogan Accent -->
                     <p class="font-script text-2xl sm:text-3xl text-brand-primary font-bold mt-3 tracking-wide transform -rotate-1">
-                        Presisi. Tanpa Bentrok. Patuh Regulasi.
+                        Cepat. Adil. 100% Bebas Bentrok.
                     </p>
 
                     <!-- Paragraph description -->
                     <p class="mt-4 text-base sm:text-lg text-[#7C7896] leading-relaxed max-w-xl font-normal">
-                        Roster mingguan tersusun otomatis bebas jadwal ganda untuk bisnis F&amp;B, ritel, perhotelan, hingga fasilitas medis. Terintegrasi penuh dengan batas jam kerja &amp; hak istirahat PP No. 35 Tahun 2021.
+                        Otomatisasi penyusunan jadwal kerja shift bebas bentrok untuk kafe, resto, ritel, dan perhotelan. Atur puluhan staf dalam hitungan detik dengan algoritma pintar yang otomatis menyelaraskan ketersediaan karyawan, kuota operasional, dan batas beban kerja sehat.
                     </p>
 
                     <!-- Action Button & Trust Point -->
@@ -319,7 +319,7 @@
                     <div class="mt-10 flex flex-wrap items-center gap-6 text-xs text-[#7C7896] pt-6 border-t border-brand-border/80">
                         <div class="flex items-center gap-2">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
-                            <span class="font-medium">PP No. 35/2021 Ready</span>
+                            <span class="font-medium">1-Click Smart Scheduling</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
@@ -327,7 +327,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
-                            <span class="font-medium">Tukar Shift 2 Arah</span>
+                            <span class="font-medium">Tukar Shift &amp; Open Shift</span>
                         </div>
                     </div>
                 </div>
@@ -403,7 +403,7 @@
                     class="flex items-center gap-2.5 px-6 py-3.5 rounded-t-2xl border-t border-x text-sm transition-all"
                 >
                     <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    <span>Kepatuhan PP 35/2021</span>
+                    <span>Proteksi Beban Kerja &amp; Istirahat</span>
                 </button>
 
                 <button 
@@ -661,9 +661,9 @@
                 <div class="p-5 rounded-2xl border" :class="ppIsCompliant ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
-                            <span class="text-xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full" :class="ppIsCompliant ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'" x-text="ppIsCompliant ? '100% SESUAI PP NO. 35/2021' : 'PERINGATAN PELANGGARAN REGULASI'"></span>
-                            <h4 class="font-display font-extrabold text-xl mt-2" x-text="'Total Jam: ' + ppTotalJam + ' Jam/Minggu (Batas: 40 Jam)'"></h4>
-                            <p class="text-xs mt-1" :class="ppIsCompliant ? 'text-emerald-700' : 'text-rose-700'" x-text="ppIsCompliant ? 'Ketentuan jam kerja reguler dan jeda istirahat antar shift staf telah memenuhi standar ketenagakerjaan Republik Indonesia.' : 'Jadwal melebihi batas 40 jam kerja per minggu atau jeda istirahat kurang dari 11 jam. Harus dikonversi menjadi lembur resmi.'"></p>
+                            <span class="text-xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full" :class="ppIsCompliant ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'" x-text="ppIsCompliant ? 'BEBAN KERJA SEHAT & SEIMBANG' : 'PERINGATAN BEBAN KERJA BERLEBIH'"></span>
+                            <h4 class="font-display font-extrabold text-xl mt-2" x-text="'Total Jam: ' + ppTotalJam + ' Jam/Minggu (Batas Ideal: 40 Jam)'"></h4>
+                            <p class="text-xs mt-1" :class="ppIsCompliant ? 'text-emerald-700' : 'text-rose-700'" x-text="ppIsCompliant ? 'Ketentuan jam kerja reguler dan jeda istirahat antar shift staf telah seimbang, aman dari kelelahan, dan memenuhi standar ketenagakerjaan.' : 'Jadwal melebihi batas 40 jam kerja per minggu atau jeda istirahat kurang dari 11 jam. Harus dikonversi menjadi lembur resmi.'"></p>
                         </div>
                         <a href="{{ route('login') }}" class="px-5 py-2.5 rounded-xl font-bold text-xs shrink-0 transition-colors shadow-sm" :class="ppIsCompliant ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-rose-600 hover:bg-rose-700 text-white'">
                             Gunakan Validator Ini
@@ -780,17 +780,17 @@
                     </div>
                 </div>
 
-                <!-- Badge 2: Kepatuhan PP 35/2021 -->
+                <!-- Badge 2: Proteksi Jam Kerja Sehat -->
                 <div class="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4 card-elevated card-elevated-hover reveal delay-200">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#DDD6FE] border border-brand-primary/20 flex items-center justify-center shrink-0 text-brand-primary shadow-inner">
                         <i data-lucide="shield-check" class="w-7 h-7"></i>
                     </div>
                     <div>
                         <h3 class="font-display font-bold text-base text-brand-text">
-                            Kepatuhan PP 35
+                            Beban Kerja Sehat
                         </h3>
                         <p class="text-xs text-[#7C7896] mt-0.5 leading-relaxed">
-                            Batas jam kerja 40 jam &amp; jeda 11 jam terpantau otomatis.
+                            Batas jam kerja 40 jam &amp; jeda 11 jam terjaga otomatis di sistem.
                         </p>
                     </div>
                 </div>
@@ -850,10 +850,10 @@
                     SEMUA FITUR JADWALIN
                 </h2>
                 <p class="font-script text-2xl text-brand-primary font-bold mt-2">
-                    Otomatis. Adil. Terlindungi Hukum.
+                    Cerdas. Adil. Efisien.
                 </p>
                 <p class="mt-3 text-sm sm:text-base text-[#7C7896] leading-relaxed max-w-2xl mx-auto">
-                    Kumpulan fitur terpadu untuk mengelola operasional kerja shift: dari penyusunan roster tim, validasi hukum PP No. 35/2021, presensi digital mandiri, hingga laporan timesheet kerja.
+                    Kumpulan fitur terpadu untuk mengelola operasional kerja shift: dari penyusunan roster pintar berbasis algoritma, pertukaran shift mandiri, presensi digital, hingga proteksi beban kerja staf secara otomatis.
                 </p>
             </div>
 
@@ -883,7 +883,7 @@
                     class="px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm transition-all duration-200 flex items-center gap-1.5"
                 >
                     <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    <span>Kepatuhan PP 35</span>
+                    <span>Proteksi Beban Kerja</span>
                 </button>
                 <button 
                     type="button"
@@ -1036,7 +1036,7 @@
                     </div>
                 </div>
 
-                <!-- Fitur 3: Kepatuhan Jam Kerja PP No. 35/2021 -->
+                <!-- Fitur 3: Proteksi Jam Kerja & Keseimbangan Beban -->
                 <div 
                     x-show="featureFilter === 'all' || featureFilter === 'compliance'" 
                     class="bg-white rounded-3xl border border-brand-border p-6 sm:p-7 flex flex-col justify-between card-elevated card-elevated-hover reveal delay-300 group"
@@ -1048,19 +1048,19 @@
                             </div>
                             <div class="flex flex-col items-end gap-1">
                                 <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                                    Kepatuhan PP 35
+                                    Smart Guardrail
                                 </span>
                                 <span class="text-[11px] font-bold text-[#7C7896]">
-                                    Semua Peran (Legal RI)
+                                    Semua Peran (Built-in)
                                 </span>
                             </div>
                         </div>
 
                         <h3 class="font-display font-bold text-xl text-brand-text group-hover:text-brand-primary transition-colors">
-                            Kepatuhan Jam Kerja PP 35/2021
+                            Proteksi Beban Kerja &amp; Anti-Kelelahan
                         </h3>
                         <p class="text-xs sm:text-[13px] text-[#7C7896] mt-2.5 leading-relaxed">
-                            Mencegah pelanggaran Pasal 21 PP No. 35 Tahun 2021. Menjaga batas 7 jam/hari (6 hari kerja) atau 8 jam/hari (5 hari kerja) dengan akumulasi maksimal 40 jam per minggu.
+                            Secara otomatis menjaga batas maksimal 40 jam kerja per minggu dan jeda istirahat sehat. Mencegah karyawan kelelahan dan menjaga operasional tetap sesuai standar regulasi (PP No. 35/2021).
                         </p>
 
                         <ul class="mt-4 space-y-2 text-xs text-brand-text/90 pt-3 border-t border-brand-border/70">
@@ -1074,7 +1074,7 @@
                             </li>
                             <li class="flex items-center gap-2">
                                 <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0"></i>
-                                <span>Jaminan kepatuhan audit Disnaker &amp; Kemenaker</span>
+                                <span>Jaminan kepatuhan standar kerja tanpa repot manual</span>
                             </li>
                         </ul>
                     </div>
@@ -3241,7 +3241,7 @@
                         </span>
                     </a>
                     <p class="mt-4 text-sm text-[#7C7896] leading-relaxed max-w-sm">
-                        Platform otomasi penyusunan roster shift kerja B2B berstandar PP No. 35 Tahun 2021. Efisien, adil, dan tanpa bentrok jam kerja.
+                        Platform cerdas otomasi penyusunan roster shift kerja B2B. Efisien, adil, hemat waktu, dan bebas bentrok jadwal kerja.
                     </p>
                 </div>
 
@@ -3255,7 +3255,7 @@
                         <li><a href="#simulator" class="hover:text-brand-primary transition-colors">Simulasi Shift Otomatis</a></li>
                         <li><a href="#sektor" class="hover:text-brand-primary transition-colors">Sektor Kafe, Ritel, &amp; Medis</a></li>
                         <li><a href="#pricing" class="hover:text-brand-primary transition-colors">Paket Lisensi &amp; Harga</a></li>
-                        <li><a href="#regulasi" class="hover:text-brand-primary transition-colors">Kepatuhan PP 35/2021</a></li>
+                        <li><a href="#regulasi" class="hover:text-brand-primary transition-colors">Standar Ketenagakerjaan (PP 35)</a></li>
                     </ul>
                 </div>
 
@@ -3278,6 +3278,7 @@
             <!-- Bottom Copyright & Compliance Badges -->
             <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#7C7896]">
                 <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary font-semibold">Smart Scheduling Engine</span>
                     <span class="px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary font-semibold">PP No. 35/2021 Ready</span>
                     <span class="px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary font-semibold">Multi-Tenant Architecture</span>
                     <span class="px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary font-semibold">Mobile-First UI</span>

@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftTemplate;
 use App\Models\User;
+use App\Services\NotificationService;
 use App\Services\ScheduleBuilderService;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -332,6 +333,27 @@ class ShiftController extends Controller
                 'start_date' => $startDate->format('Y-m-d'),
                 'end_date' => $endDate->format('Y-m-d'),
             ])->with('warning', 'Tidak ada draf jadwal yang perlu diterbitkan pada periode ini.');
+        }
+
+        // Kirim notifikasi in-app ke seluruh karyawan yang mendapat penugasan di jadwal yang diterbitkan
+        $assignedUserIds = ShiftAssignment::where('company_id', $user->company_id)
+            ->whereHas('shift', function ($q) use ($targetDeptIds, $startDate, $endDate) {
+                $q->whereIn('department_id', $targetDeptIds)
+                    ->where('status', 'published')
+                    ->whereBetween('start_time', [$startDate, $endDate]);
+            })
+            ->distinct()
+            ->pluck('user_id');
+
+        $periodText = $startDate->translatedFormat('d M').' - '.$endDate->translatedFormat('d M Y');
+        foreach ($assignedUserIds as $assignedUserId) {
+            NotificationService::send(
+                $assignedUserId,
+                'shift_published',
+                'Jadwal Kerja Diterbitkan',
+                "Jadwal kerja baru untuk periode {$periodText} telah resmi diterbitkan oleh manajer. Silakan cek kalender jadwal Anda.",
+                $user->company_id
+            );
         }
 
         $successMessage = $overwritePublished
