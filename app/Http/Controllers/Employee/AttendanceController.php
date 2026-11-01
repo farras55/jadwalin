@@ -441,7 +441,6 @@ class AttendanceController extends Controller
 
         $assignment->update([
             'clock_out_time' => $now,
-            'status' => 'completed',
             'regular_hours' => $regularHours,
             'overtime_hours' => $overtimeHours,
         ]);

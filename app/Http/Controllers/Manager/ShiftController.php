@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\Shift;
+use App\Models\ShiftAssignment;
 use App\Models\ShiftTemplate;
 use App\Models\User;
 use App\Services\NotificationService;

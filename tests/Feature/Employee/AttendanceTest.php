@@ -197,7 +197,6 @@ class AttendanceTest extends TestCase
         $this->assertNotNull($assignment->clock_out_time);
         $this->assertEquals(8.0, $assignment->regular_hours);
         $this->assertEquals(1.0, $assignment->overtime_hours);
-        $this->assertEquals('completed', $assignment->status);
     }
 
     public function test_employee_cannot_clock_out_without_clocking_in()
