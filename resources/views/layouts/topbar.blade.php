@@ -22,12 +22,19 @@
         </div>
 
         {{-- Jam & Tanggal Realtime (Sembunyi di mobile kecil) --}}
+        @php
+            $tzLabel = match($timezone ?? 'Asia/Jakarta') {
+                'Asia/Makassar' => 'WITA',
+                'Asia/Jayapura' => 'WIT',
+                default => 'WIB',
+            };
+        @endphp
         <div class="hidden sm:flex items-center gap-2 text-[12px] text-[#7C7896] font-medium border-l border-[#E2E0F7] pl-4 md:pl-5">
             <i data-lucide="calendar-days" class="h-4 w-4 shrink-0 text-slate-400"></i>
             <span id="navbar-date">{{ $tanggalStr }}</span>
             <span class="hidden md:inline text-slate-300">|</span>
             <span id="navbar-clock" class="hidden md:inline font-mono font-semibold text-[#2D2A3E]">{{ $now->format('H:i') }}</span>
-            <span class="hidden md:inline text-[11px] text-[#7C7896] font-semibold">WIB</span>
+            <span class="hidden md:inline text-[11px] text-[#7C7896] font-semibold">{{ $tzLabel }}</span>
         </div>
     </div>
 

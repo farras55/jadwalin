@@ -41,19 +41,29 @@ class DashboardController extends Controller
         $monthStart = now()->startOfMonth();
         $monthEnd = now()->endOfMonth();
 
-        $companyCount = Company::count();
-        $configuredCompanyCount = Company::whereHas('companySetting')->count();
+        // Isolasi data sesuai konteks perusahaan Super Admin (Tenant Business Owner)
+        $companyId = $user->company_id;
+
+        $departmentQuery = Department::query();
+        $employeeQuery = User::where('role', 'employee')->where('status', 'active');
+        $shiftQuery = Shift::whereBetween('start_time', [$monthStart, $monthEnd]);
+
+        if ($companyId) {
+            $departmentQuery->where('company_id', $companyId);
+            $employeeQuery->where('company_id', $companyId);
+            $shiftQuery->where('company_id', $companyId);
+            $companyCount = 1;
+            $configuredCompanyCount = $user->company?->companySetting ? 1 : 0;
+        } else {
+            $companyCount = Company::count();
+            $configuredCompanyCount = Company::whereHas('companySetting')->count();
+        }
 
         return view('dashboard', [
             'roleTitle' => 'Super Admin',
-            'departmentCount' => Department::count(),
-            'employeeCount' => User::where('role', 'employee')
-                ->where('status', 'active')
-                ->count(),
-            'monthlyShiftCount' => Shift::whereBetween('start_time', [
-                $monthStart,
-                $monthEnd,
-            ])->count(),
+            'departmentCount' => $departmentQuery->count(),
+            'employeeCount' => $employeeQuery->count(),
+            'monthlyShiftCount' => $shiftQuery->count(),
             'companyCount' => $companyCount,
             'configuredCompanyCount' => $configuredCompanyCount,
         ]);
@@ -84,7 +94,7 @@ class DashboardController extends Controller
                 $query->where('company_id', $manager->company_id)
                     ->where('role', 'employee');
 
-                if (!$manager->is_global_manager) {
+                if (! $manager->is_global_manager) {
                     $query->where('department_id', $manager->department_id);
                 }
             });
@@ -96,7 +106,7 @@ class DashboardController extends Controller
             ->whereHas('user', function (Builder $query) use ($manager) {
                 $query->where('company_id', $manager->company_id);
 
-                if (!$manager->is_global_manager) {
+                if (! $manager->is_global_manager) {
                     $query->where('department_id', $manager->department_id);
                 }
             });
@@ -106,7 +116,7 @@ class DashboardController extends Controller
             ->whereHas('shiftAssignment.shift', function (Builder $query) use ($manager) {
                 $query->where('company_id', $manager->company_id);
 
-                if (!$manager->is_global_manager) {
+                if (! $manager->is_global_manager) {
                     $query->where('department_id', $manager->department_id);
                 }
             });
@@ -118,7 +128,7 @@ class DashboardController extends Controller
             $query->where('company_id', $manager->company_id)
                 ->whereBetween('start_time', [$weekStart, $weekEnd]);
 
-            if (!$manager->is_global_manager) {
+            if (! $manager->is_global_manager) {
                 $query->where('department_id', $manager->department_id);
             }
         });
@@ -135,7 +145,7 @@ class DashboardController extends Controller
             ->whereHas('shift', function (Builder $query) use ($manager) {
                 $query->where('company_id', $manager->company_id);
 
-                if (!$manager->is_global_manager) {
+                if (! $manager->is_global_manager) {
                     $query->where('department_id', $manager->department_id);
                 }
             })->count();
@@ -181,7 +191,7 @@ class DashboardController extends Controller
         $weeklyScheduledHours = $weeklyAssignments->sum(function ($assignment) {
             $shift = $assignment->shift;
 
-            if (!$shift || !$shift->start_time || !$shift->end_time) {
+            if (! $shift || ! $shift->start_time || ! $shift->end_time) {
                 return 0;
             }
 
@@ -239,7 +249,7 @@ class DashboardController extends Controller
         Builder $query,
         User $manager
     ): void {
-        if (!$manager->is_global_manager) {
+        if (! $manager->is_global_manager) {
             $query->where('department_id', $manager->department_id);
         }
     }

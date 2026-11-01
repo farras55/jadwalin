@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Availability;
+use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -73,6 +74,14 @@ class AvailabilityApprovalController extends Controller
             'rejection_reason' => null,
         ]);
 
+        NotificationService::send(
+            $availability->user_id,
+            'availability_approved',
+            'Pengajuan Ketersediaan Disetujui',
+            'Pengajuan jadwal halangan Anda telah disetujui oleh manajer.',
+            $availability->company_id
+        );
+
         return redirect()
             ->route('manager.availability.index')
             ->with('success', 'Pengajuan ketersediaan berhasil disetujui.');
@@ -108,6 +117,14 @@ class AvailabilityApprovalController extends Controller
             'approved_at' => now(),
             'rejection_reason' => $validated['rejection_reason'],
         ]);
+
+        NotificationService::send(
+            $availability->user_id,
+            'availability_rejected',
+            'Pengajuan Ketersediaan Ditolak',
+            "Pengajuan jadwal halangan Anda ditolak oleh manajer. Alasan: {$validated['rejection_reason']}",
+            $availability->company_id
+        );
 
         return redirect()
             ->route('manager.availability.index')

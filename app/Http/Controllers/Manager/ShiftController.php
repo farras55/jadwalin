@@ -8,6 +8,7 @@ use App\Models\Shift;
 use App\Models\ShiftAssignment;
 use App\Models\ShiftTemplate;
 use App\Models\User;
+use App\Services\NotificationService;
 use App\Services\ScheduleBuilderService;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -29,8 +30,8 @@ class ShiftController extends Controller
 
         // 1. Identifikasi Departemen Berdasarkan Hak Akses Manajer
         $allDepartments = Department::where('company_id', $user->company_id)
-            ->with(['shiftTemplates' => fn($q) => $q->orderBy('start_time')])
-            ->withCount(['users as active_staff_count' => fn($q) => $q->where('status', 'active')->where('role', 'employee')])
+            ->with(['shiftTemplates' => fn ($q) => $q->orderBy('start_time')])
+            ->withCount(['users as active_staff_count' => fn ($q) => $q->where('status', 'active')->where('role', 'employee')])
             ->orderBy('name')
             ->get();
 
@@ -42,9 +43,9 @@ class ShiftController extends Controller
             // Regular Manager terkunci hanya pada departemennya sendiri
             $departmentId = (int) $user->department_id;
             $currentDepartment = $allDepartments->firstWhere('id', $departmentId);
-            
+
             // Fallback pengaman jika department_id user belum ter-set
-            if (!$currentDepartment) {
+            if (! $currentDepartment) {
                 $currentDepartment = $allDepartments->first();
                 $departmentId = (int) ($currentDepartment?->id ?? 0);
             }
@@ -280,8 +281,8 @@ class ShiftController extends Controller
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate->format('Y-m-d'),
         ])->with('success', $result['message'])
-          ->with('soft_warnings', $result['soft_warnings'] ?? [])
-          ->with('unfilled_slots', $result['unfilled_slots'] ?? []);
+            ->with('soft_warnings', $result['soft_warnings'] ?? [])
+            ->with('unfilled_slots', $result['unfilled_slots'] ?? []);
     }
 
     /**
@@ -333,6 +334,27 @@ class ShiftController extends Controller
                 'start_date' => $startDate->format('Y-m-d'),
                 'end_date' => $endDate->format('Y-m-d'),
             ])->with('warning', 'Tidak ada draf jadwal yang perlu diterbitkan pada periode ini.');
+        }
+
+        // Kirim notifikasi in-app ke seluruh karyawan yang mendapat penugasan di jadwal yang diterbitkan
+        $assignedUserIds = ShiftAssignment::where('company_id', $user->company_id)
+            ->whereHas('shift', function ($q) use ($targetDeptIds, $startDate, $endDate) {
+                $q->whereIn('department_id', $targetDeptIds)
+                    ->where('status', 'published')
+                    ->whereBetween('start_time', [$startDate, $endDate]);
+            })
+            ->distinct()
+            ->pluck('user_id');
+
+        $periodText = $startDate->translatedFormat('d M').' - '.$endDate->translatedFormat('d M Y');
+        foreach ($assignedUserIds as $assignedUserId) {
+            NotificationService::send(
+                $assignedUserId,
+                'shift_published',
+                'Jadwal Kerja Diterbitkan',
+                "Jadwal kerja baru untuk periode {$periodText} telah resmi diterbitkan oleh manajer. Silakan cek kalender jadwal Anda.",
+                $user->company_id
+            );
         }
 
         $successMessage = $overwritePublished
@@ -406,7 +428,7 @@ class ShiftController extends Controller
         }
 
         // 2. Verifikasi hak departemen jika bukan global manager
-        if (!$user->is_global_manager && (int) $shift->department_id !== (int) $user->department_id) {
+        if (! $user->is_global_manager && (int) $shift->department_id !== (int) $user->department_id) {
             abort(403, 'Anda tidak memiliki hak akses mengubah shift departemen ini.');
         }
 
@@ -433,7 +455,7 @@ class ShiftController extends Controller
 
         // 4. Filter staf yang valid (hanya staf departemen & perusahaan yang sama)
         $assignedUserIds = collect($request->input('assigned_user_ids', []))
-            ->map(fn($id) => (int) $id)
+            ->map(fn ($id) => (int) $id)
             ->unique()
             ->values();
 
@@ -453,7 +475,7 @@ class ShiftController extends Controller
             'quota' => $finalQuota,
         ];
 
-        if (!empty($validated['status'])) {
+        if (! empty($validated['status'])) {
             $updateData['status'] = $validated['status'];
         }
 
@@ -469,7 +491,7 @@ class ShiftController extends Controller
         $existingAssignedIds = $shift->shiftAssignments()->pluck('user_id')->toArray();
 
         foreach ($validUsers as $uId => $employee) {
-            if (!in_array($uId, $existingAssignedIds)) {
+            if (! in_array($uId, $existingAssignedIds)) {
                 $shift->shiftAssignments()->create([
                     'company_id' => $shift->company_id,
                     'user_id' => $uId,
@@ -507,7 +529,7 @@ class ShiftController extends Controller
             abort(403, 'Akses ditolak ke tenant ini.');
         }
 
-        if (!$user->is_global_manager && (int) $shift->department_id !== (int) $user->department_id) {
+        if (! $user->is_global_manager && (int) $shift->department_id !== (int) $user->department_id) {
             abort(403, 'Anda tidak memiliki hak akses menghapus shift departemen ini.');
         }
 
@@ -530,7 +552,7 @@ class ShiftController extends Controller
             abort(403, 'Akses ditolak ke tenant ini.');
         }
 
-        if (!$user->is_global_manager && (int) $template->department_id !== (int) $user->department_id) {
+        if (! $user->is_global_manager && (int) $template->department_id !== (int) $user->department_id) {
             abort(403, 'Anda tidak memiliki hak akses mengubah template shift departemen ini.');
         }
 
@@ -544,8 +566,8 @@ class ShiftController extends Controller
 
         $template->update([
             'title' => $validated['title'],
-            'start_time' => strlen($validated['start_time']) === 5 ? $validated['start_time'] . ':00' : $validated['start_time'],
-            'end_time' => strlen($validated['end_time']) === 5 ? $validated['end_time'] . ':00' : $validated['end_time'],
+            'start_time' => strlen($validated['start_time']) === 5 ? $validated['start_time'].':00' : $validated['start_time'],
+            'end_time' => strlen($validated['end_time']) === 5 ? $validated['end_time'].':00' : $validated['end_time'],
             'default_quota' => (int) $validated['default_quota'],
             'color_code' => $validated['color_code'] ?? $template->color_code ?? '#6C5CE7',
         ]);
