@@ -9,7 +9,6 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\ShiftTemplate;
 use App\Models\User;
-use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -66,13 +65,14 @@ class KaryawanDatasetSeeder extends Seeder
             // 3. BACA DATASET DARI JSON (Hasil konversi karyawan_bersih_300.xlsx)
             // =========================================================================
             $jsonPath = database_path('seeders/data/karyawan_300.json');
-            if (!file_exists($jsonPath)) {
+            if (! file_exists($jsonPath)) {
                 $this->command->error("File dataset tidak ditemukan di: {$jsonPath}");
+
                 return;
             }
 
             $rawDataset = json_decode(file_get_contents($jsonPath), true);
-            $this->command->info('Membaca ' . count($rawDataset) . ' record karyawan dari file dataset...');
+            $this->command->info('Membaca '.count($rawDataset).' record karyawan dari file dataset...');
 
             // =========================================================================
             // 4. GENERATE DEPARTEMEN DARI DATASET
@@ -116,7 +116,7 @@ class KaryawanDatasetSeeder extends Seeder
                 $dept = $deptMap[$deptName];
 
                 $key = "{$dept->id}_{$jabatanName}";
-                if (!isset($positionMap[$key])) {
+                if (! isset($positionMap[$key])) {
                     $pos = Position::firstOrCreate([
                         'company_id' => $companyId,
                         'department_id' => $dept->id,
@@ -304,8 +304,8 @@ class KaryawanDatasetSeeder extends Seeder
                     'employment_type' => $employmentType,
                     'max_weekly_hours' => $maxWeeklyHours,
                     'is_global_manager' => false,
-                    'phone_number' => '0812' . str_pad($idx + 1, 8, '0', STR_PAD_LEFT),
-                    'join_date' => '2023-06-' . str_pad(($idx % 28) + 1, 2, '0', STR_PAD_LEFT),
+                    'phone_number' => '0812'.str_pad($idx + 1, 8, '0', STR_PAD_LEFT),
+                    'join_date' => '2023-06-'.str_pad(($idx % 28) + 1, 2, '0', STR_PAD_LEFT),
                     'status' => 'active',
                     'created_at' => $now,
                     'updated_at' => $now,

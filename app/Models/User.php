@@ -103,6 +103,21 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function getBranchIdAttribute(): ?int
+    {
+        return $this->department_id;
+    }
+
+    public function setBranchIdAttribute(?int $value): void
+    {
+        $this->attributes['department_id'] = $value;
+    }
+
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
@@ -148,4 +163,3 @@ class User extends Authenticatable
         return $this->hasMany(AuditLog::class);
     }
 }
-

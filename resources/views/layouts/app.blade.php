@@ -40,7 +40,17 @@
     </style>
 </head>
 
-<body x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm">
+<body x-data="{ 
+    sidebarOpen: false,
+    sidebarCollapsed: localStorage.getItem('jadwalin_sidebar_collapsed') === 'true',
+    toggleSidebar() {
+        this.sidebarCollapsed = !this.sidebarCollapsed;
+        localStorage.setItem('jadwalin_sidebar_collapsed', this.sidebarCollapsed);
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 310);
+    }
+}" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm">
 
     {{-- ===== SIDEBAR (Desktop & Mobile Drawer) ===== --}}
     @include('layouts.sidebar')

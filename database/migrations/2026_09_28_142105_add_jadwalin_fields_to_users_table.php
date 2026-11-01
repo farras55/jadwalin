@@ -32,8 +32,8 @@ return new class extends Migration
             $table->dropForeign(['department_id']);
             $table->dropForeign(['position_id']);
             $table->dropColumn([
-                'company_id', 'department_id', 'position_id', 'is_global_manager', 
-                'role', 'phone_number', 'join_date', 'status', 'profile_photo', 'deleted_at'
+                'company_id', 'department_id', 'position_id', 'is_global_manager',
+                'role', 'phone_number', 'join_date', 'status', 'profile_photo', 'deleted_at',
             ]);
         });
     }

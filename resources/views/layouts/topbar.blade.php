@@ -9,6 +9,14 @@
             <i data-lucide="menu" class="h-5 w-5"></i>
         </button>
 
+        {{-- Toggle Sidebar Button (Desktop Only) --}}
+        <button type="button" 
+                @click="toggleSidebar()" 
+                class="hidden md:flex items-center justify-center -ml-1 p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-[#F5F3FF] transition focus:outline-none"
+                :title="sidebarCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar'">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+
         {{-- Tampil di mobile saja: Logo Singkat --}}
         <div class="md:hidden flex items-center gap-2">
             <x-application-logo class="h-7 w-auto shrink-0" />

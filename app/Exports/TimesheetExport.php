@@ -3,17 +3,20 @@
 namespace App\Exports;
 
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-if (interface_exists(\Maatwebsite\Excel\Concerns\FromCollection::class)) {
-    class TimesheetExport implements 
-        \Maatwebsite\Excel\Concerns\FromCollection,
-        \Maatwebsite\Excel\Concerns\WithHeadings,
-        \Maatwebsite\Excel\Concerns\WithTitle,
-        \Maatwebsite\Excel\Concerns\ShouldAutoSize
+if (interface_exists(FromCollection::class)) {
+    class TimesheetExport implements FromCollection, ShouldAutoSize, WithHeadings, WithTitle
     {
         protected Collection $reports;
+
         protected mixed $company;
+
         protected int $month;
+
         protected int $year;
 
         public function __construct(Collection $reports, mixed $company, int $month, int $year)
@@ -60,15 +63,18 @@ if (interface_exists(\Maatwebsite\Excel\Concerns\FromCollection::class)) {
 
         public function title(): string
         {
-            return 'Timesheet ' . $this->month . '-' . $this->year;
+            return 'Timesheet '.$this->month.'-'.$this->year;
         }
     }
 } else {
     class TimesheetExport
     {
         public Collection $reports;
+
         public mixed $company;
+
         public int $month;
+
         public int $year;
 
         public function __construct(Collection $reports, mixed $company, int $month, int $year)

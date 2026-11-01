@@ -10,7 +10,6 @@ use App\Models\Shift;
 use App\Models\ShiftAssignment;
 use App\Models\ShiftTemplate;
 use App\Models\User;
-use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -791,4 +790,3 @@ class SmartSchedulingBuilderTest extends TestCase
         $this->assertEquals('#00B894', $template->color_code);
     }
 }
-

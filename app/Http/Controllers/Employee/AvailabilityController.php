@@ -14,7 +14,6 @@ use Illuminate\View\View;
 
 class AvailabilityController extends Controller
 {
-
     private const DEFAULT_BUFFER_MINUTES = 30;
 
     public function index(): View
@@ -60,8 +59,8 @@ class AvailabilityController extends Controller
             'reason.max' => 'Alasan maksimal 255 karakter.',
         ]);
 
-        $start = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['start_time']);
-        $end = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['end_time']);
+        $start = Carbon::createFromFormat('Y-m-d H:i', $validated['date'].' '.$validated['start_time']);
+        $end = Carbon::createFromFormat('Y-m-d H:i', $validated['date'].' '.$validated['end_time']);
 
         if ($start->lessThanOrEqualTo(now())) {
             throw ValidationException::withMessages([

@@ -110,16 +110,53 @@ class DepartmentController extends Controller
                 'string',
                 'max:1000',
             ],
+            'latitude' => [
+                'nullable',
+                'numeric',
+                'between:-90,90',
+            ],
+            'longitude' => [
+                'nullable',
+                'numeric',
+                'between:-180,180',
+            ],
+            'radius' => [
+                'nullable',
+                'integer',
+                'min:5',
+                'max:10000',
+            ],
+            'address' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ], [
             'name.required' => 'Nama department wajib diisi.',
             'name.unique' => 'Nama department tersebut sudah digunakan.',
             'description.max' => 'Deskripsi maksimal 1000 karakter.',
         ]);
 
-        $department->update([
+        $updateData = [
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-        ]);
+        ];
+
+        if (array_key_exists('latitude', $validated) && $validated['latitude'] !== null) {
+            $updateData['latitude'] = $validated['latitude'];
+        }
+        if (array_key_exists('longitude', $validated) && $validated['longitude'] !== null) {
+            $updateData['longitude'] = $validated['longitude'];
+        }
+        if (array_key_exists('radius', $validated) && $validated['radius'] !== null) {
+            $updateData['radius'] = $validated['radius'];
+            $updateData['radius_meters'] = $validated['radius'];
+        }
+        if (array_key_exists('address', $validated)) {
+            $updateData['address'] = $validated['address'];
+        }
+
+        $department->update($updateData);
 
         return redirect()
             ->route('admin.departments.index')

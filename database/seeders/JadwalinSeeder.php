@@ -40,7 +40,7 @@ class JadwalinSeeder extends Seeder
                 ->where('email', 'kontak@senjawisata.co.id')
                 ->first();
 
-            if (!$company) {
+            if (! $company) {
                 throw new \RuntimeException(
                     'Gagal membuat atau mengambil perusahaan pengujian.'
                 );
@@ -84,7 +84,7 @@ class JadwalinSeeder extends Seeder
                 ->where('name', 'Food & Beverage')
                 ->first();
 
-            if (!$department) {
+            if (! $department) {
                 throw new \RuntimeException(
                     'Gagal membuat atau mengambil departemen pengujian.'
                 );
@@ -113,7 +113,7 @@ class JadwalinSeeder extends Seeder
                 ->where('name', 'Barista')
                 ->first();
 
-            if (!$position) {
+            if (! $position) {
                 throw new \RuntimeException(
                     'Gagal membuat atau mengambil posisi pengujian.'
                 );

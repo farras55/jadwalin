@@ -119,13 +119,12 @@ class TeamEmployeeController extends Controller
                 $today
             ) {
                 $query->whereBetween('start_time', [
-                    $thirtyDaysAgo . ' 00:00:00',
-                    $today . ' 23:59:59',
+                    $thirtyDaysAgo.' 00:00:00',
+                    $today.' 23:59:59',
                 ]);
             })
             ->get()
-            ->sortByDesc(fn (ShiftAssignment $assignment) =>
-                $assignment->shift?->start_time
+            ->sortByDesc(fn (ShiftAssignment $assignment) => $assignment->shift?->start_time
             )
             ->values();
 
@@ -141,15 +140,14 @@ class TeamEmployeeController extends Controller
                 $monthEnd
             ) {
                 $query->whereBetween('start_time', [
-                    $monthStart . ' 00:00:00',
-                    $monthEnd . ' 23:59:59',
+                    $monthStart.' 00:00:00',
+                    $monthEnd.' 23:59:59',
                 ]);
             })
             ->get();
 
         $monthlyHours = $monthlyAssignments->sum(
-            fn (ShiftAssignment $assignment) =>
-                (float) $assignment->regular_hours
+            fn (ShiftAssignment $assignment) => (float) $assignment->regular_hours
                 + (float) $assignment->overtime_hours
         );
 

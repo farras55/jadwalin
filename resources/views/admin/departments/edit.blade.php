@@ -85,6 +85,78 @@
                     @enderror
                 </div>
 
+                {{-- Titik Koordinat & Geofencing Cabang --}}
+                <div class="pt-4 border-t border-[#E2E0F7] space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-[#2D2A3E] flex items-center gap-2">
+                            <i data-lucide="map-pin" class="h-4 w-4 text-[#6C5CE7]"></i>
+                            <span>Titik Koordinat &amp; Geofencing Presensi Cabang</span>
+                        </h3>
+                        <p class="text-xs text-[#7C7896] mt-0.5">
+                            Koordinat GPS yang digunakan sebagai acuan validasi Clock-In karyawan pada cabang ini.
+                        </p>
+                    </div>
+
+                    {{-- Alamat Cabang --}}
+                    <div>
+                        <label for="address" class="block text-xs font-bold uppercase tracking-wider text-[#2D2A3E] mb-2">
+                            Alamat Kantor Cabang <span class="text-xs font-normal normal-case text-[#7C7896]">(Opsional)</span>
+                        </label>
+                        <input type="text"
+                               name="address"
+                               id="address"
+                               value="{{ old('address', $department->address) }}"
+                               placeholder="Contoh: Jl. Suryo No. 12, Senopati, Kebayoran Baru"
+                               class="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E2E0F7] bg-slate-50 focus:bg-white text-[#2D2A3E] focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 outline-none transition duration-150">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {{-- Latitude --}}
+                        <div>
+                            <label for="latitude" class="block text-xs font-bold uppercase tracking-wider text-[#2D2A3E] mb-2">
+                                Latitude Cabang
+                            </label>
+                            <input type="number"
+                                   step="any"
+                                   name="latitude"
+                                   id="latitude"
+                                   value="{{ old('latitude', $department->latitude) }}"
+                                   placeholder="-6.2383200"
+                                   class="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E2E0F7] bg-slate-50 focus:bg-white text-[#2D2A3E] font-mono focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 outline-none transition duration-150">
+                        </div>
+
+                        {{-- Longitude --}}
+                        <div>
+                            <label for="longitude" class="block text-xs font-bold uppercase tracking-wider text-[#2D2A3E] mb-2">
+                                Longitude Cabang
+                            </label>
+                            <input type="number"
+                                   step="any"
+                                   name="longitude"
+                                   id="longitude"
+                                   value="{{ old('longitude', $department->longitude) }}"
+                                   placeholder="106.8122800"
+                                   class="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E2E0F7] bg-slate-50 focus:bg-white text-[#2D2A3E] font-mono focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 outline-none transition duration-150">
+                        </div>
+
+                        {{-- Radius --}}
+                        <div>
+                            <label for="radius" class="block text-xs font-bold uppercase tracking-wider text-[#2D2A3E] mb-2">
+                                Radius Presensi (Meter)
+                            </label>
+                            <input type="number"
+                                   min="5"
+                                   max="10000"
+                                   step="1"
+                                   name="radius"
+                                   id="radius"
+                                   value="{{ old('radius', $department->radius ?? ($department->radius_meters ?? 100)) }}"
+                                   placeholder="100"
+                                   class="w-full px-4 py-2.5 text-sm rounded-xl border border-[#E2E0F7] bg-slate-50 focus:bg-white text-[#2D2A3E] font-mono focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 outline-none transition duration-150">
+                        </div>
+                    </div>
+                </div>
+
                 {{-- Action Buttons --}}
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E0F7]">
                     <a href="{{ route('admin.departments.index') }}" 

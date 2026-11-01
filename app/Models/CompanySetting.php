@@ -24,6 +24,9 @@ class CompanySetting extends Model
         'grace_period_minutes',
         'is_auto_clockout',
         'auto_clockout_buffer_hours',
+        'office_latitude',
+        'office_longitude',
+        'attendance_radius_meters',
     ];
 
     /**
@@ -42,7 +45,44 @@ class CompanySetting extends Model
             'grace_period_minutes' => 'integer',
             'is_auto_clockout' => 'boolean',
             'auto_clockout_buffer_hours' => 'integer',
+            'office_latitude' => 'float',
+            'office_longitude' => 'float',
+            'attendance_radius_meters' => 'integer',
         ];
+    }
+
+    public function getAttendanceRadiusMetersAttribute($value): ?int
+    {
+        return $value !== null ? (int) $value : (int) config('jadwalin.attendance.default_radius_meters', 100);
+    }
+
+    public function setAttendanceRadiusMetersAttribute($value): void
+    {
+        $this->attributes['attendance_radius_meters'] = ($value !== null && $value !== '')
+            ? (int) $value
+            : (int) config('jadwalin.attendance.default_radius_meters', 100);
+    }
+
+    public function getOfficeLatitudeAttribute($value): ?float
+    {
+        if ($value !== null) {
+            return (float) $value;
+        }
+
+        $default = config('jadwalin.attendance.default_latitude');
+
+        return $default !== null ? (float) $default : null;
+    }
+
+    public function getOfficeLongitudeAttribute($value): ?float
+    {
+        if ($value !== null) {
+            return (float) $value;
+        }
+
+        $default = config('jadwalin.attendance.default_longitude');
+
+        return $default !== null ? (float) $default : null;
     }
 
     /**

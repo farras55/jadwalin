@@ -1,19 +1,19 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\Manager\TeamEmployeeController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AvailabilityController;
 use App\Http\Controllers\Employee\ScheduleController;
 use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
+use App\Http\Controllers\Manager\TeamEmployeeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpenShiftController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShiftSwapController;
@@ -93,6 +93,9 @@ Route::middleware(['auth', 'role:superadmin'])
 
         Route::put('/settings', [CompanySettingController::class, 'update'])
             ->name('settings.update');
+
+        Route::put('/settings/branch-location', [CompanySettingController::class, 'updateBranchLocation'])
+            ->name('settings.update-branch-location');
 
         // ==========================================
         // Timesheet Report & Export - PBL-21
@@ -263,6 +266,11 @@ Route::middleware(['auth', 'role:employee'])
             [AttendanceController::class, 'index']
         )->name('attendance');
 
+        Route::get(
+            '/attendance/location',
+            [AttendanceController::class, 'location']
+        )->name('attendance.location');
+
         Route::post(
             '/attendance/clock-in',
             [AttendanceController::class, 'clockIn']
@@ -303,6 +311,11 @@ Route::middleware(['auth', 'role:employee'])
             [AvailabilityController::class, 'destroy']
         )->name('availability.destroy');
     });
+
+// Dedicated API endpoint for employee attendance location polling
+Route::middleware('auth')
+    ->get('/api/employee/attendance-location', [AttendanceController::class, 'location'])
+    ->name('api.employee.attendance-location');
 
 // ==========================================
 // 4. Profile Routes
