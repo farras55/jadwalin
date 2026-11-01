@@ -17,7 +17,9 @@ class AttendanceTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+
     protected $company;
+
     protected $department;
 
     protected function setUp(): void
@@ -28,14 +30,14 @@ class AttendanceTest extends TestCase
             'name' => 'Test Company',
             'email' => 'test@company.com',
             'phone_number' => '081234567890',
-            'address' => 'Jl. Test No. 1'
+            'address' => 'Jl. Test No. 1',
         ]);
-        
+
         $this->department = Department::forceCreate([
             'company_id' => $this->company->id,
             'name' => 'IT Department',
         ]);
-        
+
         $this->user = User::factory()->create([
             'role' => 'employee',
             'company_id' => $this->company->id,
@@ -76,7 +78,7 @@ class AttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::today()->setTime(8, 0));
 
         $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-in'));
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('success');
 
@@ -107,7 +109,7 @@ class AttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::today()->setTime(8, 16));
 
         $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-in'));
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('success');
 
@@ -138,7 +140,7 @@ class AttendanceTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-in'));
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('error', 'Anda sudah melakukan clock-in hari ini.');
     }
@@ -166,12 +168,12 @@ class AttendanceTest extends TestCase
         Carbon::setTestNow(Carbon::today()->setTime(17, 0));
 
         $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-out'));
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('success');
 
         $assignment->refresh();
-        
+
         $this->assertNotNull($assignment->clock_out_time);
         $this->assertEquals(8, $assignment->regular_hours);
         $this->assertEquals(1, $assignment->overtime_hours);
@@ -196,8 +198,101 @@ class AttendanceTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-out'));
-        
+
         $response->assertRedirect();
         $response->assertSessionHas('error', 'Anda belum melakukan clock-in.');
+    }
+
+    public function test_part_time_shift_calculates_overtime_when_exceeding_scheduled_hours()
+    {
+        // Shift part-time 4 jam (10:00 - 14:00)
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Part-Time Shift',
+            'start_time' => Carbon::today()->setTime(10, 0),
+            'end_time' => Carbon::today()->setTime(14, 0),
+            'quota' => 1,
+        ]);
+
+        $assignment = ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+            'clock_in_time' => Carbon::today()->setTime(10, 0),
+            'status' => 'present',
+        ]);
+
+        // Pulang jam 17:00 (bekerja 7 jam: 4 jam reguler, 3 jam lembur)
+        Carbon::setTestNow(Carbon::today()->setTime(17, 0));
+
+        $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-out'));
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $assignment->refresh();
+        $this->assertEquals(4.0, $assignment->regular_hours);
+        $this->assertEquals(3.0, $assignment->overtime_hours);
+    }
+
+    public function test_employee_cannot_clock_in_too_early_before_shift()
+    {
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Afternoon Shift',
+            'start_time' => Carbon::today()->setTime(14, 0),
+            'end_time' => Carbon::today()->setTime(22, 0),
+            'quota' => 1,
+        ]);
+
+        ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+        ]);
+
+        // Mencoba clock in 3 jam sebelum shift (jam 11:00)
+        Carbon::setTestNow(Carbon::today()->setTime(11, 0));
+
+        $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-in'));
+        $response->assertRedirect();
+        $response->assertSessionHas('error', 'Clock In hanya dapat dilakukan paling cepat 60 menit sebelum shift dimulai.');
+    }
+
+    public function test_employee_can_clock_out_of_overnight_shift_the_next_morning()
+    {
+        $yesterday = Carbon::yesterday();
+        $today = Carbon::today();
+
+        // Shift overnight dari jam 22:00 kemarin s.d. 06:00 hari ini
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Night Shift',
+            'start_time' => $yesterday->copy()->setTime(22, 0),
+            'end_time' => $today->copy()->setTime(6, 0),
+            'quota' => 1,
+        ]);
+
+        $assignment = ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+            'clock_in_time' => $yesterday->copy()->setTime(22, 0),
+            'status' => 'present',
+        ]);
+
+        // Clock out pagi ini jam 06:00
+        Carbon::setTestNow($today->copy()->setTime(6, 0));
+
+        $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-out'));
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $assignment->refresh();
+        $this->assertNotNull($assignment->clock_out_time);
+        $this->assertEquals(8.0, $assignment->regular_hours);
+        $this->assertEquals(0.0, $assignment->overtime_hours);
     }
 }

@@ -142,13 +142,19 @@ class ShiftSwapController extends Controller
         ]);
 
         // 1. Verifikasi kepemilikan shift pemohon
-        $myAssignment = ShiftAssignment::where('id', $validated['shift_assignment_id'])
+        $myAssignment = ShiftAssignment::with('shift')
+            ->where('id', $validated['shift_assignment_id'])
             ->where('company_id', $user->company_id)
             ->where('user_id', $user->id)
             ->first();
 
-        if (! $myAssignment) {
+        if (! $myAssignment || ! $myAssignment->shift) {
             return back()->with('error', 'Penugasan shift yang Anda pilih tidak valid atau bukan milik Anda.');
+        }
+
+        // Proteksi: cegah tukar shift yang sudah selesai atau sedang berjalan (sudah clock-in)
+        if ($myAssignment->clock_in_time !== null || $myAssignment->shift->end_time < now()) {
+            return back()->with('error', 'Tidak dapat mengajukan pertukaran untuk shift yang sedang berjalan atau sudah selesai.');
         }
 
         // 2. Cegah tukar dengan diri sendiri
@@ -168,13 +174,18 @@ class ShiftSwapController extends Controller
         // 4. Verifikasi kepemilikan shift rekan kerja jika mode exchange
         $targetAssignment = null;
         if ($validated['swap_type'] === 'exchange') {
-            $targetAssignment = ShiftAssignment::where('id', $validated['target_shift_assignment_id'])
+            $targetAssignment = ShiftAssignment::with('shift')
+                ->where('id', $validated['target_shift_assignment_id'])
                 ->where('company_id', $user->company_id)
                 ->where('user_id', $targetUser->id)
                 ->first();
 
-            if (! $targetAssignment) {
+            if (! $targetAssignment || ! $targetAssignment->shift) {
                 return back()->with('error', 'Penugasan shift rekan kerja tidak valid atau bukan milik rekan tersebut.');
+            }
+
+            if ($targetAssignment->clock_in_time !== null || $targetAssignment->shift->end_time < now()) {
+                return back()->with('error', 'Shift rekan kerja yang dipilih sedang berjalan atau sudah selesai.');
             }
         }
 

@@ -478,4 +478,23 @@ class ShiftSwapTest extends TestCase
         $managerRes->assertOk();
         $managerRes->assertSee('Persetujuan Tukar Shift');
     }
+
+    /**
+     * Skenario Validasi: Karyawan tidak bisa menukar shift yang sudah berakhir
+     */
+    public function test_employee_cannot_swap_shift_that_has_already_ended(): void
+    {
+        // Pindahkan waktu ke masa depan sehingga shift1 sudah lewat
+        Carbon::setTestNow(Carbon::create(2026, 11, 4, 18, 0, 0));
+
+        $response = $this->actingAs($this->employeeA)->post(route('employee.swaps.request'), [
+            'swap_type' => 'transfer',
+            'shift_assignment_id' => $this->assignmentA->id,
+            'target_user_id' => $this->employeeB->id,
+            'reason' => 'Tukar shift kemarin.',
+        ]);
+
+        $response->assertSessionHas('error', 'Tidak dapat mengajukan pertukaran untuk shift yang sedang berjalan atau sudah selesai.');
+        $this->assertEquals(0, ShiftSwap::count());
+    }
 }
