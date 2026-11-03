@@ -20,7 +20,9 @@ class EmployeeScheduleTest extends TestCase
     use RefreshDatabase;
 
     protected Company $company;
+
     protected Department $department;
+
     protected User $employee;
 
     protected function setUp(): void
@@ -28,24 +30,24 @@ class EmployeeScheduleTest extends TestCase
         parent::setUp();
 
         $this->company = Company::create([
-            'name'         => 'PT Jadwalin Test',
-            'email'        => 'test@jadwalin.test',
+            'name' => 'PT Jadwalin Test',
+            'email' => 'test@jadwalin.test',
             'phone_number' => '081234567890',
-            'address'      => 'Jl. Bali No. 1, Denpasar',
-            'timezone'     => 'Asia/Jakarta',
-            'status'       => 'active',
+            'address' => 'Jl. Bali No. 1, Denpasar',
+            'timezone' => 'Asia/Jakarta',
+            'status' => 'active',
         ]);
 
         $this->department = Department::create([
             'company_id' => $this->company->id,
-            'name'       => 'Operasional',
+            'name' => 'Operasional',
         ]);
 
         $this->employee = User::factory()->create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'role'          => 'employee',
-            'status'        => 'active',
+            'role' => 'employee',
+            'status' => 'active',
         ]);
     }
 
@@ -59,13 +61,13 @@ class EmployeeScheduleTest extends TestCase
     private function makeTemplate(string $color = '#6C5CE7'): ShiftTemplate
     {
         return ShiftTemplate::create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'title'         => 'Shift Pagi',
-            'start_time'    => '08:00:00',
-            'end_time'      => '16:00:00',
+            'title' => 'Shift Pagi',
+            'start_time' => '08:00:00',
+            'end_time' => '16:00:00',
             'default_quota' => 2,
-            'color_code'    => $color,
+            'color_code' => $color,
         ]);
     }
 
@@ -79,16 +81,16 @@ class EmployeeScheduleTest extends TestCase
         ?int $templateId = null
     ): Shift {
         return Shift::create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'template_id'   => $templateId,
-            'title'         => 'Shift Test',
-            'start_time'    => $start,
-            'end_time'      => $end,
-            'quota'         => 2,
+            'template_id' => $templateId,
+            'title' => 'Shift Test',
+            'start_time' => $start,
+            'end_time' => $end,
+            'quota' => 2,
             'is_open_shift' => false,
             'requires_approval' => false,
-            'status'        => $status,
+            'status' => $status,
         ]);
     }
 
@@ -99,9 +101,9 @@ class EmployeeScheduleTest extends TestCase
     {
         return ShiftAssignment::create([
             'company_id' => $this->company->id,
-            'shift_id'   => $shift->id,
-            'user_id'    => $user->id,
-            'status'     => 'scheduled',
+            'shift_id' => $shift->id,
+            'user_id' => $user->id,
+            'status' => 'scheduled',
         ]);
     }
 
@@ -113,7 +115,7 @@ class EmployeeScheduleTest extends TestCase
     {
         // Create a published shift this week (Monday 08:00–16:00)
         $monday = Carbon::now()->startOfWeek(Carbon::MONDAY)->setTime(8, 0);
-        $shift  = $this->makeShift($monday, $monday->copy()->setTime(16, 0), 'published');
+        $shift = $this->makeShift($monday, $monday->copy()->setTime(16, 0), 'published');
         $this->makeAssignment($shift, $this->employee);
 
         $response = $this->actingAs($this->employee)->get(route('employee.schedule'));
@@ -135,26 +137,26 @@ class EmployeeScheduleTest extends TestCase
 
         // Draft shift with distinct title — should NOT appear
         $draftShift = Shift::create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'title'         => 'Shift Draft Tersembunyi',
-            'start_time'    => $monday->copy(),
-            'end_time'      => $monday->copy()->setTime(16, 0),
-            'quota'         => 1,
-            'status'        => 'draft',
+            'title' => 'Shift Draft Tersembunyi',
+            'start_time' => $monday->copy(),
+            'end_time' => $monday->copy()->setTime(16, 0),
+            'quota' => 1,
+            'status' => 'draft',
         ]);
         $this->makeAssignment($draftShift, $this->employee);
 
         // Published shift with a distinct title — should appear
         $tuesday = $monday->copy()->setTime(9, 0); // same day, different hour, to confirm it's the status not the day
         $publishedShift = Shift::create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'title'         => 'Shift Published Aktif',
-            'start_time'    => $monday->copy()->setTime(10, 0),
-            'end_time'      => $monday->copy()->setTime(18, 0),
-            'quota'         => 1,
-            'status'        => 'published',
+            'title' => 'Shift Published Aktif',
+            'start_time' => $monday->copy()->setTime(10, 0),
+            'end_time' => $monday->copy()->setTime(18, 0),
+            'quota' => 1,
+            'status' => 'published',
         ]);
         $this->makeAssignment($publishedShift, $this->employee);
 
@@ -175,14 +177,14 @@ class EmployeeScheduleTest extends TestCase
     {
         // Another employee in the same company
         $otherEmployee = User::factory()->create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'role'          => 'employee',
-            'status'        => 'active',
+            'role' => 'employee',
+            'status' => 'active',
         ]);
 
         $monday = Carbon::now()->startOfWeek(Carbon::MONDAY)->setTime(8, 0);
-        $shift  = $this->makeShift($monday, $monday->copy()->setTime(16, 0), 'published');
+        $shift = $this->makeShift($monday, $monday->copy()->setTime(16, 0), 'published');
 
         // Assignment belongs to the OTHER employee
         $otherAssignment = $this->makeAssignment($shift, $otherEmployee);
@@ -203,26 +205,26 @@ class EmployeeScheduleTest extends TestCase
         // Shift in the CURRENT week (Monday)
         $thisMonday = Carbon::now()->startOfWeek(Carbon::MONDAY)->setTime(8, 0);
         $shiftThisWeek = Shift::create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'title'         => 'Shift Minggu Ini',
-            'start_time'    => $thisMonday,
-            'end_time'      => $thisMonday->copy()->setTime(16, 0),
-            'quota'         => 1,
-            'status'        => 'published',
+            'title' => 'Shift Minggu Ini',
+            'start_time' => $thisMonday,
+            'end_time' => $thisMonday->copy()->setTime(16, 0),
+            'quota' => 1,
+            'status' => 'published',
         ]);
         $this->makeAssignment($shiftThisWeek, $this->employee);
 
         // Shift in the NEXT week (Monday + 7 days)
         $nextMonday = $thisMonday->copy()->addWeek();
         $shiftNextWeek = Shift::create([
-            'company_id'    => $this->company->id,
+            'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'title'         => 'Shift Minggu Depan',
-            'start_time'    => $nextMonday,
-            'end_time'      => $nextMonday->copy()->setTime(16, 0),
-            'quota'         => 1,
-            'status'        => 'published',
+            'title' => 'Shift Minggu Depan',
+            'start_time' => $nextMonday,
+            'end_time' => $nextMonday->copy()->setTime(16, 0),
+            'quota' => 1,
+            'status' => 'published',
         ]);
         $this->makeAssignment($shiftNextWeek, $this->employee);
 

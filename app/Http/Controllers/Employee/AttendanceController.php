@@ -191,7 +191,7 @@ class AttendanceController extends Controller
             : "{$todayLateMinutes} Menit";
 
         // 6. Riwayat 7 Hari Terakhir
-        $recentHistory = ShiftAssignment::with(['shift.department'])
+        $recentHistory = ShiftAssignment::with(['shift.department', 'latestAttendanceRegularization'])
             ->where('user_id', $user->id)
             ->where(function ($q) use ($today) {
                 $q->whereDate('clock_in_time', '<=', $today)

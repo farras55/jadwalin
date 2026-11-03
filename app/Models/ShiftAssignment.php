@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ShiftAssignment extends Model
 {
@@ -59,5 +60,15 @@ class ShiftAssignment extends Model
     public function shiftSwaps(): HasMany
     {
         return $this->hasMany(ShiftSwap::class, 'shift_assignment_id');
+    }
+
+    public function attendanceRegularizations(): HasMany
+    {
+        return $this->hasMany(AttendanceRegularization::class, 'shift_assignment_id');
+    }
+
+    public function latestAttendanceRegularization(): HasOne
+    {
+        return $this->hasOne(AttendanceRegularization::class, 'shift_assignment_id')->latestOfMany();
     }
 }

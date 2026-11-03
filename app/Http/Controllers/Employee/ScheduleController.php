@@ -21,20 +21,20 @@ class ScheduleController extends Controller
 
         // Calculate the start and end of the target week (Mon–Sun)
         $weekStart = Carbon::now()->startOfWeek(Carbon::MONDAY)->addWeeks($weekOffset)->startOfDay();
-        $weekEnd   = $weekStart->copy()->addDays(6)->endOfDay();
+        $weekEnd = $weekStart->copy()->addDays(6)->endOfDay();
 
         // Fetch only the authenticated employee's assignments for published shifts in the target week
         $assignments = ShiftAssignment::with([
-                'shift',
-                'shift.template',
-                'shift.company',
-                // Load other assignments on same shifts for coworker display (no N+1)
-                'shift.shiftAssignments.user',
-            ])
+            'shift',
+            'shift.template',
+            'shift.company',
+            // Load other assignments on same shifts for coworker display (no N+1)
+            'shift.shiftAssignments.user',
+        ])
             ->where('user_id', $user->id)
             ->whereHas('shift', function ($query) use ($weekStart, $weekEnd) {
                 $query->where('status', 'published')
-                      ->whereBetween('start_time', [$weekStart, $weekEnd]);
+                    ->whereBetween('start_time', [$weekStart, $weekEnd]);
             })
             ->get()
             ->sortBy(fn ($a) => optional($a->shift)->start_time);
@@ -43,7 +43,7 @@ class ScheduleController extends Controller
         $days = [];
         for ($i = 0; $i < 7; $i++) {
             $days[$i] = [
-                'date'        => $weekStart->copy()->addDays($i),
+                'date' => $weekStart->copy()->addDays($i),
                 'assignments' => collect(),
             ];
         }
@@ -52,7 +52,7 @@ class ScheduleController extends Controller
 
         foreach ($assignments as $assignment) {
             $shiftStart = optional($assignment->shift)->start_time;
-            if (!$shiftStart) {
+            if (! $shiftStart) {
                 continue;
             }
 
@@ -80,16 +80,16 @@ class ScheduleController extends Controller
                 ->values();
 
             // Attach computed data as transient properties
-            $assignment->schedule_status   = $scheduleStatus;
-            $assignment->coworkers_list    = $coworkers;
-            $assignment->location          = optional(optional($assignment->shift)->company)->address ?? '-';
-            $assignment->template_color    = optional(optional($assignment->shift)->template)->color_code ?? '#6C5CE7';
+            $assignment->schedule_status = $scheduleStatus;
+            $assignment->coworkers_list = $coworkers;
+            $assignment->location = optional(optional($assignment->shift)->company)->address ?? '-';
+            $assignment->template_color = optional(optional($assignment->shift)->template)->color_code ?? '#6C5CE7';
 
             $days[$dayIndex]['assignments']->push($assignment);
         }
 
         // Week label: "27 Okt - 02 Nov 2026"
-        $weekLabel = $weekStart->translatedFormat('d M') . ' - ' . $weekEnd->translatedFormat('d M Y');
+        $weekLabel = $weekStart->translatedFormat('d M').' - '.$weekEnd->translatedFormat('d M Y');
 
         return view('employee.schedule.index', compact(
             'days',
@@ -127,7 +127,7 @@ class ScheduleController extends Controller
 
         $now = Carbon::now();
         $shiftStart = optional($assignment->shift)->start_time;
-        $shiftEnd   = optional($assignment->shift)->end_time;
+        $shiftEnd = optional($assignment->shift)->end_time;
 
         if ($now->lt($shiftStart)) {
             $scheduleStatus = 'upcoming';
@@ -143,8 +143,8 @@ class ScheduleController extends Controller
             ->filter()
             ->values();
 
-        $location       = optional(optional($assignment->shift)->company)->address ?? '-';
-        $templateColor  = optional(optional($assignment->shift)->template)->color_code ?? '#6C5CE7';
+        $location = optional(optional($assignment->shift)->company)->address ?? '-';
+        $templateColor = optional(optional($assignment->shift)->template)->color_code ?? '#6C5CE7';
 
         return view('employee.schedule.show', compact(
             'assignment',
