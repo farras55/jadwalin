@@ -7,9 +7,11 @@ use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\AttendanceRegularizationController as EmployeeAttendanceRegularizationController;
 use App\Http\Controllers\Employee\AvailabilityController;
 use App\Http\Controllers\Employee\ScheduleController;
 use App\Http\Controllers\Manager\AttendanceMonitorController;
+use App\Http\Controllers\Manager\AttendanceRegularizationController as ManagerAttendanceRegularizationController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
 use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\Manager\TeamEmployeeController;
@@ -226,6 +228,18 @@ Route::middleware(['auth', 'role:manager'])
             AvailabilityApprovalController::class,
             'reject',
         ])->name('availability.reject');
+
+        // ==========================================
+        // PBL-28: Attendance Regularization (Manager)
+        // ==========================================
+        Route::get('/attendance/regularizations', [ManagerAttendanceRegularizationController::class, 'index'])
+            ->name('attendance.regularizations.index');
+
+        Route::post('/attendance/regularizations/{regularization}/approve', [ManagerAttendanceRegularizationController::class, 'approve'])
+            ->name('attendance.regularizations.approve');
+
+        Route::post('/attendance/regularizations/{regularization}/reject', [ManagerAttendanceRegularizationController::class, 'reject'])
+            ->name('attendance.regularizations.reject');
     });
 
 // ==========================================
@@ -280,6 +294,17 @@ Route::middleware(['auth', 'role:employee'])
             '/attendance/clock-out',
             [AttendanceController::class, 'clockOut']
         )->name('attendance.clock-out');
+
+        // PBL-28: Attendance Regularization (Employee)
+        Route::get(
+            '/attendance/regularization',
+            [EmployeeAttendanceRegularizationController::class, 'index']
+        )->name('attendance.regularization.index');
+
+        Route::post(
+            '/attendance/regularization',
+            [EmployeeAttendanceRegularizationController::class, 'store']
+        )->name('attendance.regularization.store');
 
         Route::get('/timesheet', function () {
             return view('placeholder', [

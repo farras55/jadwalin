@@ -109,4 +109,9 @@ class Company extends Model
     {
         return $this->hasMany(AuditLog::class);
     }
+
+    public function attendanceRegularizations(): HasMany
+    {
+        return $this->hasMany(AttendanceRegularization::class);
+    }
 }

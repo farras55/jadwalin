@@ -162,4 +162,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(AuditLog::class);
     }
+
+    public function attendanceRegularizations(): HasMany
+    {
+        return $this->hasMany(AttendanceRegularization::class, 'employee_id');
+    }
 }

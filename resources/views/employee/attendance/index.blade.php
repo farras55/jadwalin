@@ -93,6 +93,7 @@
             }
 
             return [
+                'id' => $item->id,
                 'date' => $dateStr,
                 'day' => $dayStr,
                 'shift' => $shiftName,
@@ -105,6 +106,10 @@
                 'badge_theme' => $badgeTheme,
                 'is_late' => $rawStatus === 'late' || $lateMin > 0,
                 'is_off' => $rawStatus === 'absent' || $rawStatus === 'leave',
+                'is_auto_clockout' => (bool) $item->is_auto_clockout,
+                'regularization_status' => $item->latestAttendanceRegularization?->status,
+                'shift_end_datetime' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, auth()->user()?->company?->timezone ?? 'Asia/Jakarta')->format('Y-m-d\TH:i') : '',
+                'shift_end_formatted' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, auth()->user()?->company?->timezone ?? 'Asia/Jakarta')->format('H:i') . ' WIB' : '',
             ];
         }) : collect([]);
     @endphp
@@ -124,6 +129,19 @@
                 activeMode: config.initialMode || 'idle',
                 filterStatus: 'all',
                 sopModalOpen: false,
+                regularizationModalOpen: false,
+                submittingRegularization: false,
+                regularizationError: '',
+                regularizationSuccess: '',
+                regularizationForm: {
+                    shift_assignment_id: null,
+                    shift_title: '',
+                    shift_date: '',
+                    shift_end_datetime: '',
+                    shift_end_formatted: '',
+                    requested_clock_out_time: '',
+                    reason: ''
+                },
                 timerDisplay: '00 : 00 : 00',
                 progressPercent: 0,
                 progressHoursText: '0.0 / 8.0 Jam',
@@ -535,6 +553,73 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
+                },
+
+                openRegularizationModal(row) {
+                    this.regularizationError = '';
+                    this.regularizationSuccess = '';
+                    this.regularizationForm.shift_assignment_id = row.id;
+                    this.regularizationForm.shift_title = row.shift;
+                    this.regularizationForm.shift_date = row.date;
+                    this.regularizationForm.shift_end_datetime = row.shift_end_datetime || '';
+                    this.regularizationForm.shift_end_formatted = row.shift_end_formatted || '';
+                    this.regularizationForm.requested_clock_out_time = row.shift_end_datetime || '';
+                    this.regularizationForm.reason = '';
+                    this.regularizationModalOpen = true;
+                    this.$nextTick(() => {
+                        if (window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    });
+                },
+
+                submitRegularization() {
+                    this.regularizationError = '';
+                    this.regularizationSuccess = '';
+
+                    if (!this.regularizationForm.requested_clock_out_time) {
+                        this.regularizationError = 'Jam pulang riil wajib diisi.';
+                        return;
+                    }
+                    if (!this.regularizationForm.reason || this.regularizationForm.reason.trim().length < 10) {
+                        this.regularizationError = 'Alasan koreksi minimal 10 karakter.';
+                        return;
+                    }
+
+                    this.submittingRegularization = true;
+
+                    fetch('{{ route('employee.attendance.regularization.store') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            shift_assignment_id: this.regularizationForm.shift_assignment_id,
+                            requested_clock_out_time: this.regularizationForm.requested_clock_out_time,
+                            reason: this.regularizationForm.reason
+                        })
+                    })
+                    .then(async response => {
+                        const data = await response.json();
+                        if (!response.ok) {
+                            const errorMsg = data.errors ? Object.values(data.errors).flat().join(' ') : (data.message || 'Terjadi kesalahan saat mengajukan koreksi.');
+                            throw new Error(errorMsg);
+                        }
+                        return data;
+                    })
+                    .then(data => {
+                        this.submittingRegularization = false;
+                        this.regularizationSuccess = 'Pengajuan koreksi kehadiran berhasil dikirim ke manajer.';
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1200);
+                    })
+                    .catch(err => {
+                        this.submittingRegularization = false;
+                        this.regularizationError = err.message;
+                    });
                 }
             };
         };
@@ -1142,6 +1227,13 @@
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         <span>Ekspor CSV</span>
                     </button>
+
+                    {{-- Riwayat Koreksi --}}
+                    <a href="{{ route('employee.attendance.regularization.index') }}" 
+                       class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#6C5CE7] text-xs font-semibold transition border border-purple-200">
+                        <i data-lucide="file-clock" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Riwayat Koreksi</span>
+                    </a>
                 </div>
             </div>
 
@@ -1156,6 +1248,7 @@
                             <th class="px-5 py-3.5">Clock-Out</th>
                             <th class="px-5 py-3.5">Total Durasi</th>
                             <th class="px-5 py-3.5">Status</th>
+                            <th class="px-5 py-3.5 text-center">Koreksi Kehadiran</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -1176,7 +1269,14 @@
                                     {{ $row['clock_in'] }}
                                 </td>
                                 <td class="px-5 py-4 whitespace-nowrap font-mono text-[11.5px] text-gray-700">
-                                    {{ $row['clock_out'] }}
+                                    <div class="flex flex-col gap-1">
+                                        <span>{{ $row['clock_out'] }}</span>
+                                        @if ($row['is_auto_clockout'])
+                                            <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max">
+                                                <i data-lucide="clock-alert" class="w-3 h-3 text-amber-700"></i> Auto Clock-Out
+                                            </span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-5 py-4 whitespace-nowrap font-semibold text-gray-900">
                                     {{ $row['duration'] }}
@@ -1204,10 +1304,47 @@
                                         </span>
                                     @endif
                                 </td>
+                                <td class="px-5 py-4 whitespace-nowrap text-center">
+                                    @if ($row['is_auto_clockout'])
+                                        @if ($row['regularization_status'] === 'pending')
+                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+                                                Koreksi: Pending
+                                            </span>
+                                        @elseif ($row['regularization_status'] === 'approved')
+                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                                                Koreksi: Disetujui
+                                            </span>
+                                        @elseif ($row['regularization_status'] === 'rejected')
+                                            <div class="inline-flex flex-col items-center gap-1">
+                                                <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    <i data-lucide="x-circle" class="w-3.5 h-3.5 text-rose-600"></i>
+                                                    Koreksi: Ditolak
+                                                </span>
+                                                <button type="button" 
+                                                        @click="openRegularizationModal({{ json_encode($row) }})" 
+                                                        class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
+                                                    <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
+                                                    Ajukan Ulang
+                                                </button>
+                                            </div>
+                                        @else
+                                            <button type="button" 
+                                                    @click="openRegularizationModal({{ json_encode($row) }})" 
+                                                    class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
+                                                <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
+                                                Ajukan Koreksi Kehadiran
+                                            </button>
+                                        @endif
+                                    @else
+                                        <span class="text-gray-400 font-mono text-xs">-</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-5 py-10 text-center text-gray-400">
+                                <td colspan="8" class="px-5 py-10 text-center text-gray-400">
                                     <div class="flex flex-col items-center justify-center gap-2">
                                         <i data-lucide="calendar-x" class="w-8 h-8 text-gray-300"></i>
                                         <p class="text-sm font-medium text-gray-600">Belum ada riwayat kehadiran dalam 7 hari terakhir.</p>
@@ -1312,6 +1449,145 @@
                                 Saya Mengerti
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ========================================================================= --}}
+        {{-- MODAL FORM PENGAJUAN KOREKSI KEHADIRAN (REGULARISASI)                     --}}
+        {{-- ========================================================================= --}}
+        <div x-show="regularizationModalOpen" 
+             x-cloak
+             class="fixed inset-0 z-50 overflow-y-auto"
+             aria-labelledby="regularization-modal-title" role="dialog" aria-modal="true"
+             style="display: none;">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="regularizationModalOpen" 
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" 
+                     @click="if (!submittingRegularization) regularizationModalOpen = false"></div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="regularizationModalOpen" 
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
+                    
+                    <div class="p-6 sm:p-7 space-y-5">
+                        {{-- Modal Header --}}
+                        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded-xl bg-purple-50 text-[#6C5CE7]">
+                                    <i data-lucide="file-pen-line" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-gray-900" id="regularization-modal-title">Ajukan Koreksi Kehadiran</h3>
+                                    <p class="text-xs text-gray-500">Penyesuaian jam pulang riil akibat Auto Clock-Out</p>
+                                </div>
+                            </div>
+                            <button type="button" 
+                                    @click="regularizationModalOpen = false" 
+                                    :disabled="submittingRegularization"
+                                    class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                <i data-lucide="x" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        {{-- Shift Info Pill --}}
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2 text-xs">
+                            <div class="flex justify-between items-center text-gray-500 font-medium">
+                                <span>Shift Kerja:</span>
+                                <span class="font-bold text-gray-900" x-text="regularizationForm.shift_title"></span>
+                            </div>
+                            <div class="flex justify-between items-center text-gray-500 font-medium">
+                                <span>Tanggal Shift:</span>
+                                <span class="font-semibold text-gray-800" x-text="regularizationForm.shift_date"></span>
+                            </div>
+                            <div class="flex justify-between items-center text-gray-500 font-medium">
+                                <span>Jam Selesai Resmi:</span>
+                                <span class="font-mono font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md" x-text="regularizationForm.shift_end_formatted"></span>
+                            </div>
+                        </div>
+
+                        {{-- Feedback Alerts --}}
+                        <template x-if="regularizationError">
+                            <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-2.5 text-xs">
+                                <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0 mt-0.5"></i>
+                                <span x-text="regularizationError"></span>
+                            </div>
+                        </template>
+
+                        <template x-if="regularizationSuccess">
+                            <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start gap-2.5 text-xs">
+                                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                                <span x-text="regularizationSuccess"></span>
+                            </div>
+                        </template>
+
+                        {{-- Form Inputs --}}
+                        <form @submit.prevent="submitRegularization()" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                                    Jam Pulang Riil <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="datetime-local" 
+                                       x-model="regularizationForm.requested_clock_out_time"
+                                       :disabled="submittingRegularization"
+                                       required
+                                       class="w-full text-xs font-mono rounded-xl border-gray-300 focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 shadow-2xs">
+                                <p class="text-[11px] text-gray-400 mt-1">
+                                    Wajib melewati jam selesai shift resmi dan berada dalam kurun 24 jam.
+                                </p>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                                    Alasan Koreksi <span class="text-rose-500">*</span>
+                                </label>
+                                <textarea x-model="regularizationForm.reason"
+                                          :disabled="submittingRegularization"
+                                          rows="3"
+                                          required
+                                          minlength="10"
+                                          placeholder="Tuliskan alasan mengapa Anda belum sempat clock-out atau rincian pekerjaan lembur yang dilakukan (minimal 10 karakter)..."
+                                          class="w-full text-xs rounded-xl border-gray-300 focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 shadow-2xs"></textarea>
+                                <p class="text-[11px] text-gray-400 mt-1">
+                                    Minimal 10 karakter. Alasan ini akan diverifikasi oleh manajer Anda.
+                                </p>
+                            </div>
+
+                            {{-- Actions --}}
+                            <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                                <button type="button" 
+                                        @click="regularizationModalOpen = false" 
+                                        :disabled="submittingRegularization"
+                                        class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-gray-700 rounded-xl text-xs font-semibold transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit" 
+                                        :disabled="submittingRegularization"
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#6C5CE7] hover:bg-[#5b4bc4] disabled:opacity-75 text-white rounded-xl text-xs font-semibold shadow-md transition-all">
+                                    <template x-if="submittingRegularization">
+                                        <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                    </template>
+                                    <template x-if="!submittingRegularization">
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                    </template>
+                                    <span x-text="submittingRegularization ? 'Mengirim...' : 'Kirim Pengajuan'"></span>
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
