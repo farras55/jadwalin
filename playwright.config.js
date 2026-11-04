@@ -23,6 +23,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.APP_URL || 'http://127.0.0.1:8000',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
   },
 
   // Browser untuk pengujian.
@@ -30,6 +31,10 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 7'] },
     },
   ],
 
