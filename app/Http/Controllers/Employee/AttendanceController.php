@@ -355,6 +355,19 @@ class AttendanceController extends Controller
             return back()->with('error', 'Lokasi cabang belum diatur oleh admin. Presensi tidak dapat dilakukan.');
         }
 
+        if ($request->filled('latitude') && $request->filled('longitude')) {
+            $distance = self::calculateDistance(
+                (float) $request->input('latitude'),
+                (float) $request->input('longitude'),
+                (float) $location['latitude'],
+                (float) $location['longitude']
+            );
+
+            if ($distance > (int) $location['radius']) {
+                return back()->with('error', 'Anda berada di luar radius absensi yang diizinkan.');
+            }
+        }
+
         $startTime = Carbon::parse($assignment->shift->start_time, $timezone);
         $endTime = Carbon::parse($assignment->shift->end_time, $timezone);
 

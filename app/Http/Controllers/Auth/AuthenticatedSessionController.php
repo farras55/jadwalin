@@ -26,6 +26,19 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = Auth::user();
+
+        if ($user && ($user->status === 'resigned' || $user->status !== 'active')) {
+            Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'Akun Anda sudah tidak aktif.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
         $url = match ($request->user()->role) {

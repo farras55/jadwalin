@@ -17,6 +17,7 @@ class OpenShiftClaim extends Model
         'status',
         'applied_at',
         'approved_by',
+        'rejection_reason',
     ];
 
     protected function casts(): array
