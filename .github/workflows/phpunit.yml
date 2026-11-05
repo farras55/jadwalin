@@ -1,0 +1,44 @@
+name: PHPUnit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'feat/**'
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    name: Backend Unit & Feature Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, sqlite, pdo_sqlite, bcmath, fileinfo, gd, zip
+          tools: composer
+          coverage: none
+
+      - name: Validate Composer dependencies
+        run: composer validate --no-check-publish
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run PHPUnit Tests
+        run: php artisan test --compact
+

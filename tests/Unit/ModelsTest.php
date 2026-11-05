@@ -24,31 +24,39 @@ use Tests\TestCase;
 class ModelsTest extends TestCase
 {
     /**
-     * Test all 14 models can be instantiated.
+     * Test core model Eloquent relationship configurations.
      */
-    public function test_all_14_models_can_be_instantiated(): void
+    public function test_core_model_eloquent_relationships_configuration(): void
     {
-        $models = [
-            new Company,
-            new CompanySetting,
-            new Department,
-            new Position,
-            new User,
-            new Availability,
-            new ShiftTemplate,
-            new Shift,
-            new ShiftAssignment,
-            new ShiftSwap,
-            new OpenShiftClaim,
-            new TimesheetReport,
-            new Notification,
-            new AuditLog,
-        ];
+        $user = new User;
+        $this->assertInstanceOf(BelongsTo::class, $user->company());
+        $this->assertInstanceOf(BelongsTo::class, $user->department());
+        $this->assertInstanceOf(BelongsTo::class, $user->position());
+        $this->assertInstanceOf(HasMany::class, $user->shiftAssignments());
 
-        $this->assertCount(14, $models);
-        foreach ($models as $model) {
-            $this->assertNotNull($model);
-        }
+        $department = new Department;
+        $this->assertInstanceOf(BelongsTo::class, $department->company());
+        $this->assertInstanceOf(HasMany::class, $department->users());
+        $this->assertInstanceOf(HasMany::class, $department->shifts());
+
+        $shift = new Shift;
+        $this->assertInstanceOf(BelongsTo::class, $shift->company());
+        $this->assertInstanceOf(BelongsTo::class, $shift->department());
+        $this->assertInstanceOf(HasMany::class, $shift->shiftAssignments());
+
+        $assignment = new ShiftAssignment;
+        $this->assertInstanceOf(BelongsTo::class, $assignment->shift());
+        $this->assertInstanceOf(BelongsTo::class, $assignment->user());
+        $this->assertInstanceOf(BelongsTo::class, $assignment->company());
+
+        $swap = new ShiftSwap;
+        $this->assertInstanceOf(BelongsTo::class, $swap->shiftAssignment());
+        $this->assertInstanceOf(BelongsTo::class, $swap->requester());
+        $this->assertInstanceOf(BelongsTo::class, $swap->targetUser());
+
+        $company = new Company;
+        $this->assertInstanceOf(HasOne::class, $company->companySetting());
+        $this->assertInstanceOf(HasMany::class, $company->departments());
     }
 
     /**

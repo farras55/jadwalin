@@ -37,6 +37,14 @@
                 </div>
             @endif
 
+            {{-- Notifikasi error sesi --}}
+            @if (session('error'))
+                <div class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                    <i data-lucide="alert-circle" class="mt-0.5 h-5 w-5 shrink-0 text-red-600"></i>
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
+
             {{-- Notifikasi error validasi --}}
             @if ($errors->any())
                 <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
