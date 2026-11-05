@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\Employee;
 
+use App\Exports\TimesheetExport;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
 use App\Models\User;
+use App\Services\TimesheetExportService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -200,5 +202,100 @@ class PersonalTimesheetTest extends TestCase
 
         $responsePdf = $this->actingAs($this->employee1)->get(route('employee.timesheet.export.pdf', ['user_id' => $this->employee2->id]));
         $responsePdf->assertStatus(403);
+    }
+
+    /**
+     * Skenario 5: Halaman Timesheet Employee memuat UI filter bulan (Alpine.js/Tailwind) dan 2 tombol ekspor (tanpa CSV).
+     */
+    public function test_employee_timesheet_page_contains_month_filter_and_export_buttons(): void
+    {
+        $baseDate = Carbon::create(2026, 11, 3, 8, 0, 0, 'Asia/Jakarta');
+        Carbon::setTestNow($baseDate);
+
+        $response = $this->actingAs($this->employee1)->get(route('employee.timesheet', ['month' => 11, 'year' => 2026]));
+
+        $response->assertStatus(200);
+        $response->assertSee('Bulan Periode');
+        $response->assertSee('Export Excel');
+        $response->assertSee('Export PDF');
+        $response->assertDontSee('Export CSV');
+        $response->assertViewHas(['month', 'year', 'monthPeriod', 'monthNames']);
+    }
+
+    /**
+     * Skenario 6: Data ekspor karyawan menggabungkan Rekapitulasi Timesheet dan Log Presensi harian terfilter bulan.
+     */
+    public function test_employee_export_contains_combined_timesheet_and_attendance_logs_filtered_by_month(): void
+    {
+        $novDate = Carbon::create(2026, 11, 5, 8, 0, 0, 'Asia/Jakarta');
+        $octDate = Carbon::create(2026, 10, 15, 8, 0, 0, 'Asia/Jakarta');
+        Carbon::setTestNow($novDate);
+
+        // Shift Bulan November (harus masuk ekspor)
+        $shiftNov = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Khusus November',
+            'start_time' => $novDate->copy()->setTime(8, 0, 0),
+            'end_time' => $novDate->copy()->setTime(16, 0, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'shift_id' => $shiftNov->id,
+            'user_id' => $this->employee1->id,
+            'clock_in_time' => $novDate->copy()->setTime(8, 0, 0),
+            'clock_out_time' => $novDate->copy()->setTime(16, 0, 0),
+            'regular_hours' => 8.0,
+            'overtime_hours' => 1.5,
+            'late_minutes' => 0,
+            'status' => 'completed',
+        ]);
+
+        // Shift Bulan Oktober (harus di-filter keluar saat ekspor November)
+        $shiftOct = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Jadul Oktober',
+            'start_time' => $octDate->copy()->setTime(8, 0, 0),
+            'end_time' => $octDate->copy()->setTime(16, 0, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'shift_id' => $shiftOct->id,
+            'user_id' => $this->employee1->id,
+            'clock_in_time' => $octDate->copy()->setTime(8, 0, 0),
+            'clock_out_time' => $octDate->copy()->setTime(16, 0, 0),
+            'regular_hours' => 8.0,
+            'overtime_hours' => 0.0,
+            'late_minutes' => 0,
+            'status' => 'completed',
+        ]);
+
+        $service = app(TimesheetExportService::class);
+        $request = request()->merge(['month' => 11, 'year' => 2026]);
+        $exportData = $service->getTimesheetData($this->employee1, $request);
+
+        // 1. Pastikan flag isEmployee aktif dan attendanceLogs terisi
+        $this->assertTrue($exportData['isEmployee']);
+        $this->assertCount(1, $exportData['attendanceLogs']);
+        $this->assertEquals('Shift Khusus November', $exportData['attendanceLogs']->first()->shift->title);
+
+        // 2. Render view Excel
+        $excelExport = new TimesheetExport($exportData);
+        $excelHtml = $excelExport->view()->render();
+
+        // 3. Verifikasi data gabungan: Rekapitulasi Timesheet + Rincian Log Presensi Kehadiran
+        $this->assertStringContainsString('REKAPITULASI TIMESHEET', $excelHtml);
+        $this->assertStringContainsString('RINCIAN LOG PRESENSI KEHADIRAN', $excelHtml);
+        $this->assertStringContainsString('Shift Khusus November', $excelHtml);
+        $this->assertStringNotContainsString('Shift Jadul Oktober', $excelHtml);
+        $this->assertStringContainsString('Budi Santoso', $excelHtml);
+        $this->assertStringContainsString('1.5', $excelHtml);
     }
 }

@@ -192,6 +192,7 @@ class TimesheetExportService
                 'total_late_minutes' => $totalLateMinutes,
                 'status' => $status === 'finalized' ? 'Final' : 'Draft',
                 'timesheet_report_id' => $timesheetReport?->id,
+                'attendance_logs' => $scheduledShifts->values(),
             ];
         });
 
@@ -234,6 +235,8 @@ class TimesheetExportService
             'isPeriodPast' => $isPeriodPast,
             'monthNames' => $monthNames,
             'generatedAt' => now()->translatedFormat('d F Y, H:i').' WIB',
+            'isEmployee' => $user->role === 'employee',
+            'attendanceLogs' => $user->role === 'employee' ? ($reports->first()?->attendance_logs ?? collect()) : collect(),
         ];
     }
 
@@ -278,7 +281,19 @@ class TimesheetExportService
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
 
-        if ($request->filled('month') && $request->filled('year')) {
+        if ($request->filled('period')) {
+            $parsed = Carbon::parse($request->input('period'));
+            $month = (int) $parsed->month;
+            $year = (int) $parsed->year;
+            $from = $parsed->copy()->startOfMonth();
+            $to = $parsed->copy()->endOfMonth();
+        } elseif ($request->filled('month') && str_contains((string) $request->input('month'), '-')) {
+            $parsed = Carbon::parse($request->input('month'));
+            $month = (int) $parsed->month;
+            $year = (int) $parsed->year;
+            $from = $parsed->copy()->startOfMonth();
+            $to = $parsed->copy()->endOfMonth();
+        } elseif ($request->filled('month') && $request->filled('year')) {
             $month = (int) $request->input('month');
             $year = (int) $request->input('year');
             $from = Carbon::createFromDate($year, $month, 1)->startOfMonth();
@@ -305,5 +320,3 @@ class TimesheetExportService
         return [$from, $to, $month, $year, $periodLabel];
     }
 }
-
-require_once __DIR__.'/../helpers.php';

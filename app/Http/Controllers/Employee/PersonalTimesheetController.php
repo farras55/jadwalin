@@ -71,10 +71,20 @@ class PersonalTimesheetController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        $monthNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+
         return view('employee.timesheet.index', [
             'user' => $user,
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
+            'month' => (int) $from->month,
+            'year' => (int) $from->year,
+            'monthPeriod' => $from->format('Y-m'),
+            'monthNames' => $monthNames,
             'totalRegularHours' => $totalRegularHours,
             'totalOvertimeHours' => $totalOvertimeHours,
             'totalShifts' => $totalShifts,
@@ -91,7 +101,15 @@ class PersonalTimesheetController extends Controller
      */
     private function resolveDateRange(Request $request): array
     {
-        if ($request->filled('month') && $request->filled('year')) {
+        if ($request->filled('period')) {
+            $parsed = Carbon::parse($request->input('period'));
+            $from = $parsed->copy()->startOfMonth();
+            $to = $parsed->copy()->endOfMonth();
+        } elseif ($request->filled('month') && str_contains((string) $request->input('month'), '-')) {
+            $parsed = Carbon::parse($request->input('month'));
+            $from = $parsed->copy()->startOfMonth();
+            $to = $parsed->copy()->endOfMonth();
+        } elseif ($request->filled('month') && $request->filled('year')) {
             $from = Carbon::createFromDate((int) $request->year, (int) $request->month, 1)->startOfMonth();
             $to = $from->copy()->endOfMonth();
         } elseif ($request->filled('month')) {

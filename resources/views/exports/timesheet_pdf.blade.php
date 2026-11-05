@@ -150,20 +150,19 @@
         </table>
     </div>
 
-    {{-- Tabel 10 Kolom Berurutan dengan Border Penuh --}}
+    {{-- Tabel 9 Kolom Berurutan dengan Border Penuh --}}
     <table class="data-table">
         <thead>
             <tr>
                 <th style="width: 25px;">No</th>
-                <th class="text-left" style="width: 155px;">Nama Karyawan</th>
-                <th class="text-left" style="width: 100px;">Departemen</th>
-                <th style="width: 65px;">Shift Dijadwalkan</th>
-                <th style="width: 55px;">Shift Dihadiri</th>
-                <th style="width: 55px;">Hari Kehadiran</th>
-                <th class="text-right" style="width: 65px;">Jam Reguler</th>
-                <th class="text-right" style="width: 60px;">Jam Lembur</th>
-                <th class="text-right" style="width: 70px;">Jam Tidak Dihadiri</th>
-                <th class="text-right" style="width: 70px;">Keterlambatan</th>
+                <th class="text-left" style="width: 175px;">Nama Karyawan</th>
+                <th class="text-left" style="width: 110px;">Departemen</th>
+                <th style="width: 75px;">Shift Dijadwalkan</th>
+                <th style="width: 65px;">Shift Dihadiri</th>
+                <th class="text-right" style="width: 75px;">Jam Reguler</th>
+                <th class="text-right" style="width: 70px;">Jam Lembur</th>
+                <th class="text-right" style="width: 85px;">Jam Tidak Dihadiri</th>
+                <th class="text-right" style="width: 80px;">Keterlambatan</th>
             </tr>
         </thead>
         <tbody>
@@ -171,7 +170,6 @@
                 @php
                     $scheduled = (int) ($row->scheduled_shifts ?? 0);
                     $attended = (int) ($row->attended_shifts ?? 0);
-                    $days = (int) ($row->attendance_days ?? 0);
                     $regular = (float) ($row->total_regular_hours ?? 0);
                     $overtime = (float) ($row->total_overtime_hours ?? 0);
                     $unattended = (float) ($row->total_unattended_hours ?? max(0, ($scheduled - $attended) * 8.0));
@@ -183,7 +181,6 @@
                     <td class="text-left">{{ $row->department_name ?? '-' }}</td>
                     <td class="text-center">{{ $scheduled }}</td>
                     <td class="text-center">{{ $attended }}</td>
-                    <td class="text-center">{{ $days }}</td>
                     <td class="text-right">{{ number_format($regular, 2) }}</td>
                     <td class="text-right">{{ number_format($overtime, 2) }}</td>
                     <td class="text-right">{{ number_format($unattended, 2) }}</td>
@@ -191,7 +188,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="10" class="text-center" style="padding: 12px; color: #777777;">
+                    <td colspan="9" class="text-center" style="padding: 12px; color: #777777;">
                         Tidak ada data rekapitulasi timesheet untuk periode ini.
                     </td>
                 </tr>
@@ -203,7 +200,6 @@
                     <td colspan="3" class="text-left"><b>TOTAL</b></td>
                     <td class="text-center">{{ (int) ($totalMetrics->total_scheduled_shifts ?? 0) }}</td>
                     <td class="text-center">{{ (int) ($totalMetrics->total_attendance_shifts ?? 0) }}</td>
-                    <td class="text-center">{{ (int) ($totalMetrics->total_attendance_days ?? 0) }}</td>
                     <td class="text-right">{{ number_format((float) ($totalMetrics->total_regular_hours ?? 0), 2) }}</td>
                     <td class="text-right">{{ number_format((float) ($totalMetrics->total_overtime_hours ?? 0), 2) }}</td>
                     <td class="text-right">{{ number_format((float) ($totalMetrics->total_unattended_hours ?? 0), 2) }}</td>
@@ -212,6 +208,68 @@
             </tfoot>
         @endif
     </table>
+
+    {{-- Rincian Log Presensi Kehadiran untuk Employee --}}
+    @if (!empty($isEmployee) || (isset($attendanceLogs) && $attendanceLogs->isNotEmpty()))
+        <div style="margin-top: 25px; margin-bottom: 8px;">
+            <div style="font-size: 11px; font-weight: bold; color: #222222; text-transform: uppercase;">
+                RINCIAN LOG PRESENSI KEHADIRAN
+            </div>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 25px;">No</th>
+                    <th class="text-left" style="width: 110px;">Tanggal &amp; Hari</th>
+                    <th class="text-left" style="width: 140px;">Shift Kerja</th>
+                    <th style="width: 80px;">Jam Masuk</th>
+                    <th style="width: 80px;">Jam Pulang</th>
+                    <th class="text-right" style="width: 70px;">Jam Reguler</th>
+                    <th class="text-right" style="width: 70px;">Jam Lembur</th>
+                    <th class="text-right" style="width: 80px;">Keterlambatan</th>
+                    <th style="width: 75px;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $logPdfIndex = 1; @endphp
+                @forelse ($attendanceLogs as $log)
+                    @php
+                        $logDate = $log->shift?->start_time
+                            ? \Carbon\Carbon::parse($log->shift->start_time)->translatedFormat('d M Y')
+                            : ($log->clock_in_time ? \Carbon\Carbon::parse($log->clock_in_time)->translatedFormat('d M Y') : ($log->date ? \Carbon\Carbon::parse($log->date)->translatedFormat('d M Y') : '-'));
+                        $logDay = $log->shift?->start_time
+                            ? \Carbon\Carbon::parse($log->shift->start_time)->translatedFormat('l')
+                            : ($log->clock_in_time ? \Carbon\Carbon::parse($log->clock_in_time)->translatedFormat('l') : ($log->date ? \Carbon\Carbon::parse($log->date)->translatedFormat('l') : '-'));
+                        $in = $log->clock_in_time ? \Carbon\Carbon::parse($log->clock_in_time)->format('H:i') . ' WIB' : '-';
+                        $out = $log->clock_out_time ? \Carbon\Carbon::parse($log->clock_out_time)->format('H:i') . ' WIB' : '-';
+                        $statusLabel = match($log->status) {
+                            'present', 'completed' => 'Hadir',
+                            'late' => 'Terlambat',
+                            'absent' => 'Tidak Hadir',
+                            default => 'Terjadwal',
+                        };
+                    @endphp
+                    <tr>
+                        <td class="text-center">{{ $logPdfIndex++ }}</td>
+                        <td class="text-left">{{ $logDate }} ({{ $logDay }})</td>
+                        <td class="text-left">{{ $log->shift?->title ?? 'Shift Regular' }}</td>
+                        <td class="text-center">{{ $in }}</td>
+                        <td class="text-center">{{ $out }}</td>
+                        <td class="text-right">{{ number_format((float) $log->regular_hours, 2) }}</td>
+                        <td class="text-right">{{ number_format((float) $log->overtime_hours, 2) }}</td>
+                        <td class="text-right">{{ (int) ($log->late_minutes ?? 0) }} Menit</td>
+                        <td class="text-center">{{ $statusLabel }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="text-center" style="padding: 10px; color: #777777;">
+                            Tidak ada data log presensi untuk periode ini.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    @endif
 
 </body>
 </html>

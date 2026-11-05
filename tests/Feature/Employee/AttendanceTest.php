@@ -62,6 +62,7 @@ class AttendanceTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('employee.attendance.index');
         $response->assertViewHas(['officeLatitude', 'officeLongitude', 'attendanceRadius', 'officeLat', 'officeLng', 'radius', 'branch']);
+        $response->assertDontSee('Ekspor CSV');
     }
 
     public function test_attendance_page_uses_coordinates_from_user_branch()

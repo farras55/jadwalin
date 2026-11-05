@@ -95,7 +95,7 @@ class TimesheetExportUnifiedFormatTest extends TestCase
      * - Sheet title 'Worksheet'
      * - Kop Judul: PT CAKRAWALA MEGA PRATAMA & REKAPITULASI TIMESHEET
      * - Metadata: Periode Laporan, Departemen, Status, Tanggal Pembuatan dengan ':'
-     * - Kolom: No, Nama Karyawan, Departemen, Shift Dijadwalkan, Shift Dihadiri, Hari Kehadiran,
+     * - Kolom: No, Nama Karyawan, Departemen, Shift Dijadwalkan, Shift Dihadiri,
      *   Jam Reguler, Jam Lembur, Jam Tidak Dihadiri, Keterlambatan
      * - Kolom 'Jam Tidak Dihadiri' tersedia
      * - Kolom 'Keterlambatan' berakhiran 'Menit' (misal '379 Menit')
@@ -174,14 +174,14 @@ class TimesheetExportUnifiedFormatTest extends TestCase
         $this->assertStringContainsString('Tanggal Pembuatan', $html);
         $this->assertStringContainsString(':', $html);
 
-        // 5. 10 Kolom Header (dengan Background #eeeeee dan Border)
+        // 5. 9 Kolom Header (dengan Background #eeeeee dan Border)
         $this->assertStringContainsString('background-color: #eeeeee;', $html);
         $this->assertStringContainsString('<b>No</b>', $html);
         $this->assertStringContainsString('<b>Nama Karyawan</b>', $html);
         $this->assertStringContainsString('<b>Departemen</b>', $html);
         $this->assertStringContainsString('<b>Shift Dijadwalkan</b>', $html);
         $this->assertStringContainsString('<b>Shift Dihadiri</b>', $html);
-        $this->assertStringContainsString('<b>Hari Kehadiran</b>', $html);
+        $this->assertStringNotContainsString('<b>Hari Kehadiran</b>', $html);
         $this->assertStringContainsString('<b>Jam Reguler</b>', $html);
         $this->assertStringContainsString('<b>Jam Lembur</b>', $html);
         $this->assertStringContainsString('<b>Jam Tidak Dihadiri</b>', $html);

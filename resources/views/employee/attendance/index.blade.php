@@ -538,22 +538,6 @@
                     return Math.round(R * c);
                 },
 
-                downloadCSV() {
-                    let csv = "TANGGAL,HARI,SHIFT KERJA,OUTLET,CLOCK-IN,CLOCK-OUT,TOTAL DURASI,STATUS\n";
-                    @json($historyData).forEach(row => {
-                        csv += `"${row.date}","${row.day}","${row.shift}","${row.outlet}","${row.clock_in}","${row.clock_out}","${row.duration}","${row.status_label}"\n`;
-                    });
-
-                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement("a");
-                    const url = URL.createObjectURL(blob);
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", "riwayat_presensi_7_hari.csv");
-                    link.style.visibility = 'hidden';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                },
 
                 openRegularizationModal(row) {
                     this.regularizationError = '';
@@ -1219,14 +1203,6 @@
                             <option value="off">Off / Libur</option>
                         </select>
                     </div>
-
-                    {{-- Ekspor CSV --}}
-                    <button type="button" 
-                            @click="downloadCSV()" 
-                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-gray-700 text-xs font-semibold transition border border-slate-200">
-                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                        <span>Ekspor CSV</span>
-                    </button>
 
                     {{-- Riwayat Koreksi --}}
                     <a href="{{ route('employee.attendance.regularization.index') }}" 
