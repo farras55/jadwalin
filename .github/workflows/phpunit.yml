@@ -39,6 +39,15 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install NPM dependencies and Build
+        run: |
+          npm ci
+          npm run build
+
       - name: Run PHPUnit Tests
         run: php artisan test --compact
-
