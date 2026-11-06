@@ -2,87 +2,54 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-if (interface_exists(FromCollection::class)) {
-    class TimesheetExport implements FromCollection, ShouldAutoSize, WithHeadings, WithTitle
-    {
-        protected Collection $reports;
+class TimesheetExport implements FromView, ShouldAutoSize, WithTitle
+{
+    public array $data;
 
-        protected mixed $company;
-
-        protected int $month;
-
-        protected int $year;
-
-        public function __construct(Collection $reports, mixed $company, int $month, int $year)
-        {
-            $this->reports = $reports;
-            $this->company = $company;
-            $this->month = $month;
-            $this->year = $year;
-        }
-
-        public function collection(): Collection
-        {
-            return $this->reports->map(function ($item, $index) {
-                return [
-                    'no' => $index + 1,
-                    'name' => $item->employee_name,
-                    'department' => $item->department_name,
-                    'scheduled' => $item->scheduled_shifts,
-                    'attended' => $item->attended_shifts,
-                    'attendance_days' => $item->attendance_days,
-                    'regular_hours' => number_format($item->total_regular_hours, 2),
-                    'overtime_hours' => number_format($item->total_overtime_hours, 2),
-                    'late_minutes' => $item->total_late_minutes,
-                    'status' => ucfirst($item->status),
-                ];
-            });
-        }
-
-        public function headings(): array
-        {
-            return [
-                'No',
-                'Nama Karyawan',
-                'Departemen',
-                'Shift Dijadwalkan',
-                'Shift Dihadiri',
-                'Hari Kehadiran',
-                'Jam Reguler',
-                'Jam Lembur',
-                'Keterlambatan (Menit)',
-                'Status',
+    public function __construct(
+        mixed $reports,
+        mixed $company = null,
+        mixed $department = null,
+        ?string $periodLabel = null,
+        mixed $totalMetrics = null,
+        ?string $status = 'Final',
+        ?string $generatedAt = null
+    ) {
+        if (is_array($reports) && isset($reports['reports'])) {
+            $this->data = $reports;
+        } else {
+            $this->data = [
+                'reports' => $reports,
+                'company' => $company,
+                'companyName' => is_object($company) ? ($company->name ?? 'PT Cakrawala Mega Pratama') : ($company ?? 'PT Cakrawala Mega Pratama'),
+                'department' => $department,
+                'departmentName' => is_object($department) ? ($department->name ?? 'Semua Departemen') : ($department ?? 'Semua Departemen'),
+                'periodLabel' => $periodLabel,
+                'totalMetrics' => $totalMetrics,
+                'status' => $status ?? 'Final',
+                'generatedAt' => $generatedAt ?? (now()->translatedFormat('d F Y, H:i').' WIB'),
             ];
         }
-
-        public function title(): string
-        {
-            return 'Timesheet '.$this->month.'-'.$this->year;
-        }
     }
-} else {
-    class TimesheetExport
+
+    /**
+     * Nama tab sheet (Worksheet).
+     */
+    public function title(): string
     {
-        public Collection $reports;
+        return 'Worksheet';
+    }
 
-        public mixed $company;
-
-        public int $month;
-
-        public int $year;
-
-        public function __construct(Collection $reports, mixed $company, int $month, int $year)
-        {
-            $this->reports = $reports;
-            $this->company = $company;
-            $this->month = $month;
-            $this->year = $year;
-        }
+    /**
+     * Render view template Blade untuk format Excel.
+     */
+    public function view(): View
+    {
+        return view('exports.timesheet', $this->data);
     }
 }

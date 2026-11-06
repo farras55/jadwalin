@@ -9,10 +9,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AttendanceRegularizationController as EmployeeAttendanceRegularizationController;
 use App\Http\Controllers\Employee\AvailabilityController;
+use App\Http\Controllers\Employee\PersonalTimesheetController;
 use App\Http\Controllers\Employee\ScheduleController;
 use App\Http\Controllers\Manager\AttendanceMonitorController;
 use App\Http\Controllers\Manager\AttendanceRegularizationController as ManagerAttendanceRegularizationController;
 use App\Http\Controllers\Manager\AvailabilityApprovalController;
+use App\Http\Controllers\Manager\DepartmentTimesheetController;
 use App\Http\Controllers\Manager\ShiftController;
 use App\Http\Controllers\Manager\TeamEmployeeController;
 use App\Http\Controllers\NotificationController;
@@ -186,14 +188,13 @@ Route::middleware(['auth', 'role:manager'])
         Route::get('/attendance/feed', [AttendanceMonitorController::class, 'realtimeFeed'])
             ->name('attendance.feed');
 
-        Route::get('/timesheets', function () {
-            return view('placeholder', [
-                'title' => 'Timesheet & Laporan',
-                'subtitle' => 'Rekapitulasi jam kerja reguler, lembur, dan ekspor laporan berkala.',
-                'icon' => 'clock',
-                'roleTitle' => 'Manager',
-            ]);
-        })->name('timesheets.index');
+        // PBL-44: Department Timesheets (Manager)
+        Route::get('/timesheets', [DepartmentTimesheetController::class, 'index'])
+            ->name('timesheets.index');
+        Route::get('/timesheets/export/excel', [DepartmentTimesheetController::class, 'exportExcel'])
+            ->name('timesheets.export.excel');
+        Route::get('/timesheets/export/pdf', [DepartmentTimesheetController::class, 'exportPdf'])
+            ->name('timesheets.export.pdf');
 
         // ==========================================
         // PBL-25: Team Employee Management
@@ -306,14 +307,15 @@ Route::middleware(['auth', 'role:employee'])
             [EmployeeAttendanceRegularizationController::class, 'store']
         )->name('attendance.regularization.store');
 
-        Route::get('/timesheet', function () {
-            return view('placeholder', [
-                'title' => 'Timesheet Saya',
-                'subtitle' => 'Riwayat total jam kerja produktif dan status presensi personal.',
-                'icon' => 'clock',
-                'roleTitle' => 'Karyawan',
-            ]);
-        })->name('timesheet');
+        // PBL-44: Personal Timesheet (Employee)
+        Route::get('/timesheet', [PersonalTimesheetController::class, 'index'])
+            ->name('timesheet');
+        Route::get('/timesheets', [PersonalTimesheetController::class, 'index'])
+            ->name('timesheet.index');
+        Route::get('/timesheets/export/excel', [PersonalTimesheetController::class, 'exportExcel'])
+            ->name('timesheet.export.excel');
+        Route::get('/timesheets/export/pdf', [PersonalTimesheetController::class, 'exportPdf'])
+            ->name('timesheet.export.pdf');
 
         // Employee Availability
         Route::get(

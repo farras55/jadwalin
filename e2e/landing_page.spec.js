@@ -38,11 +38,18 @@ test.describe('Modul Publik: Halaman Utama (Landing Page)', () => {
     await expect(page.getByRole('heading', { name: /Selamat Datang/i })).toBeVisible();
   });
 
-  test('TC-LAND-03: Menampilkan pilar fitur 0 Konflik Jam Kerja dan informasi platform', async ({ page }) => {
+  test('TC-LAND-03: Menampilkan pilar fitur 0 Konflik Jam Kerja dan informasi platform', async ({ page, isMobile }) => {
     await page.goto('/');
 
+    // Buka menu navbar mobile terlebih dahulu jika di tampilan mobile
+    if (isMobile) {
+      const mobileNavBtn = page.getByRole('button', { name: /Menu navigasi/i }).or(page.locator('button[aria-label="Menu navigasi"]')).first();
+      await mobileNavBtn.click();
+    }
+
     // Verifikasi fitur utama dan hak cipta tertera di antarmuka
-    await expect(page.getByRole('navigation')).toBeVisible();
+    const nav = isMobile ? page.getByRole('navigation').last() : page.getByRole('navigation').first();
+    await expect(nav).toBeVisible();
     await expect(page.getByText(/Hak Cipta Dilindungi|Jadwalin/i).first()).toBeVisible();
   });
 

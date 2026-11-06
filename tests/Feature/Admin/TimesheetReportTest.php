@@ -202,6 +202,7 @@ class TimesheetReportTest extends TestCase
         $this->assertNotNull($contentDisposition);
         $this->assertStringContainsString('attachment', $contentDisposition);
         $this->assertStringContainsString('.xlsx', $contentDisposition);
+        $this->assertStringContainsString('rekap_timesheet_superadmin_2026_10.xlsx', $contentDisposition);
 
         // Verifikasi bahwa file binary Excel valid (format OpenXML Zip dimulai dengan PK\x03\x04)
         $content = $response->streamedContent();
@@ -239,6 +240,7 @@ class TimesheetReportTest extends TestCase
         $this->assertNotNull($contentDisposition);
         $this->assertStringContainsString('attachment', $contentDisposition);
         $this->assertStringContainsString('.pdf', $contentDisposition);
+        $this->assertStringContainsString('rekap_timesheet_superadmin_2026_10.pdf', $contentDisposition);
 
         // Verifikasi bahwa file binary PDF valid (dimulai dengan magic bytes %PDF)
         $content = $response->getContent();

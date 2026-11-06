@@ -175,4 +175,35 @@ class OpenShiftManagementTest extends TestCase
         $this->assertEquals('rejected', $claim->status);
         $this->assertEquals('Kapasitas shift sudah terpenuhi oleh tim lain.', $claim->rejection_reason);
     }
+
+    /**
+     * TC-MOP-06: Manager gagal menolak klaim jika alasan melebihi 255 karakter.
+     */
+    public function test_manager_cannot_reject_claim_with_reason_exceeding_max_length(): void
+    {
+        $shift = Shift::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'is_open_shift' => true,
+            'start_time' => Carbon::tomorrow()->setTime(9, 0),
+            'end_time' => Carbon::tomorrow()->setTime(17, 0),
+        ]);
+
+        $claim = OpenShiftClaim::factory()->create([
+            'company_id' => $this->company->id,
+            'shift_id' => $shift->id,
+            'user_id' => $this->employee->id,
+            'status' => 'pending_manager',
+        ]);
+
+        $response = $this->actingAs($this->manager)
+            ->post(route('manager.open-shifts.claims.reject', $claim), [
+                'rejection_reason' => str_repeat('a', 256),
+            ]);
+
+        $response->assertSessionHasErrors(['rejection_reason']);
+
+        $claim->refresh();
+        $this->assertEquals('pending_manager', $claim->status);
+    }
 }

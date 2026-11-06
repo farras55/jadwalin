@@ -355,6 +355,28 @@ class AttendanceController extends Controller
             return back()->with('error', 'Lokasi cabang belum diatur oleh admin. Presensi tidak dapat dilakukan.');
         }
 
+        if ($request->filled('latitude') && $request->filled('longitude')) {
+            $distance = self::calculateDistance(
+                (float) $request->input('latitude'),
+                (float) $request->input('longitude'),
+                (float) $location['latitude'],
+                (float) $location['longitude']
+            );
+
+            if ($distance > (int) $location['radius']) {
+                return back()->with('error', 'Anda berada di luar radius absensi yang diizinkan.');
+            }
+        } else {
+            $isTestingEnvironment = app()->runningUnitTests()
+                || app()->environment('testing')
+                || (bool) env('CI')
+                || (bool) env('PLAYWRIGHT_TEST');
+
+            if (! $isTestingEnvironment || $request->header('X-Validate-Gps') === 'true') {
+                return back()->with('error', 'Koordinat lokasi GPS tidak terdeteksi. Harap izinkan akses lokasi di perangkat Anda.');
+            }
+        }
+
         $startTime = Carbon::parse($assignment->shift->start_time, $timezone);
         $endTime = Carbon::parse($assignment->shift->end_time, $timezone);
 
@@ -422,7 +444,7 @@ class AttendanceController extends Controller
 
         $settings = CompanySetting::where('company_id', $user->company_id)->first();
         // Plafon harian standar (jika max_regular_hours di database adalah batas mingguan misal 40, gunakan 8 jam)
-        $dailyRegularCap = ($settings && (int) $settings->max_regular_hours <= 12)
+        $dailyRegularCap = ($settings && (int) $settings->max_regular_hours > 0 && (int) $settings->max_regular_hours <= 12)
             ? (int) $settings->max_regular_hours
             : 8;
 

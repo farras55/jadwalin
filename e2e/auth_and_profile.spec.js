@@ -58,8 +58,14 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
     await expect(page.locator('.text-red-600')).toBeVisible();
   });
 
-  test('TC-AUTH-03: Sesi pengguna dapat diakhiri melalui aksi Logout', async ({ page }) => {
+  test('TC-AUTH-03: Sesi pengguna dapat diakhiri melalui aksi Logout', async ({ page, isMobile }) => {
     await loginAsEmployee(page);
+
+    // Pada layar mobile, buka sidebar drawer melalui hamburger button terlebih dahulu
+    if (isMobile) {
+      const hamburgerBtn = page.getByTitle('Buka Menu').or(page.locator('button[title="Buka Menu"]')).first();
+      await hamburgerBtn.click();
+    }
 
     // Buka menu profil di topbar/sidebar dan klik tombol keluar
     const logoutBtn = page.getByRole('button', { name: /Keluar|Log out/i }).or(page.locator('button[title="Keluar"]')).first();
