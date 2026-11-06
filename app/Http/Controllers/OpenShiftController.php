@@ -638,17 +638,23 @@ class OpenShiftController extends Controller
             abort(403, 'Akses tidak sah.');
         }
 
+        $validated = $request->validate([
+            'rejection_reason' => ['nullable', 'string', 'max:255'],
+        ]);
+
         $claim->update([
             'status' => 'rejected',
             'approved_by' => $manager->id,
-            'rejection_reason' => $request->rejection_reason,
+            'rejection_reason' => $validated['rejection_reason'] ?? null,
         ]);
+
+        $reasonText = ! empty($claim->rejection_reason) ? " Alasan: {$claim->rejection_reason}" : '';
 
         NotificationService::send(
             $claim->user_id,
             'open_shift_rejected',
             'Klaim Shift Ditolak',
-            "Permohonan klaim shift Anda untuk '{$claim->shift->title}' tidak disetujui manajer.",
+            "Permohonan klaim shift Anda untuk '{$claim->shift->title}' tidak disetujui manajer.{$reasonText}",
             $claim->company_id
         );
 

@@ -7,7 +7,6 @@ use App\Models\Department;
 use App\Models\TimesheetReport;
 use App\Models\User;
 use App\Services\TimesheetExportService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

@@ -72,6 +72,7 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRF-TOKEN': csrfToken || '',
       },
+      maxRedirects: 0,
     });
 
     // Server menolak atau mengembalikan respons redirect dengan flash error (atau 419 jika CSRF dicek ketat)
@@ -125,6 +126,7 @@ test.describe('Modul Karyawan: Presensi & Absensi Mandiri (Attendance)', () => {
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRF-TOKEN': csrfToken || '',
       },
+      maxRedirects: 0,
     });
 
     // Request ditangani dengan redirect atau flash error pesan validasi

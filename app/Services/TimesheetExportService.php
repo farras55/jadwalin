@@ -175,6 +175,12 @@ class TimesheetExportService
                     'status' => 'finalized',
                     'generated_by' => auth()->id() ?? $user->id,
                 ]);
+            } elseif ($timesheetReport && $timesheetReport->status === 'draft') {
+                $timesheetReport->update([
+                    'total_regular_hours' => $totalRegularHours,
+                    'total_overtime_hours' => $totalOvertimeHours,
+                    'generated_by' => auth()->id() ?? $user->id,
+                ]);
             }
 
             return (object) [
