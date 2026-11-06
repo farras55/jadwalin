@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
@@ -118,6 +119,10 @@ Route::middleware(['auth', 'role:superadmin'])
             '/reports/timesheet/export-pdf',
             [TimesheetReportController::class, 'exportPdf']
         )->name('reports.timesheet.export-pdf');
+
+        // Audit Trail Logs
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])
+            ->name('audit-logs.index');
     });
 
 // ==========================================
