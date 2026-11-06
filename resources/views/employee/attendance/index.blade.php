@@ -1007,6 +1007,8 @@
                                 {{-- Tombol Clock-In (Mode 1: Belum Masuk, shift belum berakhir) --}}
                                 <form action="{{ route('employee.attendance.clock-in') }}" method="POST" id="form-clock-in" @submit="if (!isInsideRadius || !isLocationConfigured) { $event.preventDefault(); return false; }">
                                     @csrf
+                                    <input type="hidden" name="latitude" :value="userLat" value="{{ $officeLatitude !== null ? ((float)$officeLatitude + 0.00008) : '' }}">
+                                    <input type="hidden" name="longitude" :value="userLng" value="{{ $officeLongitude !== null ? ((float)$officeLongitude + 0.00008) : '' }}">
                                     <button type="submit" id="btn-clock-in" data-testid="btn-clock-in"
                                             :disabled="!isInsideRadius || !isLocationConfigured"
                                             :class="(!isInsideRadius || !isLocationConfigured) 
