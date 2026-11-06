@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -378,21 +377,35 @@ class JadwalinSeeder extends Seeder
             $todayShiftStart = now()->copy()->subHour();
             $todayShiftEnd = now()->copy()->addHours(7);
 
-            $todayShiftId = DB::table('shifts')->insertGetId([
-                'company_id' => $companyId,
-                'department_id' => $deptFB->id,
-                'template_id' => $tmplPagiFB?->id,
-                'title' => 'Shift Pagi F&B (Hari Ini)',
-                'start_time' => $todayShiftStart,
-                'end_time' => $todayShiftEnd,
-                'quota' => 2,
-                'is_open_shift' => false,
-                'requires_approval' => true,
-                'is_holiday' => false,
-                'status' => 'published',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            $existingTodayShift = DB::table('shifts')
+                ->where('company_id', $companyId)
+                ->where('title', 'Shift Pagi F&B (Hari Ini)')
+                ->first();
+
+            if (! $existingTodayShift) {
+                $todayShiftId = DB::table('shifts')->insertGetId([
+                    'company_id' => $companyId,
+                    'department_id' => $deptFB->id,
+                    'template_id' => $tmplPagiFB?->id,
+                    'title' => 'Shift Pagi F&B (Hari Ini)',
+                    'start_time' => $todayShiftStart,
+                    'end_time' => $todayShiftEnd,
+                    'quota' => 2,
+                    'is_open_shift' => false,
+                    'requires_approval' => true,
+                    'is_holiday' => false,
+                    'status' => 'published',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            } else {
+                $todayShiftId = $existingTodayShift->id;
+                DB::table('shifts')->where('id', $todayShiftId)->update([
+                    'start_time' => $todayShiftStart,
+                    'end_time' => $todayShiftEnd,
+                    'updated_at' => $now,
+                ]);
+            }
 
             DB::table('shift_assignments')->updateOrInsert(
                 [
@@ -421,212 +434,323 @@ class JadwalinSeeder extends Seeder
                 $pastStart = $pastDate->copy()->setTime(7, 0, 0);
                 $pastEnd = $pastDate->copy()->setTime(15, 0, 0);
 
-                $pastShiftId = DB::table('shifts')->insertGetId([
-                    'company_id' => $companyId,
-                    'department_id' => $deptFB->id,
-                    'template_id' => $tmplPagiFB?->id,
-                    'title' => 'Shift Pagi F&B',
-                    'start_time' => $pastStart,
-                    'end_time' => $pastEnd,
-                    'quota' => 2,
-                    'is_open_shift' => false,
-                    'requires_approval' => true,
-                    'is_holiday' => false,
-                    'status' => 'completed',
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ]);
+                $existingPastShift = DB::table('shifts')
+                    ->where('company_id', $companyId)
+                    ->where('department_id', $deptFB->id)
+                    ->where('title', 'Shift Pagi F&B')
+                    ->whereDate('start_time', $pastDate->toDateString())
+                    ->first();
 
-                DB::table('shift_assignments')->insert([
-                    'company_id' => $companyId,
-                    'shift_id' => $pastShiftId,
-                    'user_id' => $uDewi->id,
-                    'is_overtime' => false,
-                    'overtime_status' => 'none',
-                    'clock_in_time' => $pastStart->copy()->addMinutes(5),
-                    'clock_out_time' => $pastEnd->copy(),
-                    'late_minutes' => 0,
-                    'regular_hours' => 8.0,
-                    'overtime_hours' => 0.0,
-                    'status' => 'present',
-                    'is_auto_clockout' => false,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ]);
+                if (! $existingPastShift) {
+                    $pastShiftId = DB::table('shifts')->insertGetId([
+                        'company_id' => $companyId,
+                        'department_id' => $deptFB->id,
+                        'template_id' => $tmplPagiFB?->id,
+                        'title' => 'Shift Pagi F&B',
+                        'start_time' => $pastStart,
+                        'end_time' => $pastEnd,
+                        'quota' => 2,
+                        'is_open_shift' => false,
+                        'requires_approval' => true,
+                        'is_holiday' => false,
+                        'status' => 'completed',
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                } else {
+                    $pastShiftId = $existingPastShift->id;
+                }
 
-                DB::table('shift_assignments')->insert([
-                    'company_id' => $companyId,
-                    'shift_id' => $pastShiftId,
-                    'user_id' => $uBayu->id,
-                    'is_overtime' => false,
-                    'overtime_status' => 'none',
-                    'clock_in_time' => $pastStart->copy()->addMinutes(25),
-                    'clock_out_time' => $pastEnd->copy(),
-                    'late_minutes' => 25,
-                    'regular_hours' => 8.0,
-                    'overtime_hours' => 0.0,
-                    'status' => 'late',
-                    'is_auto_clockout' => false,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ]);
+                DB::table('shift_assignments')->updateOrInsert(
+                    [
+                        'company_id' => $companyId,
+                        'shift_id' => $pastShiftId,
+                        'user_id' => $uDewi->id,
+                    ],
+                    [
+                        'is_overtime' => false,
+                        'overtime_status' => 'none',
+                        'clock_in_time' => $pastStart->copy()->addMinutes(5),
+                        'clock_out_time' => $pastEnd->copy(),
+                        'late_minutes' => 0,
+                        'regular_hours' => 8.0,
+                        'overtime_hours' => 0.0,
+                        'status' => 'present',
+                        'is_auto_clockout' => false,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]
+                );
+
+                DB::table('shift_assignments')->updateOrInsert(
+                    [
+                        'company_id' => $companyId,
+                        'shift_id' => $pastShiftId,
+                        'user_id' => $uBayu->id,
+                    ],
+                    [
+                        'is_overtime' => false,
+                        'overtime_status' => 'none',
+                        'clock_in_time' => $pastStart->copy()->addMinutes(25),
+                        'clock_out_time' => $pastEnd->copy(),
+                        'late_minutes' => 25,
+                        'regular_hours' => 8.0,
+                        'overtime_hours' => 0.0,
+                        'status' => 'late',
+                        'is_auto_clockout' => false,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]
+                );
             }
 
             // C. Shift Mendatang untuk Uji Tukar Shift (2 Hari ke depan)
             $futureDate1 = now()->copy()->addDays(2);
-            $futureShift1Id = DB::table('shifts')->insertGetId([
-                'company_id' => $companyId,
-                'department_id' => $deptFB->id,
-                'template_id' => $tmplPagiFB?->id,
-                'title' => 'Shift Pagi F&B (Mendatang)',
-                'start_time' => $futureDate1->copy()->setTime(7, 0, 0),
-                'end_time' => $futureDate1->copy()->setTime(15, 0, 0),
-                'quota' => 2,
-                'is_open_shift' => false,
-                'requires_approval' => true,
-                'is_holiday' => false,
-                'status' => 'published',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            $existingFutureShift1 = DB::table('shifts')
+                ->where('company_id', $companyId)
+                ->where('title', 'Shift Pagi F&B (Mendatang)')
+                ->first();
 
-            $dewiFutureAssignmentId = DB::table('shift_assignments')->insertGetId([
-                'company_id' => $companyId,
-                'shift_id' => $futureShift1Id,
-                'user_id' => $uDewi->id,
-                'is_overtime' => false,
-                'overtime_status' => 'none',
-                'regular_hours' => 8.0,
-                'overtime_hours' => 0.0,
-                'status' => 'scheduled',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            if (! $existingFutureShift1) {
+                $futureShift1Id = DB::table('shifts')->insertGetId([
+                    'company_id' => $companyId,
+                    'department_id' => $deptFB->id,
+                    'template_id' => $tmplPagiFB?->id,
+                    'title' => 'Shift Pagi F&B (Mendatang)',
+                    'start_time' => $futureDate1->copy()->setTime(7, 0, 0),
+                    'end_time' => $futureDate1->copy()->setTime(15, 0, 0),
+                    'quota' => 2,
+                    'is_open_shift' => false,
+                    'requires_approval' => true,
+                    'is_holiday' => false,
+                    'status' => 'published',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            } else {
+                $futureShift1Id = $existingFutureShift1->id;
+                DB::table('shifts')->where('id', $futureShift1Id)->update([
+                    'start_time' => $futureDate1->copy()->setTime(7, 0, 0),
+                    'end_time' => $futureDate1->copy()->setTime(15, 0, 0),
+                    'updated_at' => $now,
+                ]);
+            }
+
+            DB::table('shift_assignments')->updateOrInsert(
+                [
+                    'company_id' => $companyId,
+                    'shift_id' => $futureShift1Id,
+                    'user_id' => $uDewi->id,
+                ],
+                [
+                    'is_overtime' => false,
+                    'overtime_status' => 'none',
+                    'regular_hours' => 8.0,
+                    'overtime_hours' => 0.0,
+                    'status' => 'scheduled',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+            $dewiFutureAssignmentId = DB::table('shift_assignments')
+                ->where('shift_id', $futureShift1Id)
+                ->where('user_id', $uDewi->id)
+                ->value('id');
 
             $futureDate2 = now()->copy()->addDays(3);
-            $futureShift2Id = DB::table('shifts')->insertGetId([
-                'company_id' => $companyId,
-                'department_id' => $deptFB->id,
-                'template_id' => $tmplSiangFB?->id,
-                'title' => 'Shift Siang F&B (Mendatang)',
-                'start_time' => $futureDate2->copy()->setTime(15, 0, 0),
-                'end_time' => $futureDate2->copy()->setTime(23, 0, 0),
-                'quota' => 2,
-                'is_open_shift' => false,
-                'requires_approval' => true,
-                'is_holiday' => false,
-                'status' => 'published',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            $existingFutureShift2 = DB::table('shifts')
+                ->where('company_id', $companyId)
+                ->where('title', 'Shift Siang F&B (Mendatang)')
+                ->first();
 
-            $bayuFutureAssignmentId = DB::table('shift_assignments')->insertGetId([
-                'company_id' => $companyId,
-                'shift_id' => $futureShift2Id,
-                'user_id' => $uBayu->id,
-                'is_overtime' => false,
-                'overtime_status' => 'none',
-                'regular_hours' => 8.0,
-                'overtime_hours' => 0.0,
-                'status' => 'scheduled',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            if (! $existingFutureShift2) {
+                $futureShift2Id = DB::table('shifts')->insertGetId([
+                    'company_id' => $companyId,
+                    'department_id' => $deptFB->id,
+                    'template_id' => $tmplSiangFB?->id,
+                    'title' => 'Shift Siang F&B (Mendatang)',
+                    'start_time' => $futureDate2->copy()->setTime(15, 0, 0),
+                    'end_time' => $futureDate2->copy()->setTime(23, 0, 0),
+                    'quota' => 2,
+                    'is_open_shift' => false,
+                    'requires_approval' => true,
+                    'is_holiday' => false,
+                    'status' => 'published',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            } else {
+                $futureShift2Id = $existingFutureShift2->id;
+                DB::table('shifts')->where('id', $futureShift2Id)->update([
+                    'start_time' => $futureDate2->copy()->setTime(15, 0, 0),
+                    'end_time' => $futureDate2->copy()->setTime(23, 0, 0),
+                    'updated_at' => $now,
+                ]);
+            }
 
-            $rizkyFutureAssignmentId = DB::table('shift_assignments')->insertGetId([
-                'company_id' => $companyId,
-                'shift_id' => $futureShift2Id,
-                'user_id' => $uRizky->id,
-                'is_overtime' => false,
-                'overtime_status' => 'none',
-                'regular_hours' => 8.0,
-                'overtime_hours' => 0.0,
-                'status' => 'scheduled',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            DB::table('shift_assignments')->updateOrInsert(
+                [
+                    'company_id' => $companyId,
+                    'shift_id' => $futureShift2Id,
+                    'user_id' => $uBayu->id,
+                ],
+                [
+                    'is_overtime' => false,
+                    'overtime_status' => 'none',
+                    'regular_hours' => 8.0,
+                    'overtime_hours' => 0.0,
+                    'status' => 'scheduled',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+            $bayuFutureAssignmentId = DB::table('shift_assignments')
+                ->where('shift_id', $futureShift2Id)
+                ->where('user_id', $uBayu->id)
+                ->value('id');
+
+            DB::table('shift_assignments')->updateOrInsert(
+                [
+                    'company_id' => $companyId,
+                    'shift_id' => $futureShift2Id,
+                    'user_id' => $uRizky->id,
+                ],
+                [
+                    'is_overtime' => false,
+                    'overtime_status' => 'none',
+                    'regular_hours' => 8.0,
+                    'overtime_hours' => 0.0,
+                    'status' => 'scheduled',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+            $rizkyFutureAssignmentId = DB::table('shift_assignments')
+                ->where('shift_id', $futureShift2Id)
+                ->where('user_id', $uRizky->id)
+                ->value('id');
 
             /*
              * 9. Shift Swap (Permintaan Tukar Shift)
              */
             // A. Permintaan Masuk untuk Dewi (pending_target): Bayu minta tukar ke Dewi
-            DB::table('shift_swaps')->insert([
-                'company_id' => $companyId,
-                'shift_assignment_id' => $bayuFutureAssignmentId,
-                'target_shift_assignment_id' => $dewiFutureAssignmentId,
-                'swap_type' => 'exchange',
-                'requester_id' => $uBayu->id,
-                'target_user_id' => $uDewi->id,
-                'reason' => 'Ada acara keluarga di kampung halaman.',
-                'status' => 'pending_target',
-                'approved_by' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            DB::table('shift_swaps')->updateOrInsert(
+                [
+                    'company_id' => $companyId,
+                    'shift_assignment_id' => $bayuFutureAssignmentId,
+                    'swap_type' => 'exchange',
+                ],
+                [
+                    'target_shift_assignment_id' => $dewiFutureAssignmentId,
+                    'requester_id' => $uBayu->id,
+                    'target_user_id' => $uDewi->id,
+                    'reason' => 'Ada acara keluarga di kampung halaman.',
+                    'status' => 'pending_target',
+                    'approved_by' => null,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
 
             // B. Permintaan Menunggu Persetujuan Manajer (pending_manager): Rizky serahkan shift ke Bayu
-            DB::table('shift_swaps')->insert([
-                'company_id' => $companyId,
-                'shift_assignment_id' => $rizkyFutureAssignmentId,
-                'target_shift_assignment_id' => null,
-                'swap_type' => 'transfer',
-                'requester_id' => $uRizky->id,
-                'target_user_id' => $uBayu->id,
-                'reason' => 'Keperluan mendesak mengurus berkas studi.',
-                'status' => 'pending_manager',
-                'approved_by' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            DB::table('shift_swaps')->updateOrInsert(
+                [
+                    'company_id' => $companyId,
+                    'shift_assignment_id' => $rizkyFutureAssignmentId,
+                    'swap_type' => 'transfer',
+                ],
+                [
+                    'target_shift_assignment_id' => null,
+                    'requester_id' => $uRizky->id,
+                    'target_user_id' => $uBayu->id,
+                    'reason' => 'Keperluan mendesak mengurus berkas studi.',
+                    'status' => 'pending_manager',
+                    'approved_by' => null,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
 
             /*
              * 10. Open Shifts (Shift Terbuka)
              */
             // A. Open Shift Aktif siap diklaim oleh karyawan
             $openShiftDate1 = now()->copy()->addDays(4);
-            $openShift1Id = DB::table('shifts')->insertGetId([
-                'company_id' => $companyId,
-                'department_id' => $deptFB->id,
-                'template_id' => $tmplPagiFB?->id,
-                'title' => 'Shift Ekstra Event Akhir Pekan',
-                'start_time' => $openShiftDate1->copy()->setTime(7, 0, 0),
-                'end_time' => $openShiftDate1->copy()->setTime(15, 0, 0),
-                'quota' => 2,
-                'is_open_shift' => true,
-                'requires_approval' => true,
-                'is_holiday' => false,
-                'status' => 'published',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            $existingOpenShift1 = DB::table('shifts')
+                ->where('company_id', $companyId)
+                ->where('title', 'Shift Ekstra Event Akhir Pekan')
+                ->first();
+
+            if (! $existingOpenShift1) {
+                $openShift1Id = DB::table('shifts')->insertGetId([
+                    'company_id' => $companyId,
+                    'department_id' => $deptFB->id,
+                    'template_id' => $tmplPagiFB?->id,
+                    'title' => 'Shift Ekstra Event Akhir Pekan',
+                    'start_time' => $openShiftDate1->copy()->setTime(7, 0, 0),
+                    'end_time' => $openShiftDate1->copy()->setTime(15, 0, 0),
+                    'quota' => 2,
+                    'is_open_shift' => true,
+                    'requires_approval' => true,
+                    'is_holiday' => false,
+                    'status' => 'published',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            } else {
+                $openShift1Id = $existingOpenShift1->id;
+                DB::table('shifts')->where('id', $openShift1Id)->update([
+                    'start_time' => $openShiftDate1->copy()->setTime(7, 0, 0),
+                    'end_time' => $openShiftDate1->copy()->setTime(15, 0, 0),
+                    'updated_at' => $now,
+                ]);
+            }
 
             // B. Open Shift dengan Klaim Pending untuk disetujui Manajer
             $openShiftDate2 = now()->copy()->addDays(5);
-            $openShift2Id = DB::table('shifts')->insertGetId([
-                'company_id' => $companyId,
-                'department_id' => $deptFB->id,
-                'template_id' => $tmplSiangFB?->id,
-                'title' => 'Shift Tambahan Liburan Nasional',
-                'start_time' => $openShiftDate2->copy()->setTime(15, 0, 0),
-                'end_time' => $openShiftDate2->copy()->setTime(23, 0, 0),
-                'quota' => 1,
-                'is_open_shift' => true,
-                'requires_approval' => true,
-                'is_holiday' => false,
-                'status' => 'published',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            $existingOpenShift2 = DB::table('shifts')
+                ->where('company_id', $companyId)
+                ->where('title', 'Shift Tambahan Liburan Nasional')
+                ->first();
 
-            DB::table('open_shift_claims')->insert([
-                'company_id' => $companyId,
-                'shift_id' => $openShift2Id,
-                'user_id' => $uRizky->id,
-                'status' => 'pending_manager',
-                'applied_at' => $now->copy()->subHours(2),
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            if (! $existingOpenShift2) {
+                $openShift2Id = DB::table('shifts')->insertGetId([
+                    'company_id' => $companyId,
+                    'department_id' => $deptFB->id,
+                    'template_id' => $tmplSiangFB?->id,
+                    'title' => 'Shift Tambahan Liburan Nasional',
+                    'start_time' => $openShiftDate2->copy()->setTime(15, 0, 0),
+                    'end_time' => $openShiftDate2->copy()->setTime(23, 0, 0),
+                    'quota' => 1,
+                    'is_open_shift' => true,
+                    'requires_approval' => true,
+                    'is_holiday' => false,
+                    'status' => 'published',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            } else {
+                $openShift2Id = $existingOpenShift2->id;
+                DB::table('shifts')->where('id', $openShift2Id)->update([
+                    'start_time' => $openShiftDate2->copy()->setTime(15, 0, 0),
+                    'end_time' => $openShiftDate2->copy()->setTime(23, 0, 0),
+                    'updated_at' => $now,
+                ]);
+            }
+
+            DB::table('open_shift_claims')->updateOrInsert(
+                [
+                    'company_id' => $companyId,
+                    'shift_id' => $openShift2Id,
+                    'user_id' => $uRizky->id,
+                ],
+                [
+                    'status' => 'pending_manager',
+                    'applied_at' => $now->copy()->subHours(2),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
         });
     }
 }
