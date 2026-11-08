@@ -147,7 +147,7 @@
                 <div>
                     <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Hari Ini</p>
                     <h3 class="text-2xl font-bold text-[#2D2A3E] mt-1">{{ number_format($stats['total_today'] ?? 0) }}</h3>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Tercatat sejak 00:00 WIB</p>
+                    <p class="text-[11px] text-[#7C7896] mt-0.5">Tercatat sejak 00:00 {{ $timezoneAbbr ?? 'WIB' }}</p>
                 </div>
                 <div class="p-3 bg-[#6C5CE7]/10 text-[#6C5CE7] rounded-xl shrink-0">
                     <i data-lucide="activity" class="h-6 w-6"></i>
@@ -280,7 +280,7 @@
                 <table class="w-full text-left border-collapse text-xs md:text-sm">
                     <thead class="bg-slate-50/80 text-gray-600 font-bold border-b border-gray-200 uppercase text-[10px] tracking-wider">
                         <tr>
-                            <th class="px-5 py-3.5">Timestamp (WIB)</th>
+                            <th class="px-5 py-3.5">Timestamp ({{ $timezoneAbbr ?? 'WIB' }})</th>
                             <th class="px-5 py-3.5">Aktor</th>
                             <th class="px-5 py-3.5 text-center">Tipe Aksi</th>
                             <th class="px-5 py-3.5">Model Terkait</th>
@@ -292,9 +292,7 @@
                         @forelse ($logs as $log)
                             @php
                                 $actionUpper = strtoupper($log->action ?? '');
-                                $wibTime = $log->created_at 
-                                    ? $log->created_at->timezone('Asia/Jakarta')->locale('id')->translatedFormat('l, d M Y • H:i') . ' WIB'
-                                    : '-';
+                                $formattedTime = $log->formattedCreatedAt($companyTimezone ?? null);
                                 $modelBasename = class_basename($log->model_type ?? '');
                                 $payload = [
                                     'id' => $log->id,
@@ -306,7 +304,7 @@
                                     'model_id' => $log->model_id,
                                     'actor' => $log->user ? $log->user->name : 'Sistem / Anonim',
                                     'role' => $log->user ? ($log->user->role_title ?? ucfirst(str_replace('_', ' ', $log->user->role ?? 'Staf'))) : 'System',
-                                    'timestamp' => $wibTime,
+                                    'timestamp' => $formattedTime,
                                     'ip_address' => $log->ip_address ?? '-',
                                     'user_agent' => $log->user_agent ?? '-',
                                     'old_values' => $log->old_values,
@@ -314,9 +312,9 @@
                                 ];
                             @endphp
                             <tr class="hover:bg-slate-50/60 transition-colors">
-                                {{-- 1. Timestamp (WIB) --}}
+                                {{-- 1. Timestamp --}}
                                 <td class="px-5 py-4 whitespace-nowrap text-gray-700 font-medium text-xs">
-                                    {{ $wibTime }}
+                                    {{ $formattedTime }}
                                 </td>
 
                                 {{-- 2. Aktor --}}

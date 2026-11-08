@@ -73,13 +73,12 @@ trait Auditable
             $newValues = $new;
         }
 
-        // Determine company ID
-        $companyId = $model->company_id
-            ?? (Auth::check() ? Auth::user()->company_id : null);
+        // Tentukan company ID secara otomatis dan aman
+        $companyId = static::resolveCompanyId($model);
 
-        // Fallback for company_id if model is Company or relation
-        if (! $companyId && $model instanceof Company) {
-            $companyId = $model->getKey();
+        // Validasi ketat: Log tidak boleh dibuat jika company_id bernilai null
+        if ($companyId === null) {
+            return;
         }
 
         // Determine user ID (authenticated user or fallback to model user_id)
@@ -100,6 +99,69 @@ trait Auditable
             'ip_address' => $ipAddress,
             'user_agent' => $userAgent,
         ]);
+    }
+
+    /**
+     * Menyelesaikan company_id secara otomatis dari model, relasi, atau user login.
+     */
+    protected static function resolveCompanyId(Model $model): ?int
+    {
+        // 1. Cek langsung atribut company_id atau nilai original model
+        if (! empty($model->company_id)) {
+            return (int) $model->company_id;
+        }
+
+        if (! empty($model->getOriginal('company_id'))) {
+            return (int) $model->getOriginal('company_id');
+        }
+
+        // 2. Jika model adalah instance Company itu sendiri
+        if ($model instanceof Company) {
+            return (int) $model->getKey();
+        }
+
+        // 3. Cek relasi 'company' jika tersedia
+        if (method_exists($model, 'company')) {
+            try {
+                $company = $model->company;
+                if ($company instanceof Model && ! empty($company->getKey())) {
+                    return (int) $company->getKey();
+                }
+            } catch (\Throwable) {
+                // Lewati jika pemanggilan relasi gagal
+            }
+        }
+
+        // 4. Cek relasi 'department' jika tersedia
+        if (method_exists($model, 'department')) {
+            try {
+                $department = $model->department;
+                if ($department instanceof Model && ! empty($department->company_id)) {
+                    return (int) $department->company_id;
+                }
+            } catch (\Throwable) {
+                // Lewati jika pemanggilan relasi gagal
+            }
+        }
+
+        // 5. Cek relasi 'user' jika tersedia
+        if (method_exists($model, 'user')) {
+            try {
+                $user = $model->user;
+                if ($user instanceof Model && ! empty($user->company_id)) {
+                    return (int) $user->company_id;
+                }
+            } catch (\Throwable) {
+                // Lewati jika pemanggilan relasi gagal
+            }
+        }
+
+        // 6. Fallback ke company_id milik pengguna yang sedang login
+        if (Auth::check() && ! empty(Auth::user()->company_id)) {
+            return (int) Auth::user()->company_id;
+        }
+
+        return null;
     }
 
     /**

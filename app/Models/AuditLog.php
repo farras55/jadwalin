@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class AuditLog extends Model
 {
@@ -132,6 +133,67 @@ class AuditLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * The "booted" method of the model.
+     * Menerapkan Global Scope agar audit log selalu terisolasi berdasarkan company_id tenant.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('company', function ($query): void {
+            if (Auth::check() && Auth::user()->company_id) {
+                $query->where((new static)->getTable().'.company_id', Auth::user()->company_id);
+            }
+        });
+    }
+
+    /**
+     * Format timestamp createdAt sesuai timezone perusahaan secara dinamis.
+     */
+    public function formattedCreatedAt(?string $timezone = null): string
+    {
+        if (! $this->created_at) {
+            return '-';
+        }
+
+        $tz = $timezone
+            ?: ($this->company?->timezone ?? (Auth::check() ? Auth::user()->company?->timezone : null) ?? config('app.timezone', 'Asia/Jakarta'));
+
+        $abbr = self::getTimezoneAbbreviation($tz);
+
+        return $this->created_at->timezone($tz)->locale('id')->translatedFormat('l, d M Y • H:i').' '.$abbr;
+    }
+
+    /**
+     * Dapatkan singkatan zona waktu (WIB, WITA, WIT, dll.) secara dinamis.
+     */
+    public static function getTimezoneAbbreviation(string $timezone): string
+    {
+        $map = [
+            'Asia/Jakarta' => 'WIB',
+            'Asia/Pontianak' => 'WIB',
+            'Asia/Makassar' => 'WITA',
+            'Asia/Ujung_Pandang' => 'WITA',
+            'Asia/Jayapura' => 'WIT',
+        ];
+
+        if (isset($map[$timezone])) {
+            return $map[$timezone];
+        }
+
+        try {
+            $abbr = now($timezone)->format('T');
+
+            return match ($abbr) {
+                '+07' => 'WIB',
+                '+08' => 'WITA',
+                '+09' => 'WIT',
+                default => $abbr,
+            };
+        } catch (\Throwable) {
+            return 'WIB';
+        }
     }
 
     /**

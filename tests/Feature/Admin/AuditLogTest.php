@@ -8,8 +8,10 @@ use App\Models\CompanySetting;
 use App\Models\Department;
 use App\Models\Shift;
 use App\Models\User;
+use App\Traits\Auditable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class AuditLogTest extends TestCase
@@ -283,5 +285,165 @@ class AuditLogTest extends TestCase
         auth()->logout();
         $guestResponse = $this->get(route('admin.audit-logs.index'));
         $guestResponse->assertRedirect(route('login'));
+    }
+
+    /**
+     * Skenario 5: Audit log terisolasi secara ketat per perusahaan (Multi-Tenant).
+     */
+    public function test_audit_logs_are_strictly_isolated_by_company(): void
+    {
+        // 1. Log untuk Perusahaan A ($this->company)
+        AuditLog::create([
+            'company_id' => $this->company->id,
+            'user_id' => $this->admin->id,
+            'action' => 'update',
+            'model_type' => Shift::class,
+            'model_id' => 101,
+            'old_values' => ['title' => 'Shift Rahasia Perusahaan A'],
+            'new_values' => ['title' => 'Shift Publik Perusahaan A'],
+            'ip_address' => '192.168.1.10',
+        ]);
+
+        // 2. Buat Perusahaan B dan Admin Perusahaan B
+        $companyB = Company::forceCreate([
+            'name' => 'PT Makmur Jaya Abadi',
+            'email' => 'corp@makmur.test',
+            'phone_number' => '081234567891',
+            'address' => 'Jl. Hasanuddin No. 45',
+            'timezone' => 'Asia/Makassar',
+        ]);
+
+        $adminB = User::factory()->create([
+            'name' => 'Admin Perusahaan B',
+            'role' => 'superadmin',
+            'company_id' => $companyB->id,
+        ]);
+
+        AuditLog::create([
+            'company_id' => $companyB->id,
+            'user_id' => $adminB->id,
+            'action' => 'delete',
+            'model_type' => Shift::class,
+            'model_id' => 202,
+            'old_values' => ['title' => 'Data Rahasia Perusahaan B'],
+            'new_values' => null,
+            'ip_address' => '10.0.0.99',
+        ]);
+
+        // Login sebagai Admin Perusahaan A -> Hanya melihat log Perusahaan A
+        $responseA = $this->actingAs($this->admin)->get(route('admin.audit-logs.index'));
+        $responseA->assertOk();
+        $responseA->assertSee('192.168.1.10');
+        $responseA->assertDontSee('10.0.0.99');
+        $responseA->assertDontSee('Admin Perusahaan B');
+
+        // Login sebagai Admin Perusahaan B -> Hanya melihat log Perusahaan B
+        $responseB = $this->actingAs($adminB)->get(route('admin.audit-logs.index'));
+        $responseB->assertOk();
+        $responseB->assertSee('10.0.0.99');
+        $responseB->assertSee('Admin Perusahaan B');
+        $responseB->assertDontSee('192.168.1.10');
+    }
+
+    /**
+     * Skenario 6: Trait Auditable secara otomatis meng-assign company_id dan menolak log jika null.
+     */
+    public function test_audit_log_creation_automatically_assigns_correct_company_id(): void
+    {
+        $this->actingAs($this->admin);
+
+        // 1. Model yang memiliki relasi / atribut company_id otomatis ter-assign
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Verifikasi Tenant',
+            'start_time' => now()->setTime(8, 0),
+            'end_time' => now()->setTime(16, 0),
+            'quota' => 3,
+            'status' => 'published',
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'create',
+            'model_type' => Shift::class,
+            'model_id' => $shift->id,
+            'company_id' => $this->company->id,
+        ]);
+
+        // 2. Model tanpa company_id saat tidak ada user login (company_id null) -> TIDAK boleh membuat log
+        auth()->logout();
+
+        $beforeCount = AuditLog::withoutGlobalScopes()->count();
+
+        // Model dummy tanpa company_id
+        $orphanModel = new Shift;
+        $reflection = new \ReflectionClass(Auditable::class);
+        $method = $reflection->getMethod('recordAuditLog');
+        $method->setAccessible(true);
+        $method->invoke(null, $orphanModel, 'create');
+
+        $this->assertEquals($beforeCount, AuditLog::withoutGlobalScopes()->count(), 'Audit log tidak boleh ter-create jika company_id bernilai null.');
+    }
+
+    /**
+     * Skenario 7: Format timestamp pada audit log mengikuti konfigurasi timezone perusahaan.
+     */
+    public function test_audit_log_timestamp_follows_company_timezone_settings(): void
+    {
+        $fixedUtcTime = Carbon::create(2026, 11, 8, 10, 0, 0, 'UTC'); // 17:00 WIB, 18:00 WITA
+        Carbon::setTestNow($fixedUtcTime);
+
+        AuditLog::create([
+            'company_id' => $this->company->id,
+            'user_id' => $this->admin->id,
+            'action' => 'update',
+            'model_type' => Shift::class,
+            'model_id' => 888,
+            'old_values' => ['title' => 'Shift Pagi'],
+            'new_values' => ['title' => 'Shift Sore'],
+            'ip_address' => '127.0.0.1',
+            'created_at' => $fixedUtcTime,
+        ]);
+
+        // Perusahaan A menggunakan Asia/Jakarta -> Menampilkan WIB
+        $responseA = $this->actingAs($this->admin)->get(route('admin.audit-logs.index'));
+        $responseA->assertOk();
+        $responseA->assertSee('WIB');
+        $responseA->assertSee('17:00 WIB');
+
+        // Perusahaan Bali menggunakan Asia/Makassar -> Menampilkan WITA
+        $companyBali = Company::forceCreate([
+            'name' => 'PT Bali Mandiri',
+            'email' => 'corp@bali.test',
+            'phone_number' => '081234567892',
+            'address' => 'Jl. Bypass Ngurah Rai No. 10',
+            'timezone' => 'Asia/Makassar',
+        ]);
+
+        $adminBali = User::factory()->create([
+            'name' => 'Admin Bali',
+            'role' => 'superadmin',
+            'company_id' => $companyBali->id,
+        ]);
+
+        AuditLog::create([
+            'company_id' => $companyBali->id,
+            'user_id' => $adminBali->id,
+            'action' => 'update',
+            'model_type' => Shift::class,
+            'model_id' => 889,
+            'old_values' => ['title' => 'Shift Pagi'],
+            'new_values' => ['title' => 'Shift Malam'],
+            'ip_address' => '127.0.0.2',
+            'created_at' => $fixedUtcTime,
+        ]);
+
+        $responseBali = $this->actingAs($adminBali)->get(route('admin.audit-logs.index'));
+        $responseBali->assertOk();
+        $responseBali->assertSee('WITA');
+        $responseBali->assertSee('18:00 WITA');
+        $responseBali->assertDontSee('17:00 WIB');
+
+        Carbon::setTestNow(null);
     }
 }

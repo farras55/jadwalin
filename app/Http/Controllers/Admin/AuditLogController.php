@@ -14,7 +14,14 @@ class AuditLogController extends Controller
      */
     public function index(Request $request): View
     {
+        $user = $request->user();
+        $company = $user?->company;
+        $companyId = $user?->company_id;
+        $companyTimezone = $company?->timezone ?: config('app.timezone', 'Asia/Jakarta');
+        $timezoneAbbr = AuditLog::getTimezoneAbbreviation($companyTimezone);
+
         $query = AuditLog::query()
+            ->when($companyId, fn ($q) => $q->where('company_id', $companyId))
             ->with(['user', 'company'])
             ->latest();
 
@@ -48,10 +55,9 @@ class AuditLogController extends Controller
 
         $logs = $query->paginate(15)->withQueryString();
 
-        $user = $request->user();
-        $statsBase = AuditLog::query()->when($user?->company_id, fn ($q) => $q->where('company_id', $user->company_id));
+        $statsBase = AuditLog::query()->when($companyId, fn ($q) => $q->where('company_id', $companyId));
 
-        $today = now()->timezone('Asia/Jakarta')->startOfDay();
+        $today = now()->timezone($companyTimezone)->startOfDay();
 
         $stats = [
             'total_today' => (clone $statsBase)->where('created_at', '>=', $today)->count(),
@@ -89,6 +95,8 @@ class AuditLogController extends Controller
             'availableActions' => $availableActions,
             'availableModels' => $availableModels,
             'fieldLabels' => AuditLog::FIELD_LABELS,
+            'companyTimezone' => $companyTimezone,
+            'timezoneAbbr' => $timezoneAbbr,
         ]);
     }
 }
