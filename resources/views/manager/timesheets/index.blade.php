@@ -142,7 +142,27 @@
                             @endphp
                             <tr class="hover:bg-slate-50/60 transition-colors">
                                 <td class="px-5 py-4 whitespace-nowrap">
-                                    <div class="font-bold text-gray-900">{{ $row->user?->name ?? '-' }}</div>
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="font-bold text-gray-900">{{ $row->user?->name ?? '-' }}</div>
+                                        @if ($row->user)
+                                            @php
+                                                $tsType = $row->user->employment_type ?? 'full_time';
+                                                $tsBadge = match ($tsType) {
+                                                    'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                                    'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                                    default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                                };
+                                                $tsLabel = match ($tsType) {
+                                                    'full_time' => 'FT',
+                                                    'part_time' => 'PT',
+                                                    default => 'FL',
+                                                };
+                                            @endphp
+                                            <span class="text-[9px] font-bold uppercase border px-1.5 py-0.2 rounded-md {{ $tsBadge }}">
+                                                {{ $tsLabel }}
+                                            </span>
+                                        @endif
+                                    </div>
                                     <div class="text-[11px] text-gray-400 font-mono">{{ $row->user?->email ?? '-' }}</div>
                                 </td>
                                 <td class="px-5 py-4 whitespace-nowrap">
