@@ -99,12 +99,17 @@ class AutoClockOutCommand extends Command
             $totalMinutes = max(0, $clockInTime->diffInMinutes($shiftEndDateTime));
             $totalHours = round($totalMinutes / 60, 2);
 
-            $maxRegularHours = ($setting && $setting->max_regular_hours !== null)
-                ? (float) $setting->max_regular_hours
-                : 8.0;
+            if ($setting && $setting->max_regular_hours !== null && (float) $setting->max_regular_hours <= 0) {
+                $regularHours = $totalHours;
+                $overtimeHours = 0.0;
+            } else {
+                $maxRegularHours = ($setting && $setting->max_regular_hours !== null)
+                    ? (float) $setting->max_regular_hours
+                    : 8.0;
 
-            $regularHours = min($totalHours, $maxRegularHours);
-            $overtimeHours = max(0.0, round($totalHours - $maxRegularHours, 2));
+                $regularHours = min($totalHours, $maxRegularHours);
+                $overtimeHours = max(0.0, round($totalHours - $maxRegularHours, 2));
+            }
 
             $oldValues = [
                 'clock_out_time' => $assignment->clock_out_time?->toDateTimeString(),

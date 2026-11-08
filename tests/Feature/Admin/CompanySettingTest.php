@@ -357,4 +357,66 @@ class CompanySettingTest extends TestCase
         $this->assertEquals(112.6148093, (float) $branch->longitude);
         $this->assertEquals('Politeknik Negeri Malang', $branch->address);
     }
+
+    public function test_settings_update_supports_unlimited_hours_toggle(): void
+    {
+        $company = Company::factory()->create();
+
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'role' => 'superadmin',
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('admin.settings.update'), [
+                'is_unlimited' => '1',
+                'max_regular_hours' => 40,
+                'max_overtime_hours' => 18,
+                'work_hour_limit_type' => 'weekly',
+                'min_rest_hours' => 11,
+                'max_working_days_per_week' => 6,
+                'auto_buffer_minutes' => 30,
+                'grace_period_minutes' => 15,
+                'is_auto_clockout' => 1,
+                'auto_clockout_buffer_hours' => 2,
+            ])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $this->assertDatabaseHas('company_settings', [
+            'company_id' => $company->id,
+            'max_regular_hours' => 0,
+        ]);
+    }
+
+    public function test_setting_hours_above_pp_standard_persists_successfully(): void
+    {
+        $company = Company::factory()->create();
+
+        $user = User::factory()->create([
+            'company_id' => $company->id,
+            'role' => 'superadmin',
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('admin.settings.update'), [
+                'is_unlimited' => '0',
+                'max_regular_hours' => 48,
+                'max_overtime_hours' => 20,
+                'work_hour_limit_type' => 'weekly',
+                'min_rest_hours' => 11,
+                'max_working_days_per_week' => 6,
+                'auto_buffer_minutes' => 30,
+                'grace_period_minutes' => 15,
+                'is_auto_clockout' => 1,
+                'auto_clockout_buffer_hours' => 2,
+            ])
+            ->assertRedirect(route('admin.settings.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('company_settings', [
+            'company_id' => $company->id,
+            'max_regular_hours' => 48,
+            'max_overtime_hours' => 20,
+        ]);
+    }
 }

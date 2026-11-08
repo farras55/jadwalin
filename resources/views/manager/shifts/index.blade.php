@@ -1448,6 +1448,21 @@
                                             @php
                                                 $staf = $assignment->user;
                                                 $initials = collect(explode(' ', $staf->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
+                                                $typeBadgeClasses = match ($staf->employment_type) {
+                                                    'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                                    'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                                    default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                                };
+                                                $typeLabel = match ($staf->employment_type) {
+                                                    'full_time' => 'FT',
+                                                    'part_time' => 'PT',
+                                                    default => 'FL',
+                                                };
+                                                $typeTitle = match ($staf->employment_type) {
+                                                    'full_time' => 'Staf Penuh Waktu (Full-Time)',
+                                                    'part_time' => 'Staf Paruh Waktu (Part-Time)',
+                                                    default => 'Pekerja Lepas (Freelance)',
+                                                };
                                             @endphp
                                             <div class="flex items-center justify-between gap-1.5 bg-[#F5F3FF]/70 border border-[#E2E0F7] rounded-xl px-2 py-1 text-[11px]">
                                                 <div class="flex items-center gap-1.5 truncate">
@@ -1458,15 +1473,9 @@
                                                 </div>
 
                                                 <div class="flex items-center gap-1 shrink-0">
-                                                    <span class="text-[9px] font-bold text-[#7C7896] uppercase bg-white border border-[#E2E0F7] px-1 rounded">
-                                                        {{ $staf->employment_type === 'full_time' ? 'FT' : ($staf->employment_type === 'part_time' ? 'PT' : 'FL') }}
+                                                    <span class="text-[9px] font-bold uppercase border px-1.5 py-0.5 rounded-md {{ $typeBadgeClasses }}" title="{{ $typeTitle }}">
+                                                        {{ $typeLabel }}
                                                     </span>
-
-                                                    @if ($assignment->is_overtime)
-                                                        <span class="text-[8px] font-extrabold uppercase px-1 py-0.2 rounded bg-red-100 text-red-700 border border-red-200" title="Shift Bernilai Lembur">
-                                                            OT
-                                                        </span>
-                                                    @endif
                                                 </div>
                                             </div>
                                         @empty
@@ -1668,7 +1677,9 @@
                                                 <span class="text-xs font-semibold text-[#2D2A3E] truncate" x-text="staff.name"></span>
                                             </div>
                                             <div class="flex items-center gap-1.5 shrink-0">
-                                                <span class="text-[9px] font-bold text-[#7C7896] uppercase bg-slate-100 border border-[#E2E0F7] px-1.5 py-0.5 rounded"
+                                                <span class="text-[9px] font-bold uppercase border px-1.5 py-0.5 rounded-md"
+                                                      :class="staff.type_class"
+                                                      :title="staff.type_title"
                                                       x-text="staff.type_label">
                                                 </span>
                                                 <span x-show="isStaffAssigned(staff.id)" class="text-[9px] font-bold text-[#6C5CE7] bg-[#6C5CE7]/10 px-1.5 py-0.5 rounded">
@@ -1739,6 +1750,12 @@
                     'name' => $s->name,
                     'type' => $s->employment_type,
                     'type_label' => match($s->employment_type) { 'full_time' => 'FT', 'part_time' => 'PT', default => 'FL' },
+                    'type_title' => match($s->employment_type) { 'full_time' => 'Staf Penuh Waktu (Full-Time)', 'part_time' => 'Staf Paruh Waktu (Part-Time)', default => 'Pekerja Lepas (Freelance)' },
+                    'type_class' => match($s->employment_type) {
+                        'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                        'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                        default => 'bg-purple-50 text-purple-700 border-purple-200',
+                    },
                     'initials' => collect(explode(' ', $s->name))->map(fn($w) => strtoupper(substr($w, 0, 1)))->take(2)->join(''),
                 ])) }},
                 openEditModal(shift) {
