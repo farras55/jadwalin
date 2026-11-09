@@ -366,7 +366,7 @@
                                 {{-- 6. Tombol Detail Perubahan (Lihat Perubahan) --}}
                                 <td class="px-5 py-4 whitespace-nowrap text-center">
                                     <button type="button" 
-                                            @click="openModal({{ json_encode($payload) }})"
+                                            @click="openModal(@js($payload))"
                                             title="Lihat Perubahan"
                                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-gray-700 text-xs font-semibold border border-slate-200 shadow-2xs transition cursor-pointer">
                                         <i data-lucide="file-text" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
