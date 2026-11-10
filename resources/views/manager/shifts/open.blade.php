@@ -1,8 +1,8 @@
 @php
     $statusMap = [
-        'pending_manager' => ['Menunggu Manajer', 'bg-blue-100 text-blue-800 border-blue-200', 'clock'],
-        'approved' => ['Disetujui', 'bg-emerald-100 text-emerald-800 border-emerald-200', 'check-circle'],
-        'rejected' => ['Ditolak', 'bg-red-100 text-red-800 border-red-200', 'x-circle'],
+        'pending_manager' => ['Menunggu Manajer', 'bg-amber-50 text-amber-800 border-amber-200', 'clock'],
+        'approved' => ['Disetujui', 'bg-emerald-50 text-emerald-800 border-emerald-200', 'check-circle'],
+        'rejected' => ['Ditolak', 'bg-red-50 text-red-800 border-red-200', 'x-circle'],
     ];
 @endphp
 
@@ -10,15 +10,20 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
+                <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+                    <span>Manager</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                    <span class="text-[#6C5CE7] font-medium">Shift Terbuka</span>
+                </div>
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
                     Kelola Shift Terbuka (Open Shift)
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-1">
+                <p class="text-xs md:text-sm text-[#7C7896] mt-0.5">
                     Publikasikan kuota shift lembur/tambahan dan tinjau klaim dari staf berdasarkan urutan waktu.
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
                     <i data-lucide="shield-check" class="h-3.5 w-3.5"></i>
                     Manajer
                 </span>
@@ -85,8 +90,8 @@
     >
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-4 rounded-xl border border-emerald-200 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-2">
+            <div class="bg-emerald-50 text-emerald-800 p-4 rounded-2xl border border-emerald-200 shadow-2xs flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
                     <i data-lucide="check-circle" class="h-5 w-5 text-emerald-600 shrink-0"></i>
                     <span class="text-sm font-medium">{{ session('success') }}</span>
                 </div>
@@ -94,8 +99,8 @@
         @endif
 
         @if (session('error'))
-            <div class="bg-red-50 text-red-800 p-4 rounded-xl border border-red-200 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-2">
+            <div class="bg-red-50 text-red-800 p-4 rounded-2xl border border-red-200 shadow-2xs flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
                     <i data-lucide="alert-circle" class="h-5 w-5 text-red-600 shrink-0"></i>
                     <span class="text-sm font-medium">{{ session('error') }}</span>
                 </div>
@@ -103,8 +108,8 @@
         @endif
 
         @if (session('info'))
-            <div class="bg-blue-50 text-blue-800 p-4 rounded-xl border border-blue-200 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-2">
+            <div class="bg-blue-50 text-blue-800 p-4 rounded-2xl border border-blue-200 shadow-2xs flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
                     <i data-lucide="info" class="h-5 w-5 text-blue-600 shrink-0"></i>
                     <span class="text-sm font-medium">{{ session('info') }}</span>
                 </div>
@@ -113,17 +118,17 @@
 
         {{-- Tabs Header & Action Button --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="inline-flex p-1 bg-white border border-brand-border rounded-xl shadow-2xs">
+            <div class="inline-flex p-1 bg-white border border-[#E2E0F7] rounded-2xl shadow-2xs">
                 <button 
                     type="button" 
                     @click="activeTab = 'pending'"
                     :class="activeTab === 'pending' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="relative px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2"
+                    class="relative px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2"
                 >
                     <i data-lucide="clock" class="h-4 w-4"></i>
                     <span>Antrean Klaim</span>
                     @if ($pendingClaims->count() > 0)
-                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
                               :class="activeTab === 'pending' ? 'bg-white text-[#6C5CE7]' : 'bg-[#6C5CE7] text-white'">
                             {{ $pendingClaims->count() }}
                         </span>
@@ -134,13 +139,13 @@
                     type="button" 
                     @click="activeTab = 'active_shifts'"
                     :class="activeTab === 'active_shifts' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2"
+                    class="px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2"
                 >
                     <i data-lucide="megaphone" class="h-4 w-4"></i>
                     <span>Open Shift Aktif</span>
                     @if ($openShifts->total() > 0)
-                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
-                              :class="activeTab === 'active_shifts' ? 'bg-white text-[#6C5CE7]' : 'bg-slate-200 text-slate-700'">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                              :class="activeTab === 'active_shifts' ? 'bg-white text-[#6C5CE7]' : 'bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7]'">
                             {{ $openShifts->total() }}
                         </span>
                     @endif
@@ -150,13 +155,13 @@
                     type="button" 
                     @click="activeTab = 'history'"
                     :class="activeTab === 'history' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2"
+                    class="px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2"
                 >
                     <i data-lucide="history" class="h-4 w-4"></i>
                     <span>Riwayat Keputusan</span>
                     @if ($claimHistory->total() > 0)
-                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
-                              :class="activeTab === 'history' ? 'bg-white text-[#6C5CE7]' : 'bg-slate-200 text-slate-700'">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                              :class="activeTab === 'history' ? 'bg-white text-[#6C5CE7]' : 'bg-[#F5F3FF] text-[#7C7896] border border-[#E2E0F7]'">
                             {{ $claimHistory->total() }}
                         </span>
                     @endif
@@ -166,9 +171,9 @@
             <button 
                 type="button" 
                 @click="showBroadcastModal = true"
-                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-primary hover:bg-brand-hover transition shadow-sm"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-white bg-[#6C5CE7] hover:bg-[#5B4BD5] transition shadow-xs"
             >
-                <i data-lucide="megaphone" class="h-4 w-4"></i>
+                <i data-lucide="plus" class="h-4 w-4"></i>
                 <span>Broadcast Open Shift</span>
             </button>
         </div>
@@ -181,55 +186,64 @@
                     $currentAssignments = $shift->shiftAssignments()->count();
                     $remaining = max(0, $shift->quota - $currentAssignments);
                 @endphp
-                <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs hover:border-[#6C5CE7]/30 transition-all">
+                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-xs transition-all">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-                        <div class="space-y-3 flex-1">
-                            <div class="flex flex-wrap items-center gap-2.5">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                        <div class="space-y-3 flex-1 min-w-0">
+                            {{-- Header tags --}}
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
                                     <i data-lucide="clock" class="h-3.5 w-3.5"></i>
                                     Menunggu Persetujuan
                                 </span>
-                                <span class="text-xs font-medium text-slate-500">
-                                    Waktu Pengajuan: <strong class="text-slate-700">{{ $claim->applied_at ? $claim->applied_at->format('H:i:s.u') : $claim->created_at->format('H:i:s') }}</strong>
+                                <span class="text-xs text-[#7C7896] flex items-center gap-1">
+                                    <span>Waktu Pengajuan:</span>
+                                    <strong class="text-[#2D2A3E] font-mono">{{ $claim->applied_at ? $claim->applied_at->format('H:i:s.u') : $claim->created_at->format('H:i:s') }}</strong>
                                 </span>
-                                <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                                <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
                                     Sisa Kuota: {{ $remaining }} / {{ $shift->quota }}
                                 </span>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                                 {{-- Karyawan Pemohon --}}
-                                <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5">
-                                    <div class="flex items-center gap-2.5 mb-1.5">
-                                        <div class="w-7 h-7 rounded-full bg-[#6C5CE7]/10 text-[#6C5CE7] font-bold text-xs flex items-center justify-center">
-                                            {{ substr($claim->user->name, 0, 1) }}
+                                <div class="bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl p-3.5 flex flex-col justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-white border border-[#E2E0F7] text-[#6C5CE7] font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                            {{ strtoupper(substr($claim->user->name, 0, 2)) }}
                                         </div>
-                                        <div>
-                                            <p class="font-bold text-[#2D2A3E] text-xs leading-none">{{ $claim->user->name }}</p>
-                                            <p class="text-[10px] text-[#7C7896] mt-0.5">{{ $claim->user->position?->name ?? 'Staf' }} &bull; {{ $claim->user->department?->name ?? '-' }}</p>
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-[#2D2A3E] text-sm leading-tight truncate">{{ $claim->user->name }}</p>
+                                            <p class="text-xs text-[#7C7896] mt-0.5">{{ $claim->user->position?->name ?? 'Staf' }} &bull; {{ $claim->user->department?->name ?? '-' }}</p>
                                         </div>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 mt-2">
-                                        Email: <span class="text-slate-700 font-mono">{{ $claim->user->email }}</span>
-                                    </p>
+                                    <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-[#7C7896]">
+                                        <span>Email Kontak:</span>
+                                        <span class="font-mono text-[#2D2A3E] truncate max-w-[200px]">{{ $claim->user->email }}</span>
+                                    </div>
                                 </div>
 
                                 {{-- Shift yang Diminta --}}
-                                <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5">
-                                    <p class="text-xs font-bold text-[#2D2A3E]">{{ $shift->title }}</p>
-                                    <p class="text-[11px] text-[#7C7896] mt-0.5">
-                                        {{ $shift->start_time->translatedFormat('l, d M Y') }} &bull; {{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }}
-                                    </p>
-                                    <p class="text-[11px] text-slate-500 mt-2">
-                                        Departemen: 
-                                        @if ($shift->is_global_broadcast)
-                                            <span class="inline-flex items-center gap-1 text-purple-700 font-bold">
-                                                <i data-lucide="globe" class="h-3 w-3"></i> Global Broadcast
-                                            </span>
-                                        @else
-                                            <span class="text-slate-700 font-medium">{{ $shift->department?->name ?? '-' }}</span>
-                                        @endif
-                                    </p>
+                                <div class="bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl p-3.5 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between gap-2 mb-1">
+                                            <p class="text-sm font-bold text-[#2D2A3E] truncate">{{ $shift->title }}</p>
+                                            @if ($shift->is_global_broadcast)
+                                                <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 border border-purple-200 shrink-0">
+                                                    <i data-lucide="globe" class="h-3 w-3"></i> Global
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <p class="text-xs text-[#7C7896] flex items-center gap-1.5 mt-0.5">
+                                            <i data-lucide="calendar" class="h-3.5 w-3.5 text-[#6C5CE7] shrink-0"></i>
+                                            <span class="font-medium text-[#2D2A3E]">{{ $shift->start_time->translatedFormat('l, d M Y') }}</span>
+                                            <span>&bull;</span>
+                                            <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} WIB</span>
+                                        </p>
+                                    </div>
+                                    <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-[#7C7896]">
+                                        <span>Departemen Asal:</span>
+                                        <span class="font-semibold text-[#2D2A3E]">{{ $shift->department?->name ?? 'Lintas Departemen' }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -264,12 +278,14 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-2xl border border-brand-border p-12 text-center shadow-2xs">
-                    <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                        <i data-lucide="check-circle" class="h-6 w-6"></i>
+                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-12 text-center shadow-2xs">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-3">
+                        <i data-lucide="check-circle-2" class="h-7 w-7"></i>
                     </div>
-                    <p class="font-bold text-[#2D2A3E]">Tidak ada klaim yang menunggu persetujuan</p>
-                    <p class="text-xs text-[#7C7896] mt-1">Saat ada staf yang mengajukan klaim untuk open shift mode approval, daftarnya akan masuk ke antrean ini sesuai mikrodetik pendaftaran.</p>
+                    <p class="font-bold text-[#2D2A3E] text-base">Tidak Ada Klaim yang Menunggu Persetujuan</p>
+                    <p class="text-xs md:text-sm text-[#7C7896] mt-1 max-w-md mx-auto">
+                        Saat ada staf yang mengajukan klaim untuk open shift mode approval, pengajuan akan masuk ke antrean ini secara real-time.
+                    </p>
                 </div>
             @endforelse
         </div>
@@ -277,12 +293,14 @@
         {{-- TAB 2: ACTIVE OPEN SHIFTS --}}
         <div x-show="activeTab === 'active_shifts'" class="space-y-4" style="display: none;">
             @if ($openShifts->isEmpty())
-                <div class="bg-white rounded-2xl border border-brand-border p-12 text-center shadow-2xs">
-                    <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                        <i data-lucide="megaphone" class="h-6 w-6"></i>
+                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-12 text-center shadow-2xs">
+                    <div class="w-14 h-14 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] mx-auto flex items-center justify-center mb-3">
+                        <i data-lucide="megaphone" class="h-7 w-7"></i>
                     </div>
-                    <p class="font-bold text-[#2D2A3E]">Belum ada open shift aktif</p>
-                    <p class="text-xs text-[#7C7896] mt-1">Klik tombol "Broadcast Open Shift" di kanan atas untuk mempublikasikan kuota shift baru ke tim.</p>
+                    <p class="font-bold text-[#2D2A3E] text-base">Belum Ada Open Shift Aktif</p>
+                    <p class="text-xs md:text-sm text-[#7C7896] mt-1 max-w-md mx-auto">
+                        Klik tombol "Broadcast Open Shift" di kanan atas untuk mempublikasikan alokasi kuota shift tambahan baru atau shift kekurangan personel.
+                    </p>
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -294,59 +312,65 @@
                             $isInstant = !$shift->requires_approval;
                             $remaining = max(0, $quota - $filledCount);
                         @endphp
-                        <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs flex flex-col justify-between">
+                        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-xs transition-all flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between gap-2">
                                     @if ($isInstant)
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <i data-lucide="zap" class="h-3 w-3"></i> Instant FCFS
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                                             <i data-lucide="shield-alert" class="h-3 w-3"></i> Butuh Approval
                                         </span>
                                     @endif
 
-                                    <span class="text-xs font-bold text-slate-500">
+                                    <span class="text-xs font-bold {{ $remaining <= 1 ? 'text-amber-600' : 'text-slate-600' }}">
                                         {{ $remaining }} slot tersisa
                                     </span>
                                 </div>
 
                                 <div>
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <h4 class="font-bold text-[#2D2A3E] text-sm">{{ $shift->title }}</h4>
+                                        <h4 class="font-bold text-[#2D2A3E] text-base leading-snug">{{ $shift->title }}</h4>
                                         @if ($shift->is_global_broadcast)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">
                                                 <i data-lucide="globe" class="h-3 w-3"></i> Global Broadcast
                                             </span>
                                         @endif
                                     </div>
-                                    <p class="text-xs text-[#7C7896]">
+                                    <p class="text-xs text-[#7C7896] mt-0.5">
                                         @if ($shift->is_global_broadcast)
                                             Semua Departemen {{ $shift->department ? '('.$shift->department->name.')' : '' }}
                                         @else
-                                            {{ $shift->department?->name ?? 'Departemen' }}
+                                            {{ $shift->department?->name ?? 'Departemen Terkait' }}
                                         @endif
                                     </p>
                                 </div>
 
-                                <div class="text-xs text-slate-600 bg-slate-50 rounded-xl p-2.5 border border-slate-200/80">
-                                    <p class="font-medium">{{ $shift->start_time->translatedFormat('d M Y') }}</p>
-                                    <p class="text-[11px] text-slate-500">{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }}</p>
+                                <div class="text-xs text-slate-700 bg-[#F8F7FF] rounded-xl p-3 border border-[#E2E0F7] space-y-1">
+                                    <p class="font-semibold text-[#2D2A3E] flex items-center gap-1.5">
+                                        <i data-lucide="calendar" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
+                                        <span>{{ $shift->start_time->translatedFormat('l, d M Y') }}</span>
+                                    </p>
+                                    <p class="text-[11px] text-[#7C7896] flex items-center gap-1.5">
+                                        <i data-lucide="clock" class="h-3.5 w-3.5 text-slate-400"></i>
+                                        <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} WIB</span>
+                                    </p>
                                 </div>
 
-                                <div class="space-y-1">
+                                <div class="space-y-1.5">
                                     <div class="flex justify-between text-xs">
-                                        <span class="text-slate-500">Terisi: {{ $filledCount }} / {{ $quota }} Slot</span>
-                                        <span class="font-semibold text-slate-700">{{ $percentage }}%</span>
+                                        <span class="text-[#7C7896]">Terisi: <strong class="text-[#2D2A3E]">{{ $filledCount }}</strong> / {{ $quota }} Slot</span>
+                                        <span class="font-bold text-[#6C5CE7]">{{ $percentage }}%</span>
                                     </div>
-                                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                        <div class="h-1.5 rounded-full bg-[#6C5CE7]" style="width: {{ $percentage }}%"></div>
+                                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200/60">
+                                        <div class="h-2 rounded-full bg-[#6C5CE7] transition-all duration-300" style="width: {{ $percentage }}%"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="pt-3 mt-3 border-t border-slate-100">
+                            <div class="pt-3 mt-4 border-t border-slate-100">
                                 <form method="POST" action="{{ route('manager.open-shifts.close', $shift) }}">
                                     @csrf
                                     <button 
@@ -376,16 +400,19 @@
                     $shift = $claim->shift;
                     [$statusLabel, $statusClass, $statusIcon] = $statusMap[$claim->status] ?? [$claim->status, 'bg-slate-100 text-slate-700 border-slate-200', 'clock'];
                 @endphp
-                <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center gap-2">
+                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs hover:border-[#6C5CE7]/30 transition-all">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="space-y-1.5 min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold border {{ $statusClass }}">
                                     <i data-lucide="{{ $statusIcon }}" class="h-3 w-3"></i>
                                     {{ $statusLabel }}
                                 </span>
-                                <span class="text-xs font-semibold text-slate-500">
-                                    {{ $shift->title }} ({{ $shift->start_time->translatedFormat('d M Y, H:i') }})
+                                <span class="text-xs font-bold text-[#2D2A3E]">
+                                    {{ $shift->title }}
+                                </span>
+                                <span class="text-xs text-[#7C7896]">
+                                    ({{ $shift->start_time->translatedFormat('d M Y, H:i') }})
                                 </span>
                             </div>
 
@@ -394,29 +421,32 @@
                                 <span class="text-xs font-normal text-slate-400">({{ $claim->user->position?->name ?? 'Staf' }})</span>
                             </p>
 
-                            <p class="text-xs text-slate-400">
-                                Diajukan: {{ $claim->applied_at ? $claim->applied_at->format('d M Y, H:i:s.u') : '-' }} &bull;
-                                Ditinjau oleh: {{ $claim->approvedBy?->name ?? 'Sistem FCFS' }}
+                            <p class="text-xs text-[#7C7896]">
+                                Diajukan: <span class="font-mono text-slate-600">{{ $claim->applied_at ? $claim->applied_at->format('d M Y, H:i:s.u') : '-' }}</span> &bull;
+                                Ditinjau oleh: <span class="font-medium text-[#2D2A3E]">{{ $claim->approvedBy?->name ?? 'Sistem FCFS' }}</span>
                             </p>
                             @if ($claim->status === 'rejected' && $claim->rejection_reason)
                                 <div class="mt-2 p-2.5 rounded-xl bg-red-50/70 border border-red-100 text-xs text-red-700">
-                                    <span class="font-semibold">Alasan Penolakan:</span> {{ $claim->rejection_reason }}
+                                    <span class="font-bold">Alasan Penolakan:</span> {{ $claim->rejection_reason }}
                                 </div>
                             @endif
                         </div>
 
-                        <div class="text-xs text-right text-slate-400">
-                            {{ $claim->updated_at->translatedFormat('d M Y') }}
+                        <div class="text-xs text-[#7C7896] sm:text-right shrink-0">
+                            <p class="text-[11px] text-slate-400">Keputusan:</p>
+                            <p class="font-semibold text-[#2D2A3E]">{{ $claim->updated_at->translatedFormat('d M Y') }}</p>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-2xl border border-brand-border p-12 text-center shadow-2xs">
-                    <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                        <i data-lucide="history" class="h-6 w-6"></i>
+                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-12 text-center shadow-2xs">
+                    <div class="w-14 h-14 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] mx-auto flex items-center justify-center mb-3">
+                        <i data-lucide="history" class="h-7 w-7"></i>
                     </div>
-                    <p class="font-bold text-[#2D2A3E]">Belum ada riwayat keputusan klaim</p>
-                    <p class="text-xs text-[#7C7896] mt-1">Daftar klaim yang telah disetujui atau ditolak akan tersimpan di sini.</p>
+                    <p class="font-bold text-[#2D2A3E] text-base">Belum Ada Riwayat Keputusan Klaim</p>
+                    <p class="text-xs md:text-sm text-[#7C7896] mt-1 max-w-sm mx-auto">
+                        Daftar klaim yang telah disetujui atau ditolak akan tersimpan secara terstruktur di sini.
+                    </p>
                 </div>
             @endforelse
 
@@ -440,10 +470,10 @@
             <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" @click="showBroadcastModal = false"></div>
 
             <div class="relative min-h-screen flex items-center justify-center p-4">
-                <div class="relative bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-brand-border space-y-5">
+                <div class="relative bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[#E2E0F7] space-y-5 my-8">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div>
-                            <h3 class="text-lg font-bold text-[#2D2A3E]">Broadcast Open Shift Dadakan</h3>
+                            <h3 class="text-base font-bold text-[#2D2A3E]">Broadcast Open Shift Dadakan</h3>
                             <p class="text-xs text-[#7C7896] mt-0.5">Buka alokasi kuota shift tambahan untuk staf departemen.</p>
                         </div>
                         <button type="button" @click="showBroadcastModal = false" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
@@ -461,8 +491,8 @@
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label 
-                                    class="relative flex flex-col p-3 rounded-xl border cursor-pointer transition-all"
-                                    :class="broadcastSource === 'new' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7]' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
+                                    :class="broadcastSource === 'new' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -475,12 +505,12 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="broadcastSource === 'new'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">Buat jadwal shift dadakan / lembur baru.</p>
+                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">Buat jadwal shift dadakan / lembur baru.</p>
                                 </label>
 
                                 <label 
-                                    class="relative flex flex-col p-3 rounded-xl border cursor-pointer transition-all"
-                                    :class="broadcastSource === 'existing' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7]' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
+                                    :class="broadcastSource === 'existing' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -493,7 +523,7 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="broadcastSource === 'existing'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">
+                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">
                                         Buka slot dari shift terjadwal ({{ $existingUnderstaffedShifts->count() }} tersedia).
                                     </p>
                                 </label>
@@ -557,7 +587,7 @@
 
                                 {{-- Preview Card Shift Terpilih --}}
                                 <template x-if="selectedExistingShift">
-                                    <div class="bg-indigo-50/60 border border-indigo-100 rounded-xl p-3.5 space-y-2">
+                                    <div class="bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl p-3.5 space-y-2">
                                         <div class="flex items-center justify-between">
                                             <p class="font-bold text-[#2D2A3E] text-xs" x-text="selectedExistingShift.title"></p>
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800">
@@ -819,7 +849,7 @@
                                     :disabled="broadcastSource !== 'new'"
                                     class="rounded border-slate-300 text-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100"
                                 >
-                                <label for="is_holiday" class="text-xs text-slate-600">
+                                <label for="is_holiday" class="text-xs text-[#7C7896]">
                                     Tandai sebagai hari libur / tanggal merah (tarif lembur)
                                 </label>
                             </div>
@@ -834,8 +864,8 @@
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" x-data="{ mode: '0' }">
                                 <label 
-                                    class="relative flex flex-col p-3 rounded-xl border cursor-pointer transition-all"
-                                    :class="mode === '0' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7]' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
+                                    :class="mode === '0' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -848,12 +878,12 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="mode === '0'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">Siapa cepat langsung otomatis masuk jadwal.</p>
+                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">Siapa cepat langsung otomatis masuk jadwal.</p>
                                 </label>
 
                                 <label 
-                                    class="relative flex flex-col p-3 rounded-xl border cursor-pointer transition-all"
-                                    :class="mode === '1' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7]' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
+                                    :class="mode === '1' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -866,7 +896,7 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="mode === '1'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">Klaim ditampung & dipilih manual manajer.</p>
+                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">Klaim ditampung & dipilih manual manajer.</p>
                                 </label>
                             </div>
                         </div>
@@ -875,13 +905,13 @@
                             <button 
                                 type="button" 
                                 @click="showBroadcastModal = false"
-                                class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                                class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
                             >
                                 Batal
                             </button>
                             <button 
                                 type="submit" 
-                                class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-primary hover:bg-brand-hover shadow-xs transition"
+                                class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#6C5CE7] hover:bg-[#5B4BD5] shadow-xs transition"
                             >
                                 Publikasikan Sekarang
                             </button>
@@ -906,10 +936,10 @@
             <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" @click="closeRejectModal()"></div>
 
             <div class="relative min-h-screen flex items-center justify-center p-4">
-                <div class="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-brand-border space-y-5">
+                <div class="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#E2E0F7] space-y-5">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <div class="flex items-center gap-2 text-red-600">
-                            <div class="p-2 rounded-xl bg-red-50">
+                        <div class="flex items-center gap-2.5 text-red-600">
+                            <div class="p-2.5 rounded-xl bg-red-50 text-red-600">
                                 <i data-lucide="alert-triangle" class="h-5 w-5"></i>
                             </div>
                             <div>
@@ -925,7 +955,7 @@
                     <form method="POST" :action="rejectActionUrl" class="space-y-4">
                         @csrf
 
-                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs space-y-1">
+                        <div class="p-3.5 rounded-2xl bg-[#F8F7FF] border border-[#E2E0F7] text-xs space-y-1">
                             <p class="text-[#7C7896]">Staf: <span class="font-bold text-[#2D2A3E]" x-text="rejectEmployeeName"></span></p>
                             <p class="text-[#7C7896]">Shift: <span class="font-semibold text-[#2D2A3E]" x-text="rejectShiftTitle"></span></p>
                         </div>
@@ -941,7 +971,7 @@
                                 maxlength="255"
                                 x-model="rejectionReason"
                                 placeholder="Contoh: Jadwal bertabrakan dengan shift lain atau kuota staf terpenuhi..."
-                                class="w-full text-xs rounded-xl border border-brand-border focus:border-brand-primary focus:ring-brand-primary/20 p-3 text-[#2D2A3E] placeholder:text-slate-400 resize-none"
+                                class="w-full text-xs rounded-xl border border-slate-300 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] p-3 text-[#2D2A3E] placeholder:text-slate-400 resize-none"
                             ></textarea>
                             <p class="text-[11px] text-slate-400 text-right mt-1">Maksimal 255 karakter</p>
                         </div>
@@ -950,7 +980,7 @@
                             <button 
                                 type="button" 
                                 @click="closeRejectModal()"
-                                class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                                class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
                             >
                                 Batal
                             </button>
@@ -967,4 +997,12 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) window.lucide.createIcons();
+        });
+    </script>
+    @endpush
 </x-app-layout>

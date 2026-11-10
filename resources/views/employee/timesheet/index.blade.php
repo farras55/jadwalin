@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="min-h-screen py-6 space-y-6">
+    <div class="min-h-screen pt-0 pb-6 space-y-6">
         {{-- Header & Breadcrumbs --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

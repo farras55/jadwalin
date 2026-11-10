@@ -1,3 +1,4 @@
+
 @php
     $statusMap = [
         'pending_manager' => ['Menunggu Manajer', 'bg-amber-100 text-amber-800 border-amber-200'],
@@ -11,6 +12,13 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
+                {{-- Breadcrumb --}}
+                <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+                    <span>Karyawan</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                    <span class="text-[#6C5CE7] font-medium">Ketersediaan Waktu</span>
+                </div>
+
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
                     Ketersediaan Waktu
                 </h1>

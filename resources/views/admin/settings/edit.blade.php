@@ -13,13 +13,31 @@
     </style>
 
     <x-slot name="header">
-        <div>
-            <h2 class="text-xl font-semibold text-gray-800">
-                Pengaturan Perusahaan
-            </h2>
-            <p class="mt-1 text-sm text-gray-500">
-                Atur batas jam kerja dan ketentuan kepatuhan karyawan.
-            </p>
+        <div class="space-y-3">
+            <nav aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">
+                            Admin
+                        </a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">
+                        Pengaturan Platform
+                    </li>
+                </ol>
+            </nav>
+
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800">
+                    Pengaturan Perusahaan
+                </h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Atur batas jam kerja dan ketentuan kepatuhan karyawan.
+                </p>
+            </div>
         </div>
     </x-slot>
 
@@ -46,7 +64,7 @@
         ];
     @endphp
 
-    <div class="min-h-screen bg-gray-50 py-8">
+    <div class="min-h-screen bg-[#F5F3FF] py-8">
         <div class="mx-auto max-w-5xl px-4 pb-10 sm:px-6 lg:px-8"
              x-data="branchLocationManager(@js($branchesData), @js($companySettingsData), {{ $selectedBranchId ? (int) $selectedBranchId : 'null' }})">
 

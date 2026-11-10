@@ -182,7 +182,8 @@ class DashboardController extends Controller
             ->where('company_id', $employee->company_id)
             ->where('user_id', $employee->id)
             ->whereHas('shift', function (Builder $query) use ($weekStart, $weekEnd) {
-                $query->whereBetween('start_time', [$weekStart, $weekEnd]);
+                $query->where('status', 'published')
+                    ->whereBetween('start_time', [$weekStart, $weekEnd]);
             })
             ->get();
 

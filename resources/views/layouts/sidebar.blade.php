@@ -27,18 +27,26 @@
             
             {{-- Bagian Logo: Saat collapsed hanya ikon di tengah --}}
             <div :class="sidebarCollapsed ? 'w-full flex items-center justify-center cursor-pointer' : 'flex items-center justify-start gap-2.5 overflow-hidden'"
-                 @click="if (sidebarCollapsed) toggleSidebar()"
-                 :title="sidebarCollapsed ? 'Buka Sidebar' : ''"
-                 class="transition-all duration-200">
+                @click="if (sidebarCollapsed) toggleSidebar()"
+                :title="sidebarCollapsed ? 'Buka Sidebar' : ''"
+                class="transition-all duration-200">
+
                 <x-application-logo class="h-8 w-8 shrink-0 transition-all duration-200" />
-                <span x-show="!sidebarCollapsed" 
-                      :class="{ 'hidden': sidebarCollapsed }"
-                      x-transition:enter="transition ease-out duration-150"
-                      x-transition:enter-start="opacity-0"
-                      x-transition:enter-end="opacity-100"
-                      class="text-[19px] font-bold text-[#2D2A3E] tracking-tight whitespace-nowrap">
-                    Jadwal<span style="color: #6C5CE7;">in</span>
-                </span>
+
+                <div x-show="!sidebarCollapsed"
+                    :class="{ 'hidden': sidebarCollapsed }"
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    class="flex flex-col">
+
+                    <span class="font-display font-extrabold text-[19px] tracking-tight leading-none whitespace-nowrap">
+                        <span class="text-[#2D2A3E]">Jadwal</span><span style="color: #6C5CE7;">in</span>
+                    </span>
+                    <span class="text-[8px] font-semibold tracking-wider text-[#6C5CE7]/80 uppercase mt-0.5 whitespace-nowrap">
+                        Smart Shift Scheduling
+                    </span>
+                </div>
             </div>
             
             {{-- Tombol Tutup (Mobile Only) --}}
