@@ -7,6 +7,7 @@ use App\Models\CompanySetting;
 use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
+use App\Models\ShiftTemplate;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,54 +17,67 @@ class AttendanceBoundaryTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected Company $company;
+    private User $employee;
+    private ShiftAssignment $assignment;
+    private Shift $shift;
+    private string $timezone = 'Asia/Jakarta';
 
-    protected Department $department;
-
-    protected User $employee;
-
-    protected Shift $shift;
-
-    protected ShiftAssignment $assignment;
+    // Koordinat dummy valid agar lolos validasi geofencing
+    private float $validLatitude = -6.2088;
+    private float $validLongitude = 106.8456;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->company = Company::factory()->create();
-
-        $this->department = Department::factory()->create([
-            'company_id' => $this->company->id,
-            'latitude' => -6.175392,
-            'longitude' => 106.827153,
-            'radius' => 100,
+        $company = Company::factory()->create(['timezone' => $this->timezone]);
+        
+        CompanySetting::factory()->create([
+            'company_id' => $company->id,
+            'grace_period_minutes' => 15,
+            'office_latitude' => $this->validLatitude,
+            'office_longitude' => $this->validLongitude,
+            'attendance_radius_meters' => 100,
         ]);
 
+        $department = Department::factory()->create([
+            'company_id' => $company->id,
+            'latitude' => $this->validLatitude,
+            'longitude' => $this->validLongitude,
+            'radius_meters' => 100,
+        ]);
+
+        // PERBAIKAN: Mendefinisikan role langsung tanpa menggunakan state ->employee()
         $this->employee = User::factory()->create([
-            'company_id' => $this->company->id,
-            'department_id' => $this->department->id,
+            'company_id' => $company->id,
+            'department_id' => $department->id,
             'role' => 'employee',
         ]);
 
-        CompanySetting::factory()->create([
-            'company_id' => $this->company->id,
-            'grace_period_minutes' => 15,
+        $template = ShiftTemplate::factory()->create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'start_time' => '08:00:00',
+            'end_time' => '17:00:00',
         ]);
 
-        // Shift dimulai jam 08:00 sampai 16:00 hari ini
+        // Shift untuk hari ini pukul 08:00 - 17:00
         $this->shift = Shift::factory()->create([
-            'company_id' => $this->company->id,
-            'department_id' => $this->department->id,
-            'start_time' => Carbon::today()->setTime(8, 0),
-            'end_time' => Carbon::today()->setTime(16, 0),
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'template_id' => $template->id,
+            'start_time' => Carbon::today($this->timezone)->setHour(8)->setMinute(0),
+            'end_time' => Carbon::today($this->timezone)->setHour(17)->setMinute(0),
+            'status' => 'published'
         ]);
 
         $this->assignment = ShiftAssignment::factory()->create([
-            'company_id' => $this->company->id,
+            'company_id' => $company->id,
             'shift_id' => $this->shift->id,
             'user_id' => $this->employee->id,
-            'clock_in_time' => null,
             'status' => 'scheduled',
+            'clock_in_time' => null,
+            'clock_out_time' => null,
         ]);
     }
 
@@ -72,10 +86,14 @@ class AttendanceBoundaryTest extends TestCase
      */
     public function test_clock_in_at_exact_60_minutes_before_shift_is_allowed(): void
     {
-        Carbon::setTestNow(Carbon::today()->setTime(7, 0));
+        $shiftStart = Carbon::parse($this->shift->getRawOriginal('start_time'), $this->timezone);
+        Carbon::setTestNow($shiftStart->copy()->subMinutes(60));
 
         $response = $this->actingAs($this->employee)
-            ->post(route('employee.attendance.clock-in'));
+            ->post(route('employee.attendance.clock-in'), [
+                'latitude' => $this->validLatitude,
+                'longitude' => $this->validLongitude,
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -89,10 +107,14 @@ class AttendanceBoundaryTest extends TestCase
      */
     public function test_clock_in_at_61_minutes_before_shift_is_rejected(): void
     {
-        Carbon::setTestNow(Carbon::today()->setTime(6, 59));
+        $shiftStart = Carbon::parse($this->shift->getRawOriginal('start_time'), $this->timezone);
+        Carbon::setTestNow($shiftStart->copy()->subMinutes(61));
 
         $response = $this->actingAs($this->employee)
-            ->post(route('employee.attendance.clock-in'));
+            ->post(route('employee.attendance.clock-in'), [
+                'latitude' => $this->validLatitude,
+                'longitude' => $this->validLongitude,
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('error', 'Clock In hanya dapat dilakukan paling cepat 60 menit sebelum shift dimulai.');
@@ -106,10 +128,14 @@ class AttendanceBoundaryTest extends TestCase
      */
     public function test_clock_in_at_exact_15_minutes_grace_period_is_marked_present(): void
     {
-        Carbon::setTestNow(Carbon::today()->setTime(8, 15));
+        $shiftStart = Carbon::parse($this->shift->getRawOriginal('start_time'), $this->timezone);
+        Carbon::setTestNow($shiftStart->copy()->addMinutes(15));
 
         $response = $this->actingAs($this->employee)
-            ->post(route('employee.attendance.clock-in'));
+            ->post(route('employee.attendance.clock-in'), [
+                'latitude' => $this->validLatitude,
+                'longitude' => $this->validLongitude,
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -124,10 +150,14 @@ class AttendanceBoundaryTest extends TestCase
      */
     public function test_clock_in_at_16_minutes_is_marked_late(): void
     {
-        Carbon::setTestNow(Carbon::today()->setTime(8, 16));
+        $shiftStart = Carbon::parse($this->shift->getRawOriginal('start_time'), $this->timezone);
+        Carbon::setTestNow($shiftStart->copy()->addMinutes(16));
 
         $response = $this->actingAs($this->employee)
-            ->post(route('employee.attendance.clock-in'));
+            ->post(route('employee.attendance.clock-in'), [
+                'latitude' => $this->validLatitude,
+                'longitude' => $this->validLongitude,
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -138,14 +168,18 @@ class AttendanceBoundaryTest extends TestCase
     }
 
     /**
-     * TC-BND-05: Clock-in setelah shift berakhir (jam 16:01) -> DITOLAK.
+     * TC-BND-05: Clock-in setelah shift berakhir (jam 17:01) -> DITOLAK.
      */
     public function test_clock_in_after_shift_ended_is_rejected(): void
     {
-        Carbon::setTestNow(Carbon::today()->setTime(16, 1));
+        $shiftEnd = Carbon::parse($this->shift->getRawOriginal('end_time'), $this->timezone);
+        Carbon::setTestNow($shiftEnd->copy()->addMinute());
 
         $response = $this->actingAs($this->employee)
-            ->post(route('employee.attendance.clock-in'));
+            ->post(route('employee.attendance.clock-in'), [
+                'latitude' => $this->validLatitude,
+                'longitude' => $this->validLongitude,
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('error', 'Shift telah berakhir. Presensi tidak dapat dilakukan.');

@@ -20,7 +20,8 @@ class AttendanceController extends Controller
      */
     protected function getActiveAssignment($user)
     {
-        $today = Carbon::today();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
+        $today = Carbon::today($timezone);
 
         // 1. Shift in-progress (mendukung overnight shift kemarin malam)
         $inProgress = ShiftAssignment::with(['shift.department', 'shift.company'])
@@ -67,7 +68,8 @@ class AttendanceController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $today = Carbon::today();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
+        $today = Carbon::today($timezone);
         $startOfMonth = $today->copy()->startOfMonth();
         $endOfMonth = $today->copy()->endOfMonth();
 
@@ -108,14 +110,16 @@ class AttendanceController extends Controller
             : ($presentShifts == 0 ? 'On-Track' : 'Perlu Evaluasi');
 
         // Total akumulasi jam kerja yang sudah diselesaikan
-        $totalWorkHours = (float) $monthAssignments->reduce(function ($carry, $a) {
+        $totalWorkHours = (float) $monthAssignments->reduce(function ($carry, $a) use ($timezone) {
             $reg = (float) ($a->regular_hours ?? 0);
             $ovt = (float) ($a->overtime_hours ?? 0);
             if ($reg + $ovt > 0) {
                 return $carry + $reg + $ovt;
             }
             if (! empty($a->clock_in_time) && ! empty($a->clock_out_time)) {
-                $diff = Carbon::parse($a->clock_in_time)->diffInMinutes(Carbon::parse($a->clock_out_time));
+                $clockIn = Carbon::parse($a->getRawOriginal('clock_in_time'), $timezone);
+                $clockOut = Carbon::parse($a->getRawOriginal('clock_out_time'), $timezone);
+                $diff = $clockIn->diffInMinutes($clockOut);
 
                 return $carry + ($diff / 60);
             }
@@ -167,8 +171,8 @@ class AttendanceController extends Controller
         // Apakah jam shift sudah lewat batas akhir?
         $shiftEnded = false;
         if ($todayShift && $todayShift->shift) {
-            $shiftEndTime = Carbon::parse($todayShift->shift->end_time);
-            $shiftEnded = Carbon::now()->greaterThan($shiftEndTime);
+            $shiftEndTime = Carbon::parse($todayShift->shift->getRawOriginal('end_time'), $timezone);
+            $shiftEnded = Carbon::now($timezone)->greaterThan($shiftEndTime);
         }
 
         // State: 'idle' | 'working' | 'completed' | 'no_shift'
@@ -355,8 +359,31 @@ class AttendanceController extends Controller
             return back()->with('error', 'Lokasi cabang belum diatur oleh admin. Presensi tidak dapat dilakukan.');
         }
 
-        $startTime = Carbon::parse($assignment->shift->start_time, $timezone);
-        $endTime = Carbon::parse($assignment->shift->end_time, $timezone);
+        // =========================================================================
+        // VALIDASI KOORDINAT PENGGUNA DAN GEOFENCING RADIUS KANTOR
+        // =========================================================================
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+
+        if ($latitude === null || $longitude === null || ! is_numeric($latitude) || ! is_numeric($longitude)) {
+            return back()->with('error', 'Koordinat lokasi Anda tidak valid atau tidak terdeteksi.');
+        }
+
+        $latitude = (float) $latitude;
+        $longitude = (float) $longitude;
+
+        if ($latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180) {
+            return back()->with('error', 'Koordinat lokasi Anda berada di luar rentang geografis yang valid.');
+        }
+
+        $distance = $this->calculateDistance($latitude, $longitude, (float) $location['latitude'], (float) $location['longitude']);
+
+        if ($distance > (int) $location['radius']) {
+            return back()->with('error', 'Anda berada di luar radius kantor.');
+        }
+
+        $startTime = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
+        $endTime = Carbon::parse($assignment->shift->getRawOriginal('end_time'), $timezone);
 
         // Batasi clock-in paling cepat 60 menit sebelum shift dimulai
         if ($now->lt($startTime->copy()->subMinutes(60))) {
@@ -412,12 +439,13 @@ class AttendanceController extends Controller
             return back()->with('error', 'Anda sudah melakukan clock-out hari ini.');
         }
 
-        // Perhitungan jam kerja berbasis waktu server
-        $totalMinutes = Carbon::parse($assignment->clock_in_time)->diffInMinutes($now);
+        // Perhitungan jam kerja berbasis waktu server, gunakan getRawOriginal
+        $clockInTime = Carbon::parse($assignment->getRawOriginal('clock_in_time'), $timezone);
+        $totalMinutes = $clockInTime->diffInMinutes($now);
         $totalHours = round($totalMinutes / 60, 2);
 
-        $shiftStart = Carbon::parse($assignment->shift->start_time, $timezone);
-        $shiftEnd = Carbon::parse($assignment->shift->end_time, $timezone);
+        $shiftStart = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
+        $shiftEnd = Carbon::parse($assignment->shift->getRawOriginal('end_time'), $timezone);
         $scheduledHours = round($shiftStart->diffInMinutes($shiftEnd) / 60, 2);
 
         $settings = CompanySetting::where('company_id', $user->company_id)->first();

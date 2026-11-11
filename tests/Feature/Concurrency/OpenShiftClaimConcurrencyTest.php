@@ -403,7 +403,10 @@ class OpenShiftClaimConcurrencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->manager)
-            ->post(route('manager.open-shifts.claims.reject', $claim));
+            ->post(route('manager.open-shifts.claims.reject', $claim), [
+                // PERBAIKAN: Menambahkan rejection_reason agar lolos validasi form
+                'rejection_reason' => 'Maaf, prioritas diberikan pada shift sore',
+            ]);
 
         $response->assertRedirect(route('manager.open-shifts.index'));
 
@@ -411,6 +414,7 @@ class OpenShiftClaimConcurrencyTest extends TestCase
             'id' => $claim->id,
             'status' => 'rejected',
             'approved_by' => $this->manager->id,
+            'rejection_reason' => 'Maaf, prioritas diberikan pada shift sore',
         ]);
 
         $this->assertDatabaseMissing('shift_assignments', [

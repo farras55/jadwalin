@@ -455,7 +455,21 @@ class OpenShiftController extends Controller
                     abort(422, 'Anda sudah mengajukan klaim untuk shift ini.');
                 }
 
-                // 4. Hitung kuota yang telah terisi (ShiftAssignment aktif)
+                // 4. Cegah bentrok jadwal dengan shift aktif karyawan (Anti-Double Booking)
+                $hasScheduleConflict = ShiftAssignment::where('user_id', $user->id)
+                    ->whereIn('status', ['scheduled', 'present', 'late'])
+                    ->whereHas('shift', function ($query) use ($lockedShift) {
+                        $query->where('id', '!=', $lockedShift->id)
+                            ->where('start_time', '<', $lockedShift->end_time)
+                            ->where('end_time', '>', $lockedShift->start_time);
+                    })
+                    ->exists();
+
+                if ($hasScheduleConflict) {
+                    abort(422, 'Jadwal shift terbuka ini bertabrakan dengan jadwal shift aktif Anda.');
+                }
+
+                // 5. Hitung kuota yang telah terisi (ShiftAssignment aktif)
                 $currentAssignmentsCount = ShiftAssignment::where('shift_id', $lockedShift->id)->count();
 
                 if ($currentAssignmentsCount >= $lockedShift->quota) {
@@ -624,9 +638,14 @@ class OpenShiftController extends Controller
             abort(403, 'Akses tidak sah.');
         }
 
+        $validated = $request->validate([
+            'rejection_reason' => ['required', 'string', 'max:255'],
+        ]);
+
         $claim->update([
             'status' => 'rejected',
             'approved_by' => $manager->id,
+            'rejection_reason' => $validated['rejection_reason'],
         ]);
 
         NotificationService::send(
