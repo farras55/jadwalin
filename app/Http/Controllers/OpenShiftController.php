@@ -455,9 +455,9 @@ class OpenShiftController extends Controller
                     abort(422, 'Anda sudah mengajukan klaim untuk shift ini.');
                 }
 
-                // 4. Cegah bentrok jadwal dengan shift aktif karyawan (Anti-Double Booking)
+                // 4. Validasi bentrok jadwal (Double-booking conflict) dengan shift aktif karyawan
                 $hasScheduleConflict = ShiftAssignment::where('user_id', $user->id)
-                    ->whereIn('status', ['scheduled', 'present', 'late'])
+                    ->whereNotIn('status', ['cancelled'])
                     ->whereHas('shift', function ($query) use ($lockedShift) {
                         $query->where('id', '!=', $lockedShift->id)
                             ->where('start_time', '<', $lockedShift->end_time)
@@ -639,20 +639,22 @@ class OpenShiftController extends Controller
         }
 
         $validated = $request->validate([
-            'rejection_reason' => ['required', 'string', 'max:255'],
+            'rejection_reason' => ['nullable', 'string', 'max:255'],
         ]);
 
         $claim->update([
             'status' => 'rejected',
             'approved_by' => $manager->id,
-            'rejection_reason' => $validated['rejection_reason'],
+            'rejection_reason' => $validated['rejection_reason'] ?? null,
         ]);
+
+        $reasonText = ! empty($claim->rejection_reason) ? " Alasan: {$claim->rejection_reason}" : '';
 
         NotificationService::send(
             $claim->user_id,
             'open_shift_rejected',
             'Klaim Shift Ditolak',
-            "Permohonan klaim shift Anda untuk '{$claim->shift->title}' tidak disetujui manajer.",
+            "Permohonan klaim shift Anda untuk '{$claim->shift->title}' tidak disetujui manajer.{$reasonText}",
             $claim->company_id
         );
 

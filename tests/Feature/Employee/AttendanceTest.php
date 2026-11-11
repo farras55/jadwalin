@@ -71,6 +71,7 @@ class AttendanceTest extends TestCase
             'radius',
             'branch',
         ]);
+        $response->assertDontSee('Ekspor CSV');
     }
 
     public function test_attendance_page_uses_coordinates_from_user_branch()

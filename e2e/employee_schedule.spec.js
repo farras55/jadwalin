@@ -30,8 +30,16 @@ test.describe('Modul Karyawan: Kalender Jadwal Kerja (PBL-41)', () => {
     await expect(page.getByRole('heading', { name: /Jadwal Saya/i })).toBeVisible();
     await expect(page.getByText(/Kalender jadwal kerja dan penugasan/i)).toBeVisible();
 
-    // Verifikasi Navigasi Mingguan
-    await expect(page.getByText(/Minggu Ini|Minggu Lalu|Minggu Mendatang/i).first()).toBeVisible();
+    // Verifikasi Navigasi Mingguan (Mendukung Tampilan Responsif Desktop & Mobile)
+    const prevWeekBtn = page.locator('a[href*="week_offset"]').first();
+    const nextWeekBtn = page.locator('a[href*="week_offset"]').last();
+    await expect(prevWeekBtn).toBeVisible();
+    await expect(nextWeekBtn).toBeVisible();
+
+    // Targetkan teks indikator minggu di bagian tengah navigasi yang terlihat responsif di mobile
+    const weekLabel = page.locator('div.flex-col.items-center').getByText(/Minggu Ini|Minggu Lalu|Minggu Mendatang/i);
+    await weekLabel.scrollIntoViewIfNeeded();
+    await expect(weekLabel).toBeVisible();
   });
 });
 

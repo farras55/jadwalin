@@ -31,6 +31,23 @@
         x-data="{
             activeTab: 'pending',
             showBroadcastModal: false,
+            showRejectModal: false,
+            rejectClaimId: null,
+            rejectEmployeeName: '',
+            rejectShiftTitle: '',
+            rejectActionUrl: '',
+            rejectionReason: '',
+            openRejectModal(id, employeeName, shiftTitle, url) {
+                this.rejectClaimId = id;
+                this.rejectEmployeeName = employeeName;
+                this.rejectShiftTitle = shiftTitle;
+                this.rejectActionUrl = url;
+                this.rejectionReason = '';
+                this.showRejectModal = true;
+            },
+            closeRejectModal() {
+                this.showRejectModal = false;
+            },
             broadcastSource: 'new',
             isGlobalManager: {{ $isGlobalManager ? 'true' : 'false' }},
             broadcastScope: 'department',
@@ -188,7 +205,30 @@
                                             {{ substr($claim->user->name, 0, 1) }}
                                         </div>
                                         <div>
-                                            <p class="font-bold text-[#2D2A3E] text-xs leading-none">{{ $claim->user->name }}</p>
+                                            <div class="flex items-center gap-1.5">
+                                                <p class="font-bold text-[#2D2A3E] text-xs leading-none">{{ $claim->user->name }}</p>
+                                                @php
+                                                    $cType = $claim->user->employment_type ?? 'full_time';
+                                                    $cBadge = match ($cType) {
+                                                        'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                                        'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                                        default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                                    };
+                                                    $cLabel = match ($cType) {
+                                                        'full_time' => 'FT',
+                                                        'part_time' => 'PT',
+                                                        default => 'FL',
+                                                    };
+                                                    $cTitle = match ($cType) {
+                                                        'full_time' => 'Staf Penuh Waktu (Full-Time)',
+                                                        'part_time' => 'Staf Paruh Waktu (Part-Time)',
+                                                        default => 'Pekerja Lepas (Freelance)',
+                                                    };
+                                                @endphp
+                                                <span class="text-[9px] font-bold uppercase border px-1.5 py-0.2 rounded-md {{ $cBadge }}" title="{{ $cTitle }}">
+                                                    {{ $cLabel }}
+                                                </span>
+                                            </div>
                                             <p class="text-[10px] text-[#7C7896] mt-0.5">{{ $claim->user->position?->name ?? 'Staf' }} &bull; {{ $claim->user->department?->name ?? '-' }}</p>
                                         </div>
                                     </div>
@@ -219,17 +259,18 @@
 
                         {{-- Action Buttons --}}
                         <div class="flex items-center gap-2.5 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
-                            <form method="POST" action="{{ route('manager.open-shifts.claims.reject', $claim) }}">
-                                @csrf
-                                <button 
-                                    type="submit" 
-                                    class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition"
-                                    onclick="return confirm('Apakah Anda yakin ingin menolak klaim ini?')"
-                                >
-                                    <i data-lucide="x" class="h-3.5 w-3.5"></i>
-                                    Tolak
-                                </button>
-                            </form>
+                            <button 
+                                type="button" 
+                                class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition cursor-pointer"
+                                data-claim-id="{{ $claim->id }}"
+                                data-employee-name="{{ $claim->user->name }}"
+                                data-shift-title="{{ $shift->title }}"
+                                data-action-url="{{ route('manager.open-shifts.claims.reject', $claim) }}"
+                                @click="openRejectModal($el.dataset.claimId, $el.dataset.employeeName, $el.dataset.shiftTitle, $el.dataset.actionUrl)"
+                            >
+                                <i data-lucide="x" class="h-3.5 w-3.5"></i>
+                                Tolak
+                            </button>
 
                             <form method="POST" action="{{ route('manager.open-shifts.claims.approve', $claim) }}">
                                 @csrf
@@ -371,15 +412,38 @@
                                 </span>
                             </div>
 
-                            <p class="text-sm font-bold text-[#2D2A3E]">
-                                {{ $claim->user->name }}
-                                <span class="text-xs font-normal text-slate-400">({{ $claim->user->position?->name ?? 'Staf' }})</span>
-                            </p>
+                            <div class="flex items-center gap-1.5">
+                                <p class="text-sm font-bold text-[#2D2A3E]">
+                                    {{ $claim->user->name }}
+                                    <span class="text-xs font-normal text-slate-400">({{ $claim->user->position?->name ?? 'Staf' }})</span>
+                                </p>
+                                @php
+                                    $histType = $claim->user->employment_type ?? 'full_time';
+                                    $histBadge = match ($histType) {
+                                        'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                        'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                        default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                    };
+                                    $histLabel = match ($histType) {
+                                        'full_time' => 'FT',
+                                        'part_time' => 'PT',
+                                        default => 'FL',
+                                    };
+                                @endphp
+                                <span class="text-[9px] font-bold uppercase border px-1.5 py-0.5 rounded-md {{ $histBadge }}">
+                                    {{ $histLabel }}
+                                </span>
+                            </div>
 
                             <p class="text-xs text-slate-400">
                                 Diajukan: {{ $claim->applied_at ? $claim->applied_at->format('d M Y, H:i:s.u') : '-' }} &bull;
                                 Ditinjau oleh: {{ $claim->approvedBy?->name ?? 'Sistem FCFS' }}
                             </p>
+                            @if ($claim->status === 'rejected' && $claim->rejection_reason)
+                                <div class="mt-2 p-2.5 rounded-xl bg-red-50/70 border border-red-100 text-xs text-red-700">
+                                    <span class="font-semibold">Alasan Penolakan:</span> {{ $claim->rejection_reason }}
+                                </div>
+                            @endif
                         </div>
 
                         <div class="text-xs text-right text-slate-400">
@@ -861,6 +925,82 @@
                                 class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-brand-primary hover:bg-brand-hover shadow-xs transition"
                             >
                                 Publikasikan Sekarang
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- MODAL TOLAK KLAIM DENGAN ALASAN --}}
+        <div 
+            x-show="showRejectModal" 
+            class="fixed inset-0 z-50 overflow-y-auto" 
+            style="display: none;"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+        >
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" @click="closeRejectModal()"></div>
+
+            <div class="relative min-h-screen flex items-center justify-center p-4">
+                <div class="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-brand-border space-y-5">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2 text-red-600">
+                            <div class="p-2 rounded-xl bg-red-50">
+                                <i data-lucide="alert-triangle" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-[#2D2A3E]">Tolak Klaim Shift</h3>
+                                <p class="text-xs text-[#7C7896]">Konfirmasi penolakan klaim staf</p>
+                            </div>
+                        </div>
+                        <button type="button" @click="closeRejectModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+                            <i data-lucide="x" class="h-5 w-5"></i>
+                        </button>
+                    </div>
+
+                    <form method="POST" :action="rejectActionUrl" class="space-y-4">
+                        @csrf
+
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs space-y-1">
+                            <p class="text-[#7C7896]">Staf: <span class="font-bold text-[#2D2A3E]" x-text="rejectEmployeeName"></span></p>
+                            <p class="text-[#7C7896]">Shift: <span class="font-semibold text-[#2D2A3E]" x-text="rejectShiftTitle"></span></p>
+                        </div>
+
+                        <div>
+                            <label for="rejection_reason" class="block text-xs font-bold text-[#2D2A3E] uppercase tracking-wider mb-1.5">
+                                Alasan Penolakan <span class="text-slate-400 font-normal lowercase">(opsional)</span>
+                            </label>
+                            <textarea 
+                                id="rejection_reason" 
+                                name="rejection_reason" 
+                                rows="3" 
+                                maxlength="255"
+                                x-model="rejectionReason"
+                                placeholder="Contoh: Jadwal bertabrakan dengan shift lain atau kuota staf terpenuhi..."
+                                class="w-full text-xs rounded-xl border border-brand-border focus:border-brand-primary focus:ring-brand-primary/20 p-3 text-[#2D2A3E] placeholder:text-slate-400 resize-none"
+                            ></textarea>
+                            <p class="text-[11px] text-slate-400 text-right mt-1">Maksimal 255 karakter</p>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+                            <button 
+                                type="button" 
+                                @click="closeRejectModal()"
+                                class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                            >
+                                Batal
+                            </button>
+                            <button 
+                                type="submit" 
+                                class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 shadow-xs transition"
+                            >
+                                <i data-lucide="x" class="h-3.5 w-3.5"></i>
+                                Konfirmasi Tolak
                             </button>
                         </div>
                     </form>

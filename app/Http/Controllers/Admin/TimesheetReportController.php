@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\TimesheetReport;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\TimesheetExportService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Shuchkin\SimpleXLSXGen;
 
 class TimesheetReportController extends Controller
 {
@@ -25,135 +25,17 @@ class TimesheetReportController extends Controller
     /**
      * Menangani stream download file laporan timesheet format Excel (.xlsx).
      */
-    public function exportExcel(Request $request)
+    public function exportExcel(Request $request, TimesheetExportService $exportService)
     {
-        $data = $this->getTimesheetData($request);
-        $company = $data['company'];
-        $reports = $data['reports'];
-        $month = $data['month'];
-        $year = $data['year'];
-        $periodLabel = $data['periodLabel'];
-        $totalMetrics = $data['totalMetrics'];
-
-        $filename = 'rekap_timesheet_'.$year.'_'.str_pad((string) $month, 2, '0', STR_PAD_LEFT);
-
-        $rows = [
-            ['<b>REKAPITULASI TIMESHEET KARYAWAN</b>'],
-            ['Perusahaan', $company?->name ?? config('app.name', 'Jadwalin')],
-            ['Periode', $periodLabel],
-            ['Departemen', $data['selectedDepartment']?->name ?? 'Semua Departemen'],
-            [],
-            [
-                '<b>No</b>',
-                '<b>Nama Karyawan</b>',
-                '<b>Departemen</b>',
-                '<b>Shift Dijadwalkan</b>',
-                '<b>Shift Dihadiri</b>',
-                '<b>Hari Kehadiran</b>',
-                '<b>Jam Reguler</b>',
-                '<b>Jam Lembur</b>',
-                '<b>Keterlambatan (Menit)</b>',
-                '<b>Status</b>',
-            ],
-        ];
-
-        foreach ($reports as $index => $row) {
-            $rows[] = [
-                $index + 1,
-                $row->employee_name,
-                $row->department_name,
-                $row->scheduled_shifts,
-                $row->attended_shifts,
-                $row->attendance_days,
-                number_format($row->total_regular_hours, 2),
-                number_format($row->total_overtime_hours, 2),
-                $row->total_late_minutes,
-                ucfirst($row->status),
-            ];
-        }
-
-        // Baris total agregat
-        $rows[] = [];
-        $rows[] = [
-            '<b>TOTAL</b>',
-            '',
-            '',
-            $totalMetrics->total_scheduled_shifts,
-            $totalMetrics->total_attendance_shifts,
-            '',
-            number_format($totalMetrics->total_regular_hours, 2),
-            number_format($totalMetrics->total_overtime_hours, 2),
-            $totalMetrics->total_late_minutes,
-            '',
-        ];
-
-        if (! app()->runningUnitTests()) {
-            while (ob_get_level() > 0) {
-                @ob_end_clean();
-            }
-        }
-
-        if (class_exists(SimpleXLSXGen::class)) {
-            $xlsx = SimpleXLSXGen::fromArray($rows);
-
-            return response()->streamDownload(function () use ($xlsx) {
-                echo (string) $xlsx;
-            }, $filename.'.xlsx', [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition' => "attachment; filename=\"{$filename}.xlsx\"",
-                'Cache-Control' => 'max-age=0, no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-            ]);
-        }
-
-        // Fallback CSV murni jika SimpleXLSXGen tidak tersedia
-        return response()->streamDownload(function () use ($rows) {
-            $handle = fopen('php://output', 'w');
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
-
-            foreach ($rows as $row) {
-                $cleanRow = array_map(function ($val) {
-                    return strip_tags((string) $val);
-                }, $row);
-                fputcsv($handle, $cleanRow);
-            }
-
-            fclose($handle);
-        }, $filename.'.csv', [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return $exportService->exportExcel($request->user(), $request);
     }
 
     /**
      * Menangani stream download file laporan timesheet format PDF (.pdf).
      */
-    public function exportPdf(Request $request)
+    public function exportPdf(Request $request, TimesheetExportService $exportService)
     {
-        $data = $this->getTimesheetData($request);
-        $filename = 'rekap_timesheet_'.$data['year'].'_'.str_pad((string) $data['month'], 2, '0', STR_PAD_LEFT);
-
-        if (! app()->runningUnitTests()) {
-            while (ob_get_level() > 0) {
-                @ob_end_clean();
-            }
-        }
-
-        if (class_exists(Pdf::class)) {
-            $pdf = Pdf::loadView('admin.reports.timesheet_pdf', $data)
-                ->setPaper('a4', 'landscape');
-
-            return $pdf->download($filename.'.pdf');
-        }
-
-        $html = view('admin.reports.timesheet_pdf', $data)->render();
-
-        return response()->streamDownload(function () use ($html) {
-            echo $html;
-        }, $filename.'.pdf', [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.pdf\"",
-        ]);
+        return $exportService->exportPdf($request->user(), $request);
     }
 
     /**
@@ -199,8 +81,11 @@ class TimesheetReportController extends Controller
 
         $users = $usersQuery->get();
 
+        // Cek apakah periode telah selesai (lewat dari waktu sekarang)
+        $isPeriodPast = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay()->isPast();
+
         // Agregasi jam reguler, jam lembur, keterlambatan, dan kehadiran per karyawan
-        $reports = $users->map(function ($employee) use ($month, $year, $companyId) {
+        $reports = $users->map(function ($employee) use ($month, $year, $companyId, $isPeriodPast) {
             // Semua shift yang dijadwalkan pada periode terkait
             $scheduledShifts = $employee->shiftAssignments->filter(function ($assignment) use ($month, $year) {
                 $date = $assignment->clock_in_time ?? $assignment->shift?->start_time;
@@ -216,9 +101,24 @@ class TimesheetReportController extends Controller
                 return ! is_null($assignment->clock_in_time) && ! is_null($assignment->clock_out_time);
             });
 
+            $unattendedShifts = $scheduledShifts->reject(function ($assignment) {
+                return ! is_null($assignment->clock_in_time) && ! is_null($assignment->clock_out_time);
+            });
+
             $totalRegularHours = (float) $attendedShifts->sum('regular_hours');
             $totalOvertimeHours = (float) $attendedShifts->sum('overtime_hours');
             $totalLateMinutes = (int) $attendedShifts->sum('late_minutes');
+
+            $totalUnattendedHours = (float) $unattendedShifts->sum(function ($assignment) {
+                if ($assignment->shift && $assignment->shift->start_time && $assignment->shift->end_time) {
+                    $start = Carbon::parse($assignment->shift->start_time);
+                    $end = Carbon::parse($assignment->shift->end_time);
+
+                    return round(max(0, $start->diffInMinutes($end) / 60), 2);
+                }
+
+                return (float) ($assignment->regular_hours > 0 ? $assignment->regular_hours : 8.0);
+            });
 
             $attendanceDays = $attendedShifts->pluck('clock_in_time')
                 ->map(fn ($d) => $d?->format('Y-m-d'))
@@ -229,6 +129,9 @@ class TimesheetReportController extends Controller
             // Relasi timesheet_reports
             $timesheetReport = $employee->timesheetReports->first();
 
+            // Jika periode bulannya sudah lewat/selesai, status otomatis menjadi finalized
+            $status = $isPeriodPast ? 'finalized' : ($timesheetReport ? $timesheetReport->status : 'draft');
+
             if (! $timesheetReport && $attendedShifts->isNotEmpty()) {
                 $timesheetReport = TimesheetReport::create([
                     'company_id' => $companyId,
@@ -237,7 +140,14 @@ class TimesheetReportController extends Controller
                     'period_year' => $year,
                     'total_regular_hours' => $totalRegularHours,
                     'total_overtime_hours' => $totalOvertimeHours,
-                    'status' => 'draft',
+                    'status' => $status,
+                    'generated_by' => auth()->id(),
+                ]);
+            } elseif ($timesheetReport && $isPeriodPast && $timesheetReport->status !== 'finalized') {
+                $timesheetReport->update([
+                    'total_regular_hours' => $totalRegularHours,
+                    'total_overtime_hours' => $totalOvertimeHours,
+                    'status' => 'finalized',
                     'generated_by' => auth()->id(),
                 ]);
             } elseif ($timesheetReport && $timesheetReport->status === 'draft') {
@@ -247,8 +157,6 @@ class TimesheetReportController extends Controller
                     'generated_by' => auth()->id(),
                 ]);
             }
-
-            $status = $timesheetReport ? $timesheetReport->status : 'draft';
 
             return (object) [
                 'user' => $employee,
@@ -261,6 +169,7 @@ class TimesheetReportController extends Controller
                 'attendance_days' => $attendanceDays,
                 'total_regular_hours' => round($totalRegularHours, 2),
                 'total_overtime_hours' => round($totalOvertimeHours, 2),
+                'total_unattended_hours' => round($totalUnattendedHours, 2),
                 'total_late_minutes' => $totalLateMinutes,
                 'status' => $status,
                 'timesheet_report_id' => $timesheetReport?->id,
@@ -272,6 +181,7 @@ class TimesheetReportController extends Controller
             'total_employees' => $reports->count(),
             'total_regular_hours' => round($reports->sum('total_regular_hours'), 2),
             'total_overtime_hours' => round($reports->sum('total_overtime_hours'), 2),
+            'total_unattended_hours' => round($reports->sum('total_unattended_hours'), 2),
             'total_late_minutes' => (int) $reports->sum('total_late_minutes'),
             'total_attendance_shifts' => (int) $reports->sum('attended_shifts'),
             'total_scheduled_shifts' => (int) $reports->sum('scheduled_shifts'),

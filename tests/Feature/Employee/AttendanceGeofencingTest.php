@@ -108,4 +108,19 @@ class AttendanceGeofencingTest extends TestCase
         $this->assignment->refresh();
         $this->assertNull($this->assignment->clock_in_time);
     }
+
+    /**
+     * Test defect discovery: clock-in should be rejected when GPS coordinates are omitted.
+     */
+    public function test_clock_in_rejected_when_gps_coordinates_missing(): void
+    {
+        $response = $this->actingAs($this->employee)
+            ->withHeaders(['X-Validate-Gps' => 'true'])
+            ->post(route('employee.attendance.clock-in'));
+
+        $response->assertSessionHas('error', 'Koordinat lokasi GPS tidak terdeteksi. Harap izinkan akses lokasi di perangkat Anda.');
+
+        $this->assignment->refresh();
+        $this->assertNull($this->assignment->clock_in_time);
+    }
 }
