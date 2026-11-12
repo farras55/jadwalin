@@ -76,7 +76,7 @@ test.describe('Modul Manager: Smart Scheduling Builder (Roster Kerja Tim)', () =
       await publishBtn.click();
 
       // Verifikasi alert sukses publikasi
-      await expect(page.getByText(/Jadwal berhasil diterbitkan|draf berhasil dipublikasikan/i)).toBeVisible();
+      await expect(page.getByText(/Jadwal berhasil diterbitkan|draf berhasil dipublikasikan/i).first()).toBeVisible();
     }
   });
 

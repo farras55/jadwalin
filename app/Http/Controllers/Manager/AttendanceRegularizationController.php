@@ -24,6 +24,34 @@ class AttendanceRegularizationController extends Controller
         $manager = $request->user();
         $status = $request->input('status', 'pending');
 
+        // Menentukan bulan kalender yang dipilih.
+        // Format parameter: YYYY-MM.
+        $monthInput = $request->query('month');
+
+        try {
+            $calendarMonth = $monthInput
+                ? Carbon::createFromFormat('!Y-m', $monthInput)
+                : now()->startOfMonth();
+        } catch (\Throwable $e) {
+            $calendarMonth = now()->startOfMonth();
+        }
+
+        if (! $calendarMonth || ($monthInput && $calendarMonth->format('Y-m') !== $monthInput)) {
+            $calendarMonth = now()->startOfMonth();
+        }
+
+        $calendarMonth = $calendarMonth->startOfMonth();
+
+        // Query dasar pengajuan berdasarkan perusahaan dan departemen Manager.
+        $baseQuery = AttendanceRegularization::query()
+            ->where('company_id', $manager->company_id)
+            ->whereHas('employee', function ($q) use ($manager) {
+                if (! $manager->is_global_manager) {
+                    $q->where('department_id', $manager->department_id);
+                }
+            });
+
+        // Query daftar pengajuan pada tabel.
         $query = AttendanceRegularization::with([
             'employee.position',
             'employee.department',
@@ -41,28 +69,43 @@ class AttendanceRegularizationController extends Controller
             $query->where('status', $status);
         }
 
-        $regularizations = $query->latest('created_at')->paginate(15);
+        $regularizations = $query
+            ->latest('created_at')
+            ->paginate(15)
+            ->withQueryString();
 
-        // Statistik ringkasan pengajuan
-        $baseCountQuery = AttendanceRegularization::query()
-            ->where('company_id', $manager->company_id)
-            ->whereHas('employee', function ($q) use ($manager) {
-                if (! $manager->is_global_manager) {
-                    $q->where('department_id', $manager->department_id);
-                }
-            });
-
+        // Statistik ringkasan pengajuan.
         $counts = [
-            'pending' => (clone $baseCountQuery)->where('status', 'pending')->count(),
-            'approved' => (clone $baseCountQuery)->where('status', 'approved')->count(),
-            'rejected' => (clone $baseCountQuery)->where('status', 'rejected')->count(),
-            'all' => (clone $baseCountQuery)->count(),
+            'pending' => (clone $baseQuery)->where('status', 'pending')->count(),
+            'approved' => (clone $baseQuery)->where('status', 'approved')->count(),
+            'rejected' => (clone $baseQuery)->where('status', 'rejected')->count(),
+            'all' => (clone $baseQuery)->count(),
         ];
+
+        // Data kalender diambil berdasarkan bulan dan tahun yang dipilih.
+        // Tidak dibatasi status dan tidak terpengaruh pagination tabel.
+        $calendarRegularizations = (clone $baseQuery)
+            ->whereNotNull('requested_clock_out_time')
+            ->whereBetween('requested_clock_out_time', [
+                $calendarMonth->copy()->startOfMonth(),
+                $calendarMonth->copy()->endOfMonth(),
+            ])
+            ->get(['id', 'requested_clock_out_time']);
+
+        $datesWithCorrections = $calendarRegularizations
+            ->map(function ($regularization) {
+                return Carbon::parse($regularization->requested_clock_out_time)->day;
+            })
+            ->unique()
+            ->values()
+            ->all();
 
         return view('manager.attendance.regularizations.index', [
             'regularizations' => $regularizations,
             'status' => $status,
             'counts' => $counts,
+            'calendarMonth' => $calendarMonth,
+            'datesWithCorrections' => $datesWithCorrections,
         ]);
     }
 
@@ -93,11 +136,12 @@ class AttendanceRegularizationController extends Controller
             $requestedOut = Carbon::parse($regularization->requested_clock_out_time);
             $clockIn = Carbon::parse($assignment->clock_in_time);
 
-            // Hitung ulang jam kerja berdasarkan jam pulang yang disetujui
+            // Hitung ulang jam kerja berdasarkan jam pulang yang disetujui.
             $diffMinutes = max(0, $clockIn->diffInMinutes($requestedOut));
             $totalHours = round($diffMinutes / 60, 2);
 
             $setting = CompanySetting::where('company_id', $manager->company_id)->first();
+
             $maxRegularHours = ($setting && $setting->max_regular_hours !== null)
                 ? (float) $setting->max_regular_hours
                 : 8.0;
@@ -120,7 +164,7 @@ class AttendanceRegularizationController extends Controller
                 'is_overtime' => (bool) $assignment->is_overtime,
             ];
 
-            // Update shift assignment
+            // Update shift assignment.
             $assignment->update([
                 'clock_out_time' => $requestedOut,
                 'regular_hours' => $regularHours,
@@ -129,7 +173,7 @@ class AttendanceRegularizationController extends Controller
                 'overtime_status' => $validated['overtime_status'],
             ]);
 
-            // Update status regularisasi
+            // Update status regularisasi.
             $regularization->update([
                 'status' => 'approved',
                 'reviewed_by' => $manager->id,
@@ -138,7 +182,7 @@ class AttendanceRegularizationController extends Controller
                 'overtime_status' => $validated['overtime_status'],
             ]);
 
-            // Catat ke audit log
+            // Catat ke audit log.
             AuditLog::create([
                 'company_id' => $manager->company_id,
                 'user_id' => $manager->id,
@@ -156,7 +200,7 @@ class AttendanceRegularizationController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            // Kirim notifikasi in-app ke karyawan
+            // Kirim notifikasi in-app ke karyawan.
             NotificationService::send(
                 $regularization->employee_id,
                 'regularization_approved',

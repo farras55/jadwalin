@@ -31,11 +31,11 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
     await expect(page.getByText('Super Admin', { exact: false }).first()).toBeVisible();
 
     // 3. Verifikasi Menu Navigasi Sidebar Super Admin
-    await expect(page.getByRole('link', { name: /Perusahaan & Cabang/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Kelola Pengguna/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Departemen & Posisi/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Template Shift/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Rekap Timesheet/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Perusahaan & Cabang/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Kelola Pengguna/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Departemen & Posisi/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Template Shift/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Rekap Timesheet/i }).first()).toBeVisible();
 
     // 4. Kunjungi halaman Perusahaan & Cabang
     await page.goto('/admin/companies');
@@ -62,11 +62,11 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
     await expect(page.getByText('Manager', { exact: false }).first()).toBeVisible();
 
     // 3. Verifikasi Menu Navigasi Sidebar Manager
-    await expect(page.getByRole('link', { name: /Jadwal Kerja Tim/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Persetujuan Ketersediaan/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Persetujuan Tukar Shift/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Presensi Tim/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Timesheet & Laporan/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Jadwal Kerja Tim/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Persetujuan Ketersediaan/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Persetujuan Tukar Shift/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Presensi Tim/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Timesheet & Laporan/i }).first()).toBeVisible();
 
     // 4. Kunjungi halaman Jadwal Kerja Tim
     await page.goto('/manager/shifts');
@@ -93,11 +93,11 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
     await expect(page.getByText('Karyawan', { exact: false }).first()).toBeVisible();
 
     // 3. Verifikasi Menu Navigasi Sidebar Karyawan
-    await expect(page.getByRole('link', { name: /Jadwal Saya/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Tukar Shift/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Presensi \/ Absensi/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Timesheet/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Ketersediaan Waktu/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Jadwal Saya/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Tukar Shift/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Presensi \/ Absensi/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Timesheet/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Ketersediaan Waktu/i }).first()).toBeVisible();
 
     // 4. Kunjungi halaman Jadwal Saya
     await page.goto('/employee/schedule');

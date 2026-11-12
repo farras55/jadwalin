@@ -1,14 +1,27 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-3">
+            <nav aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">Admin</a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.departments.index') }}" class="transition hover:text-[#6C5CE7]">Departemen &amp; Posisi</a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">Posisi Jabatan</li>
+                </ol>
+            </nav>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-xs font-medium text-[#7C7896] mb-1">
-                    <a href="{{ route('admin.departments.index') }}" class="hover:text-[#6C5CE7] transition">Departemen</a>
-                    <span>/</span>
-                    <span class="text-[#2D2A3E]">Kelola Posisi</span>
-                </div>
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
-                    Posisi
+                    Posisi Jabatan
                 </h1>
                 <p class="text-xs md:text-sm text-[#7C7896] mt-1">
                     Kelola jabatan kerja berdasarkan department.
@@ -20,6 +33,7 @@
                     <i data-lucide="plus" class="h-4 w-4"></i>
                     <span>Tambah Department</span>
                 </a>
+            </div>
             </div>
         </div>
     </x-slot>
@@ -55,7 +69,7 @@
 
         {{-- Department Cards List --}}
         @if ($departments->isEmpty())
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-8 md:p-12 text-center shadow-2xs">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-8 md:p-12 text-center shadow-sm">
                 <div class="max-w-md mx-auto flex flex-col items-center">
                     <div class="w-16 h-16 bg-[#F5F3FF] border border-[#E2E0F7] rounded-2xl flex items-center justify-center text-[#6C5CE7] mb-4 shadow-2xs">
                         <i data-lucide="building-2" class="h-8 w-8"></i>
@@ -78,11 +92,11 @@
                         $hasErrorOnThisDepartment = old('department_id') == $department->id && $errors->any();
                     @endphp
                     <div x-data="{ showForm: {{ ($hasErrorOnThisDepartment || $department->positions->isEmpty()) ? 'true' : 'false' }} }" 
-                         class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden flex flex-col justify-between">
+                         class="bg-white rounded-2xl border border-[#E2E0F7] shadow-sm overflow-hidden flex flex-col justify-between">
                         
                         {{-- Card Header --}}
                         <div>
-                            <div class="p-5 border-b border-[#E2E0F7] flex items-center justify-between gap-3 bg-[#F5F3FF]/40">
+                            <div class="p-5 border-b border-[#E2E0F7] flex items-center justify-between gap-3 bg-[#F5F3FF]/60">
                                 <div class="flex items-center gap-3 min-w-0">
                                     <div class="w-9 h-9 rounded-xl bg-white border border-[#E2E0F7] flex items-center justify-center text-[#6C5CE7] shrink-0 shadow-2xs">
                                         <i data-lucide="building-2" class="h-4 w-4"></i>
@@ -112,7 +126,7 @@
                                  x-transition:enter="transition ease-out duration-200"
                                  x-transition:enter-start="opacity-0 -translate-y-2"
                                  x-transition:enter-end="opacity-100 translate-y-0"
-                                 class="p-4 bg-[#F5F3FF]/70 border-b border-[#E2E0F7]">
+                                 class="p-4 bg-[#F5F3FF]/60 border-b border-[#E2E0F7]">
                                 <form action="{{ route('admin.positions.store') }}" method="POST" class="space-y-3">
                                     @csrf
                                     <input type="hidden" name="department_id" value="{{ $department->id }}">

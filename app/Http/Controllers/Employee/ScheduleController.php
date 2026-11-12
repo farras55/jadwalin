@@ -57,7 +57,7 @@ class ScheduleController extends Controller
             }
 
             // Determine which day slot (0–6)
-            $dayIndex = $shiftStart->copy()->startOfDay()->diffInDays($weekStart->copy()->startOfDay());
+            $dayIndex = $weekStart->copy()->startOfDay()->diffInDays($shiftStart->copy()->startOfDay());
             if ($dayIndex < 0 || $dayIndex > 6) {
                 continue;
             }

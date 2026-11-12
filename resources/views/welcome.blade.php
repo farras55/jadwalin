@@ -262,7 +262,7 @@
     <!-- ========================================================= -->
     <!-- 2. HERO SECTION (Clean 3D Origami Airplane - No Floating Cards) -->
     <!-- ========================================================= -->
-    <section id="hero" class="relative pt-12 pb-24 sm:pt-16 sm:pb-32 overflow-hidden bg-gradient-to-b from-[#EDE9FE] via-[#F5F3FF] to-[#FAF8FF]">
+    <section id="hero" class="relative scroll-mt-20 pt-12 pb-24 sm:pt-16 sm:pb-32 overflow-hidden bg-gradient-to-b from-[#EDE9FE] via-[#F5F3FF] to-[#FAF8FF]">
         <!-- Decorative Ambient Background Gradients -->
         <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-brand-primary/10 rounded-full blur-3xl pointer-events-none -translate-y-1/2"></div>
         <div class="absolute top-20 right-10 w-[500px] h-[500px] bg-brand-secondary/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -381,7 +381,7 @@
     <!-- 3. INTERACTIVE SIMULATION & SHIFT PLANNER WIDGET          -->
     <!-- (Fully Functional Tabs, Styled Dropdowns, Detailed Results)-->
     <!-- ========================================================= -->
-    <div id="simulator" class="relative z-30 -mt-16 sm:-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+    <div id="simulator" class="relative scroll-mt-32 z-30 -mt-16 sm:-mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
         <div class="bg-white rounded-3xl border border-brand-border shadow-2xl overflow-hidden card-elevated">
             
             <!-- Top Tab Bar (All 4 Tabs Fully Functional) -->
@@ -1653,8 +1653,8 @@
                             :class="roleSpotlight === 'manager' ? 'bg-white text-brand-primary shadow-sm font-bold' : 'text-[#7C7896] hover:text-brand-text font-medium'"
                             class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2"
                         >
-                            <i data-lucide="user-check" class="w-4 h-4"></i>
-                            <span>👔 Manager Operasional</span>
+                            <i data-lucide="user-round-cog" class="w-4 h-4"></i>
+                            <span>Manager Operasional</span>
                         </button>
                         <button 
                             type="button" 
@@ -1662,8 +1662,8 @@
                             :class="roleSpotlight === 'employee' ? 'bg-white text-brand-primary shadow-sm font-bold' : 'text-[#7C7896] hover:text-brand-text font-medium'"
                             class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2"
                         >
-                            <i data-lucide="smartphone" class="w-4 h-4"></i>
-                            <span>👤 Karyawan / Staf</span>
+                            <i data-lucide="user-round" class="w-4 h-4"></i>
+                            <span>Karyawan / Staf</span>
                         </button>
                         <button 
                             type="button" 
@@ -1672,7 +1672,7 @@
                             class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center gap-2"
                         >
                             <i data-lucide="crown" class="w-4 h-4"></i>
-                            <span>👑 Super Admin</span>
+                            <span>Super Admin</span>
                         </button>
                     </div>
                 </div>
@@ -2253,11 +2253,11 @@
     <!-- 5. POPULAR PACKAGES / SEKTOR BISNIS PILIHAN               -->
     <!-- (Specific Business Descriptions & Functional Buttons)     -->
     <!-- ========================================================= -->
-    <section id="sektor" class="py-12 sm:py-16">
+    <section id="sektor" class="scroll-mt-8 py-12 sm:py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Section Header (Title on left, Functional View All on right) -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10 reveal">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 reveal">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-brand-primary uppercase">
                         Solusi Industri Spesifik
@@ -2883,7 +2883,7 @@
     <!-- ========================================================= -->
     <!-- 7. HOW TO BOOK / CARA KERJA SISTEM (4 Connected Steps)   -->
     <!-- ========================================================= -->
-    <section id="cara-kerja" class="py-16 sm:py-20">
+    <section id="cara-kerja" class="scroll-mt-28 py-16 sm:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Section Header Centered with Accent Bar -->
@@ -3052,7 +3052,7 @@
     <!-- ========================================================= -->
     <!-- 9. DETAIL REGULASI PP NO. 35 TAHUN 2021                   -->
     <!-- ========================================================= -->
-    <section id="regulasi" class="py-16 sm:py-20 bg-white border-y border-brand-border">
+    <section id="regulasi" class="py-16 sm:py-20 bg-gradient-to-b from-white via-[#F5F3FF] to-[#EDE9FE] border-y border-brand-border">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 reveal">
                 <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">
@@ -3068,7 +3068,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Regulasi 1: Waktu Kerja -->
-                <div class="bg-brand-bg/50 rounded-3xl border border-brand-border p-8 card-elevated card-elevated-hover flex flex-col justify-between reveal delay-100">
+                <div class="bg-white/85 rounded-3xl border border-brand-border p-8 card-elevated card-elevated-hover flex flex-col justify-between reveal delay-100">
                     <div>
                         <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center mb-6">
                             <i data-lucide="clock" class="w-6 h-6"></i>
@@ -3087,7 +3087,7 @@
                 </div>
 
                 <!-- Regulasi 2: Istirahat Antar Shift -->
-                <div class="bg-brand-bg/50 rounded-3xl border border-brand-border p-8 card-elevated card-elevated-hover flex flex-col justify-between reveal delay-200">
+                <div class="bg-white/85 rounded-3xl border border-brand-border p-8 card-elevated card-elevated-hover flex flex-col justify-between reveal delay-200">
                     <div>
                         <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center mb-6">
                             <i data-lucide="coffee" class="w-6 h-6"></i>
@@ -3106,7 +3106,7 @@
                 </div>
 
                 <!-- Regulasi 3: Pengendalian Lembur -->
-                <div class="bg-brand-bg/50 rounded-3xl border border-brand-border p-8 card-elevated card-elevated-hover flex flex-col justify-between reveal delay-300">
+                <div class="bg-white/85 rounded-3xl border border-brand-border p-8 card-elevated card-elevated-hover flex flex-col justify-between reveal delay-300">
                     <div>
                         <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center mb-6">
                             <i data-lucide="alert-circle" class="w-6 h-6"></i>
@@ -3128,104 +3128,6 @@
     </section>
 
     <!-- ========================================================= -->
-    <!-- 10. TIM PENGEMBANG & AKADEMIK POLINEMA                    -->
-    <!-- ========================================================= -->
-    <section id="tim" class="py-16 sm:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 reveal">
-                <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">
-                    Project Based Learning
-                </span>
-                <h2 class="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-brand-text tracking-tight">
-                    Tim Pengembang Jadwalin
-                </h2>
-                <p class="mt-3 text-sm sm:text-base text-[#7C7896] leading-relaxed">
-                    Dikembangkan dengan dedikasi tinggi oleh mahasiswa Jurusan Teknologi Informasi, Politeknik Negeri Malang.
-                </p>
-            </div>
-
-            <!-- 4 Developer Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <!-- Dev 1: Farras -->
-                <div class="bg-white rounded-3xl border border-brand-border p-6 text-center card-elevated card-elevated-hover flex flex-col items-center reveal delay-100">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#DDD6FE] text-brand-primary font-display font-extrabold text-xl flex items-center justify-center mb-4 shadow-inner">
-                        FA
-                    </div>
-                    <h3 class="font-display font-bold text-base text-brand-text">
-                        Muhammad Farras A. A.
-                    </h3>
-                    <p class="text-xs text-brand-primary font-semibold mt-1">
-                        Project Manager &amp; Backend Dev
-                    </p>
-                    <p class="text-xs text-[#7C7896] mt-2 leading-relaxed">
-                        Arsitektur sistem, algoritma penjadwalan &amp; integrasi API database.
-                    </p>
-                </div>
-
-                <!-- Dev 2: Yusuf -->
-                <div class="bg-white rounded-3xl border border-brand-border p-6 text-center card-elevated card-elevated-hover flex flex-col items-center reveal delay-200">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#DDD6FE] text-brand-primary font-display font-extrabold text-xl flex items-center justify-center mb-4 shadow-inner">
-                        MY
-                    </div>
-                    <h3 class="font-display font-bold text-base text-brand-text">
-                        Muhammad Yusuf
-                    </h3>
-                    <p class="text-xs text-brand-primary font-semibold mt-1">
-                        Database Designer &amp; Analyst
-                    </p>
-                    <p class="text-xs text-[#7C7896] mt-2 leading-relaxed">
-                        Struktur basis data multi-tenant, optimasi query &amp; relasi model.
-                    </p>
-                </div>
-
-                <!-- Dev 3: Neyza -->
-                <div class="bg-white rounded-3xl border border-brand-border p-6 text-center card-elevated card-elevated-hover flex flex-col items-center reveal delay-300">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#DDD6FE] text-brand-primary font-display font-extrabold text-xl flex items-center justify-center mb-4 shadow-inner">
-                        NA
-                    </div>
-                    <h3 class="font-display font-bold text-base text-brand-text">
-                        Neyza Ratu Anastasya
-                    </h3>
-                    <p class="text-xs text-brand-primary font-semibold mt-1">
-                        UI/UX Designer &amp; Tech Writer
-                    </p>
-                    <p class="text-xs text-[#7C7896] mt-2 leading-relaxed">
-                        Perancangan antarmuka visual, pengalaman pengguna &amp; dokumen teknis.
-                    </p>
-                </div>
-
-                <!-- Dev 4: Umi -->
-                <div class="bg-white rounded-3xl border border-brand-border p-6 text-center card-elevated card-elevated-hover flex flex-col items-center reveal delay-400">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#DDD6FE] text-brand-primary font-display font-extrabold text-xl flex items-center justify-center mb-4 shadow-inner">
-                        UM
-                    </div>
-                    <h3 class="font-display font-bold text-base text-brand-text">
-                        Umi Maharani
-                    </h3>
-                    <p class="text-xs text-brand-primary font-semibold mt-1">
-                        Full-Stack &amp; System Analyst
-                    </p>
-                    <p class="text-xs text-[#7C7896] mt-2 leading-relaxed">
-                        Implementasi modul presensi, validasi form &amp; pengujian sistem.
-                    </p>
-                </div>
-
-            </div>
-
-            <!-- Polinema Badge Banner -->
-            <div class="mt-10 rounded-2xl border border-brand-primary/20 bg-brand-primary/10 p-5 text-center reveal">
-                <p class="font-display font-bold text-brand-primary text-base">
-                    Politeknik Negeri Malang &bull; Jurusan Teknologi Informasi
-                </p>
-                <p class="text-xs text-brand-primary/80 mt-1">
-                    Program Studi D-IV Teknik Informatika / Sistem Informasi Bisnis
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================================= -->
     <!-- 11. FOOTER                                                -->
     <!-- ========================================================= -->
     <footer class="bg-white border-t border-brand-border pt-12 pb-8">
@@ -3236,9 +3138,14 @@
                 <div class="md:col-span-5 flex flex-col items-start">
                     <a href="{{ url('/') }}" class="flex items-center gap-2.5">
                         <x-application-logo class="h-8 w-auto text-brand-primary" />
-                        <span class="font-display text-2xl font-bold tracking-tight">
-                            <span class="text-brand-text">Jadwal</span><span class="text-brand-primary">in</span>
-                        </span>
+                        <div class="flex flex-col">
+                            <span class="font-display font-extrabold text-2xl tracking-tight leading-none">
+                                <span class="text-brand-text">Jadwal</span><span class="text-brand-primary">in</span>
+                            </span>
+                            <span class="text-[10px] font-semibold tracking-wider text-brand-primary/80 uppercase mt-0.5">
+                                Smart Shift Scheduling
+                            </span>
+                        </div>
                     </a>
                     <p class="mt-4 text-sm text-[#7C7896] leading-relaxed max-w-sm">
                         Platform cerdas otomasi penyusunan roster shift kerja B2B. Efisien, adil, hemat waktu, dan bebas bentrok jadwal kerja.

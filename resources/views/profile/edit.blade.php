@@ -1,7 +1,15 @@
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
+                {{-- Breadcrumb --}}
+                <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+                    <span>Karyawan</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                    <span class="text-[#6C5CE7] font-medium">Pengaturan Profil</span>
+                </div>
+
                 <h1 class="text-2xl font-bold text-[#2D2A3E] tracking-tight">Pengaturan Profil Akun</h1>
                 <p class="text-sm text-[#7C7896] mt-0.5">Kelola identitas profil, nomor kontak, serta keamanan akun Anda.</p>
             </div>

@@ -78,7 +78,7 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     await expect(page).toHaveURL(/\/employee\/availability/);
 
     // b. Flash message sukses muncul
-    await expect(page.getByText(/Halangan berhasil diajukan/i)).toBeVisible();
+    await expect(page.getByText(/Halangan berhasil diajukan/i).first()).toBeVisible();
 
     // c. Alasan halangan baru muncul di riwayat dengan status "Menunggu Manajer"
     await expect(page.getByText(testReason)).toBeVisible();
@@ -110,7 +110,7 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     await page.getByRole('button', { name: /Ajukan Halangan|Simpan Halangan/i }).click();
 
     await expect(page).toHaveURL(/\/employee\/availability/);
-    await expect(page.getByText(/Halangan berhasil diajukan/i)).toBeVisible();
+    await expect(page.getByText(/Halangan berhasil diajukan/i).first()).toBeVisible();
     await expect(page.getByText(recurringReason)).toBeVisible();
   });
 
@@ -155,7 +155,7 @@ test.describe('Modul Karyawan: Ketersediaan Waktu (Availability & Auto-Buffer)',
     if (await cancelBtn.isVisible()) {
       page.once('dialog', dialog => dialog.accept());
       await cancelBtn.click();
-      await expect(page.getByText(/berhasil dibatalkan|berhasil dihapus/i)).toBeVisible();
+      await expect(page.getByText(/berhasil dibatalkan|berhasil dihapus/i).first()).toBeVisible();
     }
 
     // Uji percobaan menghapus ID asing via direct request:
