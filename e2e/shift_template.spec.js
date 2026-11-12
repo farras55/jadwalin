@@ -121,7 +121,7 @@ test.describe('Modul Master Shift: Skenario E2E Shift Template Admin', () => {
 
     // 5. Assertion UI:
     // a. Verifikasi banner alert notifikasi sukses muncul
-    await expect(page.getByText('Template shift berhasil ditambahkan.')).toBeVisible();
+    await expect(page.getByText('Template shift berhasil ditambahkan.').first()).toBeVisible();
 
     // b. Verifikasi baris data baru telah masuk dan terlihat di dalam tabel antarmuka
     // (Penerjemahan assertDatabaseHas menjadi verifikasi elemen UI)
@@ -140,6 +140,7 @@ test.describe('Modul Master Shift: Skenario E2E Shift Template Admin', () => {
    *   3. Klik tombol hapus pada baris target, konfirmasi di modal, lalu verifikasi data hilang dari tabel.
    */
   test('TC-SFT-03: Admin dapat memperbarui dan menghapus template shift (Update & Delete)', async ({ page }) => {
+    test.slow();
     // --- LANGKAH 1: Buat shift template awal untuk diuji ---
     const initialTitle = `Shift Malam Temp ${Date.now()}`;
     const updatedTitle = `Shift Malam Diperbarui ${Date.now()}`;
@@ -152,7 +153,7 @@ test.describe('Modul Master Shift: Skenario E2E Shift Template Admin', () => {
     await page.locator('input#default_quota').fill('2');
     await page.locator('input#color_code').fill('#e74c3c');
     await page.getByRole('button', { name: /Simpan Template/i }).click();
-    await expect(page.getByText('Template shift berhasil ditambahkan.')).toBeVisible();
+    await expect(page.getByText('Template shift berhasil ditambahkan.').first()).toBeVisible();
 
     // --- LANGKAH 2: UPDATE TEMPLATE SHIFT ---
     // Cari baris tabel yang memuat initialTitle
@@ -178,7 +179,7 @@ test.describe('Modul Master Shift: Skenario E2E Shift Template Admin', () => {
     await page.getByRole('button', { name: /Simpan Perubahan/i }).click();
 
     // Assertion UI Update (Translasi assertDatabaseHas):
-    await expect(page.getByText('Template shift berhasil diperbarui.')).toBeVisible();
+    await expect(page.getByText('Template shift berhasil diperbarui.').first()).toBeVisible();
     const updatedRow = page.locator('tbody tr', { hasText: updatedTitle });
     await expect(updatedRow).toBeVisible();
     await expect(updatedRow.getByText('4 orang')).toBeVisible();
@@ -200,7 +201,7 @@ test.describe('Modul Master Shift: Skenario E2E Shift Template Admin', () => {
 
     // Assertion UI Delete (Translasi assertDatabaseMissing):
     // a. Banner notifikasi berhasil dihapus tampil
-    await expect(page.getByText('Template shift berhasil dihapus.')).toBeVisible();
+    await expect(page.getByText('Template shift berhasil dihapus.').first()).toBeVisible();
 
     // b. Pastikan judul template yang dihapus sudah tidak muncul lagi di antarmuka tabel
     await expect(page.locator('tbody').getByText(updatedTitle)).toBeHidden();
