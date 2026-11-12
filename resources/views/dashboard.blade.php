@@ -5,7 +5,7 @@
                 <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
                     <li>
                         <span>
-                            Admin
+                            Super Admin
                         </span>
                     </li>
                     <li aria-hidden="true">

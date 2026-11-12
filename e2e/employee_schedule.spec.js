@@ -36,9 +36,8 @@ test.describe('Modul Karyawan: Kalender Jadwal Kerja (PBL-41)', () => {
     await expect(prevWeekBtn).toBeVisible();
     await expect(nextWeekBtn).toBeVisible();
 
-    // Targetkan teks indikator minggu di bagian tengah navigasi yang terlihat responsif di mobile
-    const weekLabel = page.locator('div.flex-col.items-center').getByText(/Minggu Ini|Minggu Lalu|Minggu Mendatang/i);
-    await weekLabel.scrollIntoViewIfNeeded();
+    // Targetkan teks indikator minggu berjalan di navigasi kalender
+    const weekLabel = page.getByText(/Minggu Berjalan/i).first();
     await expect(weekLabel).toBeVisible();
   });
 });

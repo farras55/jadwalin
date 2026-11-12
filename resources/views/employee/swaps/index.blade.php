@@ -25,15 +25,11 @@
                     Pusat pengelolaan permohonan barter shift (2-arah) dan penyerahan tugas (1-arah) antar rekan kerja.
                 </p>
             </div>
-            <div>
-                <button
-                    type="button"
-                    @click="showCreateModal = true"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-white bg-[#6C5CE7] hover:bg-[#5A4AD1] transition-all shadow-sm"
-                >
-                    <i data-lucide="plus" class="h-4 w-4"></i>
-                    <span>Ajukan Tukar Shift</span>
-                </button>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
+                    <i data-lucide="arrow-left-right" class="h-3.5 w-3.5"></i>
+                    Tukar Shift
+                </span>
             </div>
         </div>
     </x-slot>
@@ -53,6 +49,7 @@
                 return this.selectedColleague ? (this.selectedColleague.shift_assignments || []) : [];
             }
         }"
+        @open-swap-modal.window="showCreateModal = true"
     >
         {{-- Flash Messages --}}
         @if (session('success'))
@@ -146,6 +143,15 @@
                             <span>Semua permohonan masuk telah direspons</span>
                         </div>
                     @endif
+
+                    <button
+                        type="button"
+                        @click="showCreateModal = true"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-white bg-[#6C5CE7] hover:bg-[#5A4AD1] transition-all shadow-sm cursor-pointer"
+                    >
+                        <i data-lucide="plus" class="h-4 w-4"></i>
+                        <span>Ajukan Tukar Shift</span>
+                    </button>
                 </div>
 
             </div>

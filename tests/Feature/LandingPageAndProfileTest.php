@@ -27,7 +27,7 @@ class LandingPageAndProfileTest extends TestCase
         $response->assertSee('Masuk Sistem');
         $response->assertSee('0 Konflik Jam Kerja');
         $response->assertSee('PP No. 35/2021');
-        $response->assertSee('Politeknik Negeri Malang');
+        $response->assertSee('Smart Shift Scheduling');
     }
 
     /**

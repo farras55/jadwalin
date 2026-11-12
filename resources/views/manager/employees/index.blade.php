@@ -330,7 +330,12 @@
 
                                         <div>
                                             <p class="font-bold text-[#2D2A3E]">{{ $employee->name }}</p>
-                                            <p class="text-[11px] text-[#7C7896]">{{ $employee->email }}</p>
+                                            <p class="text-[11px] text-[#7C7896]">
+                                                {{ $employee->email }}
+                                                @if ($employee->phone_number)
+                                                    &bull; <span class="font-mono text-[10px]">{{ $employee->phone_number }}</span>
+                                                @endif
+                                            </p>
                                         </div>
 
                                     </div>

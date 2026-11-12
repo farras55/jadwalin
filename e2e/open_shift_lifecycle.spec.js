@@ -35,14 +35,14 @@ test.describe('E2E Lifecycle: Bursa Shift Terbuka (Open Shift - PBL-23)', () => 
     await loginAsManager(page);
     await page.goto('/manager/open-shifts');
     await expect(page).toHaveURL(/\/manager\/open-shifts/);
-    await expect(page.getByRole('heading', { name: /Bursa Shift Terbuka|Open Shift/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Bursa Shift Terbuka|Open Shift/i }).first()).toBeVisible();
   });
 
   test('TC-OSL-02: Karyawan dapat mengakses shift terbuka', async ({ page }) => {
     await loginAsEmployee(page);
     await page.goto('/employee/open-shifts');
     await expect(page).toHaveURL(/\/employee\/open-shifts/);
-    await expect(page.getByRole('heading', { name: /Shift Terbuka|Bursa Shift/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Shift Terbuka|Bursa Shift/i }).first()).toBeVisible();
   });
 });
 
