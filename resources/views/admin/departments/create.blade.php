@@ -1,12 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-3">
+            <nav aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">Admin</a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.departments.index') }}" class="transition hover:text-[#6C5CE7]">Departemen &amp; Posisi</a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">Tambah Departemen</li>
+                </ol>
+            </nav>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-xs font-medium text-[#7C7896] mb-1">
-                    <a href="{{ route('admin.departments.index') }}" class="hover:text-[#6C5CE7] transition">Departemen</a>
-                    <span>/</span>
-                    <span class="text-[#2D2A3E]">Tambah Baru</span>
-                </div>
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
                     Tambah Department
                 </h1>
@@ -20,11 +33,12 @@
                     <span>Kembali ke Daftar</span>
                 </a>
             </div>
+            </div>
         </div>
     </x-slot>
 
     <div class="max-w-3xl">
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
+        <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-sm overflow-hidden">
             <div class="p-6 border-b border-[#E2E0F7] flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-[#F5F3FF] border border-[#E2E0F7] flex items-center justify-center text-[#6C5CE7]">
                     <i data-lucide="building-2" class="h-5 w-5"></i>

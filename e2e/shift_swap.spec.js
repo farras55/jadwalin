@@ -40,14 +40,14 @@ test.describe('Modul Shift Swap: Alur Tukar & Serah Shift (PBL-22)', () => {
     await expect(page).toHaveURL(/\/employee\/swaps/);
 
     // Verifikasi Elemen Utama
-    await expect(page.getByRole('heading', { name: /Tukar & Serah Shift/i })).toBeVisible();
-    await expect(page.getByText(/Ajukan penyerahan tugas/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Tukar & Serah Shift/i }).first()).toBeVisible();
+    await expect(page.getByText(/Pusat pengelolaan permohonan barter|Ajukan penyerahan tugas/i)).toBeVisible();
 
     // Verifikasi Tab Navigasi
     await expect(page.getByRole('button', { name: /Permintaan Masuk|Pengajuan Saya|Riwayat/i }).first()).toBeVisible();
 
     // Verifikasi Tombol Buka Modal Buat Pengajuan
-    const newSwapBtn = page.getByRole('button', { name: /Ajukan Tukar Shift/i });
+    const newSwapBtn = page.getByRole('button', { name: /Ajukan Tukar Shift/i }).first();
     if (await newSwapBtn.isVisible()) {
       await newSwapBtn.click();
       await expect(page.getByRole('heading', { name: /Ajukan Tukar \/ Serah Shift/i })).toBeVisible();
@@ -61,7 +61,7 @@ test.describe('Modul Shift Swap: Alur Tukar & Serah Shift (PBL-22)', () => {
     await expect(page).toHaveURL(/\/manager\/swaps/);
 
     // Verifikasi Heading Manajer
-    await expect(page.getByRole('heading', { name: /Persetujuan Tukar Shift|Tukar Shift/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Persetujuan Tukar Shift|Tukar Shift/i }).first()).toBeVisible();
   });
 
   test('TC-SWP-03: Karyawan biasa ditolak saat mengakses approval manajer (403)', async ({ page }) => {

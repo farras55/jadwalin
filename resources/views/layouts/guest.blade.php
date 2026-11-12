@@ -12,7 +12,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Scripts and Styles (Breeze Standard) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -30,10 +30,14 @@
             
             <!-- Logo Container -->
             <a href="/" class="flex items-center justify-center gap-2.5">
-                <x-application-logo class="h-10 w-auto shrink-0" />
-                <div class="text-[26px] tracking-tight flex items-baseline text-[#2D2A3E]">
-                    <span class="font-bold">Jadwal</span>
-                    <span class="font-bold" style="color: #6C5CE7;">in</span>
+                <x-application-logo class="h-9 w-auto shrink-0" />
+                <div class="flex flex-col text-left">
+                    <span class="font-display font-extrabold text-2xl tracking-tight leading-none text-[#2D2A3E]">
+                        Jadwal<span class="text-[#6C5CE7]">in</span>
+                    </span>
+                    <span class="text-[10px] font-semibold tracking-wider text-[#6C5CE7]/80 uppercase mt-0.5">
+                        Smart Shift Scheduling
+                    </span>
                 </div>
             </a>
             

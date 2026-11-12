@@ -1,6 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-3">
+            <nav aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">Admin</a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">Departemen &amp; Posisi</li>
+                </ol>
+            </nav>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
                     Departemen & Posisi
@@ -18,6 +30,7 @@
                     <i data-lucide="plus" class="h-4 w-4"></i>
                     <span>Tambah Department</span>
                 </a>
+            </div>
             </div>
         </div>
     </x-slot>
@@ -54,7 +67,7 @@
 
         {{-- Main Table / Empty State Card --}}
         @if ($departments->isEmpty())
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-8 md:p-12 text-center shadow-2xs">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-8 md:p-12 text-center shadow-sm">
                 <div class="max-w-md mx-auto flex flex-col items-center">
                     <div class="w-16 h-16 bg-[#F5F3FF] border border-[#E2E0F7] rounded-2xl flex items-center justify-center text-[#6C5CE7] mb-4 shadow-2xs">
                         <i data-lucide="layers" class="h-8 w-8"></i>
@@ -70,8 +83,8 @@
                 </div>
             </div>
         @else
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
-                <div class="p-5 border-b border-[#E2E0F7] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-sm overflow-hidden">
+                <div class="p-5 sm:p-6 border-b border-[#E2E0F7] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#E2E0F7] flex items-center justify-center text-[#6C5CE7]">
                             <i data-lucide="building-2" class="h-4 w-4"></i>
@@ -85,7 +98,7 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs md:text-sm text-[#2D2A3E]">
-                        <thead class="bg-[#F5F3FF] text-[#2D2A3E] font-semibold border-b border-[#E2E0F7]">
+                        <thead class="bg-[#F5F3FF]/80 text-[#2D2A3E] font-semibold border-b border-[#E2E0F7]">
                             <tr>
                                 <th class="px-5 py-3.5 text-center w-16">No</th>
                                 <th class="px-5 py-3.5">Nama Department</th>

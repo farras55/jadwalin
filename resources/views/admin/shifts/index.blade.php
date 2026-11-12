@@ -1,23 +1,41 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800">
-                    Master Shift
-                </h2>
-                <p class="mt-1 text-sm text-gray-500">
-                    Kelola template shift, jam kerja, departemen, dan kuota karyawan.
-                </p>
-            </div>
+        <div class="space-y-3">
+            <nav aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">
+                            Admin
+                        </a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">
+                        Template Shift
+                    </li>
+                </ol>
+            </nav>
 
-            <button
-                type="button"
-                @click="window.dispatchEvent(new CustomEvent('open-shift-modal'))"
-                class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6C5CE7] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5848d6]"
-            >
-                <i data-lucide="plus" class="h-4 w-4"></i>
-                Tambah Template Shift
-            </button>
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        Master Shift
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Kelola template shift, jam kerja, departemen, dan kuota karyawan.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    @click="window.dispatchEvent(new CustomEvent('open-shift-modal'))"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6C5CE7] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5848d6]"
+                >
+                    <i data-lucide="plus" class="h-4 w-4"></i>
+                    Tambah Template Shift
+                </button>
+            </div>
         </div>
     </x-slot>
 
@@ -63,7 +81,7 @@
 
             {{-- Ringkasan --}}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm transition">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Total Template</p>
@@ -77,7 +95,10 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <a
+                    href="{{ route('admin.departments.index') }}"
+                    class="group block rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#6C5CE7] hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6C5CE7] focus-visible:ring-offset-2"
+                >
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Departemen</p>
@@ -85,13 +106,13 @@
                                 {{ $departments->count() }}
                             </p>
                         </div>
-                        <div class="rounded-xl bg-blue-50 p-3 text-blue-600">
+                        <div class="rounded-xl bg-[#F5F3FF] p-3 text-[#6C5CE7] transition group-hover:bg-[#6C5CE7]/10">
                             <i data-lucide="building-2" class="h-6 w-6"></i>
                         </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Total Kuota</p>

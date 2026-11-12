@@ -647,7 +647,7 @@
             {{-- Breadcrumb & Title --}}
             <div>
                 <nav class="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-1">
-                    <span class="hover:text-gray-700">Portal Karyawan</span>
+                    <span class="hover:text-gray-700">Karyawan</span>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-gray-400"></i>
                     <span class="text-[#6C5CE7] font-semibold">Pencatatan Kehadiran</span>
                 </nav>

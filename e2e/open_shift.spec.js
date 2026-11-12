@@ -40,8 +40,8 @@ test.describe('Modul Open Shift: Bursa & Klaim Shift Terbuka (PBL-23)', () => {
     await expect(page).toHaveURL(/\/employee\/open-shifts/);
 
     // Verifikasi Elemen Utama
-    await expect(page.getByRole('heading', { name: /Shift Terbuka|Open Shift/i })).toBeVisible();
-    await expect(page.getByText(/Klaim jadwal shift tambahan/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Shift Terbuka|Open Shift/i }).first()).toBeVisible();
+    await expect(page.getByText(/Katalog lowongan shift tambahan|Klaim jadwal shift tambahan/i)).toBeVisible();
   });
 
   test('TC-OPS-02: Manajer dapat melihat halaman kelola bursa open shift', async ({ page }) => {

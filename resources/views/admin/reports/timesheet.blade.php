@@ -1,14 +1,24 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="space-y-3">
+            <nav aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                    <li>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">
+                            Admin
+                        </a>
+                    </li>
+                    <li aria-hidden="true">
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                    </li>
+                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">
+                        Rekap Timesheet
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
-                        PBL-21 Modul Timesheet
-                    </span>
-                    <span class="text-xs text-[#7C7896]">•</span>
-                    <span class="text-xs font-medium text-[#7C7896]">{{ $periodLabel }}</span>
-                </div>
                 <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight mt-1">
                     Rekapitulasi Timesheet & Ekspor
                 </h1>
@@ -32,6 +42,7 @@
                     <i data-lucide="file-text" class="h-4 w-4"></i>
                     <span>Ekspor PDF</span>
                 </a>
+            </div>
             </div>
         </div>
     </x-slot>

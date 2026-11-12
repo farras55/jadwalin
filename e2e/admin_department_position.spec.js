@@ -96,7 +96,7 @@ test.describe('Modul Admin: Kelola Departemen & Posisi Jabatan', () => {
     await expect(page).toHaveURL(/\/admin\/departments/);
 
     // b. Flash message sukses muncul
-    await expect(page.getByText(/(Departemen|Department) berhasil ditambahkan/i)).toBeVisible();
+    await expect(page.getByText(/(Departemen|Department) berhasil ditambahkan/i).first()).toBeVisible();
 
     // c. Data nama departemen baru tampil pada tabel/daftar
     await expect(page.getByText(deptName).first()).toBeVisible();

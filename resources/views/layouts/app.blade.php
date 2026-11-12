@@ -7,10 +7,10 @@
     <title>{{ config('app.name', 'Jadwalin') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
     
-    {{-- Google Fonts: Inter --}}
+    {{-- Google Fonts: Inter & Outfit --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     {{-- Tailwind CSS & JS via Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -56,7 +56,118 @@
     @include('layouts.sidebar')
 
     {{-- ===== MAIN WRAPPER ===== --}}
-    <main class="flex-1 flex flex-col min-w-0 bg-[#F5F3FF] overflow-hidden">
+    <main class="flex-1 flex flex-col min-w-0 bg-[#F5F3FF] overflow-hidden relative">
+        
+        {{-- ===== GLOBAL FLOATING TOAST NOTIFICATIONS (Jira PBL-45 Standard) ===== --}}
+        <div class="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0" aria-live="polite">
+            {{-- Toast Sukses --}}
+            @if (session('success'))
+                <div 
+                    x-data="{ show: true }" 
+                    x-show="show" 
+                    x-init="setTimeout(() => show = false, 4000)"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95 translate-x-4"
+                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-emerald-200 bg-emerald-50/95 backdrop-blur-md p-4 text-emerald-900 flex items-start gap-3 transition-all"
+                >
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold">Berhasil</p>
+                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('success') }}</p>
+                    </div>
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            @endif
+
+            {{-- Toast Status --}}
+            @if (session('status'))
+                <div 
+                    x-data="{ show: true }" 
+                    x-show="show" 
+                    x-init="setTimeout(() => show = false, 4000)"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95 translate-x-4"
+                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-emerald-200 bg-emerald-50/95 backdrop-blur-md p-4 text-emerald-900 flex items-start gap-3 transition-all"
+                >
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold">Status</p>
+                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('status') }}</p>
+                    </div>
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            @endif
+
+            {{-- Toast Error / Peringatan --}}
+            @if (session('error'))
+                <div 
+                    x-data="{ show: true }" 
+                    x-show="show" 
+                    x-init="setTimeout(() => show = false, 5000)"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95 translate-x-4"
+                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-rose-200 bg-rose-50/95 backdrop-blur-md p-4 text-rose-900 flex items-start gap-3 transition-all"
+                >
+                    <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold">Peringatan</p>
+                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('error') }}</p>
+                    </div>
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            @endif
+
+            {{-- Toast Info --}}
+            @if (session('info'))
+                <div 
+                    x-data="{ show: true }" 
+                    x-show="show" 
+                    x-init="setTimeout(() => show = false, 4000)"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95 translate-x-4"
+                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-[#E2E0F7] bg-[#F5F3FF]/95 backdrop-blur-md p-4 text-[#2D2A3E] flex items-start gap-3 transition-all"
+                >
+                    <div class="w-8 h-8 rounded-xl bg-[#EDE9FE] text-[#6C5CE7] flex items-center justify-center shrink-0">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold">Informasi</p>
+                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('info') }}</p>
+                    </div>
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            @endif
+        </div>
         
         {{-- ===== TOP NAVBAR ===== --}}
         @include('layouts.topbar')
