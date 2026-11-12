@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AttendanceRegularizationController as EmployeeAttendanceRegularizationController;
@@ -49,14 +50,14 @@ Route::middleware(['auth', 'role:superadmin'])
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        Route::get('/companies', function () {
-            return view('placeholder', [
-                'title' => 'Perusahaan & Cabang',
-                'subtitle' => 'Kelola tenant perusahaan, outlet cabang, dan batasan lisensi.',
-                'icon' => 'building-2',
-                'roleTitle' => 'Super Admin',
-            ]);
-        })->name('companies.index');
+        // ==========================================
+        // Company Profile Management - PBL-43
+        // ==========================================
+        Route::get('/companies', [CompanyProfileController::class, 'index'])
+            ->name('companies.index');
+            
+        Route::put('/companies', [CompanyProfileController::class, 'update'])
+            ->name('companies.update');
 
         // ==========================================
         // User Management CRUD - PBL-42
