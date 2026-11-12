@@ -507,4 +507,143 @@ class UserManagementTest extends TestCase
             'role' => 'employee',
         ]);
     }
+
+    /**
+     * Skenario 13: Super Admin dapat melakukan pencarian user berdasarkan nomor telepon tanpa query crash.
+     */
+    public function test_superadmin_can_search_users_by_phone_number_without_query_error(): void
+    {
+        $company = $this->createCompany();
+        $superadmin = $this->createSuperadmin($company);
+
+        $employee = User::factory()->create([
+            'company_id' => $company->id,
+            'name' => 'Budi Setiawan',
+            'email' => 'budi.setiawan@example.com',
+            'phone_number' => '087712345678',
+            'role' => 'employee',
+            'status' => 'active',
+        ]);
+
+        $response = $this
+            ->actingAs($superadmin)
+            ->get(route('admin.users.index', ['search' => '08771234']));
+
+        $response->assertOk();
+        $response->assertSee('Budi Setiawan');
+        $response->assertSee('087712345678');
+    }
+
+    /**
+     * Skenario 14: Nomor telepon tersimpan dan ter-update dengan benar pada kolom phone_number.
+     */
+    public function test_phone_number_is_properly_saved_and_displayed(): void
+    {
+        $company = $this->createCompany();
+        $superadmin = $this->createSuperadmin($company);
+
+        $postData = [
+            'name' => 'Rina Sasmita',
+            'email' => 'rina.sasmita@example.com',
+            'phone_number' => '089988776655',
+            'password' => 'secret1234',
+            'password_confirmation' => 'secret1234',
+            'role' => 'employee',
+            'status' => 'active',
+            'employment_type' => 'full_time',
+        ];
+
+        $response = $this
+            ->actingAs($superadmin)
+            ->post(route('admin.users.store'), $postData);
+
+        $response->assertRedirect(route('admin.users.index'));
+        $this->assertDatabaseHas('users', [
+            'email' => 'rina.sasmita@example.com',
+            'phone_number' => '089988776655',
+        ]);
+
+        $user = User::where('email', 'rina.sasmita@example.com')->first();
+
+        // Verifikasi pada form edit menampilkan nomor telepon
+        $editResponse = $this
+            ->actingAs($superadmin)
+            ->get(route('admin.users.edit', $user));
+
+        $editResponse->assertOk();
+        $editResponse->assertSee('089988776655');
+
+        // Update nomor telepon
+        $updateResponse = $this
+            ->actingAs($superadmin)
+            ->put(route('admin.users.update', $user), [
+                'name' => 'Rina Sasmita Updated',
+                'email' => 'rina.sasmita@example.com',
+                'phone_number' => '081122334455',
+                'role' => 'employee',
+                'status' => 'active',
+                'employment_type' => 'full_time',
+            ]);
+
+        $updateResponse->assertRedirect(route('admin.users.index'));
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'phone_number' => '081122334455',
+        ]);
+    }
+
+    /**
+     * Skenario 15: Pengguna dengan status inactive diblokir saat mencoba login.
+     */
+    public function test_user_with_inactive_status_is_blocked_from_logging_in(): void
+    {
+        $company = $this->createCompany();
+
+        $inactiveUser = User::factory()->create([
+            'company_id' => $company->id,
+            'name' => 'Karyawan Non-Aktif',
+            'email' => 'inactive.user@example.com',
+            'password' => Hash::make('password123'),
+            'role' => 'employee',
+            'status' => 'inactive',
+        ]);
+
+        $response = $this->post(route('login'), [
+            'email' => 'inactive.user@example.com',
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    /**
+     * Skenario 16: Super Admin dapat memperbarui profil akunnya sendiri tanpa error validasi role.
+     */
+    public function test_superadmin_can_update_own_account_without_role_validation_error(): void
+    {
+        $company = $this->createCompany();
+        $superadmin = $this->createSuperadmin($company);
+
+        $response = $this
+            ->actingAs($superadmin)
+            ->put(route('admin.users.update', $superadmin), [
+                'name' => 'Superadmin Nama Baru',
+                'email' => $superadmin->email,
+                'phone_number' => '081299998888',
+                'role' => 'superadmin',
+                'status' => 'active',
+                'employment_type' => 'full_time',
+            ]);
+
+        $response->assertRedirect(route('admin.users.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $superadmin->id,
+            'name' => 'Superadmin Nama Baru',
+            'phone_number' => '081299998888',
+            'role' => 'superadmin',
+        ]);
+    }
 }

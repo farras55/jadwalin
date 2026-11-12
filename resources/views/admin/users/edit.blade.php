@@ -155,16 +155,16 @@
 
                         {{-- Nomor HP --}}
                         <div>
-                            <label for="phone" class="block text-xs font-bold uppercase tracking-wider text-[#2D2A3E] mb-2">
+                            <label for="phone_number" class="block text-xs font-bold uppercase tracking-wider text-[#2D2A3E] mb-2">
                                 Nomor Telepon / WhatsApp <span class="text-xs font-normal normal-case text-[#7C7896]">(Opsional)</span>
                             </label>
                             <input type="text" 
-                                   name="phone" 
-                                   id="phone" 
-                                   value="{{ old('phone', $user->phone) }}" 
+                                   name="phone_number" 
+                                   id="phone_number" 
+                                   value="{{ old('phone_number', $user->phone_number) }}" 
                                    placeholder="Contoh: 081234567890" 
-                                   class="w-full px-4 py-2.5 text-sm rounded-xl border {{ $errors->has('phone') ? 'border-red-400 bg-red-50/30' : 'border-[#E2E0F7] bg-slate-50 focus:bg-white' }} text-[#2D2A3E] focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 outline-none transition duration-150">
-                            @error('phone')
+                                   class="w-full px-4 py-2.5 text-sm rounded-xl border {{ $errors->has('phone_number') ? 'border-red-400 bg-red-50/30' : 'border-[#E2E0F7] bg-slate-50 focus:bg-white' }} text-[#2D2A3E] focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 outline-none transition duration-150">
+                            @error('phone_number')
                                 <p class="text-xs text-red-600 mt-1.5 flex items-center gap-1.5">
                                     <i data-lucide="alert-circle" class="h-3.5 w-3.5 shrink-0"></i>
                                     <span>{{ $message }}</span>

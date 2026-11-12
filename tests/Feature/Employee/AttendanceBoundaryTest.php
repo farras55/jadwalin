@@ -18,12 +18,16 @@ class AttendanceBoundaryTest extends TestCase
     use RefreshDatabase;
 
     private User $employee;
+
     private ShiftAssignment $assignment;
+
     private Shift $shift;
+
     private string $timezone = 'Asia/Jakarta';
 
     // Koordinat dummy valid agar lolos validasi geofencing
     private float $validLatitude = -6.2088;
+
     private float $validLongitude = 106.8456;
 
     protected function setUp(): void
@@ -31,7 +35,7 @@ class AttendanceBoundaryTest extends TestCase
         parent::setUp();
 
         $company = Company::factory()->create(['timezone' => $this->timezone]);
-        
+
         CompanySetting::factory()->create([
             'company_id' => $company->id,
             'grace_period_minutes' => 15,
@@ -68,7 +72,7 @@ class AttendanceBoundaryTest extends TestCase
             'template_id' => $template->id,
             'start_time' => Carbon::today($this->timezone)->setHour(8)->setMinute(0),
             'end_time' => Carbon::today($this->timezone)->setHour(17)->setMinute(0),
-            'status' => 'published'
+            'status' => 'published',
         ]);
 
         $this->assignment = ShiftAssignment::factory()->create([

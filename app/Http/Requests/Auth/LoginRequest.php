@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
 
         $user = User::where('email', $this->string('email'))->first();
 
-        if ($user && $user->status === 'resigned') {
+        if ($user && in_array($user->status, ['inactive', 'resigned'], true)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
