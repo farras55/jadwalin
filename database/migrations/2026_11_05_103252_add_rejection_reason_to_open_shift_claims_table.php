@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('open_shift_claims', function (Blueprint $table) {
-            $table->string('rejection_reason', 255)->nullable()->after('approved_by');
+            if (! Schema::hasColumn('open_shift_claims', 'rejection_reason')) {
+                $table->string('rejection_reason', 255)->nullable()->after('approved_by');
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('open_shift_claims', function (Blueprint $table) {
-            $table->dropColumn('rejection_reason');
+            if (Schema::hasColumn('open_shift_claims', 'rejection_reason')) {
+                $table->dropColumn('rejection_reason');
+            }
         });
     }
 };

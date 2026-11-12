@@ -26,6 +26,7 @@ class ShiftController extends Controller
     public function index(Request $request): View
     {
         $user = Auth::user();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
         $isGlobalManager = (bool) $user->is_global_manager;
 
         // 1. Identifikasi Departemen Berdasarkan Hak Akses Manajer
@@ -51,16 +52,16 @@ class ShiftController extends Controller
             }
         }
 
-        // 2. Kalkulasi Rentang Waktu Dinamis
+        // 2. Kalkulasi Rentang Waktu Dinamis (Menggunakan Company Timezone)
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+            $startDate = Carbon::parse($request->input('start_date'), $timezone)->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'), $timezone)->endOfDay();
         } elseif ($request->filled('week_start')) {
-            $startDate = Carbon::parse($request->input('week_start'))->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::parse($request->input('week_start'), $timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         } else {
-            // Default: Pekan Ini (Senin s.d. Minggu)
-            $startDate = now()->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            // Default: Pekan Ini (Senin s.d. Minggu) berdasarkan Company Timezone
+            $startDate = Carbon::now($timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         }
 
@@ -80,8 +81,8 @@ class ShiftController extends Controller
         $nextStart = $endDate->copy()->addDay()->format('Y-m-d');
         $nextEnd = $endDate->copy()->addDays($daysCount)->format('Y-m-d');
 
-        $thisWeekStart = now()->startOfWeek(CarbonInterface::MONDAY)->format('Y-m-d');
-        $thisWeekEnd = now()->endOfWeek(CarbonInterface::SUNDAY)->format('Y-m-d');
+        $thisWeekStart = Carbon::now($timezone)->startOfWeek(CarbonInterface::MONDAY)->format('Y-m-d');
+        $thisWeekEnd = Carbon::now($timezone)->endOfWeek(CarbonInterface::SUNDAY)->format('Y-m-d');
 
         // 3. Bangun Struktur Kolom Tanggal Dinamis
         $days = [];
@@ -230,6 +231,7 @@ class ShiftController extends Controller
     public function generate(Request $request, ScheduleBuilderService $builder): RedirectResponse
     {
         $user = Auth::user();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
         $isGlobalManager = (bool) $user->is_global_manager;
 
         // 1. Tentukan Departemen Sasaran
@@ -245,15 +247,15 @@ class ShiftController extends Controller
             $targetDeptIds = [(int) $user->department_id];
         }
 
-        // 2. Parse Rentang Tanggal Dinamis
+        // 2. Parse Rentang Tanggal Dinamis dengan Timezone
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+            $startDate = Carbon::parse($request->input('start_date'), $timezone)->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'), $timezone)->endOfDay();
         } elseif ($request->filled('week_start')) {
-            $startDate = Carbon::parse($request->input('week_start'))->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::parse($request->input('week_start'), $timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         } else {
-            $startDate = now()->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::now($timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         }
 
@@ -291,6 +293,7 @@ class ShiftController extends Controller
     public function publish(Request $request, ScheduleBuilderService $builder): RedirectResponse
     {
         $user = Auth::user();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
         $isGlobalManager = (bool) $user->is_global_manager;
 
         if ($isGlobalManager) {
@@ -306,13 +309,13 @@ class ShiftController extends Controller
         }
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+            $startDate = Carbon::parse($request->input('start_date'), $timezone)->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'), $timezone)->endOfDay();
         } elseif ($request->filled('week_start')) {
-            $startDate = Carbon::parse($request->input('week_start'))->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::parse($request->input('week_start'), $timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         } else {
-            $startDate = now()->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::now($timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         }
 
@@ -374,6 +377,7 @@ class ShiftController extends Controller
     public function clearDrafts(Request $request, ScheduleBuilderService $builder): RedirectResponse
     {
         $user = Auth::user();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
         $isGlobalManager = (bool) $user->is_global_manager;
 
         if ($isGlobalManager) {
@@ -389,13 +393,13 @@ class ShiftController extends Controller
         }
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $startDate = Carbon::parse($request->input('start_date'))->startOfDay();
-            $endDate = Carbon::parse($request->input('end_date'))->endOfDay();
+            $startDate = Carbon::parse($request->input('start_date'), $timezone)->startOfDay();
+            $endDate = Carbon::parse($request->input('end_date'), $timezone)->endOfDay();
         } elseif ($request->filled('week_start')) {
-            $startDate = Carbon::parse($request->input('week_start'))->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::parse($request->input('week_start'), $timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         } else {
-            $startDate = now()->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+            $startDate = Carbon::now($timezone)->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
             $endDate = $startDate->copy()->endOfWeek(CarbonInterface::SUNDAY)->endOfDay();
         }
 
@@ -421,6 +425,7 @@ class ShiftController extends Controller
     public function update(Request $request, Shift $shift): RedirectResponse
     {
         $user = Auth::user();
+        $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
 
         // 1. Verifikasi kepemilikan tenant
         if ($shift->company_id !== $user->company_id) {
@@ -442,8 +447,8 @@ class ShiftController extends Controller
             'assigned_user_ids.*' => ['integer', 'exists:users,id'],
         ]);
 
-        // 3. Kalkulasi jam shift (mempertahankan tanggal shift)
-        $shiftDate = $shift->start_time->copy()->startOfDay();
+        // 3. Kalkulasi jam shift (mempertahankan tanggal shift, pakai raw_original)
+        $shiftDate = Carbon::parse($shift->getRawOriginal('start_time'), $timezone)->startOfDay();
         $newStart = $shiftDate->copy()->setTimeFromTimeString($validated['start_time']);
         $newEnd = $shiftDate->copy()->setTimeFromTimeString($validated['end_time']);
 
