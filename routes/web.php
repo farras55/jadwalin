@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AttendanceRegularizationController as EmployeeAttendanceRegularizationController;
@@ -56,14 +58,10 @@ Route::middleware(['auth', 'role:superadmin'])
             ]);
         })->name('companies.index');
 
-        Route::get('/users', function () {
-            return view('placeholder', [
-                'title' => 'Kelola Pengguna',
-                'subtitle' => 'Manajemen akun pengguna, penetapan peran (role), dan reset kata sandi.',
-                'icon' => 'users',
-                'roleTitle' => 'Super Admin',
-            ]);
-        })->name('users.index');
+        // ==========================================
+        // User Management CRUD - PBL-42
+        // ==========================================
+        Route::resource('users', UserController::class);
 
         // ==========================================
         // Department & Position CRUD - PBL-9
@@ -118,6 +116,10 @@ Route::middleware(['auth', 'role:superadmin'])
             '/reports/timesheet/export-pdf',
             [TimesheetReportController::class, 'exportPdf']
         )->name('reports.timesheet.export-pdf');
+
+        // Audit Trail Logs
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])
+            ->name('audit-logs.index');
     });
 
 // ==========================================

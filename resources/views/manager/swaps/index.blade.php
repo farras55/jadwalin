@@ -135,12 +135,31 @@
                                 {{ $reqInitial }}
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="font-bold text-[#2D2A3E] text-xs md:text-sm truncate leading-tight">
-                                    {{ $swap->requester->name }}
-                                </p>
+                                <div class="flex items-center gap-1.5">
+                                    <p class="font-bold text-[#2D2A3E] text-xs md:text-sm truncate leading-tight">
+                                        {{ $swap->requester->name }}
+                                    </p>
+                                    @php
+                                        $rType = $swap->requester->employment_type ?? 'full_time';
+                                        $rBadge = match ($rType) {
+                                            'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                            'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                            default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                        };
+                                        $rLabel = match ($rType) {
+                                            'full_time' => 'FT',
+                                            'part_time' => 'PT',
+                                            default => 'FL',
+                                        };
+                                    @endphp
+                                    <span class="text-[9px] font-bold uppercase border px-1.5 py-0.2 rounded-md {{ $rBadge }}" title="{{ $rType }}">
+                                        {{ $rLabel }}
+                                    </span>
+                                </div>
                                 <p class="text-[11px] text-[#7C7896] truncate mt-0.5">
                                     {{ $swap->requester->position?->name ?? 'Staf' }} &bull; {{ $swap->requester->department?->name ?? '-' }}
                                 </p>
+                            </div>
                             </div>
                         </div>
 
@@ -161,9 +180,27 @@
                                 {{ $targetInitial }}
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="font-bold text-[#2D2A3E] text-xs md:text-sm truncate leading-tight">
-                                    {{ $swap->targetUser->name }}
-                                </p>
+                                <div class="flex items-center gap-1.5">
+                                    <p class="font-bold text-[#2D2A3E] text-xs md:text-sm truncate leading-tight">
+                                        {{ $swap->targetUser->name }}
+                                    </p>
+                                    @php
+                                        $tType = $swap->targetUser->employment_type ?? 'full_time';
+                                        $tBadge = match ($tType) {
+                                            'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                            'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                            default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                        };
+                                        $tLabel = match ($tType) {
+                                            'full_time' => 'FT',
+                                            'part_time' => 'PT',
+                                            default => 'FL',
+                                        };
+                                    @endphp
+                                    <span class="text-[9px] font-bold uppercase border px-1.5 py-0.2 rounded-md {{ $tBadge }}" title="{{ $tType }}">
+                                        {{ $tLabel }}
+                                    </span>
+                                </div>
                                 <p class="text-[11px] text-[#7C7896] truncate mt-0.5">
                                     {{ $swap->targetUser->position?->name ?? 'Staf' }} &bull; {{ $swap->targetUser->department?->name ?? '-' }}
                                 </p>

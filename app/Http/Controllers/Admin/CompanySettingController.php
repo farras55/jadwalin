@@ -142,11 +142,15 @@ class CompanySettingController extends Controller
             $request->merge(['branch_longitude' => str_replace(',', '.', (string) $request->input('branch_longitude'))]);
         }
 
+        if ($request->input('is_unlimited') === '1' || $request->input('is_unlimited') === 'true' || $request->input('is_unlimited') === true) {
+            $request->merge(['max_regular_hours' => 0]);
+        }
+
         $validated = $request->validate([
             'max_regular_hours' => [
                 'required',
                 'integer',
-                'min:1',
+                'min:0',
                 'max:60',
             ],
 
@@ -223,7 +227,7 @@ class CompanySettingController extends Controller
         ], [
             'max_regular_hours.required' => 'Maksimal jam kerja reguler wajib diisi.',
             'max_regular_hours.integer' => 'Jam kerja reguler harus berupa bilangan bulat.',
-            'max_regular_hours.min' => 'Jam kerja reguler minimal 1 jam.',
+            'max_regular_hours.min' => 'Jam kerja reguler minimal 0 jam (0 = tanpa batas).',
             'max_regular_hours.max' => 'Jam kerja reguler maksimal 60 jam.',
 
             'max_overtime_hours.required' => 'Maksimal jam lembur wajib diisi.',

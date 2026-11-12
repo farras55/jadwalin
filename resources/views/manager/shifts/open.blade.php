@@ -212,7 +212,30 @@
                                             {{ strtoupper(substr($claim->user->name, 0, 2)) }}
                                         </div>
                                         <div class="min-w-0">
-                                            <p class="font-bold text-[#2D2A3E] text-sm leading-tight truncate">{{ $claim->user->name }}</p>
+                                            <div class="flex items-center gap-1.5">
+                                                <p class="font-bold text-[#2D2A3E] text-sm leading-tight truncate">{{ $claim->user->name }}</p>
+                                                @php
+                                                    $cType = $claim->user->employment_type ?? 'full_time';
+                                                    $cBadge = match ($cType) {
+                                                        'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                                        'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                                        default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                                    };
+                                                    $cLabel = match ($cType) {
+                                                        'full_time' => 'FT',
+                                                        'part_time' => 'PT',
+                                                        default => 'FL',
+                                                    };
+                                                    $cTitle = match ($cType) {
+                                                        'full_time' => 'Staf Penuh Waktu (Full-Time)',
+                                                        'part_time' => 'Staf Paruh Waktu (Part-Time)',
+                                                        default => 'Pekerja Lepas (Freelance)',
+                                                    };
+                                                @endphp
+                                                <span class="text-[9px] font-bold uppercase border px-1.5 py-0.2 rounded-md {{ $cBadge }}" title="{{ $cTitle }}">
+                                                    {{ $cLabel }}
+                                                </span>
+                                            </div>
                                             <p class="text-xs text-[#7C7896] mt-0.5">{{ $claim->user->position?->name ?? 'Staf' }} &bull; {{ $claim->user->department?->name ?? '-' }}</p>
                                         </div>
                                     </div>
@@ -416,10 +439,28 @@
                                 </span>
                             </div>
 
-                            <p class="text-sm font-bold text-[#2D2A3E]">
-                                {{ $claim->user->name }}
-                                <span class="text-xs font-normal text-slate-400">({{ $claim->user->position?->name ?? 'Staf' }})</span>
-                            </p>
+                            <div class="flex items-center gap-1.5">
+                                <p class="text-sm font-bold text-[#2D2A3E]">
+                                    {{ $claim->user->name }}
+                                    <span class="text-xs font-normal text-slate-400">({{ $claim->user->position?->name ?? 'Staf' }})</span>
+                                </p>
+                                @php
+                                    $histType = $claim->user->employment_type ?? 'full_time';
+                                    $histBadge = match ($histType) {
+                                        'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                        'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                        default => 'bg-purple-50 text-purple-700 border-purple-200',
+                                    };
+                                    $histLabel = match ($histType) {
+                                        'full_time' => 'FT',
+                                        'part_time' => 'PT',
+                                        default => 'FL',
+                                    };
+                                @endphp
+                                <span class="text-[9px] font-bold uppercase border px-1.5 py-0.5 rounded-md {{ $histBadge }}">
+                                    {{ $histLabel }}
+                                </span>
+                            </div>
 
                             <p class="text-xs text-[#7C7896]">
                                 Diajukan: <span class="font-mono text-slate-600">{{ $claim->applied_at ? $claim->applied_at->format('d M Y, H:i:s.u') : '-' }}</span> &bull;

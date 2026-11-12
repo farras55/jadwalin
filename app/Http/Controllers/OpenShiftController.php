@@ -466,7 +466,7 @@ class OpenShiftController extends Controller
                     ->exists();
 
                 if ($hasScheduleConflict) {
-                    abort(422, 'Jadwal shift ini bertabrakan dengan jadwal shift aktif Anda.');
+                    abort(422, 'Jadwal shift terbuka ini bertabrakan dengan jadwal shift aktif Anda.');
                 }
 
                 // 5. Hitung kuota yang telah terisi (ShiftAssignment aktif)

@@ -107,6 +107,7 @@ class AppLayout extends Component
                 ['label' => 'Departemen & Posisi', 'icon' => 'briefcase', 'route' => 'admin.departments.index', 'fallback' => '/admin/departments', 'active_pattern' => 'admin/departments*'],
                 ['label' => 'Template Shift', 'icon' => 'calendar-days', 'route' => 'admin.shifts.index', 'fallback' => '/admin/shifts', 'active_pattern' => 'admin/shifts*'],
                 ['label' => 'Rekap Timesheet', 'icon' => 'file-spreadsheet', 'route' => 'admin.reports.timesheet', 'fallback' => '/admin/reports/timesheet', 'active_pattern' => 'admin/reports/timesheet*'],
+                ['label' => 'Audit Log', 'icon' => 'shield', 'route' => 'admin.audit-logs.index', 'fallback' => '/admin/audit-logs', 'active_pattern' => 'admin/audit-logs*'],
                 ['label' => 'Pengaturan Platform', 'icon' => 'settings', 'route' => 'admin.settings.index', 'fallback' => '/admin/settings', 'active_pattern' => 'admin/settings*'],
             ],
             'manager' => [
