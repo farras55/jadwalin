@@ -4,45 +4,44 @@
         {{-- Header Group: Breadcrumb & Page Title --}}
         <div>
             {{-- Breadcrumb --}}
-            <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-2">
+            <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
                 <span>Manager</span>
-                <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                <span class="text-[#6C5CE7] font-medium">Presensi Tim</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span class="text-slate-900 font-medium">Presensi Tim</span>
             </div>
 
             {{-- Header Halaman --}}
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                    <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                         Monitoring Kehadiran Tim
                     </h1>
-                    <p class="text-xs md:text-sm text-[#7C7896] mt-1.5">
-                        Pantau kehadiran staf secara realtime untuk jadwal shift kerja hari ini.
+                    <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                        Pantau kehadiran staf secara real-time untuk jadwal shift kerja hari ini.
                     </p>
                 </div>
 
                 {{-- Live Clock & Polling Status Indicator --}}
-                <div class="flex items-center gap-2.5">
-
+                <div class="flex items-center gap-2">
                     {{-- Live Clock --}}
-                    <div class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-[#E2E0F7] text-xs text-[#2D2A3E] font-medium shadow-2xs">
-                        <i data-lucide="clock" class="w-4 h-4 text-[#6C5CE7]"></i>
-                        <span class="font-mono font-bold text-sm" x-text="currentTimeStr">{{ $serverTime }}</span>
-                        <span class="text-[10px] font-semibold text-[#7C7896]">WIB</span>
+                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 shadow-2xs">
+                        <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <span class="font-mono font-bold text-xs" x-text="currentTimeStr">{{ $serverTime }}</span>
+                        <span class="text-[10px] font-semibold text-slate-400">WIB</span>
                     </div>
 
                     {{-- Status Polling Indicator --}}
-                    <div class="flex items-center bg-white px-3 py-1.5 rounded-xl border border-[#E2E0F7] text-xs font-semibold shadow-2xs">
+                    <div class="flex items-center bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold shadow-2xs">
                         <template x-if="isConnected">
-                            <span class="flex items-center text-emerald-600">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block mr-1.5"></span>
+                            <span class="flex items-center text-emerald-700 text-xs">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block mr-1.5"></span>
                                 Live
                             </span>
                         </template>
 
                         <template x-if="!isConnected">
-                            <span class="flex items-center text-rose-500">
-                                <span class="w-2 h-2 rounded-full bg-rose-500 inline-block mr-1.5"></span>
+                            <span class="flex items-center text-rose-600 text-xs">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block mr-1.5"></span>
                                 Terputus
                             </span>
                         </template>
@@ -53,7 +52,7 @@
                         type="button"
                         @click="fetchFeed()"
                         :disabled="isFetching"
-                        class="p-2 bg-white hover:bg-[#F5F3FF] text-[#7C7896] hover:text-[#6C5CE7] rounded-xl border border-[#E2E0F7] shadow-2xs transition focus:outline-none"
+                        class="p-1.5 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-800 rounded-lg border border-slate-200 shadow-2xs transition focus:outline-none"
                         title="Segarkan Data Sekarang"
                     >
                         <i data-lucide="refresh-cw" class="w-4 h-4" :class="isFetching ? 'animate-spin text-[#6C5CE7]' : ''"></i>
@@ -63,9 +62,9 @@
         </div>
 
         {{-- ========================================================= --}}
-        {{-- 4 KARTU METRIK RINGKASAN KEHADIRAN --}}
+        {{-- 4 KARTU METRIK RINGKASAN KEHADIRAN (HIGH DENSITY)         --}}
         {{-- ========================================================= --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
 
             {{-- Kartu 1: Dijadwalkan --}}
             <button
@@ -73,22 +72,22 @@
                 @click="selectMetric('scheduled')"
                 :aria-pressed="selectedMetric === 'scheduled'"
                 :class="selectedMetric === 'scheduled'
-                    ? 'ring-2 ring-[#6C5CE7] border-[#6C5CE7]'
-                    : 'hover:border-[#C7C2F5]'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
+                    ? 'ring-2 ring-slate-900 border-slate-900 bg-slate-50'
+                    : 'border-slate-200/80 bg-white hover:border-slate-300'"
+                class="w-full text-left rounded-xl border p-3 sm:p-4 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none"
             >
                 <div class="min-w-0 pr-1">
-                    <p class="text-[11px] sm:text-xs font-semibold text-[#7C7896] truncate">Dijadwalkan</p>
-                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.scheduled">
+                    <p class="text-[11px] sm:text-xs font-medium text-slate-500 truncate">Dijadwalkan</p>
+                    <p class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5 font-mono" x-text="metrics.scheduled">
                         {{ $metrics['scheduled'] }}
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
+                    <p class="text-[10px] text-slate-400 mt-0.5 truncate hidden xs:block">
                         Total staf shift hari ini
                     </p>
                 </div>
 
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0">
-                    <i data-lucide="activity" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                    <i data-lucide="activity" class="w-4 h-4"></i>
                 </div>
             </button>
 
@@ -98,22 +97,22 @@
                 @click="selectMetric('on_time')"
                 :aria-pressed="selectedMetric === 'on_time'"
                 :class="selectedMetric === 'on_time'
-                    ? 'ring-2 ring-emerald-500 border-emerald-500'
-                    : 'hover:border-emerald-300'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    ? 'ring-2 ring-emerald-600 border-emerald-600 bg-emerald-50/40'
+                    : 'border-slate-200/80 bg-white hover:border-slate-300'"
+                class="w-full text-left rounded-xl border p-3 sm:p-4 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none"
             >
                 <div class="min-w-0 pr-1">
-                    <p class="text-[11px] sm:text-xs font-semibold text-emerald-700 truncate">Tepat Waktu</p>
-                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.on_time">
+                    <p class="text-[11px] sm:text-xs font-medium text-emerald-700 truncate">Tepat Waktu</p>
+                    <p class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5 font-mono" x-text="metrics.on_time">
                         {{ $metrics['on_time'] }}
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
+                    <p class="text-[10px] text-slate-400 mt-0.5 truncate hidden xs:block">
                         Sesuai batas toleransi
                     </p>
                 </div>
 
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
-                    <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
                 </div>
             </button>
 
@@ -123,22 +122,22 @@
                 @click="selectMetric('late')"
                 :aria-pressed="selectedMetric === 'late'"
                 :class="selectedMetric === 'late'
-                    ? 'ring-2 ring-amber-500 border-amber-500'
-                    : 'hover:border-amber-300'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    ? 'ring-2 ring-amber-600 border-amber-600 bg-amber-50/40'
+                    : 'border-slate-200/80 bg-white hover:border-slate-300'"
+                class="w-full text-left rounded-xl border p-3 sm:p-4 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none"
             >
                 <div class="min-w-0 pr-1">
-                    <p class="text-[11px] sm:text-xs font-semibold text-amber-700 truncate">Terlambat</p>
-                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.late">
+                    <p class="text-[11px] sm:text-xs font-medium text-amber-700 truncate">Terlambat</p>
+                    <p class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5 font-mono" x-text="metrics.late">
                         {{ $metrics['late'] }}
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
+                    <p class="text-[10px] text-slate-400 mt-0.5 truncate hidden xs:block">
                         Melewati toleransi
                     </p>
                 </div>
 
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
-                    <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
                 </div>
             </button>
 
@@ -148,62 +147,90 @@
                 @click="selectMetric('not_present')"
                 :aria-pressed="selectedMetric === 'not_present'"
                 :class="selectedMetric === 'not_present'
-                    ? 'ring-2 ring-rose-500 border-rose-500'
-                    : 'hover:border-rose-300'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    ? 'ring-2 ring-rose-600 border-rose-600 bg-rose-50/40'
+                    : 'border-slate-200/80 bg-white hover:border-slate-300'"
+                class="w-full text-left rounded-xl border p-3 sm:p-4 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none"
             >
                 <div class="min-w-0 pr-1">
-                    <p class="text-[11px] sm:text-xs font-semibold text-rose-700 truncate">Belum Hadir</p>
-                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.not_present">
+                    <p class="text-[11px] sm:text-xs font-medium text-rose-700 truncate">Belum Hadir</p>
+                    <p class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5 font-mono" x-text="metrics.not_present">
                         {{ $metrics['not_present'] }}
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
+                    <p class="text-[10px] text-slate-400 mt-0.5 truncate hidden xs:block">
                         <span x-text="metrics.absent">{{ $metrics['absent'] }}</span> lewat batas
                     </p>
                 </div>
 
-                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0">
-                    <i data-lucide="slash" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center shrink-0">
+                    <i data-lucide="slash" class="w-4 h-4"></i>
                 </div>
             </button>
 
         </div>
 
         {{-- Toolbar Departemen & Tanggal --}}
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-3.5 rounded-2xl border border-[#E2E0F7] shadow-2xs">
-            <div class="flex flex-wrap items-center gap-2.5">
-
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+            <div class="flex flex-wrap items-center gap-2">
                 {{-- Departemen Badge --}}
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl text-xs font-semibold text-[#2D2A3E]">
-                    <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">
+                    <i data-lucide="building-2" class="w-3.5 h-3.5 text-slate-400"></i>
                     <span>{{ $manager->department->name ?? 'Semua Departemen' }}</span>
                 </div>
 
                 {{-- Tanggal Badge --}}
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl text-xs font-semibold text-[#2D2A3E]">
-                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
                     <span x-text="currentDateStr">{{ $serverDate }}</span>
                 </div>
 
                 {{-- Toleransi Menit --}}
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-[#7C7896]">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500">
                     <span>Toleransi:</span>
-                    <strong class="text-[#2D2A3E]">{{ $gracePeriod }} Menit</strong>
+                    <strong class="text-slate-900">{{ $gracePeriod }} Menit</strong>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 text-xs text-[#7C7896]">
+            <div class="flex items-center gap-2 text-xs text-slate-500">
                 <span>Sinkronisasi terakhir:</span>
-                <span class="font-mono font-bold text-[#6C5CE7]" x-text="lastSyncTime">{{ $serverTime }}</span>
+                <span class="font-mono font-bold text-slate-800" x-text="lastSyncTime">{{ $serverTime }}</span>
             </div>
         </div>
 
         {{-- ========================================================= --}}
-        {{-- TABEL MONITORING KEHADIRAN STAF --}}
+        {{-- TABEL MONITORING KEHADIRAN STAF                           --}}
         {{-- ========================================================= --}}
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
 
-            <div class="px-6 py-4 border-b border-[#E2E0F7] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                    <h2 class="text-sm font-semibold text-slate-900">
+                        Daftar Presensi Staf Hari Ini
+                    </h2>
+                    <p class="text-xs text-slate-500">
+                        Data otomatis disinkronisasi setiap 20 detik tanpa memuat ulang halaman.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    {{-- Filter Aktif --}}
+                    <template x-if="selectedMetric !== null">
+                        <button
+                            type="button"
+                            @click="clearMetricFilter()"
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                        >
+                            <i data-lucide="x" class="w-3.5 h-3.5 text-slate-400"></i>
+                            Tampilkan Semua
+                        </button>
+                    </template>
+
+                    {{-- Monitoring Aktif --}}
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Monitoring Aktif</span>
+                    </div>
+                </div>
+            </div>
                 <div>
                     <h2 class="text-base font-bold text-[#2D2A3E]">
                         Daftar Presensi Staf Hari Ini

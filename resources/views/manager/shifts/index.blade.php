@@ -14,13 +14,13 @@
                             Manajer Departemen
                         </span>
                     @endif
-                    <span class="text-xs text-[#7C7896]">Smart Scheduling &amp; Anti-Conflict Engine</span>
+                    <span class="text-xs text-slate-500 font-medium">Penjadwalan &amp; Roster Mingguan</span>
                 </div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight mt-1.5">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight mt-1.5">
                     Jadwal Kerja Tim (Roster)
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-0.5">
-                    Susun kebutuhan kuota orang per shift dan jalankan penjadwalan cerdas otomatis tanpa bentrok.
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                    Kelola penugasan shift tim, kuota staf harian, dan publikasi roster kerja operasional.
                 </p>
             </div>
 
@@ -28,15 +28,15 @@
             <div class="flex items-center gap-3">
                 @if ($isGlobalManager)
                     {{-- Global Manager: Dropdown Pemilih Departemen --}}
-                    <form method="GET" action="{{ route('manager.shifts.index') }}" class="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-[#E2E0F7] shadow-2xs">
+                    <form method="GET" action="{{ route('manager.shifts.index') }}" class="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200/80 shadow-2xs">
                         <input type="hidden" name="start_date" value="{{ $startDate->format('Y-m-d') }}">
                         <input type="hidden" name="end_date" value="{{ $endDate->format('Y-m-d') }}">
-                        <div class="flex items-center gap-2 px-2 text-xs font-semibold text-[#7C7896]">
+                        <div class="flex items-center gap-2 px-2 text-xs font-semibold text-slate-500">
                             <i data-lucide="building-2" class="h-4 w-4 text-[#6C5CE7]"></i>
                             <span class="hidden sm:inline">Departemen:</span>
                         </div>
                         <select name="department_id" onchange="this.form.submit()" 
-                                class="text-xs font-bold bg-[#F5F3FF] border border-[#E2E0F7] rounded-xl px-3 py-1.5 text-[#2D2A3E] focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] cursor-pointer">
+                                class="text-xs font-bold bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#6C5CE7] cursor-pointer">
                             @foreach ($departments as $dept)
                                 <option value="{{ $dept->id }}" {{ $dept->id == $departmentId ? 'selected' : '' }}>
                                     {{ $dept->name }} ({{ $dept->draft_count ? $dept->draft_count . ' Draf, ' : '' }}{{ $dept->active_staff_count }} Staf)
@@ -46,13 +46,13 @@
                     </form>
                 @else
                     {{-- Regular Manager: Terkunci pada Departemennya Sendiri --}}
-                    <div class="bg-white border border-[#E2E0F7] rounded-2xl px-4 py-2 flex items-center gap-3 shadow-2xs">
-                        <div class="h-8 w-8 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7] flex items-center justify-center shrink-0">
+                    <div class="bg-white border border-slate-200/80 rounded-xl px-3.5 py-2 flex items-center gap-3 shadow-2xs">
+                        <div class="h-8 w-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
                             <i data-lucide="building-2" class="h-4 w-4"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] font-bold uppercase tracking-wider text-[#7C7896]">Departemen Anda</p>
-                            <p class="text-xs font-bold text-[#2D2A3E]">{{ $currentDepartment->name ?? 'Departemen Tim' }} ({{ $activeStaff->count() }} Staf)</p>
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Departemen Anda</p>
+                            <p class="text-xs font-bold text-slate-800">{{ $currentDepartment->name ?? 'Departemen Tim' }} ({{ $activeStaff->count() }} Staf)</p>
                         </div>
                     </div>
                 @endif
@@ -62,8 +62,8 @@
 
     {{-- Notifikasi Flash Messages --}}
     @if (session('success'))
-        <div class="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
-            <i data-lucide="check-circle" class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5"></i>
+        <div class="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
+            <i data-lucide="check-circle" class="h-4 w-4 text-emerald-600 shrink-0 mt-0.5"></i>
             <div class="flex-1 text-xs md:text-sm">
                 <p class="font-bold">Berhasil!</p>
                 <p class="mt-0.5 text-emerald-700">{{ session('success') }}</p>
@@ -72,8 +72,8 @@
     @endif
 
     @if (session('warning'))
-        <div class="mb-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
-            <i data-lucide="alert-triangle" class="h-5 w-5 text-amber-600 shrink-0 mt-0.5"></i>
+        <div class="mb-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
+            <i data-lucide="alert-triangle" class="h-4 w-4 text-amber-600 shrink-0 mt-0.5"></i>
             <div class="flex-1 text-xs md:text-sm">
                 <p class="font-bold">Perhatian</p>
                 <p class="mt-0.5 text-amber-700">{{ session('warning') }}</p>
@@ -82,8 +82,8 @@
     @endif
 
     @if (session('info'))
-        <div class="mb-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
-            <i data-lucide="info" class="h-5 w-5 text-blue-600 shrink-0 mt-0.5"></i>
+        <div class="mb-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
+            <i data-lucide="info" class="h-4 w-4 text-blue-600 shrink-0 mt-0.5"></i>
             <div class="flex-1 text-xs md:text-sm">
                 <p class="mt-0.5 text-blue-700">{{ session('info') }}</p>
             </div>
@@ -168,35 +168,35 @@
          }">
 
         {{-- 1. CONTEXT BAR: NAVIGASI WAKTU, PRESETS & QUICK STATS --}}
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-4 shadow-2xs mb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-3 sm:p-4 shadow-2xs mb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
             {{-- Navigasi Tanggal --}}
             <div class="flex flex-wrap items-center gap-2 max-w-full">
                 <a href="{{ route('manager.shifts.index', ['department_id' => $departmentId, 'start_date' => $prevStart, 'end_date' => $prevEnd]) }}"
-                   class="p-2 rounded-xl border border-[#E2E0F7] text-[#7C7896] hover:text-[#6C5CE7] hover:bg-[#F5F3FF] transition shrink-0"
+                   class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition shrink-0"
                    title="Periode Sebelumnya">
                     <i data-lucide="chevron-left" class="h-4 w-4"></i>
                 </a>
 
-                <form method="GET" action="{{ route('manager.shifts.index') }}" class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 bg-[#F5F3FF] border border-[#E2E0F7] rounded-xl px-2 sm:px-2.5 py-1.5 max-w-full">
+                <form method="GET" action="{{ route('manager.shifts.index') }}" class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2 sm:px-2.5 py-1 max-w-full">
                     <input type="hidden" name="department_id" value="{{ $departmentId }}">
                     <i data-lucide="calendar" class="h-4 w-4 text-[#6C5CE7] shrink-0 hidden xs:inline"></i>
                     
                     <input type="date" name="start_date" value="{{ $startDate->format('Y-m-d') }}"
-                           class="text-xs font-bold text-[#2D2A3E] bg-white border border-[#E2E0F7] rounded-lg px-1.5 sm:px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#6C5CE7] max-w-[125px] sm:max-w-none">
+                           class="text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded px-1.5 sm:px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#6C5CE7] max-w-[125px] sm:max-w-none">
                     
-                    <span class="text-xs font-semibold text-[#7C7896]">s.d.</span>
+                    <span class="text-xs font-semibold text-slate-400">s.d.</span>
                     
                     <input type="date" name="end_date" value="{{ $endDate->format('Y-m-d') }}"
-                           class="text-xs font-bold text-[#2D2A3E] bg-white border border-[#E2E0F7] rounded-lg px-1.5 sm:px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#6C5CE7] max-w-[125px] sm:max-w-none">
+                           class="text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded px-1.5 sm:px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#6C5CE7] max-w-[125px] sm:max-w-none">
                     
                     <button type="submit" 
-                            class="text-xs font-bold px-2.5 py-1 bg-[#6C5CE7] hover:bg-[#5b4cdb] text-white rounded-lg transition shadow-2xs shrink-0">
+                            class="text-xs font-semibold px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded transition shadow-2xs shrink-0">
                         Terapkan
                     </button>
                 </form>
 
                 <a href="{{ route('manager.shifts.index', ['department_id' => $departmentId, 'start_date' => $nextStart, 'end_date' => $nextEnd]) }}"
-                   class="p-2 rounded-xl border border-[#E2E0F7] text-[#7C7896] hover:text-[#6C5CE7] hover:bg-[#F5F3FF] transition shrink-0"
+                   class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition shrink-0"
                    title="Periode Berikutnya">
                     <i data-lucide="chevron-right" class="h-4 w-4"></i>
                 </a>
@@ -204,11 +204,11 @@
                 {{-- Presets Cepat --}}
                 <div class="flex items-center gap-1 shrink-0">
                     <a href="{{ route('manager.shifts.index', ['department_id' => $departmentId, 'start_date' => $thisWeekStart, 'end_date' => $thisWeekEnd]) }}"
-                       class="text-xs font-bold px-2.5 py-1.5 rounded-xl border {{ $startDate->format('Y-m-d') === $thisWeekStart && $endDate->format('Y-m-d') === $thisWeekEnd ? 'bg-[#6C5CE7] border-[#6C5CE7] text-white shadow-2xs' : 'border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF]' }} transition">
+                       class="text-xs font-semibold px-2.5 py-1.5 rounded-lg border {{ $startDate->format('Y-m-d') === $thisWeekStart && $endDate->format('Y-m-d') === $thisWeekEnd ? 'bg-slate-900 border-slate-900 text-white shadow-2xs' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-50' }} transition">
                         Pekan Ini
                     </a>
                     <a href="{{ route('manager.shifts.index', ['department_id' => $departmentId, 'start_date' => $thisMonthStart, 'end_date' => $thisMonthEnd]) }}"
-                       class="text-xs font-bold px-2.5 py-1.5 rounded-xl border {{ $startDate->format('Y-m-d') === $thisMonthStart && $endDate->format('Y-m-d') === $thisMonthEnd ? 'bg-[#6C5CE7] border-[#6C5CE7] text-white shadow-2xs' : 'border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF]' }} transition">
+                       class="text-xs font-semibold px-2.5 py-1.5 rounded-lg border {{ $startDate->format('Y-m-d') === $thisMonthStart && $endDate->format('Y-m-d') === $thisMonthEnd ? 'bg-slate-900 border-slate-900 text-white shadow-2xs' : 'border-slate-200 text-slate-700 bg-white hover:bg-slate-50' }} transition">
                         Bulan Ini
                     </a>
                 </div>
@@ -216,188 +216,188 @@
 
             {{-- Ringkasan Metrik Singkat (KPI Inline) --}}
             <div class="flex items-center gap-2 sm:gap-3 text-xs w-full md:w-auto overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-                <div class="flex items-center gap-1.5 bg-slate-50 border border-[#E2E0F7] px-2.5 py-1.5 rounded-xl">
+                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-lg">
                     <i data-lucide="layers" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
-                    <span class="text-[#7C7896]">Total Shift:</span>
-                    <strong class="text-[#2D2A3E]">{{ $totalShifts }}</strong>
+                    <span class="text-slate-500">Total Shift:</span>
+                    <strong class="text-slate-900 font-mono">{{ $totalShifts }}</strong>
                 </div>
 
-                <div class="flex items-center gap-1.5 bg-slate-50 border border-[#E2E0F7] px-2.5 py-1.5 rounded-xl">
+                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-lg">
                     <i data-lucide="clock" class="h-3.5 w-3.5 text-blue-600"></i>
-                    <span class="text-[#7C7896]">Jam:</span>
-                    <strong class="text-[#2D2A3E]">{{ $totalScheduledHours }} Jam</strong>
+                    <span class="text-slate-500">Jam:</span>
+                    <strong class="text-slate-900 font-mono">{{ $totalScheduledHours }} Jam</strong>
                 </div>
 
-                <div class="flex items-center gap-1.5 bg-slate-50 border border-[#E2E0F7] px-2.5 py-1.5 rounded-xl">
+                <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-lg">
                     <i data-lucide="users" class="h-3.5 w-3.5 text-emerald-600"></i>
-                    <span class="text-[#7C7896]">Staf:</span>
-                    <strong class="text-[#2D2A3E]">{{ $uniqueStaffCount }}/{{ $activeStaff->count() }}</strong>
+                    <span class="text-slate-500">Staf:</span>
+                    <strong class="text-slate-900 font-mono">{{ $uniqueStaffCount }}/{{ $activeStaff->count() }}</strong>
                 </div>
 
                 @if ($unfilledSlotsCount > 0)
-                    <div class="flex items-center gap-1.5 bg-red-50 border border-red-200 px-2.5 py-1.5 rounded-xl text-red-700">
+                    <div class="flex items-center gap-1.5 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-lg text-rose-700">
                         <i data-lucide="user-x" class="h-3.5 w-3.5"></i>
                         <span>Kurang:</span>
-                        <strong>{{ $unfilledSlotsCount }}</strong>
+                        <strong class="font-mono">{{ $unfilledSlotsCount }}</strong>
                     </div>
                 @endif
             </div>
         </div>
 
-        {{-- 2. GUIDED WORKFLOW ACTION CARD (STATE-BASED: JELAS & HANYA TAMPILKAN AKSI RELEVAN) --}}
+        {{-- 2. GUIDED WORKFLOW ACTION CARD (STATE-BASED: JELAS & ELEGAN) --}}
         @if ($isGlobalManager && $totalCompanyDraftShifts > 0)
             {{-- State: Global Manager Ada Draf Siap Terbit --}}
-            <div class="mb-5 bg-gradient-to-r from-purple-50 via-indigo-50/60 to-white border-2 border-purple-300 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-start gap-3.5">
-                    <div class="h-11 w-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <i data-lucide="layers" class="h-6 w-6"></i>
+            <div class="mb-4 bg-white border border-purple-200 rounded-xl p-4 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="h-9 w-9 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+                        <i data-lucide="layers" class="h-5 w-5"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-purple-200 text-purple-800">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-800">
                                 Mode Multi-Departemen
                             </span>
-                            <span class="text-xs font-bold text-purple-900">
+                            <span class="text-xs font-semibold text-purple-900">
                                 Total {{ $totalCompanyDraftShifts }} Draf Siap Terbit di {{ $departments->where('draft_count', '>', 0)->count() }} Departemen
                             </span>
                         </div>
-                        <h3 class="text-sm sm:text-base font-extrabold text-[#2D2A3E] mt-1">
+                        <h3 class="text-sm font-bold text-slate-900 mt-1">
                             Tinjau Kalender Tim &bull; Departemen {{ $currentDepartment->name }} ({{ $draftShiftsCount }} Draf)
                         </h3>
-                        <p class="text-xs text-[#7C7896] mt-0.5 leading-relaxed">
-                            Jadwal berstatus <strong>Draf</strong> (karyawan belum dapat melihat). Periksa matriks jadwal di bawah, lalu klik <strong>Terbitkan</strong> agar resmi aktif.
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Jadwal berstatus <strong>Draf</strong> (staf belum dapat melihat). Periksa matriks jadwal di bawah, lalu klik <strong>Terbitkan</strong> agar resmi aktif.
                         </p>
                     </div>
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="flex items-center flex-wrap gap-2.5 shrink-0 self-end md:self-auto">
+                <div class="flex items-center flex-wrap gap-2 shrink-0 self-end md:self-auto">
                     <button type="button" @click="showClearModal = true; clearScope = 'current'"
-                            class="text-xs font-bold px-3 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition flex items-center gap-1.5">
+                            class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 transition flex items-center gap-1.5">
                         <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
                         <span>Hapus Draf</span>
                     </button>
 
                     <button type="button" @click="showBuildModal = true"
-                            class="text-xs font-bold px-3.5 py-2 rounded-xl bg-white border border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF] hover:border-[#6C5CE7] transition flex items-center gap-1.5 shadow-2xs">
-                        <i data-lucide="sliders" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
-                        <span>Atur Ulang Kebutuhan</span>
+                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5">
+                        <i data-lucide="sliders" class="h-3.5 w-3.5 text-slate-500"></i>
+                        <span>Atur Kebutuhan</span>
                     </button>
 
                     <button type="button" @click="showPublishModal = true; publishScope = 'all'"
-                            class="text-xs sm:text-sm font-extrabold px-4 sm:px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition flex items-center gap-2">
-                        <i data-lucide="send" class="h-4 w-4"></i>
+                            class="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition flex items-center gap-1.5">
+                        <i data-lucide="send" class="h-3.5 w-3.5"></i>
                         <span>Terbitkan Semua ({{ $totalCompanyDraftShifts }})</span>
                     </button>
                 </div>
             </div>
         @elseif ($draftShiftsCount > 0)
             {{-- State: Regular Manager Ada Draf Belum Terbit --}}
-            <div class="mb-5 bg-gradient-to-r from-amber-50 via-amber-50/50 to-white border-2 border-amber-300 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-start gap-3.5">
-                    <div class="h-11 w-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <i data-lucide="clipboard-pen" class="h-6 w-6"></i>
+            <div class="mb-4 bg-white border border-amber-200 rounded-xl p-4 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="h-9 w-9 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                        <i data-lucide="clipboard-pen" class="h-5 w-5"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-900">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-800">
                                 Mode Peninjauan Draf
                             </span>
-                            <span class="text-xs font-bold text-amber-900">
+                            <span class="text-xs font-semibold text-amber-900">
                                 {{ $draftShiftsCount }} Shift Draf Belum Terbit
                             </span>
                         </div>
-                        <h3 class="text-sm sm:text-base font-extrabold text-[#2D2A3E] mt-1">
+                        <h3 class="text-sm font-bold text-slate-900 mt-1">
                             Jadwal Siap Ditinjau Sebelum Diterbitkan
                         </h3>
-                        <p class="text-xs text-[#7C7896] mt-0.5 leading-relaxed">
+                        <p class="text-xs text-slate-500 mt-0.5">
                             Karyawan <strong>belum dapat melihat</strong> jadwal ini. Klik pada shift untuk modifikasi manual jika diperlukan, lalu klik <strong>Terbitkan Jadwal</strong>.
                         </p>
                     </div>
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="flex items-center flex-wrap gap-2.5 shrink-0 self-end md:self-auto">
+                <div class="flex items-center flex-wrap gap-2 shrink-0 self-end md:self-auto">
                     <button type="button" @click="showClearModal = true; clearScope = 'current'"
-                            class="text-xs font-bold px-3 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition flex items-center gap-1.5">
+                            class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 transition flex items-center gap-1.5">
                         <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
                         <span>Hapus Draf</span>
                     </button>
 
                     <button type="button" @click="showBuildModal = true"
-                            class="text-xs font-bold px-3.5 py-2 rounded-xl bg-white border border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF] hover:border-[#6C5CE7] transition flex items-center gap-1.5 shadow-2xs">
-                        <i data-lucide="sliders" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
-                        <span>Atur Ulang Kebutuhan</span>
+                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5">
+                        <i data-lucide="sliders" class="h-3.5 w-3.5 text-slate-500"></i>
+                        <span>Atur Kebutuhan</span>
                     </button>
 
                     <button type="button" @click="showPublishModal = true; publishScope = 'current'"
-                            class="text-xs sm:text-sm font-extrabold px-4 sm:px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition flex items-center gap-2">
-                        <i data-lucide="send" class="h-4 w-4"></i>
+                            class="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition flex items-center gap-1.5">
+                        <i data-lucide="send" class="h-3.5 w-3.5"></i>
                         <span>Terbitkan Jadwal ({{ $draftShiftsCount }})</span>
                     </button>
                 </div>
             </div>
         @elseif ($totalShifts > 0)
             {{-- State: Jadwal Resmi Aktif (Semua Published) --}}
-            <div class="mb-5 bg-gradient-to-r from-emerald-50 via-emerald-50/40 to-white border border-emerald-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-start gap-3.5">
-                    <div class="h-11 w-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <i data-lucide="calendar-check" class="h-6 w-6"></i>
+            <div class="mb-4 bg-white border border-slate-200/80 rounded-xl p-4 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                        <i data-lucide="calendar-check" class="h-5 w-5"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-900">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
                                 Jadwal Resmi Aktif
                             </span>
-                            <span class="text-xs font-bold text-emerald-800">
+                            <span class="text-xs font-semibold text-emerald-800">
                                 {{ $publishedShiftsCount }} Shift Terbit
                             </span>
                         </div>
-                        <h3 class="text-sm sm:text-base font-extrabold text-[#2D2A3E] mt-1">
+                        <h3 class="text-sm font-bold text-slate-900 mt-1">
                             Roster Aktif dan Dapat Diakses Seluruh Karyawan
                         </h3>
-                        <p class="text-xs text-[#7C7896] mt-0.5 leading-relaxed">
+                        <p class="text-xs text-slate-500 mt-0.5">
                             Seluruh staf departemen dapat melihat jadwal shift dan melakukan presensi kehadiran sesuai kalender ini.
                         </p>
                     </div>
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="flex items-center flex-wrap gap-2.5 shrink-0 self-end md:self-auto">
+                <div class="flex items-center flex-wrap gap-2 shrink-0 self-end md:self-auto">
                     <button type="button" @click="showBuildModal = true"
-                            class="text-xs font-bold px-4 py-2.5 rounded-xl bg-[#6C5CE7] hover:bg-[#5b4cdb] text-white shadow-sm transition flex items-center gap-2">
-                        <i data-lucide="sliders" class="h-4 w-4"></i>
-                        <span>Buat Jadwal Baru / Re-Build</span>
+                            class="text-xs font-semibold px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition flex items-center gap-2">
+                        <i data-lucide="sliders" class="h-3.5 w-3.5"></i>
+                        <span>Susun Ulang Roster</span>
                     </button>
                 </div>
             </div>
         @else
             {{-- State: Kosong / Belum Ada Jadwal --}}
-            <div class="mb-5 bg-gradient-to-r from-purple-50 via-slate-50 to-white border-2 border-dashed border-[#E2E0F7] rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-start gap-3.5">
-                    <div class="h-12 w-12 rounded-2xl bg-[#6C5CE7]/10 text-[#6C5CE7] flex items-center justify-center shrink-0 mt-0.5">
-                        <i data-lucide="sparkles" class="h-6 w-6"></i>
+            <div class="mb-4 bg-white border border-slate-200/80 rounded-xl p-4 sm:p-5 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="h-9 w-9 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                        <i data-lucide="calendar" class="h-5 w-5"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-700">
                                 Belum Ada Jadwal
                             </span>
                         </div>
-                        <h3 class="text-base sm:text-lg font-extrabold text-[#2D2A3E] mt-1">
-                            Siap Menyusun Jadwal untuk {{ $currentDepartment->name }}?
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900 mt-1">
+                            Susun Jadwal untuk {{ $currentDepartment->name }}
                         </h3>
-                        <p class="text-xs text-[#7C7896] mt-0.5 max-w-xl leading-relaxed">
-                            Algoritma heuristik cerdas akan menyusun jadwal otomatis, membagi beban kerja secara adil, dan mencegah bentrok jam kuliah/izin staf.
+                        <p class="text-xs text-slate-500 mt-0.5 max-w-xl">
+                            Susun jadwal otomatis sesuai kebutuhan kuota shift harian, membagi jam kerja secara merata, dan mematuhi batas regulasi.
                         </p>
                     </div>
                 </div>
 
                 <div class="shrink-0 self-end md:self-auto">
                     <button type="button" @click="showBuildModal = true"
-                            class="text-xs sm:text-sm font-extrabold px-5 py-3 rounded-2xl bg-[#6C5CE7] hover:bg-[#5b4cdb] text-white shadow-md transition flex items-center gap-2">
-                        <i data-lucide="sparkles" class="h-4 w-4"></i>
-                        <span>Mulai Susun Jadwal Cerdas</span>
+                            class="text-xs font-semibold px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition flex items-center gap-2">
+                        <i data-lucide="sliders" class="h-3.5 w-3.5"></i>
+                        <span>Mulai Susun Jadwal</span>
                     </button>
                 </div>
             </div>
