@@ -652,84 +652,60 @@
         };
     </script>
 
-    <div x-data="attendancePage(window.attendanceConfig)" class="space-y-6 pb-12">
+    <div x-data="attendancePage(window.attendanceConfig)" class="space-y-5 pb-12">
 
         {{-- Flash Alerts --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-4 rounded-2xl border border-emerald-200 shadow-xs flex items-center gap-3">
-                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
-                <span class="text-sm font-medium">{{ session('success') }}</span>
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-2xs flex items-center gap-2.5">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <span class="text-xs font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-rose-50 text-rose-800 p-4 rounded-2xl border border-rose-200 shadow-xs flex items-center gap-3">
-                <i data-lucide="alert-circle" class="w-5 h-5 text-rose-600 shrink-0"></i>
-                <span class="text-sm font-medium">{{ session('error') }}</span>
+            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-2xs flex items-center gap-2.5">
+                <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
+                <span class="text-xs font-medium">{{ session('error') }}</span>
             </div>
         @endif
 
         {{-- ========================================================================= --}}
-        {{-- 1. HEADER & TOP SUMMARY CARDS (ATAS)                                      --}}
+        {{-- 1. HEADER & TOP SUMMARY METRICS (HIGH DENSITY)                            --}}
         {{-- ========================================================================= --}}
         <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
             {{-- Breadcrumb & Title --}}
             <div>
-                <nav class="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-1">
-                    <span class="hover:text-gray-700">Karyawan</span>
-                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <span class="text-[#6C5CE7] font-semibold">Pencatatan Kehadiran</span>
+                <nav class="flex items-center gap-1.5 text-xs text-slate-500 font-medium mb-1">
+                    <span class="hover:text-slate-700">Karyawan</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span class="text-brand-primary font-semibold">Pencatatan Kehadiran</span>
                 </nav>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" data-testid="page-heading">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight" data-testid="page-heading">
                     Pencatatan Kehadiran
                 </h1>
-                <p class="text-xs md:text-sm text-gray-500 mt-0.5">
-                    Catat waktu masuk dan pulang kerja Anda.
+                <p class="text-xs text-slate-500 mt-0.5">
+                    Terminal presensi mandiri karyawan terverifikasi koordinat outlet
                 </p>
             </div>
 
-            {{-- 3 Kotak Statistik (Pojok Kanan Atas) Dinamis --}}
-            <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
-                {{-- Stat 1: Kehadiran Bulan Ini --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-3 px-4 shadow-2xs flex items-center gap-3.5 min-w-[160px] flex-1 sm:flex-initial">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
-                        <i data-lucide="shield-check" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">KEHADIRAN BULAN INI</span>
-                        <div class="flex items-baseline gap-1.5 mt-0.5">
-                            <span class="text-xl font-extrabold text-gray-900 leading-tight">{{ $stats['attendance_percentage'] }}%</span>
-                        </div>
-                        <span class="text-[11px] text-gray-500 block">({{ $stats['present_shifts'] }}/{{ $stats['total_shifts'] }} Shift)</span>
-                    </div>
+            {{-- Compact High-Density Metrics Bar --}}
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Kehadiran</span>
+                    <span class="text-xs font-extrabold text-slate-900 font-mono">{{ $stats['attendance_percentage'] }}%</span>
+                    <span class="text-[10px] text-slate-400">({{ $stats['present_shifts'] }}/{{ $stats['total_shifts'] }})</span>
                 </div>
 
-                {{-- Stat 2: Tepat Waktu --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-3 px-4 shadow-2xs flex items-center gap-3.5 min-w-[150px] flex-1 sm:flex-initial">
-                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center shrink-0">
-                        <i data-lucide="timer" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">TEPAT WAKTU</span>
-                        <div class="flex items-baseline gap-1.5 mt-0.5">
-                            <span class="text-xl font-extrabold text-gray-900 leading-tight">{{ $stats['on_time_days'] }} Hari</span>
-                        </div>
-                        <span class="text-[11px] font-bold text-emerald-600 block">{{ $stats['on_time_status'] }}</span>
-                    </div>
+                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tepat Waktu</span>
+                    <span class="text-xs font-extrabold text-emerald-600 font-mono">{{ $stats['on_time_days'] }} Hari</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200/70">{{ $stats['on_time_status'] }}</span>
                 </div>
 
-                {{-- Stat 3: Total Jam Kerja --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-3 px-4 shadow-2xs flex items-center gap-3.5 min-w-[150px] flex-1 sm:flex-initial">
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
-                        <i data-lucide="clock" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">TOTAL JAM KERJA</span>
-                        <div class="flex items-baseline gap-1.5 mt-0.5">
-                            <span class="text-xl font-extrabold text-gray-900 leading-tight">{{ $stats['total_work_hours'] }} Jam</span>
-                        </div>
-                        <span class="text-[11px] text-gray-500 block">Bulan Ini</span>
-                    </div>
+                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Jam</span>
+                    <span class="text-xs font-extrabold text-slate-900 font-mono">{{ $stats['total_work_hours'] }} Jam</span>
+                    <span class="text-[10px] text-slate-400">Bulan Ini</span>
                 </div>
             </div>
         </div>
@@ -737,135 +713,135 @@
         {{-- ========================================================================= --}}
         {{-- 2. MAIN LAYOUT (GRID KIRI & KANAN)                                        --}}
         {{-- ========================================================================= --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
             {{-- --------------------------------------------------------------------- --}}
             {{-- BAGIAN KIRI: UTAMA - PRESENSI HARI INI (8 KOLOM)                      --}}
             {{-- --------------------------------------------------------------------- --}}
             <div class="lg:col-span-8 space-y-4">
                 {{-- Card Utama --}}
-                <div id="live-lock" data-testid="live-lock" class="bg-white rounded-2xl border border-gray-200/80 p-5 md:p-6 shadow-2xs space-y-4">
+                <div id="live-lock" data-testid="live-lock" class="bg-white rounded-xl border border-slate-200/80 p-5 md:p-6 shadow-2xs space-y-4">
                     
                     {{-- Header Card & Status Badge (State dari Backend, tidak bisa diubah manual) --}}
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-1 border-b border-gray-100">
-                        <div class="flex items-center gap-3">
-                            <div class="w-1.5 h-6 rounded-full shrink-0
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-1.5 h-5 rounded-full shrink-0
                                 {{ $attendanceState === 'working' ? 'bg-teal-600' : ($attendanceState === 'completed' ? 'bg-emerald-600' : ($attendanceState === 'idle' ? 'bg-amber-500' : 'bg-slate-400')) }}"></div>
                             <div>
-                                <h2 class="text-base font-bold text-gray-900 leading-tight" data-testid="today-shift-heading">Shift Hari Ini</h2>
-                                <p class="text-xs text-gray-500 mt-0.5">Validasi kehadiran otomatis via titik presensi outlet</p>
+                                <h2 class="text-sm md:text-base font-bold text-slate-900 leading-tight" data-testid="today-shift-heading">Shift Hari Ini</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Validasi kehadiran otomatis via titik presensi outlet</p>
                             </div>
                         </div>
 
                         {{-- Status Pill (Read-Only, dikontrol backend) --}}
                         @if ($attendanceState === 'working')
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-teal-100 text-teal-900 border border-teal-200 font-bold text-xs self-start sm:self-auto">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold self-start sm:self-auto">
                                 <span class="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
-                                Mode 2 — Sedang Bekerja
+                                Sedang Bekerja
                             </span>
                         @elseif ($attendanceState === 'completed')
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-200 font-bold text-xs self-start sm:self-auto">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold self-start sm:self-auto">
                                 <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-700"></i>
                                 Shift Selesai
                             </span>
                         @elseif ($attendanceState === 'no_shift')
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 font-semibold text-xs self-start sm:self-auto">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium self-start sm:self-auto">
                                 <i data-lucide="calendar-x" class="w-3.5 h-3.5"></i>
                                 Tidak Ada Shift Terjadwal
                             </span>
                         @elseif ($shiftEnded)
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 font-bold text-xs self-start sm:self-auto">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold self-start sm:self-auto">
                                 <i data-lucide="clock-x" class="w-3.5 h-3.5"></i>
                                 Shift Telah Berakhir
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs self-start sm:self-auto">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold self-start sm:self-auto">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                Mode 1 — Belum Masuk
+                                Belum Masuk
                             </span>
                         @endif
                     </div>
 
-                    {{-- Informasi Pengguna (Box Background Abu-abu Sangat Muda) --}}
-                    <div class="bg-[#F8FAFC] border border-slate-200/70 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70">
+                    {{-- Informasi Pengguna & Shift --}}
+                    <div class="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3.5 grid grid-cols-1 sm:grid-cols-3 gap-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60">
                         {{-- Karyawan --}}
-                        <div class="flex items-center gap-3">
-                            <div class="w-11 h-11 rounded-full bg-[#0B3B3C] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                                 {{ $initials }}
                             </div>
                             <div class="min-w-0">
-                                <span class="text-[11px] text-gray-400 font-medium block">Karyawan</span>
-                                <span class="text-sm font-bold text-gray-900 block leading-tight truncate">{{ $userName }}</span>
-                                <span class="text-[11px] text-gray-500 block mt-0.5 truncate">{{ $userRole }} ({{ $userCode }})</span>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Karyawan</span>
+                                <span class="text-xs font-bold text-slate-900 block leading-tight truncate">{{ $userName }}</span>
+                                <span class="text-[11px] text-slate-500 block truncate">{{ $userRole }} ({{ $userCode }})</span>
                             </div>
                         </div>
 
                         {{-- Penugasan Outlet --}}
-                        <div class="flex items-start sm:pl-4 pt-3 sm:pt-0 gap-3">
-                            <div class="p-2 rounded-lg bg-teal-50 text-teal-700 border border-teal-100 shrink-0">
-                                <i data-lucide="store" class="w-4 h-4"></i>
+                        <div class="flex items-start sm:pl-3 pt-2.5 sm:pt-0 gap-2.5">
+                            <div class="p-1.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/70 shrink-0 mt-0.5">
+                                <i data-lucide="store" class="w-3.5 h-3.5"></i>
                             </div>
                             <div class="min-w-0">
-                                <span class="text-[11px] text-gray-400 font-medium block">Penugasan Outlet</span>
-                                <span class="text-sm font-bold text-gray-900 block leading-tight truncate" x-text="outletInfo.name">{{ $outletName }}</span>
-                                <span class="text-[11px] text-gray-500 block mt-0.5 truncate" x-text="outletInfo.address">{{ $outletAddress }}</span>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Outlet</span>
+                                <span class="text-xs font-bold text-slate-900 block leading-tight truncate" x-text="outletInfo.name">{{ $outletName }}</span>
+                                <span class="text-[11px] text-slate-500 block truncate" x-text="outletInfo.address">{{ $outletAddress }}</span>
                             </div>
                         </div>
 
                         {{-- Jadwal Shift --}}
-                        <div class="flex items-start sm:pl-4 pt-3 sm:pt-0 gap-3">
-                            <div class="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
-                                <i data-lucide="calendar" class="w-4 h-4"></i>
+                        <div class="flex items-start sm:pl-3 pt-2.5 sm:pt-0 gap-2.5">
+                            <div class="p-1.5 rounded-lg bg-indigo-50 text-brand-primary border border-indigo-200/70 shrink-0 mt-0.5">
+                                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                             </div>
                             <div class="min-w-0">
-                                <span class="text-[11px] text-gray-400 font-medium block">Jadwal Shift</span>
-                                <span class="text-sm font-bold text-gray-900 block leading-tight truncate">
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Jadwal Shift</span>
+                                <span class="text-xs font-bold text-slate-900 block leading-tight truncate">
                                     {{ $shiftTitle }} ({{ $shiftStart }} – {{ $shiftEnd }})
                                 </span>
-                                <span class="text-[11px] font-semibold text-blue-600 block mt-0.5">Durasi Rencana: 8 Jam Kerja</span>
+                                <span class="text-[11px] font-semibold text-brand-primary block">Rencana: 8 Jam Kerja</span>
                             </div>
                         </div>
                     </div>
 
                     {{-- Banner Peringatan Jika Lokasi Cabang Belum Dikonfigurasi --}}
-                    <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 flex items-center gap-2.5 text-xs font-semibold text-amber-900">
+                    <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 text-xs font-semibold text-amber-900">
                         <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
                         <span>Lokasi cabang belum diatur oleh admin di Pengaturan Platform. Tombol Clock-In dinonaktifkan.</span>
                     </div>
 
                     {{-- Banner Notifikasi Titik Presensi Outlet Dinamis --}}
                     <div x-show="isLocationConfigured"
-                         :class="isInsideRadius ? 'bg-emerald-50/70 border-emerald-200/80' : 'bg-rose-50/70 border-rose-200/80'"
-                         class="border rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 transition-colors bg-emerald-50/70 border-emerald-200/80">
-                        <div class="flex items-center gap-2.5">
+                         :class="isInsideRadius ? 'bg-emerald-50/60 border-emerald-200/80' : 'bg-rose-50/60 border-rose-200/80'"
+                         class="border rounded-xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 transition-colors">
+                        <div class="flex items-center gap-2">
                             <span :class="isInsideRadius ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'"
-                                  class="w-2.5 h-2.5 rounded-full shrink-0 bg-emerald-500 animate-pulse"></span>
-                            <p class="text-xs text-gray-800">
+                                  class="w-2 h-2 rounded-full shrink-0"></span>
+                            <p class="text-xs text-slate-800">
                                 <strong :class="isInsideRadius ? 'text-emerald-950' : 'text-rose-950'"
-                                        class="font-bold text-emerald-950"
+                                        class="font-bold"
                                         x-text="isInsideRadius ? 'Radius Outlet Terverifikasi:' : 'Di Luar Radius Outlet:'">
                                     Radius Outlet Terverifikasi:
                                 </strong> 
                                 <span x-text="radiusNotificationText">Menghubungkan ke titik presensi outlet...</span> 
-                                <span class="text-gray-500" x-text="'(Radius aman < ' + outletInfo.radius + 'm)'">(Radius aman &lt; {{ $outletInfo['radius'] ?? 50 }}m)</span>
+                                <span class="text-slate-500" x-text="'(Radius aman < ' + outletInfo.radius + 'm)'">(Radius aman &lt; {{ $outletInfo['radius'] ?? 50 }}m)</span>
                             </p>
                         </div>
-                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-100/70 border border-teal-200/70 text-teal-800 text-[11px] font-semibold shrink-0 self-start sm:self-auto">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-semibold shrink-0 self-start sm:self-auto">
                             <i data-lucide="shield-check" class="w-3.5 h-3.5 text-teal-700"></i>
                             <span x-text="verificationStatusText">Lokasi Presensi Terverifikasi</span>
                         </div>
                     </div>
 
                     {{-- Status Shift Saat Ini (dikontrol backend, bukan Alpine) --}}
-                    <div class="flex flex-wrap items-center gap-3 text-xs">
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
                         @if ($attendanceState === 'working')
                             @php $isTodayLate = $todayLateMinutes > 0; @endphp
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-100 text-teal-900 border border-teal-200 font-bold">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 font-semibold">
                                 <span class="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
                                 Sedang Bekerja
                             </span>
-                            <span class="text-gray-500 font-medium">• Shift Berjalan</span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full {{ $isTodayLate ? 'bg-rose-50 text-rose-700 border border-rose-200/80' : 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' }} font-semibold">
+                            <span class="text-slate-400 font-medium">•</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md {{ $isTodayLate ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200' }} font-medium">
                                 <i data-lucide="{{ $isTodayLate ? 'alert-circle' : 'check-circle' }}" class="w-3.5 h-3.5 {{ $isTodayLate ? 'text-rose-600' : 'text-emerald-600' }}"></i>
                                 Masuk: {{ $clockInFormatted }}
                                 ({{ $isTodayLate ? 'Terlambat ' . $todayLateFormatted : 'Hadir Tepat Waktu' }})
@@ -873,112 +849,112 @@
 
                         @elseif ($attendanceState === 'completed')
                             @php $isTodayLate = $todayLateMinutes > 0; @endphp
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200 font-bold">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
                                 <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-700"></i>
                                 Selesai Bekerja
                             </span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full {{ $isTodayLate ? 'bg-rose-50 text-rose-700 border border-rose-200/80' : 'bg-emerald-50 text-emerald-700 border border-emerald-200/80' }} font-semibold">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md {{ $isTodayLate ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200' }} font-medium">
                                 <i data-lucide="log-in" class="w-3 h-3"></i>
                                 Masuk: {{ $clockInFormatted }}
                                 ({{ $isTodayLate ? 'Terlambat ' . $todayLateFormatted : 'Tepat Waktu' }})
                             </span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200 font-semibold">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 text-slate-700 border border-slate-200 font-medium">
                                 <i data-lucide="log-out" class="w-3 h-3"></i>
                                 Pulang: {{ $clockOutFormatted }}
                             </span>
 
                         @elseif ($shiftEnded && $attendanceState === 'idle')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 border border-rose-200 font-bold">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-50 text-rose-800 border border-rose-200 font-semibold">
                                 <i data-lucide="clock-x" class="w-3.5 h-3.5"></i>
                                 Shift Berakhir Tanpa Presensi
                             </span>
-                            <span class="text-gray-500 font-medium">• Shift berakhir {{ $shiftEnd }} WIB</span>
+                            <span class="text-slate-400 font-medium">• Shift berakhir {{ $shiftEnd }} WIB</span>
 
                         @else
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 font-bold">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                                 Belum Masuk
                             </span>
-                            <span class="text-gray-500 font-medium">• Menunggu Clock In</span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
+                            <span class="text-slate-400 font-medium">• Menunggu Clock In</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-medium">
                                 <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-500"></i>
                                 Jadwal Masuk: {{ $shiftStart }} WIB
                             </span>
                         @endif
                     </div>
 
-                    {{-- Timer & Progress Area (Background Biru/Ungu Muda) --}}
-                    <div id="live-clock" data-testid="live-clock" class="bg-[#F4F6FF] rounded-2xl p-5 border border-indigo-100/60">
+                    {{-- Timer & Progress Area (Clean Modern SaaS Punch Station) --}}
+                    <div id="live-clock" data-testid="live-clock" class="bg-slate-900 text-white rounded-xl p-5 border border-slate-800 shadow-xs">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
                             
                             {{-- Timer Box Kiri --}}
                             <div class="md:col-span-7">
                                 @if ($attendanceState === 'completed')
-                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-600 block mb-1">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-1">
                                         TOTAL DURASI BEKERJA
                                     </span>
                                     @php
                                         $totalMin = $isClockedIn && $isClockedOut
                                             ? \Carbon\Carbon::parse($todayShift->clock_in_time)->diffInMinutes($todayShift->clock_out_time)
-                                            : 0;
+                                             : 0;
                                         $totalH = floor($totalMin / 60);
                                         $totalM = $totalMin % 60;
                                         $totalDurStr = $totalH . ' Jam ' . str_pad($totalM, 2, '0', STR_PAD_LEFT) . ' Menit';
                                     @endphp
                                     <div class="flex items-baseline gap-2.5">
-                                        <span class="text-3xl md:text-5xl font-mono font-black text-emerald-700 tracking-tight">
+                                        <span class="text-3xl md:text-5xl font-mono font-bold text-emerald-400 tracking-tight">
                                             {{ str_pad($totalH, 2, '0', STR_PAD_LEFT) }} : {{ str_pad($totalM, 2, '0', STR_PAD_LEFT) }} : 00
                                         </span>
                                     </div>
-                                    <p class="text-xs text-emerald-700 mt-2 font-semibold">
+                                    <p class="text-xs text-emerald-300 mt-2 font-medium">
                                         Shift selesai. Total bekerja: {{ $totalDurStr }}.
                                     </p>
                                 @elseif ($attendanceState === 'working')
-                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 block mb-1">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                                         DURASI BEKERJA BERJALAN
                                     </span>
                                     <div class="flex items-baseline gap-2.5">
-                                        <span x-text="timerDisplay" class="text-3xl md:text-5xl font-mono font-black text-[#0B3B3C] tracking-tight">
+                                        <span x-text="timerDisplay" class="text-3xl md:text-5xl font-mono font-bold text-emerald-400 tracking-tight">
                                             00 : 00 : 00
                                         </span>
-                                        <span class="text-xs font-semibold text-gray-400">/ Target 08:00:00</span>
+                                        <span class="text-xs font-semibold text-slate-400">/ Target 08:00:00</span>
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-2 font-medium">
-                                        Telah menyelesaikan <strong class="font-bold text-gray-700" x-text="progressPercent + '%'">0%</strong> dari target shift hari ini
+                                    <p class="text-xs text-slate-400 mt-2 font-medium">
+                                        Telah menyelesaikan <strong class="font-bold text-white" x-text="progressPercent + '%'">0%</strong> dari target shift hari ini
                                     </p>
                                 @else
-                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 block mb-1">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                                         DURASI BEKERJA
                                     </span>
                                     <div class="flex items-baseline gap-2.5">
-                                        <span class="text-3xl md:text-5xl font-mono font-black text-slate-400 tracking-tight">
+                                        <span class="text-3xl md:text-5xl font-mono font-bold text-slate-500 tracking-tight">
                                             00 : 00 : 00
                                         </span>
-                                        <span class="text-xs font-semibold text-gray-400">/ Target 08:00:00</span>
+                                        <span class="text-xs font-semibold text-slate-500">/ Target 08:00:00</span>
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-2 font-medium">
+                                    <p class="text-xs text-slate-400 mt-2 font-medium">
                                         @if ($shiftEnded && $attendanceState === 'idle')
                                             Shift telah berakhir. Presensi tidak dapat dilakukan.
                                         @else
-                                            Shift belum dimulai. Silakan lakukan Clock-In saat tiba di lokasi outlet.
+                                            Shift belum dimulai. Lakukan Clock-In saat tiba di lokasi outlet.
                                         @endif
                                     </p>
                                 @endif
                             </div>
 
                             {{-- Progress Bar Kanan --}}
-                            <div class="md:col-span-5 bg-white/70 backdrop-blur-xs p-3.5 rounded-xl border border-indigo-100/40">
-                                <div class="flex items-center justify-between text-xs font-bold mb-2">
-                                    <span class="text-gray-700">Progres Shift</span>
-                                    <span class="text-teal-700 font-extrabold" x-text="progressHoursText">0.0 / 8.0 Jam</span>
+                            <div class="md:col-span-5 bg-slate-800/80 p-3.5 rounded-lg border border-slate-700/80">
+                                <div class="flex items-center justify-between text-xs font-semibold mb-2">
+                                    <span class="text-slate-300">Progres Shift</span>
+                                    <span class="text-emerald-400 font-bold font-mono" x-text="progressHoursText">0.0 / 8.0 Jam</span>
                                 </div>
-                                <div class="w-full bg-slate-200/90 rounded-full h-2.5 overflow-hidden">
-                                    <div class="bg-teal-600 h-2.5 rounded-full transition-all duration-500" 
+                                <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-emerald-500 h-2 rounded-full transition-all duration-500" 
                                          :style="'width: ' + progressPercent + '%;'"></div>
                                 </div>
-                                <div class="flex justify-between items-center text-[10px] text-gray-400 font-semibold mt-1.5">
-                                    <span>{{ $shiftStart }} (Mulai)</span>
-                                    <span>{{ $shiftEnd }} (Selesai)</span>
+                                <div class="flex justify-between items-center text-[10px] text-slate-400 font-mono mt-1.5">
+                                    <span>{{ $shiftStart }} WIB</span>
+                                    <span>{{ $shiftEnd }} WIB</span>
                                 </div>
                             </div>
                         </div>
@@ -987,14 +963,14 @@
                     {{-- Action Button & Validation Banner Bawah --}}
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2 border-t border-slate-100">
                         {{-- Validasi Kehadiran Sistem --}}
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl
-                                {{ $attendanceState === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : ($attendanceState === 'working' ? 'bg-teal-50 text-teal-600 border border-teal-100' : 'bg-blue-50 text-blue-600 border border-blue-100') }}
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg
+                                {{ $attendanceState === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($attendanceState === 'working' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-600 border border-slate-200') }}
                                 flex items-center justify-center shrink-0">
-                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
                             </div>
                             <div>
-                                <p class="text-xs font-bold text-gray-800 leading-tight">
+                                <p class="text-xs font-bold text-slate-800 leading-tight">
                                     @if ($attendanceState === 'completed')
                                         Presensi Hari Ini Selesai
                                     @elseif ($attendanceState === 'working')
@@ -1003,20 +979,20 @@
                                         Validasi Presensi Otomatis
                                     @endif
                                 </p>
-                                <p class="text-[11px] text-gray-500 mt-0.5">
+                                <p class="text-[11px] text-slate-500 mt-0.5">
                                     @if ($attendanceState === 'completed')
                                         Masuk {{ $clockInFormatted }} · Pulang {{ $clockOutFormatted }}
                                     @elseif ($attendanceState === 'working')
                                         Presensi masuk {{ $outletName }} tercatat pada {{ $clockInFormatted }}
                                     @else
-                                        Presensi dicatat berdasarkan waktu sistem dan titik presensi outlet.
+                                        Pencatatan presensi terverifikasi dengan koordinat resmi cabang.
                                     @endif
                                 </p>
                             </div>
                         </div>
 
-                        {{-- Action Button — Dikontrol sepenuhnya oleh state backend --}}
-                        <div class="shrink-0" id="attendance-action-container">
+                        {{-- Action Button — Mobile First Utility Button --}}
+                        <div class="shrink-0 w-full sm:w-auto" id="attendance-action-container">
                             @if ($attendanceState === 'working')
                                 {{-- Tombol Clock-Out (Mode 2: Sedang Bekerja) --}}
                                 <form action="{{ route('employee.attendance.clock-out') }}" method="POST" id="form-clock-out"
@@ -1026,9 +1002,9 @@
                                     <button type="submit" id="btn-clock-out" data-testid="btn-clock-out"
                                             :disabled="!isInsideRadius && isLocationConfigured"
                                             :class="(!isInsideRadius && isLocationConfigured) 
-                                                ? 'opacity-50 cursor-not-allowed bg-slate-400 hover:bg-slate-400 active:bg-slate-400 shadow-none pointer-events-none' 
-                                                : 'bg-[#D32F2F] hover:bg-red-700 active:bg-red-800'"
-                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5 font-bold shadow-md hover:shadow-lg transition-all text-sm tracking-wide">
+                                                ? 'opacity-50 cursor-not-allowed bg-slate-300 hover:bg-slate-300 active:bg-slate-300 shadow-none pointer-events-none' 
+                                                : 'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white'"
+                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-bold shadow-xs hover:shadow-sm transition-all text-xs tracking-wide">
                                         <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>
                                         <span class="whitespace-nowrap">Clock-Out</span>
                                     </button>
@@ -1043,10 +1019,10 @@
                                     <button type="submit" id="btn-clock-in" data-testid="btn-clock-in"
                                             :disabled="!isInsideRadius || !isLocationConfigured"
                                             :class="(!isInsideRadius || !isLocationConfigured) 
-                                                ? 'opacity-50 cursor-not-allowed bg-slate-400 hover:bg-slate-400 active:bg-slate-400 shadow-none pointer-events-none' 
-                                                : 'bg-[#0B3B3C] hover:bg-[#072829] active:bg-[#051c1c] shadow-md hover:shadow-lg'"
+                                                ? 'opacity-50 cursor-not-allowed bg-slate-300 hover:bg-slate-300 active:bg-slate-300 shadow-none pointer-events-none' 
+                                                : 'bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white shadow-xs hover:shadow-sm'"
                                             :title="!isLocationConfigured ? 'Tombol nonaktif: Lokasi cabang belum diatur oleh admin' : (!isInsideRadius ? 'Tombol nonaktif: Anda berada di luar radius kantor (' + distanceText + ')' : 'Klik untuk mencatat kehadiran')"
-                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 text-white rounded-xl px-7 py-3.5 font-bold transition-all text-sm tracking-wide">
+                                            class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-bold transition-all text-xs tracking-wide">
                                         <i data-lucide="log-in" class="w-4 h-4 shrink-0"></i>
                                         <span class="whitespace-nowrap">Clock-In</span>
                                     </button>
@@ -1054,21 +1030,21 @@
 
                             @elseif ($attendanceState === 'idle' && $shiftEnded)
                                 {{-- Tombol dinonaktifkan: shift sudah berakhir, tidak bisa clock-in --}}
-                                <div class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 bg-slate-200 text-slate-500 rounded-xl px-7 py-3.5 font-bold text-sm cursor-not-allowed select-none">
+                                <div class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 bg-slate-100 text-slate-400 rounded-xl px-6 py-3 font-semibold text-xs cursor-not-allowed select-none border border-slate-200">
                                     <i data-lucide="clock-x" class="w-4 h-4 shrink-0"></i>
                                     <span>Shift Telah Berakhir</span>
                                 </div>
 
                             @elseif ($attendanceState === 'completed')
                                 {{-- State Selesai: tidak ada tombol, tampilkan konfirmasi --}}
-                                <div class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-sm">
+                                <div class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-xs">
                                     <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
                                     <span>Presensi Selesai</span>
                                 </div>
 
                             @else
                                 {{-- Tidak ada shift hari ini --}}
-                                <div class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-semibold text-sm">
+                                <div class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 font-medium text-xs">
                                     <i data-lucide="calendar-x" class="w-4 h-4"></i>
                                     <span>Tidak Ada Shift</span>
                                 </div>
@@ -1078,12 +1054,12 @@
                 </div>
 
                 {{-- Banner Catatan Supervisor (Di Bawah Card Utama) --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-start gap-3">
-                    <div class="p-1.5 rounded-lg bg-teal-50 text-teal-600 shrink-0 mt-0.5">
-                        <i data-lucide="info" class="w-4 h-4"></i>
+                <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-2xs flex items-start gap-2.5">
+                    <div class="p-1 rounded bg-teal-50 text-teal-700 shrink-0 mt-0.5">
+                        <i data-lucide="info" class="w-3.5 h-3.5"></i>
                     </div>
-                    <p class="text-xs text-gray-600 leading-relaxed">
-                        <strong class="font-bold text-gray-900">Petunjuk Operasional Presensi:</strong> 
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        <strong class="font-bold text-slate-900">Petunjuk Operasional Presensi:</strong> 
                         Pastikan Anda berada dalam radius presensi cabang <span x-text="outletInfo.name">{{ $outletName }}</span> (<span x-text="outletInfo.radius + 'm'">{{ $outletInfo['radius'] ?? 50 }}m</span>) dan memverifikasi kehadiran sebelum shift berakhir pukul {{ $shiftEnd }} WIB.
                     </p>
                 </div>
@@ -1092,40 +1068,40 @@
             {{-- --------------------------------------------------------------------- --}}
             {{-- BAGIAN KANAN: WIDGET LOKASI & KETENTUAN (4 KOLOM)                     --}}
             {{-- --------------------------------------------------------------------- --}}
-            <div class="lg:col-span-4 space-y-6">
+            <div class="lg:col-span-4 space-y-4">
 
                 {{-- Widget 1: Lokasi Presensi Anda --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs space-y-3">
                     {{-- Header Widget --}}
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm md:text-base font-bold text-gray-900" data-testid="location-heading">Lokasi Presensi Anda</h3>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-900" data-testid="location-heading">Lokasi Presensi Anda</h3>
                         <span :class="isLocationConfigured ? 'text-emerald-600' : 'text-amber-600'"
-                              class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                              class="inline-flex items-center gap-1.5 text-xs font-semibold">
                             <span :class="isLocationConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'"
-                                  class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                  class="w-1.5 h-1.5 rounded-full"></span>
                             <span x-text="connectionStatusText">Terhubung</span>
                         </span>
                     </div>
 
                     {{-- Banner Peringatan Jika Lokasi Belum Dikonfigurasi --}}
-                    <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-xl p-3 text-amber-900 text-xs font-medium flex items-start gap-2">
+                    <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-amber-900 text-xs font-medium flex items-start gap-2">
                         <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         <span>Lokasi cabang belum diatur oleh admin di Pengaturan Platform. Presensi dinonaktifkan.</span>
                     </div>
 
                     {{-- Map View Container --}}
-                    <div class="relative rounded-xl overflow-hidden border border-gray-200 h-[220px] bg-[#EAECEF] select-none shadow-inner">
+                    <div class="relative rounded-lg overflow-hidden border border-slate-200 h-[210px] bg-slate-100 select-none shadow-inner">
                         {{-- Leaflet Map Container --}}
                         <div id="attendance-map" class="w-full h-full z-0"></div>
 
                         {{-- Floating Card On Map --}}
-                        <div class="absolute bottom-2.5 inset-x-2.5 z-[1000] bg-white/95 backdrop-blur-md rounded-xl p-2.5 px-3 border border-gray-200/90 shadow-md flex items-center justify-between gap-2 pointer-events-none sm:pointer-events-auto">
+                        <div class="absolute bottom-2 inset-x-2 z-[1000] bg-white/95 backdrop-blur-xs rounded-lg p-2 px-2.5 border border-slate-200 shadow-sm flex items-center justify-between gap-2 pointer-events-none sm:pointer-events-auto">
                             <div class="min-w-0">
-                                <p class="text-xs font-extrabold text-gray-900 truncate" x-text="outletInfo.name">{{ $outletName }}</p>
-                                <p class="text-[10px] text-gray-500 truncate" x-text="outletInfo.address">{{ $outletAddress }}</p>
+                                <p class="text-xs font-bold text-slate-900 truncate" x-text="outletInfo.name">{{ $outletName }}</p>
+                                <p class="text-[10px] text-slate-500 truncate" x-text="outletInfo.address">{{ $outletAddress }}</p>
                             </div>
-                            <span :class="isInsideRadius ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-rose-600 bg-rose-50 border-rose-200'" 
-                                  class="text-xs font-extrabold border px-2.5 py-0.5 rounded-lg whitespace-nowrap shadow-2xs transition-colors shrink-0 text-emerald-600 bg-emerald-50 border-emerald-200"
+                            <span :class="isInsideRadius ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200'" 
+                                  class="text-[11px] font-bold border px-2 py-0.5 rounded-md whitespace-nowrap shadow-2xs transition-colors shrink-0"
                                   x-text="distanceText">
                                 Mendeteksi...
                             </span>
@@ -1133,81 +1109,81 @@
                     </div>
 
                     {{-- 2 Kotak Mini Informasi Di Bawah Peta --}}
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-3 text-center">
-                            <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">BATAS MAKSIMAL</span>
-                            <span class="text-xs font-extrabold text-gray-900 block mt-0.5" x-text="outletInfo.radius + ' Meter Radius'">{{ $outletInfo['radius'] ?? 50 }} Meter Radius</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-slate-50 border border-slate-200/70 rounded-lg p-2.5 text-center">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">BATAS MAKSIMAL</span>
+                            <span class="text-xs font-bold text-slate-900 block mt-0.5" x-text="outletInfo.radius + ' Meter Radius'">{{ $outletInfo['radius'] ?? 50 }} Meter Radius</span>
                         </div>
-                        <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-3 text-center">
-                            <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">STATUS AKURASI</span>
-                            <span :class="isInsideRadius ? 'text-teal-700' : 'text-rose-700'" class="text-xs font-extrabold block mt-0.5 text-teal-700" x-text="accuracyStatusText">Di Dalam Radius Aman</span>
+                        <div class="bg-slate-50 border border-slate-200/70 rounded-lg p-2.5 text-center">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">STATUS AKURASI</span>
+                            <span :class="isInsideRadius ? 'text-teal-700' : 'text-rose-700'" class="text-xs font-bold block mt-0.5" x-text="accuracyStatusText">Di Dalam Radius Aman</span>
                         </div>
                     </div>
                 </div>
 
                 {{-- Widget 2: Ketentuan Presensi Outlet --}}
-                <div class="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-2xs space-y-4">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs space-y-3">
                     {{-- Header Widget --}}
                     <div class="flex items-center gap-2">
                         <div class="p-1 rounded-md bg-teal-50 text-teal-700">
-                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
                         </div>
-                        <h3 class="text-sm md:text-base font-bold text-gray-900" data-testid="rules-heading">Ketentuan Presensi Outlet</h3>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-900" data-testid="rules-heading">Ketentuan Presensi Outlet</h3>
                     </div>
 
                     {{-- List Nomor (1-4) --}}
-                    <div class="space-y-3 text-xs text-gray-600">
+                    <div class="space-y-2.5 text-xs text-slate-600">
                         {{-- 1. Radius Presensi --}}
-                        <div class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-4 h-4 rounded bg-slate-100 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 1
                             </span>
-                            <p class="leading-relaxed">
-                                <strong class="font-bold text-gray-900">Radius Presensi:</strong> 
-                                Karyawan terdaftar dalam radius aman maksimal <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik koordinat resmi cabang/outlet.
+                            <p class="leading-relaxed text-[11.5px]">
+                                <strong class="font-bold text-slate-900">Radius Presensi:</strong> 
+                                Maksimal <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik koordinat resmi cabang.
                             </p>
                         </div>
 
                         {{-- 2. Jendela Clock-In --}}
-                        <div class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-4 h-4 rounded bg-slate-100 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 2
                             </span>
-                            <p class="leading-relaxed">
-                                <strong class="font-bold text-gray-900">Jendela Clock-In:</strong> 
+                            <p class="leading-relaxed text-[11.5px]">
+                                <strong class="font-bold text-slate-900">Jendela Masuk:</strong> 
                                 Pencatatan masuk dapat dilakukan mulai H-15 menit sebelum jam kerja dimulai.
                             </p>
                         </div>
 
                         {{-- 3. Toleransi Keterlambatan --}}
-                        <div class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-4 h-4 rounded bg-slate-100 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 3
                             </span>
-                            <p class="leading-relaxed">
-                                <strong class="font-bold text-gray-900">Toleransi Keterlambatan:</strong> 
-                                Maksimal {{ $toleranceMin }} menit. Keterlambatan di atas batas tersebut memerlukan konfirmasi Supervisor / Manager.
+                            <p class="leading-relaxed text-[11.5px]">
+                                <strong class="font-bold text-slate-900">Toleransi Keterlambatan:</strong> 
+                                Maksimal {{ $toleranceMin }} menit sebelum tercatat terlambat.
                             </p>
                         </div>
 
                         {{-- 4. Verifikasi Kehadiran --}}
-                        <div class="flex items-start gap-3">
-                            <span class="w-5 h-5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-4 h-4 rounded bg-slate-100 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 4
                             </span>
-                            <p class="leading-relaxed">
-                                <strong class="font-bold text-gray-900">Verifikasi Kehadiran:</strong> 
-                                Presensi diverifikasi berdasarkan penugasan outlet aktif dan waktu sistem kerja resmi.
+                            <p class="leading-relaxed text-[11.5px]">
+                                <strong class="font-bold text-slate-900">Verifikasi Kehadiran:</strong> 
+                                Presensi diverifikasi berdasarkan penugasan outlet aktif dan waktu sistem resmi.
                             </p>
                         </div>
                     </div>
 
                     {{-- Tombol Buka SOP --}}
-                    <div class="pt-2 border-t border-gray-100">
+                    <div class="pt-2 border-t border-slate-100">
                         <button type="button" 
                                 @click="sopModalOpen = true"
-                                class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-blue-50/70 hover:bg-blue-100/70 text-blue-700 font-bold text-xs transition border border-blue-200/60">
-                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                                class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition border border-slate-200">
+                            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
                             <span>Baca SOP Operasional Lengkap</span>
                         </button>
                     </div>
@@ -1218,18 +1194,18 @@
         {{-- ========================================================================= --}}
         {{-- 3. TABEL RIWAYAT 7 HARI TERAKHIR (BAWAH)                                  --}}
         {{-- ========================================================================= --}}
-        <div class="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
-            <div class="p-5 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+            <div class="p-4 md:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <h2 class="text-base md:text-lg font-bold text-gray-900" data-testid="history-heading">Riwayat Kehadiran</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">Rekap log jam masuk, pulang, durasi, dan status verifikasi 7 hari terakhir</p>
+                    <h2 class="text-sm md:text-base font-bold text-slate-900" data-testid="history-heading">Riwayat Kehadiran</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Rekap log jam masuk, pulang, durasi, dan status verifikasi 7 hari terakhir</p>
                 </div>
                 
-                <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-2">
                     {{-- Filter Dropdown --}}
                     <div class="relative">
                         <select x-model="filterStatus" 
-                                class="bg-slate-50 border border-slate-200 text-gray-700 text-xs rounded-xl px-3 py-2 pr-8 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 font-medium">
+                                class="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg px-2.5 py-1.5 pr-8 focus:ring-1 focus:ring-slate-900 font-medium">
                             <option value="all">Semua Status</option>
                             <option value="hadir">Hadir Tepat Waktu</option>
                             <option value="terlambat">Terlambat</option>
@@ -1239,7 +1215,7 @@
 
                     {{-- Riwayat Koreksi --}}
                     <a href="{{ route('employee.attendance.regularization.index') }}" 
-                       class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#6C5CE7] text-xs font-semibold transition border border-purple-200">
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-brand-primary text-xs font-semibold transition border border-indigo-200/60">
                         <i data-lucide="file-clock" class="w-3.5 h-3.5"></i>
                         <span class="hidden sm:inline">Riwayat Koreksi</span>
                     </a>
@@ -1247,100 +1223,100 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-gray-600">
-                    <thead class="bg-slate-50/80 text-gray-700 font-bold border-b border-gray-200/80 uppercase text-[10px] tracking-wider">
+                <table class="w-full text-left text-xs text-slate-600">
+                    <thead class="bg-slate-50/80 text-slate-700 font-bold border-b border-slate-200/80 uppercase text-[10px] tracking-wider">
                         <tr>
-                            <th class="px-5 py-3.5">Tanggal &amp; Hari</th>
-                            <th class="px-5 py-3.5">Shift Kerja</th>
-                            <th class="px-5 py-3.5">Outlet</th>
-                            <th class="px-5 py-3.5">Clock-In</th>
-                            <th class="px-5 py-3.5">Clock-Out</th>
-                            <th class="px-5 py-3.5">Total Durasi</th>
-                            <th class="px-5 py-3.5">Status</th>
-                            <th class="px-5 py-3.5 text-center">Koreksi Kehadiran</th>
+                            <th class="px-4 py-2.5">Tanggal &amp; Hari</th>
+                            <th class="px-4 py-2.5">Shift Kerja</th>
+                            <th class="px-4 py-2.5">Outlet</th>
+                            <th class="px-4 py-2.5">Clock-In</th>
+                            <th class="px-4 py-2.5">Clock-Out</th>
+                            <th class="px-4 py-2.5">Total Durasi</th>
+                            <th class="px-4 py-2.5">Status</th>
+                            <th class="px-4 py-2.5 text-center">Koreksi Kehadiran</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-slate-100">
                         @forelse ($historyData as $row)
                             <tr x-show="filterStatus === 'all' || filterStatus === '{{ $row['status_key'] }}'" 
                                 class="hover:bg-slate-50/60 transition-colors">
-                                <td class="px-5 py-4 whitespace-nowrap">
-                                    <div class="font-bold text-gray-900">{{ $row['date'] }}</div>
-                                    <div class="text-[11px] text-gray-400 font-medium">{{ $row['day'] }}</div>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <div class="font-bold text-slate-900">{{ $row['date'] }}</div>
+                                    <div class="text-[11px] text-slate-400 font-medium">{{ $row['day'] }}</div>
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap font-medium text-gray-800">
+                                <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-800">
                                     {{ $row['shift'] }}
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap text-gray-600">
+                                <td class="px-4 py-3 whitespace-nowrap text-slate-600">
                                     {{ $row['outlet'] }}
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap font-mono text-[11.5px] {{ $row['is_late'] ? 'text-rose-600 font-bold' : 'text-gray-700' }}">
+                                <td class="px-4 py-3 whitespace-nowrap font-mono text-[11.5px] {{ $row['is_late'] ? 'text-rose-600 font-bold' : 'text-slate-700' }}">
                                     {{ $row['clock_in'] }}
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap font-mono text-[11.5px] text-gray-700">
+                                <td class="px-4 py-3 whitespace-nowrap font-mono text-[11.5px] text-slate-700">
                                     <div class="flex flex-col gap-1">
                                         <span>{{ $row['clock_out'] }}</span>
                                         @if ($row['is_auto_clockout'])
-                                            <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max">
+                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold px-1.5 py-0.2 rounded w-max">
                                                 <i data-lucide="clock-alert" class="w-3 h-3 text-amber-700"></i> Auto Clock-Out
                                             </span>
                                         @elseif ($row['overtime_status'] === 'pending_approval')
-                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max border border-amber-200">
+                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-semibold px-1.5 py-0.2 rounded w-max border border-amber-200">
                                                 <i data-lucide="clock" class="w-3 h-3 text-amber-600"></i> Lembur Pending
                                             </span>
                                         @elseif ($row['overtime_status'] === 'approved')
-                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max border border-emerald-200">
+                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-1.5 py-0.2 rounded w-max border border-emerald-200">
                                                 <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i> Lembur Disetujui
                                             </span>
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap font-semibold text-gray-900">
+                                <td class="px-4 py-3 whitespace-nowrap font-semibold text-slate-900">
                                     {{ $row['duration'] }}
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap">
+                                <td class="px-4 py-3 whitespace-nowrap">
                                     @if ($row['badge_theme'] === 'emerald')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                             {{ $row['status_label'] }}
                                         </span>
                                     @elseif ($row['badge_theme'] === 'rose')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                                             {{ $row['status_label'] }}
                                         </span>
                                     @elseif ($row['badge_theme'] === 'indigo')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                                             {{ $row['status_label'] }}
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
                                             {{ $row['status_label'] }}
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-4 whitespace-nowrap text-center">
+                                <td class="px-4 py-3 whitespace-nowrap text-center">
                                     @if ($row['regularization_status'] === 'pending')
-                                        <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                        <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold px-2 py-0.5 rounded">
                                             <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
                                             Koreksi: Pending
                                         </span>
                                     @elseif ($row['regularization_status'] === 'approved')
-                                        <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                        <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2 py-0.5 rounded">
                                             <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
                                             Koreksi: Disetujui
                                         </span>
                                     @elseif ($row['regularization_status'] === 'rejected')
                                         <div class="inline-flex flex-col items-center gap-1">
-                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold px-2 py-0.5 rounded">
                                                 <i data-lucide="x-circle" class="w-3.5 h-3.5 text-rose-600"></i>
                                                 Koreksi: Ditolak
                                             </span>
                                             <button type="button" 
                                                     @click="openRegularizationModal({{ json_encode($row) }})" 
-                                                    class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
+                                                    class="text-xs text-brand-primary hover:underline font-medium inline-flex items-center gap-1">
                                                 <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
                                                 Ajukan Ulang
                                             </button>
@@ -1348,22 +1324,22 @@
                                     @elseif ($row['is_auto_clockout'] || $row['can_regularize'])
                                         <button type="button" 
                                                 @click="openRegularizationModal({{ json_encode($row) }})" 
-                                                class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
+                                                class="text-xs text-brand-primary hover:underline font-medium inline-flex items-center gap-1">
                                             <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
                                             Ajukan Koreksi Jam
                                         </button>
                                     @else
-                                        <span class="text-gray-400 font-mono text-xs">-</span>
+                                        <span class="text-slate-400 font-mono text-xs">-</span>
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-5 py-10 text-center text-gray-400">
+                                <td colspan="8" class="px-5 py-8 text-center text-slate-400">
                                     <div class="flex flex-col items-center justify-center gap-2">
-                                        <i data-lucide="calendar-x" class="w-8 h-8 text-gray-300"></i>
-                                        <p class="text-sm font-medium text-gray-600">Belum ada riwayat kehadiran dalam 7 hari terakhir.</p>
-                                        <p class="text-xs text-gray-400">Presensi Anda akan otomatis tercatat di sini setelah melakukan Clock-In.</p>
+                                        <i data-lucide="calendar-x" class="w-6 h-6 text-slate-300"></i>
+                                        <p class="text-xs font-medium text-slate-600">Belum ada riwayat kehadiran dalam 7 hari terakhir.</p>
+                                        <p class="text-[11px] text-slate-400">Presensi Anda akan otomatis tercatat di sini setelah melakukan Clock-In.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -1373,8 +1349,8 @@
             </div>
 
             {{-- Footer Tabel --}}
-            <div class="p-4 px-6 bg-slate-50/50 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-gray-500">
-                <div class="flex items-center gap-4">
+            <div class="p-3.5 px-5 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs text-slate-500">
+                <div class="flex items-center gap-3">
                     <span class="flex items-center gap-1.5">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                         Hadir Tepat Waktu
@@ -1388,12 +1364,11 @@
                         Off / Libur
                     </span>
                 </div>
-                <div class="text-gray-400 font-medium">
+                <div class="text-slate-400 font-medium text-[11px]">
                     Menampilkan {{ count($historyData) }} entri riwayat presensi
                 </div>
             </div>
         </div>
-
         {{-- ========================================================================= --}}
         {{-- MODAL SOP OPERASIONAL LENGKAP                                             --}}
         {{-- ========================================================================= --}}
@@ -1422,45 +1397,45 @@
                      x-transition:leave="ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-gray-100">
+                     class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-200">
                     
-                    <div class="p-6 sm:p-7 space-y-5">
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                            <div class="flex items-center gap-2.5">
-                                <div class="p-2 rounded-xl bg-teal-50 text-teal-700">
-                                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <div class="p-5 sm:p-6 space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <div class="p-1.5 rounded-lg bg-teal-50 text-teal-700">
+                                    <i data-lucide="book-open" class="w-4 h-4"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-bold text-gray-900" id="modal-title">SOP Presensi Cabang <span x-text="outletInfo.name">{{ $outletName }}</span></h3>
-                                    <p class="text-xs text-gray-500">Standar Prosedur Operasional Kehadiran Karyawan</p>
+                                    <h3 class="text-sm font-bold text-slate-900" id="modal-title">SOP Presensi Cabang <span x-text="outletInfo.name">{{ $outletName }}</span></h3>
+                                    <p class="text-[11px] text-slate-500">Standar Prosedur Operasional Kehadiran Karyawan</p>
                                 </div>
                             </div>
-                            <button type="button" @click="sopModalOpen = false" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100">
-                                <i data-lucide="x" class="w-5 h-5"></i>
+                            <button type="button" @click="sopModalOpen = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-100 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4"></i>
                             </button>
                         </div>
 
-                        <div class="space-y-4 text-xs text-gray-600 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
+                        <div class="space-y-3 text-xs text-slate-600 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
                             <div>
-                                <h4 class="font-bold text-gray-900 text-sm mb-1">1. Ketentuan Radius Presensi</h4>
+                                <h4 class="font-bold text-slate-900 text-xs mb-0.5">1. Ketentuan Radius Presensi</h4>
                                 <p>Setiap presensi tercatat otomatis dalam radius aman <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik resmi cabang. Pastikan lokasi cabang telah diatur oleh admin di Pengaturan Platform.</p>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900 text-sm mb-1">2. Waktu Clock-In &amp; Toleransi</h4>
+                                <h4 class="font-bold text-slate-900 text-xs mb-0.5">2. Waktu Clock-In &amp; Toleransi</h4>
                                 <p>Clock-In dapat dilakukan mulai 15 menit sebelum jam mulai shift hingga maksimal {{ $toleranceMin }} menit setelah jam mulai shift (masa toleransi). Keterlambatan lebih dari {{ $toleranceMin }} menit akan tercatat sebagai status Terlambat.</p>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900 text-sm mb-1">3. Verifikasi Kehadiran Karyawan</h4>
+                                <h4 class="font-bold text-slate-900 text-xs mb-0.5">3. Verifikasi Kehadiran Karyawan</h4>
                                 <p>Presensi dicatat berdasarkan waktu sistem dan titik penugasan outlet yang sah.</p>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900 text-sm mb-1">4. Clock-Out &amp; Overtime</h4>
+                                <h4 class="font-bold text-slate-900 text-xs mb-0.5">4. Clock-Out &amp; Overtime</h4>
                                 <p>Clock-Out dilakukan setelah menyelesaikan seluruh tanggung jawab operasional dan serah terima shift (handover). Lembur memerlukan persetujuan Store Manager.</p>
                             </div>
                         </div>
 
-                        <div class="pt-4 border-t border-gray-100 flex justify-end">
-                            <button type="button" @click="sopModalOpen = false" class="px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-xs font-semibold">
+                        <div class="pt-3 border-t border-slate-100 flex justify-end">
+                            <button type="button" @click="sopModalOpen = false" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold">
                                 Saya Mengerti
                             </button>
                         </div>
@@ -1497,77 +1472,77 @@
                      x-transition:leave="ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
+                     class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200">
                     
-                    <div class="p-6 sm:p-7 space-y-5">
+                    <div class="p-5 sm:p-6 space-y-4">
                         {{-- Modal Header --}}
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                            <div class="flex items-center gap-2.5">
-                                <div class="p-2 rounded-xl bg-purple-50 text-[#6C5CE7]">
-                                    <i data-lucide="file-pen-line" class="w-5 h-5"></i>
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <div class="p-1.5 rounded-lg bg-indigo-50 text-brand-primary">
+                                    <i data-lucide="file-pen-line" class="w-4 h-4"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-bold text-gray-900" id="regularization-modal-title">Ajukan Koreksi Kehadiran</h3>
-                                    <p class="text-xs text-gray-500">Penyesuaian jam pulang riil akibat Auto Clock-Out</p>
+                                    <h3 class="text-sm font-bold text-slate-900" id="regularization-modal-title">Ajukan Koreksi Kehadiran</h3>
+                                    <p class="text-[11px] text-slate-500">Penyesuaian jam pulang riil akibat Auto Clock-Out</p>
                                 </div>
                             </div>
                             <button type="button" 
                                     @click="regularizationModalOpen = false" 
                                     :disabled="submittingRegularization"
-                                    class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                <i data-lucide="x" class="w-5 h-5"></i>
+                                    class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-100 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4"></i>
                             </button>
                         </div>
 
                         {{-- Shift Info Pill --}}
-                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2 text-xs">
-                            <div class="flex justify-between items-center text-gray-500 font-medium">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200/80 space-y-1.5 text-xs">
+                            <div class="flex justify-between items-center text-slate-500 font-medium">
                                 <span>Shift Kerja:</span>
-                                <span class="font-bold text-gray-900" x-text="regularizationForm.shift_title"></span>
+                                <span class="font-bold text-slate-900" x-text="regularizationForm.shift_title"></span>
                             </div>
-                            <div class="flex justify-between items-center text-gray-500 font-medium">
+                            <div class="flex justify-between items-center text-slate-500 font-medium">
                                 <span>Tanggal Shift:</span>
-                                <span class="font-semibold text-gray-800" x-text="regularizationForm.shift_date"></span>
+                                <span class="font-semibold text-slate-800" x-text="regularizationForm.shift_date"></span>
                             </div>
-                            <div class="flex justify-between items-center text-gray-500 font-medium">
+                            <div class="flex justify-between items-center text-slate-500 font-medium">
                                 <span>Jam Selesai Resmi:</span>
-                                <span class="font-mono font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md" x-text="regularizationForm.shift_end_formatted"></span>
+                                <span class="font-mono font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200" x-text="regularizationForm.shift_end_formatted"></span>
                             </div>
                         </div>
 
                         {{-- Feedback Alerts --}}
                         <template x-if="regularizationError">
-                            <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-2.5 text-xs">
+                            <div class="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 flex items-start gap-2 text-xs">
                                 <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0 mt-0.5"></i>
                                 <span x-text="regularizationError"></span>
                             </div>
                         </template>
 
                         <template x-if="regularizationSuccess">
-                            <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start gap-2.5 text-xs">
+                            <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start gap-2 text-xs">
                                 <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
                                 <span x-text="regularizationSuccess"></span>
                             </div>
                         </template>
 
                         {{-- Form Inputs --}}
-                        <form @submit.prevent="submitRegularization()" class="space-y-4">
+                        <form @submit.prevent="submitRegularization()" class="space-y-3.5">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
                                     Jam Pulang Riil <span class="text-rose-500">*</span>
                                 </label>
                                 <input type="datetime-local" 
                                        x-model="regularizationForm.requested_clock_out_time"
                                        :disabled="submittingRegularization"
                                        required
-                                       class="w-full text-xs font-mono rounded-xl border-gray-300 focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 shadow-2xs">
-                                <p class="text-[11px] text-gray-400 mt-1">
+                                       class="w-full text-xs font-mono rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-2xs">
+                                <p class="text-[10px] text-slate-400 mt-1">
                                     Wajib melewati jam selesai shift resmi dan berada dalam kurun 24 jam.
                                 </p>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                                <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
                                     Alasan Koreksi <span class="text-rose-500">*</span>
                                 </label>
                                 <textarea x-model="regularizationForm.reason"
@@ -1576,28 +1551,28 @@
                                           required
                                           minlength="10"
                                           placeholder="Tuliskan alasan mengapa Anda belum sempat clock-out atau rincian pekerjaan lembur yang dilakukan (minimal 10 karakter)..."
-                                          class="w-full text-xs rounded-xl border-gray-300 focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#6C5CE7]/20 shadow-2xs"></textarea>
-                                <p class="text-[11px] text-gray-400 mt-1">
+                                          class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-2xs"></textarea>
+                                <p class="text-[10px] text-slate-400 mt-1">
                                     Minimal 10 karakter. Alasan ini akan diverifikasi oleh manajer Anda.
                                 </p>
                             </div>
 
                             {{-- Actions --}}
-                            <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
                                 <button type="button" 
                                         @click="regularizationModalOpen = false" 
                                         :disabled="submittingRegularization"
-                                        class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-gray-700 rounded-xl text-xs font-semibold transition-colors">
+                                        class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors">
                                     Batal
                                 </button>
                                 <button type="submit" 
                                         :disabled="submittingRegularization"
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#6C5CE7] hover:bg-[#5b4bc4] disabled:opacity-75 text-white rounded-xl text-xs font-semibold shadow-md transition-all">
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-75 text-white rounded-lg text-xs font-semibold shadow-2xs transition-all">
                                     <template x-if="submittingRegularization">
-                                        <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                        <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
                                     </template>
                                     <template x-if="!submittingRegularization">
-                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                        <i data-lucide="send" class="w-3.5 h-3.5"></i>
                                     </template>
                                     <span x-text="submittingRegularization ? 'Mengirim...' : 'Kirim Pengajuan'"></span>
                                 </button>
@@ -1636,30 +1611,30 @@
                      x-transition:leave="ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-gray-100">
+                     class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200">
                     
-                    <div class="p-6 sm:p-7 space-y-5">
+                    <div class="p-5 sm:p-6 space-y-4">
                         {{-- Modal Header --}}
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                            <div class="flex items-center gap-2.5">
-                                <div class="p-2 rounded-xl bg-amber-50 text-amber-600">
-                                    <i data-lucide="clock" class="w-5 h-5"></i>
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <div class="p-1.5 rounded-lg bg-amber-50 text-amber-600">
+                                    <i data-lucide="clock" class="w-4 h-4"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-bold text-gray-900">Clock-Out Lewat Jam Shift</h3>
-                                    <p class="text-xs text-gray-500">Konfirmasi pengajuan koreksi / lembur</p>
+                                    <h3 class="text-sm font-bold text-slate-900">Clock-Out Lewat Jam Shift</h3>
+                                    <p class="text-[11px] text-slate-500">Konfirmasi pengajuan koreksi / lembur</p>
                                 </div>
                             </div>
                             <button type="button" 
                                     @click="lateClockOutModalOpen = false" 
-                                    class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-                                <i data-lucide="x" class="w-5 h-5"></i>
+                                    class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-100 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4"></i>
                             </button>
                         </div>
 
-                        <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/80 text-xs text-amber-900 space-y-2">
+                        <div class="p-3 bg-amber-50/70 rounded-lg border border-amber-200/80 text-xs text-amber-900 space-y-1.5">
                             <p class="font-medium">
-                                Waktu Clock-Out Anda telah melewati jam selesai jadwal shift.
+                                Waktu Clock-Out Anda telah melewati jam selesai jadwal shift resmi.
                             </p>
                             <p class="text-[11px] text-amber-800/80">
                                 Jam reguler shift akan tercatat hingga batas akhir shift. Kelebihan waktu akan otomatis diajukan ke manajer sebagai permohonan koreksi jam/lembur.
@@ -1667,25 +1642,25 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1.5">
-                                Keterangan / Pekerjaan yang Dilakukan <span class="text-gray-400 font-normal">(opsional)</span>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                Keterangan / Catatan Pekerjaan <span class="text-slate-400 font-normal">(opsional)</span>
                             </label>
                             <textarea x-model="lateClockOutNotes" 
                                       rows="3" 
-                                      class="w-full text-xs rounded-xl border border-gray-200 focus:border-[#6C5CE7] focus:ring focus:ring-[#6C5CE7]/20 p-3 transition"
+                                      class="w-full text-xs rounded-lg border border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 p-2.5 transition"
                                       placeholder="Contoh: Menyelesaikan closing kasir / melayani pesanan terakhir..."></textarea>
                         </div>
 
-                        <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
                             <button type="button" 
                                     @click="lateClockOutModalOpen = false" 
-                                    class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-gray-700 rounded-xl text-xs font-semibold transition-colors">
+                                    class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors">
                                 Batal
                             </button>
                             <button type="button" 
                                     @click="lateClockOutConfirmed = true; $nextTick(() => document.getElementById('form-clock-out').submit());"
-                                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D32F2F] hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-md transition-all">
-                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow-2xs transition-all">
+                                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                                 <span>Konfirmasi Clock-Out</span>
                             </button>
                         </div>
