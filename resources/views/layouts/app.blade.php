@@ -21,13 +21,13 @@
     <style>
         :root {
             --c-primary: #6C5CE7;
-            --c-primary-dark: #4F46E5;
+            --c-primary-dark: #5B4BD5;
             --c-secondary: #A29BFE;
-            --c-ink: #2D2A3E;
-            --c-ink-strong: #1B1828;
-            --c-muted: #7C7896;
-            --c-line: #E2E0F7;
-            --bg-body: #F5F3FF;
+            --c-ink: #0F172A;
+            --c-ink-strong: #020617;
+            --c-muted: #64748B;
+            --c-line: #E2E8F0;
+            --bg-body: #F8FAFC;
         }
 
         [x-cloak] { display: none !important; }
@@ -35,7 +35,7 @@
         body { 
             background-color: var(--bg-body); 
             color: var(--c-ink); 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
         }
     </style>
 </head>
@@ -50,15 +50,15 @@
             window.dispatchEvent(new Event('resize'));
         }, 310);
     }
-}" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm">
+}" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm antialiased selection:bg-[#6C5CE7]/20 selection:text-[#6C5CE7]">
 
     {{-- ===== SIDEBAR (Desktop & Mobile Drawer) ===== --}}
     @include('layouts.sidebar')
 
     {{-- ===== MAIN WRAPPER ===== --}}
-    <main class="flex-1 flex flex-col min-w-0 bg-[#F5F3FF] overflow-hidden relative">
+    <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] overflow-hidden relative">
         
-        {{-- ===== GLOBAL FLOATING TOAST NOTIFICATIONS (Jira PBL-45 Standard) ===== --}}
+        {{-- ===== GLOBAL FLOATING TOAST NOTIFICATIONS ===== --}}
         <div class="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0" aria-live="polite">
             {{-- Toast Sukses --}}
             @if (session('success'))
@@ -72,16 +72,16 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95 translate-x-4"
-                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-emerald-200 bg-emerald-50/95 backdrop-blur-md p-4 text-emerald-900 flex items-start gap-3 transition-all"
+                    class="pointer-events-auto w-full rounded-xl shadow-lg border border-emerald-200/80 bg-white/95 backdrop-blur-md p-3.5 text-slate-800 flex items-start gap-3 transition-all"
                 >
-                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/60">
                         <i data-lucide="check-circle-2" class="w-4 h-4"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold">Berhasil</p>
-                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('success') }}</p>
+                        <p class="text-xs font-bold text-slate-900">Berhasil</p>
+                        <p class="text-xs mt-0.5 leading-relaxed text-slate-600 font-medium">{{ session('success') }}</p>
                     </div>
-                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-md transition" title="Tutup">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -99,16 +99,16 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95 translate-x-4"
-                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-emerald-200 bg-emerald-50/95 backdrop-blur-md p-4 text-emerald-900 flex items-start gap-3 transition-all"
+                    class="pointer-events-auto w-full rounded-xl shadow-lg border border-slate-200/80 bg-white/95 backdrop-blur-md p-3.5 text-slate-800 flex items-start gap-3 transition-all"
                 >
-                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <div class="w-8 h-8 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200/60">
+                        <i data-lucide="info" class="w-4 h-4"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold">Status</p>
-                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('status') }}</p>
+                        <p class="text-xs font-bold text-slate-900">Status</p>
+                        <p class="text-xs mt-0.5 leading-relaxed text-slate-600 font-medium">{{ session('status') }}</p>
                     </div>
-                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-md transition" title="Tutup">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -126,16 +126,16 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95 translate-x-4"
-                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-rose-200 bg-rose-50/95 backdrop-blur-md p-4 text-rose-900 flex items-start gap-3 transition-all"
+                    class="pointer-events-auto w-full rounded-xl shadow-lg border border-rose-200/80 bg-white/95 backdrop-blur-md p-3.5 text-slate-800 flex items-start gap-3 transition-all"
                 >
-                    <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                    <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-200/60">
                         <i data-lucide="alert-circle" class="w-4 h-4"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold">Peringatan</p>
-                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('error') }}</p>
+                        <p class="text-xs font-bold text-slate-900">Peringatan</p>
+                        <p class="text-xs mt-0.5 leading-relaxed text-slate-600 font-medium">{{ session('error') }}</p>
                     </div>
-                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-md transition" title="Tutup">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -153,16 +153,16 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95 translate-x-4"
-                    class="pointer-events-auto w-full rounded-2xl shadow-xl border border-[#E2E0F7] bg-[#F5F3FF]/95 backdrop-blur-md p-4 text-[#2D2A3E] flex items-start gap-3 transition-all"
+                    class="pointer-events-auto w-full rounded-xl shadow-lg border border-slate-200/80 bg-white/95 backdrop-blur-md p-3.5 text-slate-800 flex items-start gap-3 transition-all"
                 >
-                    <div class="w-8 h-8 rounded-xl bg-[#EDE9FE] text-[#6C5CE7] flex items-center justify-center shrink-0">
+                    <div class="w-8 h-8 rounded-lg bg-slate-50 text-[#6C5CE7] flex items-center justify-center shrink-0 border border-slate-200/60">
                         <i data-lucide="info" class="w-4 h-4"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold">Informasi</p>
-                        <p class="text-xs mt-0.5 leading-relaxed font-medium">{{ session('info') }}</p>
+                        <p class="text-xs font-bold text-slate-900">Informasi</p>
+                        <p class="text-xs mt-0.5 leading-relaxed text-slate-600 font-medium">{{ session('info') }}</p>
                     </div>
-                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer" title="Tutup">
+                    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600 p-1 rounded-md transition" title="Tutup">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -173,7 +173,7 @@
         @include('layouts.topbar')
 
         {{-- ===== DYNAMIC CONTENT AREA ===== --}}
-        <div class="flex-1 overflow-y-auto p-3.5 sm:p-4 md:p-6 lg:p-8 pb-28 sm:pb-32 md:pb-8">
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-7 pb-28 md:pb-8">
             @if (isset($header))
                 <div class="mb-5 md:mb-6">
                     {{ $header }}

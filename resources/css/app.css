@@ -5,19 +5,22 @@
 @layer base {
     :root {
         --primary: #6C5CE7;
-        --primary-hover: #4F46E5;
+        --primary-hover: #5B4BD5;
         --primary-dark: #4F46E5;
         --secondary: #A29BFE;
-        --background: #F5F3FF;
-        --surface: #ffffff;
-        --text: #2D2A3E;
-        --border: #E2E0F7;
-        --muted: #7C7896;
+        --background: #F8FAFC;
+        --surface: #FFFFFF;
+        --text: #0F172A;
+        --text-muted: #64748B;
+        --border: #E2E8F0;
+        --border-subtle: #F1F5F9;
+        --muted: #64748B;
     }
 
     body {
         background-color: var(--background);
         color: var(--text);
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     }
 
     /* Disable native Edge/IE password reveal and clear buttons to prevent duplicate eye icons */

@@ -18,12 +18,12 @@ export default {
             colors: {
                 brand: {
                     primary: '#6C5CE7',
-                    hover: '#4F46E5',
+                    hover: '#5B4BD5',
                     secondary: '#A29BFE',
-                    bg: '#F5F3FF',
+                    bg: '#F8FAFC',
                     card: '#FFFFFF',
-                    text: '#2D2A3E',
-                    border: '#E2E0F7',
+                    text: '#0F172A',
+                    border: '#E2E8F0',
                 },
             },
         },
