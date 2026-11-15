@@ -87,7 +87,7 @@
 
         {{-- Tabs Header Sesuai Desain Acuan --}}
         <div class="flex items-center justify-between gap-4">
-            <div class="inline-flex p-1 bg-white border border-[#E2E0F7] rounded-2xl shadow-2xs">
+            <div class="flex overflow-x-auto p-1 bg-white border border-[#E2E0F7] rounded-2xl shadow-2xs max-w-full">
                 <button 
                     type="button" 
                     @click="activeTab = 'pending'"
@@ -159,7 +159,6 @@
                                 <p class="text-[11px] text-[#7C7896] truncate mt-0.5">
                                     {{ $swap->requester->position?->name ?? 'Staf' }} &bull; {{ $swap->requester->department?->name ?? '-' }}
                                 </p>
-                            </div>
                             </div>
                         </div>
 

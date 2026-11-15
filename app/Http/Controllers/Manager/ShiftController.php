@@ -83,6 +83,8 @@ class ShiftController extends Controller
 
         $thisWeekStart = Carbon::now($timezone)->startOfWeek(CarbonInterface::MONDAY)->format('Y-m-d');
         $thisWeekEnd = Carbon::now($timezone)->endOfWeek(CarbonInterface::SUNDAY)->format('Y-m-d');
+        $thisMonthStart = Carbon::now($timezone)->startOfMonth()->format('Y-m-d');
+        $thisMonthEnd = Carbon::now($timezone)->endOfMonth()->format('Y-m-d');
 
         // 3. Bangun Struktur Kolom Tanggal Dinamis
         $days = [];
@@ -181,7 +183,7 @@ class ShiftController extends Controller
         foreach ($shifts as $shift) {
             $assignedCount = $shift->shiftAssignments->count();
             $totalAssignments += $assignedCount;
-            $duration = $shift->start_time->diffInMinutes($shift->end_time) / 60.0;
+            $duration = abs($shift->start_time->diffInMinutes($shift->end_time)) / 60.0;
             $totalScheduledHours += ($duration * $assignedCount);
 
             if ($assignedCount < $shift->quota) {
@@ -207,6 +209,8 @@ class ShiftController extends Controller
             'nextEnd' => $nextEnd,
             'thisWeekStart' => $thisWeekStart,
             'thisWeekEnd' => $thisWeekEnd,
+            'thisMonthStart' => $thisMonthStart,
+            'thisMonthEnd' => $thisMonthEnd,
             'days' => $days,
             'templates' => $templates,
             'activeStaff' => $activeStaff,
@@ -456,7 +460,7 @@ class ShiftController extends Controller
             $newEnd->addDay();
         }
 
-        $shiftDuration = $newEnd->diffInMinutes($newStart) / 60.0;
+        $shiftDuration = abs($newStart->diffInMinutes($newEnd)) / 60.0;
 
         // 4. Filter staf yang valid (hanya staf departemen & perusahaan yang sama)
         $assignedUserIds = collect($request->input('assigned_user_ids', []))

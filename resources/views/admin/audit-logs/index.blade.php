@@ -141,52 +141,52 @@
         {{-- ========================================================= --}}
         {{-- 1. KARTU RINGKASAN EKSEKUTIF (EXECUTIVE STAT CARDS)       --}}
         {{-- ========================================================= --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-4">
             {{-- Kartu 1: Total Aktivitas Hari Ini --}}
-            <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Hari Ini</p>
-                    <h3 class="text-2xl font-bold text-[#2D2A3E] mt-1">{{ number_format($stats['total_today'] ?? 0) }}</h3>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Tercatat sejak 00:00 {{ $timezoneAbbr ?? 'WIB' }}</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Hari Ini</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-1">{{ number_format($stats['total_today'] ?? 0) }}</h3>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Sejak 00:00 {{ $timezoneAbbr ?? 'WIB' }}</p>
                 </div>
-                <div class="p-3 bg-[#6C5CE7]/10 text-[#6C5CE7] rounded-xl shrink-0">
-                    <i data-lucide="activity" class="h-6 w-6"></i>
+                <div class="p-2 sm:p-3 bg-[#6C5CE7]/10 text-[#6C5CE7] rounded-xl shrink-0">
+                    <i data-lucide="activity" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 2: Perubahan Data / Edit --}}
-            <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Perubahan Data</p>
-                    <h3 class="text-2xl font-bold text-blue-600 mt-1">{{ number_format($stats['total_updates'] ?? 0) }}</h3>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Revisi &amp; pengeditan jadwal</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Perubahan Data</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mt-1">{{ number_format($stats['total_updates'] ?? 0) }}</h3>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Revisi &amp; pengeditan</p>
                 </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl shrink-0">
-                    <i data-lucide="edit-3" class="h-6 w-6"></i>
+                <div class="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl shrink-0">
+                    <i data-lucide="edit-3" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 3: Data Dihapus (Aksen Merah Soft) --}}
-            <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-rose-100 shadow-2xs flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-rose-500 uppercase tracking-wider">Data Dihapus</p>
-                    <h3 class="text-2xl font-bold text-rose-600 mt-1">{{ number_format($stats['total_deletes'] ?? 0) }}</h3>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Penghapusan data penting</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-rose-500 uppercase tracking-wider">Data Dihapus</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-rose-600 mt-1">{{ number_format($stats['total_deletes'] ?? 0) }}</h3>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Penghapusan data</p>
                 </div>
-                <div class="p-3 bg-rose-50 text-rose-600 rounded-xl shrink-0">
-                    <i data-lucide="trash-2" class="h-6 w-6"></i>
+                <div class="p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl shrink-0">
+                    <i data-lucide="trash-2" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 4: Aktivitas Sistem Otomatis --}}
-            <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Sistem</p>
-                    <h3 class="text-2xl font-bold text-purple-600 mt-1">{{ number_format($stats['total_system'] ?? 0) }}</h3>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Auto Clockout &amp; Broadcast</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Sistem</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-purple-600 mt-1">{{ number_format($stats['total_system'] ?? 0) }}</h3>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Auto Clockout</p>
                 </div>
-                <div class="p-3 bg-purple-50 text-purple-600 rounded-xl shrink-0">
-                    <i data-lucide="cpu" class="h-6 w-6"></i>
+                <div class="p-2 sm:p-3 bg-purple-50 text-purple-600 rounded-xl shrink-0">
+                    <i data-lucide="cpu" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
             </div>
         </div>
@@ -277,7 +277,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[750px]">
                     <thead class="bg-slate-50/80 text-gray-600 font-bold border-b border-gray-200 uppercase text-[10px] tracking-wider">
                         <tr>
                             <th class="px-5 py-3.5">Timestamp ({{ $timezoneAbbr ?? 'WIB' }})</th>

@@ -60,17 +60,17 @@
                     </p>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2.5">
+                <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
                     {{-- Tombol Export Excel --}}
-                    <a href="{{ route('manager.timesheets.export.excel', ['from' => $from, 'to' => $to]) }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition">
+                    <a href="{{ route('manager.timesheets.export.excel', array_filter(['from' => $from, 'to' => $to, 'department_id' => request('department_id')])) }}"
+                       class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition">
                         <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
                         <span>Export Excel</span>
                     </a>
 
                     {{-- Tombol Export PDF --}}
-                    <a href="{{ route('manager.timesheets.export.pdf', ['from' => $from, 'to' => $to]) }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-2xs transition">
+                    <a href="{{ route('manager.timesheets.export.pdf', array_filter(['from' => $from, 'to' => $to, 'department_id' => request('department_id')])) }}"
+                       class="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-2xs transition">
                         <i data-lucide="file-text" class="w-4 h-4"></i>
                         <span>Export PDF</span>
                     </a>
@@ -85,31 +85,48 @@
             <form method="GET" action="{{ route('manager.timesheets.index') }}" class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 text-xs">
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
                     {{-- Periode Tanggal --}}
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-[#2D2A3E] shrink-0">Periode</span>
-                        <div class="relative flex items-center">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#6C5CE7] absolute left-3 pointer-events-none"></i>
+                    <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
+                        <span class="font-bold text-[#2D2A3E] shrink-0 text-xs">Periode:</span>
+                        <div class="relative flex items-center max-w-full">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#6C5CE7] absolute left-2.5 pointer-events-none hidden xs:block"></i>
                             <input
                                 type="date"
                                 name="from"
                                 value="{{ $from }}"
-                                class="pl-8 pr-2.5 py-2 text-xs rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] text-[#2D2A3E] font-medium focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                                class="xs:pl-8 px-2 py-1.5 sm:py-2 text-xs rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] text-[#2D2A3E] font-medium focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition max-w-[125px] sm:max-w-none"
                             >
-                            <span class="mx-1.5 text-[#7C7896]">–</span>
+                            <span class="mx-1 text-[#7C7896] text-xs">–</span>
                             <input
                                 type="date"
                                 name="to"
                                 value="{{ $to }}"
-                                class="px-3 py-2 text-xs rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] text-[#2D2A3E] font-medium focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                                class="px-2 py-1.5 sm:py-2 text-xs rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] text-[#2D2A3E] font-medium focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition max-w-[125px] sm:max-w-none"
                             >
                         </div>
                     </div>
 
-                    {{-- Departemen Info Badge --}}
-                    <div class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F8F7FF] border border-[#E2E0F7] text-[#2D2A3E] font-semibold">
-                        <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
-                        <span>{{ $department?->name ?? 'Semua Tim' }}</span>
-                    </div>
+                    {{-- Departemen Filter/Info --}}
+                    @if ($manager->is_global_manager)
+                        <div class="relative flex items-center">
+                            <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#6C5CE7] absolute left-3 pointer-events-none"></i>
+                            <select
+                                name="department_id"
+                                class="pl-8 pr-8 py-1.5 sm:py-2 text-xs rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] text-[#2D2A3E] font-medium focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                            >
+                                <option value="">Semua Departemen</option>
+                                @foreach ($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ (string) $selectedDepartmentId === (string) $dept->id ? 'selected' : '' }}>
+                                        {{ $dept->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @else
+                        <div class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F8F7FF] border border-[#E2E0F7] text-[#2D2A3E] font-semibold">
+                            <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                            <span>{{ $department?->name ?? 'Semua Tim' }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Action Buttons Filter --}}
@@ -136,60 +153,60 @@
         {{-- ================================================================= --}}
         {{-- 4 KPI CARDS SESUAI SCREENSHOT REFERENSI                           --}}
         {{-- ================================================================= --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
             {{-- Kartu 1: Total Jam Reguler --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-[#7C7896]">Total Jam Reguler</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
-                        {{ number_format($totalRegularHours, 2) }} <span class="text-xs font-sans font-normal text-[#7C7896]">Jam</span>
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#7C7896] truncate">Total Reguler</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
+                        {{ number_format($totalRegularHours, 2) }} <span class="text-[10px] sm:text-xs font-sans font-normal text-[#7C7896]">Jam</span>
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Akumulasi jam kerja reguler tim</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">Akumulasi jam reguler</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="clock" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 2: Total Jam Lembur --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-amber-700">Total Jam Lembur</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-amber-600 mt-1 font-mono">
-                        {{ number_format($totalOvertimeHours, 2) }} <span class="text-xs font-sans font-normal text-[#7C7896]">Jam</span>
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-amber-700 truncate">Total Lembur</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-amber-600 mt-0.5 sm:mt-1 font-mono">
+                        {{ number_format($totalOvertimeHours, 2) }} <span class="text-[10px] sm:text-xs font-sans font-normal text-[#7C7896]">Jam</span>
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Total jam lembur (PP 35/2021)</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">Total jam lembur</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="zap" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="zap" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 3: Rasio Kehadiran --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-emerald-700">Rasio Kehadiran</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-emerald-600 mt-1 font-mono">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-emerald-700 truncate">Kehadiran</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-emerald-600 mt-0.5 sm:mt-1 font-mono">
                         {{ number_format($attendanceRate, 1) }}%
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">{{ $attendedShifts }} dari {{ $totalShifts }} total shift penugasan</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">{{ $attendedShifts }}/{{ $totalShifts }} shift</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="calendar-check" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 4: Total Karyawan --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-[#4F46E5]">Total Karyawan</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
-                        {{ $totalEmpCount }} <span class="text-xs font-sans font-normal text-[#7C7896]">Orang</span>
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#4F46E5] truncate">Karyawan</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
+                        {{ $totalEmpCount }} <span class="text-[10px] sm:text-xs font-sans font-normal text-[#7C7896]">Org</span>
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Dalam tim ini</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">Staf tim ini</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="users" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
         </div>
@@ -215,7 +232,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-xs min-w-[720px]">
                     <thead class="bg-[#F8F7FF] text-[#7C7896] font-bold border-b border-[#E2E0F7] uppercase text-[10px] tracking-wider">
                         <tr>
                             <th class="px-4 py-3.5 text-center">No</th>

@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Jadwalin') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
@@ -173,9 +173,9 @@
         @include('layouts.topbar')
 
         {{-- ===== DYNAMIC CONTENT AREA ===== --}}
-        <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        <div class="flex-1 overflow-y-auto p-3.5 sm:p-4 md:p-6 lg:p-8 pb-28 sm:pb-32 md:pb-8">
             @if (isset($header))
-                <div class="mb-6">
+                <div class="mb-5 md:mb-6">
                     {{ $header }}
                 </div>
             @endif
@@ -183,6 +183,9 @@
             {{ $slot ?? '' }}
             @yield('content')
         </div>
+
+        {{-- ===== MOBILE BOTTOM NAVIGATION BAR (md:hidden) ===== --}}
+        @include('layouts.mobile-bottom-nav')
     </main>
 
     {{-- Initialize Icons & Scripts --}}

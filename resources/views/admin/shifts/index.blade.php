@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-100">
+                    <table class="min-w-full divide-y divide-gray-100 min-w-[650px]">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">

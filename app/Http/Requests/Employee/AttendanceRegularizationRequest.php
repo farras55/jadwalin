@@ -77,9 +77,20 @@ class AttendanceRegularizationRequest extends FormRequest
                 return;
             }
 
-            // 2. Hanya shift dengan is_auto_clockout = true yang bisa diajukan
-            if (! $assignment->is_auto_clockout) {
-                $validator->errors()->add('shift_assignment_id', 'Hanya presensi yang terkena auto clock-out yang dapat diajukan koreksi.');
+            // 2. Hanya shift dengan catatan clock in yang bisa diajukan koreksi
+            if (! $assignment->clock_in_time) {
+                $validator->errors()->add('shift_assignment_id', 'Hanya presensi yang memiliki catatan kehadiran yang dapat diajukan koreksi.');
+
+                return;
+            }
+
+            $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
+            $shift = $assignment->shift;
+            $shiftEnd = $shift ? AutoClockOutCommand::resolveShiftEndDateTime($shift, $timezone) : null;
+            $isLateClockOut = $assignment->clock_out_time && $shiftEnd && Carbon::parse($assignment->clock_out_time, $timezone)->greaterThan($shiftEnd);
+
+            if (! $assignment->is_auto_clockout && ! $isLateClockOut) {
+                $validator->errors()->add('shift_assignment_id', 'Hanya presensi yang terkena auto clock-out atau memiliki kelebihan jam kerja yang dapat diajukan koreksi.');
 
                 return;
             }
@@ -101,25 +112,36 @@ class AttendanceRegularizationRequest extends FormRequest
                 return;
             }
 
-            $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
-            $shift = $assignment->shift;
-
             if ($shift) {
-                $shiftEnd = AutoClockOutCommand::resolveShiftEndDateTime($shift, $timezone);
                 $requestedOut = Carbon::parse($rawRequestedTime, $timezone);
 
-                // Jam pulang yang diminta harus SETELAH end_time shift
-                if ($requestedOut->lessThanOrEqualTo($shiftEnd)) {
+                // Jam pulang yang diminta harus SETELAH end_time shift resmi
+                if ($shiftEnd && $requestedOut->lessThanOrEqualTo($shiftEnd)) {
                     $validator->errors()->add(
                         'requested_clock_out_time',
                         'Jam pulang riil harus setelah jam selesai shift resmi ('.$shiftEnd->format('H:i').' WIB).'
                     );
                 }
 
-                // Jam pulang tidak boleh lebih dari 24 jam setelah clock_in_time
+                // Jam pulang tidak boleh di masa depan
+                if ($requestedOut->isFuture()) {
+                    $validator->errors()->add(
+                        'requested_clock_out_time',
+                        'Jam pulang riil tidak boleh di masa depan.'
+                    );
+                }
+
+                // Jam pulang tidak boleh sebelum clock_in_time atau melebihi 24 jam dari clock in
                 if ($assignment->clock_in_time) {
                     $clockIn = Carbon::parse($assignment->clock_in_time, $timezone);
-                    if ($requestedOut->diffInHours($clockIn, false) < -24 || $requestedOut->lessThan($clockIn)) {
+                    if ($requestedOut->lessThan($clockIn)) {
+                        $validator->errors()->add(
+                            'requested_clock_out_time',
+                            'Jam pulang riil tidak boleh lebih awal dari jam clock-in ('.$clockIn->format('H:i').' WIB).'
+                        );
+                    }
+
+                    if ($requestedOut->diffInHours($clockIn, false) < -24) {
                         $validator->errors()->add(
                             'requested_clock_out_time',
                             'Jam pulang riil tidak masuk akal (melebihi 24 jam dari jam clock in).'

@@ -50,69 +50,69 @@
     <div class="space-y-6">
 
         {{-- KPI Cards Ringkasan Eksekutif --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
             {{-- Total Karyawan & Kehadiran --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs relative overflow-hidden">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Karyawan & Kehadiran</p>
-                        <h3 class="text-2xl font-bold text-[#2D2A3E] mt-1">{{ $totalMetrics->total_employees }} <span class="text-xs font-medium text-[#7C7896]">Orang</span></h3>
-                        <p class="text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1">
-                            <i data-lucide="check-circle-2" class="h-3.5 w-3.5"></i>
-                            <span>{{ $totalMetrics->total_attendance_shifts }} shift dihadiri</span>
+                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Karyawan & Kehadiran</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-1">{{ $totalMetrics->total_employees }} <span class="text-xs font-medium text-[#7C7896]">Orang</span></h3>
+                        <p class="text-[10px] sm:text-xs text-emerald-600 font-semibold mt-1 flex items-center gap-1 truncate">
+                            <i data-lucide="check-circle-2" class="h-3.5 w-3.5 shrink-0"></i>
+                            <span>{{ $totalMetrics->total_attendance_shifts }} shift</span>
                         </p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-[#F5F3FF] border border-[#E2E0F7] text-[#6C5CE7] flex items-center justify-center shrink-0">
-                        <i data-lucide="users" class="h-6 w-6"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#F5F3FF] border border-[#E2E0F7] text-[#6C5CE7] flex items-center justify-center shrink-0">
+                        <i data-lucide="users" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total Jam Reguler --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs relative overflow-hidden">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Jam Reguler</p>
-                        <h3 class="text-2xl font-bold text-[#4F46E5] mt-1">{{ number_format($totalMetrics->total_regular_hours, 2) }} <span class="text-xs font-medium text-[#7C7896]">Jam</span></h3>
-                        <p class="text-xs text-[#7C7896] mt-1">Rata-rata {{ $totalMetrics->total_employees > 0 ? number_format($totalMetrics->total_regular_hours / $totalMetrics->total_employees, 1) : 0 }} jam / staf</p>
+                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Jam Reguler</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-[#4F46E5] mt-1">{{ number_format($totalMetrics->total_regular_hours, 2) }} <span class="text-xs font-medium text-[#7C7896]">Jam</span></h3>
+                        <p class="text-[10px] sm:text-xs text-[#7C7896] mt-1 truncate">Rata-rata {{ $totalMetrics->total_employees > 0 ? number_format($totalMetrics->total_regular_hours / $totalMetrics->total_employees, 1) : 0 }} jam</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 text-[#4F46E5] flex items-center justify-center shrink-0">
-                        <i data-lucide="clock" class="h-6 w-6"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-indigo-50 border border-indigo-100 text-[#4F46E5] flex items-center justify-center shrink-0">
+                        <i data-lucide="clock" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total Jam Lembur --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs relative overflow-hidden">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Jam Lembur (Overtime)</p>
-                        <h3 class="text-2xl font-bold text-amber-600 mt-1">{{ number_format($totalMetrics->total_overtime_hours, 2) }} <span class="text-xs font-medium text-[#7C7896]">Jam</span></h3>
-                        <p class="text-xs text-amber-600 font-medium mt-1 flex items-center gap-1">
-                            <i data-lucide="trending-up" class="h-3.5 w-3.5"></i>
-                            <span>Kompensasi lembur aktif</span>
+                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Jam Lembur</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-amber-600 mt-1">{{ number_format($totalMetrics->total_overtime_hours, 2) }} <span class="text-xs font-medium text-[#7C7896]">Jam</span></h3>
+                        <p class="text-[10px] sm:text-xs text-amber-600 font-medium mt-1 flex items-center gap-1 truncate">
+                            <i data-lucide="trending-up" class="h-3.5 w-3.5 shrink-0"></i>
+                            <span>Lembur aktif</span>
                         </p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
-                        <i data-lucide="briefcase" class="h-6 w-6"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <i data-lucide="briefcase" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total Keterlambatan --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs relative overflow-hidden">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Keterlambatan Presensi</p>
-                        <h3 class="text-2xl font-bold {{ $totalMetrics->total_late_minutes > 0 ? 'text-rose-600' : 'text-emerald-600' }} mt-1">
+                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Keterlambatan</p>
+                        <h3 class="text-xl sm:text-2xl font-bold {{ $totalMetrics->total_late_minutes > 0 ? 'text-rose-600' : 'text-emerald-600' }} mt-1">
                             {{ $totalMetrics->total_late_minutes }} <span class="text-xs font-medium text-[#7C7896]">Menit</span>
                         </h3>
-                        <p class="text-xs text-[#7C7896] mt-1">
-                            {{ $totalMetrics->total_late_minutes > 0 ? 'Akumulasi waktu terlambat' : 'Disiplin hadir tepat waktu' }}
+                        <p class="text-[10px] sm:text-xs text-[#7C7896] mt-1 truncate">
+                            {{ $totalMetrics->total_late_minutes > 0 ? 'Waktu terlambat' : 'Tepat waktu' }}
                         </p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl {{ $totalMetrics->total_late_minutes > 0 ? 'bg-rose-50 border-rose-100 text-rose-600' : 'bg-emerald-50 border-emerald-100 text-emerald-600' }} border flex items-center justify-center shrink-0">
-                        <i data-lucide="alert-circle" class="h-6 w-6"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl {{ $totalMetrics->total_late_minutes > 0 ? 'bg-rose-50 border-rose-100 text-rose-600' : 'bg-emerald-50 border-emerald-100 text-emerald-600' }} border flex items-center justify-center shrink-0">
+                        <i data-lucide="alert-circle" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                     </div>
                 </div>
             </div>
@@ -237,7 +237,7 @@
                 </div>
             @else
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs md:text-sm text-[#2D2A3E]">
+                    <table class="w-full text-left text-xs md:text-sm text-[#2D2A3E] min-w-[780px]">
                         <thead class="bg-[#F5F3FF] text-[#2D2A3E] font-semibold border-b border-[#E2E0F7]">
                             <tr>
                                 <th class="px-5 py-3.5 text-center w-14">No</th>

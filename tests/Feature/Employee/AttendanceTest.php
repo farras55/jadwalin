@@ -230,7 +230,8 @@ class AttendanceTest extends TestCase
 
         $this->assertNotNull($assignment->clock_out_time);
         $this->assertEquals(8.0, $assignment->regular_hours);
-        $this->assertEquals(1.0, $assignment->overtime_hours);
+        $this->assertEquals(0.0, $assignment->overtime_hours);
+        $this->assertEquals('none', $assignment->overtime_status);
     }
 
     public function test_employee_cannot_clock_out_without_clocking_in()
@@ -427,7 +428,13 @@ class AttendanceTest extends TestCase
         $assignment->refresh();
 
         $this->assertEquals(4.0, $assignment->regular_hours);
-        $this->assertEquals(3.0, $assignment->overtime_hours);
+        $this->assertEquals(0.0, $assignment->overtime_hours);
+        $this->assertEquals('pending_approval', $assignment->overtime_status);
+        $this->assertDatabaseHas('attendance_regularizations', [
+            'shift_assignment_id' => $assignment->id,
+            'status' => 'pending',
+            'overtime_status' => 'pending_approval',
+        ]);
     }
 
     public function test_employee_cannot_clock_in_too_early_before_shift()
@@ -501,5 +508,36 @@ class AttendanceTest extends TestCase
         $this->assertNotNull($assignment->clock_out_time);
         $this->assertEquals(8.0, $assignment->regular_hours);
         $this->assertEquals(0.0, $assignment->overtime_hours);
+    }
+
+    public function test_history_shows_not_attended_status_when_employee_has_not_clocked_in()
+    {
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Pagi',
+            'start_time' => Carbon::today()->setTime(8, 0),
+            'end_time' => Carbon::today()->setTime(16, 0),
+            'quota' => 1,
+        ]);
+
+        ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+            'status' => 'scheduled',
+            'clock_in_time' => null,
+            'clock_out_time' => null,
+        ]);
+
+        Carbon::setTestNow(Carbon::today()->setTime(7, 30));
+
+        $response = $this->actingAs($this->user)->get(route('employee.attendance'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Belum Hadir');
+        $response->assertSee('bg-amber-50');
+        $this->assertCount(1, $response->viewData('recentHistory'));
+        $this->assertNull($response->viewData('recentHistory')->first()->clock_in_time);
     }
 }

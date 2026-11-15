@@ -24,9 +24,9 @@
 
     <div class="max-w-7xl mx-auto space-y-6">
         {{-- ===== USER IDENTITY OVERVIEW CARD ===== --}}
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-6 shadow-sm">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                <div class="flex items-center gap-4">
+        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-4 sm:p-6 shadow-sm">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                     @if ($user->profile_photo)
                         <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="{{ $user->name }}" class="h-16 w-16 md:h-20 md:w-20 rounded-2xl object-cover ring-2 ring-[#E2E0F7] shadow-sm shrink-0">
                     @else

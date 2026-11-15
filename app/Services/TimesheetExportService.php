@@ -70,14 +70,26 @@ class TimesheetExportService
                 $departmentName = 'Semua Departemen';
             }
         } elseif ($user->role === 'manager') {
-            // Manager: hanya karyawan di departemennya sendiri
-            if ($request->filled('department_id') && (int) $request->input('department_id') !== (int) $user->department_id) {
-                abort(403, 'Akses ditolak: Anda hanya dapat mengakses data departemen Anda.');
-            }
+            if ($user->is_global_manager) {
+                // Global Manager: dapat mengakses seluruh departemen atau memfilter departemen tertentu
+                if ($request->filled('department_id')) {
+                    $deptId = (int) $request->input('department_id');
+                    $userQuery->where('department_id', $deptId);
+                    $selectedDepartment = $departments->firstWhere('id', $deptId);
+                    $departmentName = $selectedDepartment?->name ?? 'Semua Departemen';
+                } else {
+                    $departmentName = 'Semua Departemen';
+                }
+            } else {
+                // Manager Departemen: hanya karyawan di departemennya sendiri
+                if ($request->filled('department_id') && (int) $request->input('department_id') !== (int) $user->department_id) {
+                    abort(403, 'Akses ditolak: Anda hanya dapat mengakses data departemen Anda.');
+                }
 
-            $userQuery->where('department_id', $user->department_id);
-            $selectedDepartment = $user->department;
-            $departmentName = $user->department?->name ?? 'Semua Departemen';
+                $userQuery->where('department_id', $user->department_id);
+                $selectedDepartment = $user->department;
+                $departmentName = $user->department?->name ?? 'Semua Departemen';
+            }
         } else {
             // Employee: hanya data dirinya sendiri
             if ($request->filled('user_id') && (int) $request->input('user_id') !== (int) $user->id) {

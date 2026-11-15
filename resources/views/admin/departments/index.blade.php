@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs md:text-sm text-[#2D2A3E]">
+                    <table class="w-full text-left text-xs md:text-sm text-[#2D2A3E] min-w-[650px]">
                         <thead class="bg-[#F5F3FF]/80 text-[#2D2A3E] font-semibold border-b border-[#E2E0F7]">
                             <tr>
                                 <th class="px-5 py-3.5 text-center w-16">No</th>
