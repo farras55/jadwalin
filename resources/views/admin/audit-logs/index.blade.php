@@ -3,17 +3,17 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <div class="flex items-center gap-2 mb-1.5">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100">
                         <i data-lucide="shield-check" class="h-3.5 w-3.5"></i>
                         <span>Keamanan &amp; Audit Platform</span>
                     </span>
                     <span class="text-xs text-gray-400">•</span>
-                    <span class="text-xs text-[#7C7896]">Super Admin Executive View</span>
+                    <span class="text-xs text-slate-500">Super Admin Executive View</span>
                 </div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Audit Trail Logging
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-0.5">
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
                     Rekam jejak mutasi data dan aktivitas operasional seluruh sistem secara transparan untuk pengawasan bisnis.
                 </p>
             </div>
@@ -143,23 +143,23 @@
         {{-- ========================================================= --}}
         <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-4">
             {{-- Kartu 1: Total Aktivitas Hari Ini --}}
-            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-xl border border-slate-200/80 shadow-card flex items-center justify-between">
                 <div>
-                    <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Hari Ini</p>
-                    <h3 class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-1">{{ number_format($stats['total_today'] ?? 0) }}</h3>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Sejak 00:00 {{ $timezoneAbbr ?? 'WIB' }}</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Aktivitas Hari Ini</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mt-1">{{ number_format($stats['total_today'] ?? 0) }}</h3>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">Sejak 00:00 {{ $timezoneAbbr ?? 'WIB' }}</p>
                 </div>
-                <div class="p-2 sm:p-3 bg-[#6C5CE7]/10 text-[#6C5CE7] rounded-xl shrink-0">
+                <div class="p-2 sm:p-3 bg-indigo-50 text-indigo-600 rounded-xl shrink-0">
                     <i data-lucide="activity" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
             </div>
 
             {{-- Kartu 2: Perubahan Data / Edit --}}
-            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-xl border border-slate-200/80 shadow-card flex items-center justify-between">
                 <div>
-                    <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Perubahan Data</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Perubahan Data</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mt-1">{{ number_format($stats['total_updates'] ?? 0) }}</h3>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Revisi &amp; pengeditan</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">Revisi &amp; pengeditan</p>
                 </div>
                 <div class="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl shrink-0">
                     <i data-lucide="edit-3" class="h-5 w-5 sm:h-6 sm:w-6"></i>
@@ -167,11 +167,11 @@
             </div>
 
             {{-- Kartu 3: Data Dihapus (Aksen Merah Soft) --}}
-            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-rose-100 shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-xl border border-rose-100 shadow-card flex items-center justify-between">
                 <div>
                     <p class="text-[10px] sm:text-xs font-semibold text-rose-500 uppercase tracking-wider">Data Dihapus</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-rose-600 mt-1">{{ number_format($stats['total_deletes'] ?? 0) }}</h3>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Penghapusan data</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">Penghapusan data</p>
                 </div>
                 <div class="p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl shrink-0">
                     <i data-lucide="trash-2" class="h-5 w-5 sm:h-6 sm:w-6"></i>
@@ -179,11 +179,11 @@
             </div>
 
             {{-- Kartu 4: Aktivitas Sistem Otomatis --}}
-            <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center justify-between">
+            <div class="bg-white p-3.5 sm:p-5 rounded-xl border border-slate-200/80 shadow-card flex items-center justify-between">
                 <div>
-                    <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">Aktivitas Sistem</p>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Aktivitas Sistem</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-purple-600 mt-1">{{ number_format($stats['total_system'] ?? 0) }}</h3>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Auto Clockout</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">Auto Clockout</p>
                 </div>
                 <div class="p-2 sm:p-3 bg-purple-50 text-purple-600 rounded-xl shrink-0">
                     <i data-lucide="cpu" class="h-5 w-5 sm:h-6 sm:w-6"></i>
@@ -194,16 +194,16 @@
         {{-- ========================================================= --}}
         {{-- 2. BAR FILTER & PENCARIAN YANG RAMAH AWAM                 --}}
         {{-- ========================================================= --}}
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-4 sm:p-5 shadow-2xs">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 shadow-card">
             <form method="GET" action="{{ route('admin.audit-logs.index') }}" class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
                     {{-- Dropdown 1: Semua Jenis Aktivitas --}}
                     <div>
-                        <label for="filter-action" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                        <label for="filter-action" class="block text-xs font-semibold text-slate-900 mb-1.5">
                             Semua Jenis Aktivitas
                         </label>
                         <select id="filter-action" name="action" 
-                                class="w-full bg-[#F5F3FF]/40 border border-[#E2E0F7] text-[#2D2A3E] text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-[#6C5CE7] focus:border-[#6C5CE7] transition font-medium">
+                                class="w-full bg-indigo-50/40 border border-slate-200/80 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition font-medium">
                             <option value="all" {{ $selectedAction === 'all' ? 'selected' : '' }}>Semua Jenis Aktivitas</option>
                             @foreach ($availableActions as $actionKey => $actionLabel)
                                 <option value="{{ $actionKey }}" {{ $selectedAction === $actionKey ? 'selected' : '' }}>
@@ -215,11 +215,11 @@
 
                     {{-- Dropdown 2: Semua Fitur Aplikasi --}}
                     <div>
-                        <label for="filter-model" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                        <label for="filter-model" class="block text-xs font-semibold text-slate-900 mb-1.5">
                             Semua Fitur Aplikasi
                         </label>
                         <select id="filter-model" name="model_type" 
-                                class="w-full bg-[#F5F3FF]/40 border border-[#E2E0F7] text-[#2D2A3E] text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-[#6C5CE7] focus:border-[#6C5CE7] transition font-medium">
+                                class="w-full bg-indigo-50/40 border border-slate-200/80 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition font-medium">
                             <option value="all" {{ $selectedModel === 'all' ? 'selected' : '' }}>Semua Fitur Aplikasi</option>
                             @foreach ($availableModels as $modelKey => $modelLabel)
                                 <option value="{{ $modelKey }}" {{ $selectedModel === $modelKey ? 'selected' : '' }}>
@@ -231,7 +231,7 @@
 
                     {{-- Field Pencarian --}}
                     <div>
-                        <label for="search" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                        <label for="search" class="block text-xs font-semibold text-slate-900 mb-1.5">
                             Pencarian Kata Kunci
                         </label>
                         <div class="relative">
@@ -240,14 +240,14 @@
                             </div>
                             <input type="text" id="search" name="search" value="{{ $search }}"
                                    placeholder="Cari nama staf, fitur, atau lokasi IP..."
-                                   class="w-full pl-10 bg-[#F5F3FF]/40 border border-[#E2E0F7] text-[#2D2A3E] text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-[#6C5CE7] focus:border-[#6C5CE7] transition placeholder:text-gray-400">
+                                   class="w-full pl-10 bg-indigo-50/40 border border-slate-200/80 text-slate-900 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition placeholder:text-gray-400">
                         </div>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2">
                     <button type="submit" 
-                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold shadow-2xs transition-all w-full sm:w-auto">
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold shadow-card transition-all w-full sm:w-auto">
                         <i data-lucide="search" class="h-4 w-4"></i>
                         <span>Filter Log</span>
                     </button>
@@ -263,15 +263,15 @@
         {{-- ========================================================= --}}
         {{-- 3. TABEL UTAMA AUDIT LOG (KETERBACAAN MAKSIMAL)           --}}
         {{-- ========================================================= --}}
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
-            <div class="p-4 sm:p-5 border-b border-[#E2E0F7] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
+            <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
                 <div class="flex items-center gap-2.5">
-                    <div class="p-2 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7]">
+                    <div class="p-2 rounded-xl bg-indigo-50 text-indigo-600">
                         <i data-lucide="shield" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h2 class="text-sm sm:text-base font-bold text-[#2D2A3E]">Catatan Audit Aktivitas</h2>
-                        <p class="text-[11px] sm:text-xs text-[#7C7896]">Total {{ $logs->total() }} aktivitas mutasi data tercatat di sistem</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">Catatan Audit Aktivitas</h2>
+                        <p class="text-[11px] sm:text-xs text-slate-500">Total {{ $logs->total() }} aktivitas mutasi data tercatat di sistem</p>
                     </div>
                 </div>
             </div>
@@ -320,18 +320,18 @@
                                 {{-- 2. Aktor --}}
                                 <td class="px-5 py-4 whitespace-nowrap">
                                     @if ($log->user)
-                                        <div class="font-bold text-[#2D2A3E]">
+                                        <div class="font-bold text-slate-900">
                                             {{ $log->user->name }}
                                         </div>
-                                        <div class="text-xs text-[#7C7896] mt-0.5">
+                                        <div class="text-xs text-slate-500 mt-0.5">
                                             {{ $log->user->role_title ?? ucfirst(str_replace('_', ' ', $log->user->role ?? 'Staf')) }}
                                         </div>
                                     @else
-                                        <div class="font-bold text-[#2D2A3E] flex items-center gap-1.5">
-                                            <i data-lucide="bot" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                                        <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                                            <i data-lucide="bot" class="w-3.5 h-3.5 text-indigo-600"></i>
                                             <span>Sistem / Anonim</span>
                                         </div>
-                                        <div class="text-xs text-[#7C7896] mt-0.5">
+                                        <div class="text-xs text-slate-500 mt-0.5">
                                             Role: System
                                         </div>
                                     @endif
@@ -368,8 +368,8 @@
                                     <button type="button" 
                                             @click="openModal(@js($payload))"
                                             title="Lihat Perubahan"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-gray-700 text-xs font-semibold border border-slate-200 shadow-2xs transition cursor-pointer">
-                                        <i data-lucide="file-text" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-gray-700 text-xs font-semibold border border-slate-200 shadow-card transition cursor-pointer">
+                                        <i data-lucide="file-text" class="h-3.5 w-3.5 text-indigo-600"></i>
                                         <span>Lihat Perubahan</span>
                                     </button>
                                 </td>
@@ -378,7 +378,7 @@
                             <tr>
                                 <td colspan="6" class="px-5 py-12 text-center text-gray-400">
                                     <div class="flex flex-col items-center justify-center gap-2">
-                                        <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center">
+                                        <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center">
                                             <i data-lucide="shield" class="w-6 h-6"></i>
                                         </div>
                                         <p class="text-sm font-semibold text-gray-600">Belum ada catatan aktivitas</p>
@@ -427,16 +427,16 @@
                      x-transition:leave="ease-in duration-150"
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-95"
-                     class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-4xl border border-[#E2E0F7]">
+                     class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-4xl border border-slate-200/80">
                     
                     {{-- 1. Header Modal Pop-Up --}}
-                    <div class="px-6 py-4 border-b border-[#E2E0F7] flex items-center justify-between bg-white">
+                    <div class="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between bg-white">
                         <div class="flex items-center gap-3">
-                            <div class="p-2.5 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7]">
+                            <div class="p-2.5 rounded-xl bg-indigo-50 text-indigo-600">
                                 <i data-lucide="file-text" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h3 id="modal-title" class="text-base font-bold text-[#2D2A3E] flex items-center gap-2">
+                                <h3 id="modal-title" class="text-base font-bold text-slate-900 flex items-center gap-2">
                                     <span>Rincian Perubahan Data</span>
                                     <span class="text-xs px-2.5 py-0.5 rounded-full font-bold border"
                                           :class="activeLog?.action_badge_class || 'bg-amber-50 text-amber-700 border-amber-200'"
@@ -478,7 +478,7 @@
 
                         {{-- 3. Tabel Komparasi Rincian Perubahan (Light Mode Table) --}}
                         <template x-if="diffRows.length > 0">
-                            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+                            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-card">
                                 <table class="w-full text-left text-xs sm:text-sm border-collapse">
                                     <thead class="bg-slate-50/80 text-gray-500 text-[10px] sm:text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
                                         <tr>
@@ -553,11 +553,11 @@
 
                         {{-- Kondisi Tidak Ada Kolom Khusus (Aktivitas Sistem / Broadcast) --}}
                         <template x-if="diffRows.length === 0">
-                            <div class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-gray-200">
-                                <div class="w-10 h-10 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7] flex items-center justify-center mx-auto mb-2.5">
+                            <div class="p-8 text-center bg-slate-50 rounded-xl border border-dashed border-gray-200">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-2.5">
                                     <i data-lucide="info" class="w-5 h-5"></i>
                                 </div>
-                                <p class="text-sm font-bold text-[#2D2A3E]">Aktivitas Sistem Tercatat</p>
+                                <p class="text-sm font-bold text-slate-900">Aktivitas Sistem Tercatat</p>
                                 <p class="text-xs text-gray-500 mt-1 max-w-md mx-auto">
                                     Aktivitas ini dicatat sebagai peristiwa operasional sistem umum tanpa perubahan khusus pada nilai kolom data.
                                 </p>
@@ -566,10 +566,10 @@
                     </div>
 
                     {{-- 4. Footer Modal --}}
-                    <div class="px-6 py-4 border-t border-[#E2E0F7] bg-white flex justify-end">
+                    <div class="px-6 py-4 border-t border-slate-200/80 bg-white flex justify-end">
                         <button type="button" 
                                 @click="closeModal()" 
-                                class="bg-gray-900 text-white rounded-lg px-6 py-2.5 text-sm font-medium hover:bg-gray-800 transition shadow-2xs cursor-pointer">
+                                class="bg-gray-900 text-white rounded-lg px-6 py-2.5 text-sm font-medium hover:bg-gray-800 transition shadow-card cursor-pointer">
                             Tutup
                         </button>
                     </div>

@@ -23,12 +23,12 @@
 
         <div class="flex items-center gap-2.5">
             <a href="{{ route('admin.users.create') }}" 
-               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition shadow-xs">
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shadow-xs shadow-indigo-600/20 active:translate-y-px">
                 <i data-lucide="user-plus" class="h-3.5 w-3.5"></i>
                 <span>Tambah Pengguna</span>
             </a>
             <a href="{{ route('admin.settings.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition">
+               class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition shadow-2xs active:translate-y-px">
                 <i data-lucide="sliders" class="h-3.5 w-3.5 text-slate-400"></i>
                 <span>Pengaturan</span>
             </a>
@@ -41,7 +41,7 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
 
         {{-- Total Perusahaan & Cabang --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-card p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-slate-500">Perusahaan &amp; Cabang</span>
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
@@ -55,7 +55,7 @@
                 <div class="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span class="text-slate-400 text-[11px]">Tenant aktif</span>
                     <a href="{{ route('admin.companies.index') }}" 
-                       class="font-medium text-[#6C5CE7] hover:underline inline-flex items-center gap-1">
+                        class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                         <span>Kelola</span>
                         <i data-lucide="arrow-right" class="h-3 w-3"></i>
                     </a>
@@ -64,7 +64,7 @@
         </div>
 
         {{-- Total Departemen --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-card p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-slate-500">Departemen</span>
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
@@ -78,7 +78,7 @@
                 <div class="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span class="text-slate-400 text-[11px]">Unit operasional</span>
                     <a href="{{ route('admin.departments.index') }}" 
-                       class="font-medium text-[#6C5CE7] hover:underline inline-flex items-center gap-1">
+                        class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                         <span>Kelola</span>
                         <i data-lucide="arrow-right" class="h-3 w-3"></i>
                     </a>
@@ -87,7 +87,7 @@
         </div>
 
         {{-- Karyawan Aktif --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-card p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-slate-500">Karyawan Aktif</span>
                 <div class="h-8 w-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
@@ -110,7 +110,7 @@
         </div>
 
         {{-- Shift Bulan Ini --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-card p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-slate-500">Shift Bulan Ini</span>
                 <div class="h-8 w-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
@@ -140,10 +140,10 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {{-- Configuration Readiness (2 cols) --}}
-        <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200/80 p-5">
+        <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200/90 shadow-card p-5">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
                 <div class="flex items-center gap-2.5">
-                    <div class="h-7 w-7 rounded-md bg-purple-50 text-[#6C5CE7] flex items-center justify-center">
+                    <div class="h-7 w-7 rounded-md bg-indigo-50 text-indigo-600 flex items-center justify-center">
                         <i data-lucide="sliders" class="h-4 w-4"></i>
                     </div>
                     <div>
@@ -167,7 +167,7 @@
                         $cfgPercent = ($companyCount ?? 0) > 0 ? round((($configuredCompanyCount ?? 0) / $companyCount) * 100) : 0;
                     @endphp
                     <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-[#6C5CE7] rounded-full transition-all duration-300" style="width: {{ $cfgPercent }}%"></div>
+                        <div class="h-full bg-indigo-600 rounded-full transition-all duration-300" style="width: {{ $cfgPercent }}%"></div>
                     </div>
                 </div>
 
@@ -189,7 +189,7 @@
         </div>
 
         {{-- Quick Administrative Actions (1 col) --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-5 flex flex-col justify-between">
+        <div class="bg-white rounded-xl border border-slate-200/90 shadow-card p-5 flex flex-col justify-between">
             <div>
                 <h3 class="text-sm font-semibold text-slate-900 mb-1">Akses Cepat Pengawasan</h3>
                 <p class="text-xs text-slate-500 mb-3.5">Modul tata kelola dan audit sistem.</p>

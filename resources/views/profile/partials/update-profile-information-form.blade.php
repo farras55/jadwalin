@@ -2,12 +2,12 @@
     photoName: null,
     photoPreview: null
 }">
-    <header class="border-b border-[#E2E0F7] pb-4 mb-6">
-        <h2 class="text-lg font-bold text-[#2D2A3E] flex items-center gap-2">
-            <i data-lucide="user" class="w-5 h-5 text-[#6C5CE7]"></i>
+    <header class="border-b border-slate-200 pb-4 mb-6">
+        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="user" class="w-5 h-5 text-indigo-600"></i>
             {{ __('Informasi Profil & Kontak') }}
         </h2>
-        <p class="mt-1 text-xs md:text-sm text-[#7C7896]">
+        <p class="mt-1 text-xs md:text-sm text-slate-500">
             {{ __('Perbarui data identitas pribadi, foto profil, dan informasi kontak akun Anda.') }}
         </p>
     </header>
@@ -23,8 +23,8 @@
         @method('patch')
 
         {{-- ===== FOTO PROFIL / AVATAR UPLOAD (Alpine.js Preview) ===== --}}
-        <div class="p-4 rounded-xl bg-[#F5F3FF]/60 border border-[#E2E0F7]">
-            <label class="block text-xs font-semibold text-[#2D2A3E] mb-3">
+        <div class="p-4 rounded-xl bg-indigo-50/60 border border-slate-200">
+            <label class="block text-xs font-semibold text-slate-900 mb-3">
                 {{ __('Foto Profil Pengguna') }}
             </label>
             
@@ -32,9 +32,9 @@
                 {{-- Foto Saat Ini --}}
                 <div x-show="!photoPreview" class="relative shrink-0">
                     @if ($user->profile_photo)
-                        <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="{{ $user->name }}" class="h-20 w-20 rounded-2xl object-cover ring-2 ring-[#6C5CE7] shadow-sm">
+                        <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="{{ $user->name }}" class="h-20 w-20 rounded-xl object-cover border-2 border-indigo-600 shadow-xs">
                     @else
-                        <div class="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#6C5CE7] to-[#4F46E5] text-white flex items-center justify-center font-bold text-2xl ring-2 ring-[#E2E0F7] shadow-sm">
+                        <div class="h-20 w-20 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-2xl border border-slate-200 shadow-xs">
                             {{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}
                         </div>
                     @endif
@@ -42,7 +42,7 @@
 
                 {{-- Preview Foto Baru --}}
                 <div x-show="photoPreview" style="display: none;" class="relative shrink-0">
-                    <span class="block h-20 w-20 rounded-2xl bg-cover bg-no-repeat bg-center ring-2 ring-[#6C5CE7] shadow-sm"
+                    <span class="block h-20 w-20 rounded-xl bg-cover bg-no-repeat bg-center border-2 border-indigo-600 shadow-xs"
                           :style="'background-image: url(\'' + photoPreview + '\');'">
                     </span>
                 </div>
@@ -69,8 +69,8 @@
                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                         <button type="button" 
                                 x-on:click.prevent="$refs.photo.click()" 
-                                class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white border border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF] hover:border-[#6C5CE7] transition shadow-xs">
-                            <i data-lucide="camera" class="w-4 h-4 text-[#6C5CE7]"></i>
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-900 hover:bg-indigo-50 hover:border-indigo-600 transition shadow-xs">
+                            <i data-lucide="camera" class="w-4 h-4 text-indigo-600"></i>
                             <span>{{ __('Pilih Foto Baru') }}</span>
                         </button>
 
@@ -84,7 +84,7 @@
                         </button>
                     </div>
 
-                    <p class="text-[11px] text-[#7C7896]">
+                    <p class="text-[11px] text-slate-500">
                         Format yang didukung: JPG, PNG, atau WEBP. Ukuran file maksimal <strong>2MB</strong>.
                     </p>
                     <x-input-error class="mt-1" :messages="$errors->get('profile_photo')" />
@@ -96,12 +96,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             {{-- Nama Lengkap --}}
             <div class="md:col-span-2">
-                <x-input-label for="name" :value="__('Nama Lengkap')" class="font-semibold text-xs text-[#2D2A3E]" />
+                <x-input-label for="name" :value="__('Nama Lengkap')" class="font-semibold text-xs text-slate-900" />
                 <div class="relative mt-1">
                     <x-text-input id="name" 
                                   name="name" 
                                   type="text" 
-                                  class="block w-full text-xs md:text-sm rounded-xl border-[#E2E0F7] focus:border-[#6C5CE7] focus:ring-[#6C5CE7]" 
+                                  class="block w-full text-xs md:text-sm rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600" 
                                   :value="old('name', $user->name)" 
                                   required 
                                   autofocus 
@@ -112,12 +112,12 @@
 
             {{-- Alamat Email --}}
             <div>
-                <x-input-label for="email" :value="__('Alamat Email')" class="font-semibold text-xs text-[#2D2A3E]" />
+                <x-input-label for="email" :value="__('Alamat Email')" class="font-semibold text-xs text-slate-900" />
                 <div class="relative mt-1">
                     <x-text-input id="email" 
                                   name="email" 
                                   type="email" 
-                                  class="block w-full text-xs md:text-sm rounded-xl border-[#E2E0F7] focus:border-[#6C5CE7] focus:ring-[#6C5CE7]" 
+                                  class="block w-full text-xs md:text-sm rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600" 
                                   :value="old('email', $user->email)" 
                                   required 
                                   autocomplete="username" />
@@ -125,10 +125,10 @@
                 <x-input-error class="mt-1" :messages="$errors->get('email')" />
 
                 @if (Route::has('verification.send') && $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                    <div class="mt-2 text-xs text-[#7C7896]">
+                    <div class="mt-2 text-xs text-slate-500">
                         <p>
                             {{ __('Email Anda belum terverifikasi.') }}
-                            <button form="send-verification" class="text-[#6C5CE7] font-semibold underline hover:text-[#4F46E5] focus:outline-none">
+                            <button form="send-verification" class="text-indigo-600 font-semibold underline hover:text-indigo-600 focus:outline-none">
                                 {{ __('Kirim ulang email verifikasi.') }}
                             </button>
                         </p>
@@ -144,13 +144,13 @@
 
             {{-- Nomor Telepon / WhatsApp --}}
             <div>
-                <x-input-label for="phone_number" :value="__('Nomor HP / WhatsApp')" class="font-semibold text-xs text-[#2D2A3E]" />
+                <x-input-label for="phone_number" :value="__('Nomor HP / WhatsApp')" class="font-semibold text-xs text-slate-900" />
                 <div class="relative mt-1">
                     <x-text-input id="phone_number" 
                                   name="phone_number" 
                                   type="tel" 
                                   placeholder="Contoh: 08123456789" 
-                                  class="block w-full text-xs md:text-sm rounded-xl border-[#E2E0F7] focus:border-[#6C5CE7] focus:ring-[#6C5CE7]" 
+                                  class="block w-full text-xs md:text-sm rounded-xl border-slate-200 focus:border-indigo-600 focus:ring-indigo-600" 
                                   :value="old('phone_number', $user->phone_number)" 
                                   autocomplete="tel" />
                 </div>
@@ -159,40 +159,40 @@
         </div>
 
         {{-- ===== INFORMASI ORGANISASI & PEKERJAAN (READ-ONLY) ===== --}}
-        <div class="pt-4 border-t border-[#E2E0F7]">
-            <h3 class="text-xs font-bold text-[#7C7896] uppercase tracking-wider mb-3">
+        <div class="pt-4 border-t border-slate-200">
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
                 {{ __('Informasi Organisasi & Penugasan (Dikelola oleh Admin/Manager)') }}
             </h3>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
-                    <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Perusahaan / Outlet') }}</span>
-                    <span class="text-xs font-bold text-[#2D2A3E] mt-0.5 block truncate">{{ $user->company->name ?? 'Jadwalin System' }}</span>
+                <div class="p-3 bg-indigo-50/40 rounded-xl border border-slate-200">
+                    <span class="block text-[10px] font-semibold text-slate-500 uppercase">{{ __('Perusahaan / Outlet') }}</span>
+                    <span class="text-xs font-bold text-slate-900 mt-0.5 block truncate">{{ $user->company->name ?? 'Jadwalin System' }}</span>
                 </div>
 
-                <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
-                    <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Departemen') }}</span>
-                    <span class="text-xs font-bold text-[#2D2A3E] mt-0.5 block truncate">{{ $user->department->name ?? 'Semua Departemen' }}</span>
+                <div class="p-3 bg-indigo-50/40 rounded-xl border border-slate-200">
+                    <span class="block text-[10px] font-semibold text-slate-500 uppercase">{{ __('Departemen') }}</span>
+                    <span class="text-xs font-bold text-slate-900 mt-0.5 block truncate">{{ $user->department->name ?? 'Semua Departemen' }}</span>
                 </div>
 
-                <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
-                    <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Posisi / Jabatan') }}</span>
-                    <span class="text-xs font-bold text-[#2D2A3E] mt-0.5 block truncate">{{ $user->position->name ?? 'Staff Umum' }}</span>
+                <div class="p-3 bg-indigo-50/40 rounded-xl border border-slate-200">
+                    <span class="block text-[10px] font-semibold text-slate-500 uppercase">{{ __('Posisi / Jabatan') }}</span>
+                    <span class="text-xs font-bold text-slate-900 mt-0.5 block truncate">{{ $user->position->name ?? 'Staff Umum' }}</span>
                 </div>
 
-                <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
-                    <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Peran Sistem (Role)') }}</span>
-                    <span class="text-xs font-bold text-[#6C5CE7] mt-0.5 block capitalize">{{ $user->role ?? 'Employee' }}</span>
+                <div class="p-3 bg-indigo-50/40 rounded-xl border border-slate-200">
+                    <span class="block text-[10px] font-semibold text-slate-500 uppercase">{{ __('Peran Sistem (Role)') }}</span>
+                    <span class="text-xs font-bold text-indigo-600 mt-0.5 block capitalize">{{ $user->role ?? 'Employee' }}</span>
                 </div>
 
-                <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
-                    <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Tipe Karyawan') }}</span>
-                    <span class="text-xs font-bold text-[#2D2A3E] mt-0.5 block capitalize">{{ str_replace('_', ' ', $user->employment_type ?? 'full_time') }}</span>
+                <div class="p-3 bg-indigo-50/40 rounded-xl border border-slate-200">
+                    <span class="block text-[10px] font-semibold text-slate-500 uppercase">{{ __('Tipe Karyawan') }}</span>
+                    <span class="text-xs font-bold text-slate-900 mt-0.5 block capitalize">{{ str_replace('_', ' ', $user->employment_type ?? 'full_time') }}</span>
                 </div>
 
-                <div class="p-3 bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7]">
-                    <span class="block text-[10px] font-semibold text-[#7C7896] uppercase">{{ __('Batas Kerja Mingguan') }}</span>
-                    <span class="text-xs font-bold text-[#2D2A3E] mt-0.5 block">
+                <div class="p-3 bg-indigo-50/40 rounded-xl border border-slate-200">
+                    <span class="block text-[10px] font-semibold text-slate-500 uppercase">{{ __('Batas Kerja Mingguan') }}</span>
+                    <span class="text-xs font-bold text-slate-900 mt-0.5 block">
                         {{ $user->max_weekly_hours ? $user->max_weekly_hours . ' Jam / Minggu' : '40 Jam / Minggu (Batas Standar)' }}
                     </span>
                 </div>
@@ -200,9 +200,9 @@
         </div>
 
         {{-- ===== TOMBOL SIMPAN & NOTIFIKASI ===== --}}
-        <div class="flex items-center gap-4 pt-3 border-t border-[#E2E0F7]">
+        <div class="flex items-center gap-4 pt-3 border-t border-slate-200">
             <button type="submit" 
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#6C5CE7] hover:bg-[#5B4BC4] active:bg-[#4F46E5] text-white text-xs md:text-sm font-semibold rounded-xl shadow-xs transition focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] focus:ring-offset-2">
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-[#5B4BC4] active:bg-indigo-600 text-white text-xs md:text-sm font-semibold rounded-xl shadow-xs transition focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
                 <i data-lucide="check" class="w-4 h-4"></i>
                 <span>{{ __('Simpan Perubahan') }}</span>
             </button>

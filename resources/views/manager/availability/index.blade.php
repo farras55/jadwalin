@@ -33,28 +33,28 @@
     {{-- Header Group: Breadcrumb & Page Title --}}
     <div>
         {{-- Breadcrumb Standar Permanen --}}
-        <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
             <span>Manager</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-[#6C5CE7] font-medium">Persetujuan Ketersediaan</span>
+            <span class="text-indigo-600 font-medium">Persetujuan Ketersediaan</span>
         </div>
 
         {{-- Header Halaman --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Persetujuan Ketersediaan
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-0.5">
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
                     Kelola pengajuan halangan karyawan di departemen Anda.
                 </p>
             </div>
 
             <div class="flex items-center gap-2.5">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] shadow-2xs">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-600 border border-slate-200 shadow-card">
                     <i data-lucide="clock" class="w-3.5 h-3.5"></i>
                     <span>Menunggu Persetujuan:</span>
-                    <span class="font-bold text-[#6C5CE7]">{{ $pendingCount }}</span>
+                    <span class="font-bold text-indigo-600">{{ $pendingCount }}</span>
                 </span>
             </div>
         </div>
@@ -62,7 +62,7 @@
 
     {{-- Flash Notifications --}}
     @if (session('success'))
-        <div class="p-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs flex items-center justify-between">
+        <div class="p-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-card flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i>
                 <span class="text-xs md:text-sm font-medium">{{ session('success') }}</span>
@@ -71,7 +71,7 @@
     @endif
 
     @if (session('error'))
-        <div class="p-4 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 shadow-2xs flex items-center justify-between">
+        <div class="p-4 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 shadow-card flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-rose-600 shrink-0"></i>
                 <span class="text-xs md:text-sm font-medium">{{ session('error') }}</span>
@@ -84,10 +84,10 @@
         {{-- Menunggu --}}
         <a
             href="{{ route('manager.availability.index', ['status' => 'pending_manager']) }}"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all shadow-2xs
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all shadow-card
                 {{ $status === 'pending_manager'
-                    ? 'bg-[#6C5CE7] text-white shadow-xs'
-                    : 'bg-white text-[#7C7896] hover:text-[#2D2A3E] border border-[#E2E0F7]' }}"
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'bg-white text-slate-500 hover:text-slate-900 border border-slate-200' }}"
         >
             <i data-lucide="clock" class="w-4 h-4"></i>
             <span>Menunggu ({{ $pendingCount }})</span>
@@ -96,10 +96,10 @@
         {{-- Disetujui --}}
         <a
             href="{{ route('manager.availability.index', ['status' => 'approved']) }}"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all shadow-2xs
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all shadow-card
                 {{ $status === 'approved'
-                    ? 'bg-[#6C5CE7] text-white shadow-xs'
-                    : 'bg-white text-[#7C7896] hover:text-[#2D2A3E] border border-[#E2E0F7]' }}"
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'bg-white text-slate-500 hover:text-slate-900 border border-slate-200' }}"
         >
             <i data-lucide="check-circle" class="w-4 h-4"></i>
             <span>Disetujui</span>
@@ -108,10 +108,10 @@
         {{-- Ditolak --}}
         <a
             href="{{ route('manager.availability.index', ['status' => 'rejected']) }}"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all shadow-2xs
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all shadow-card
                 {{ $status === 'rejected'
-                    ? 'bg-[#6C5CE7] text-white shadow-xs'
-                    : 'bg-white text-[#7C7896] hover:text-[#2D2A3E] border border-[#E2E0F7]' }}"
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'bg-white text-slate-500 hover:text-slate-900 border border-slate-200' }}"
         >
             <i data-lucide="x-circle" class="w-4 h-4"></i>
             <span>Ditolak</span>
@@ -119,36 +119,36 @@
     </div>
 
     {{-- Filter & Search Toolbar --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-3.5 rounded-2xl border border-[#E2E0F7] shadow-2xs">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200 shadow-card">
         <div class="relative flex-1">
-            <i data-lucide="search" class="w-4 h-4 text-[#7C7896] absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input
                 type="text"
                 x-model="searchQuery"
                 placeholder="Cari karyawan atau alasan..."
-                class="w-full pl-9 pr-4 py-2 text-xs md:text-sm text-[#2D2A3E] placeholder-[#7C7896]/60 bg-[#F5F3FF]/40 border border-[#E2E0F7] rounded-xl focus:outline-none focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                class="w-full pl-9 pr-4 py-2 text-xs md:text-sm text-slate-900 placeholder-[#64748B]/60 bg-indigo-50/40 border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
             >
         </div>
 
         <div class="flex items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-[#7C7896] bg-slate-50 border border-[#E2E0F7]">
-                <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+            <span class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 bg-slate-50 border border-slate-200">
+                <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
                 <span>{{ auth()->user()->department->name ?? 'Semua Departemen' }}</span>
             </span>
         </div>
     </div>
 
     {{-- Availability List Container --}}
-    <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden">
         @if ($availabilities->isEmpty())
             <div class="px-6 py-16 text-center">
-                <div class="w-14 h-14 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] mx-auto flex items-center justify-center mb-3">
+                <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 mx-auto flex items-center justify-center mb-3">
                     <i data-lucide="calendar-check" class="w-7 h-7"></i>
                 </div>
-                <h3 class="text-base font-bold text-[#2D2A3E]">
+                <h3 class="text-base font-bold text-slate-900">
                     Tidak Ada Pengajuan Ketersediaan
                 </h3>
-                <p class="text-xs text-[#7C7896] max-w-sm mx-auto mt-1">
+                <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1">
                     @if ($status === 'pending_manager')
                         Saat ini tidak ada pengajuan halangan yang sedang menunggu persetujuan Anda.
                     @elseif ($status === 'approved')
@@ -162,7 +162,7 @@
             {{-- Desktop Table View --}}
             <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-[#F5F3FF]/60 text-[11px] uppercase font-bold text-[#7C7896] tracking-wider border-b border-[#E2E0F7]">
+                    <thead class="bg-indigo-50/60 text-[11px] uppercase font-bold text-slate-500 tracking-wider border-b border-slate-200">
                         <tr>
                             <th scope="col" class="px-6 py-3.5">Karyawan</th>
                             <th scope="col" class="px-6 py-3.5">Tanggal / Hari</th>
@@ -174,7 +174,7 @@
                             @endif
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#E2E0F7] text-xs">
+                    <tbody class="divide-y divide-slate-100 text-xs">
                         @foreach ($availabilities as $availability)
                             @php
                                 $userName = $availability->user->name ?? 'Karyawan';
@@ -184,45 +184,45 @@
                             @endphp
                             <tr
                                 x-show="matchesSearch('{{ addslashes($userName) }}', '{{ $reasonText }}', '{{ addslashes($posName) }}')"
-                                class="hover:bg-[#F5F3FF]/40 transition"
+                                class="hover:bg-indigo-50/40 transition"
                             >
                                 {{-- Karyawan --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-full bg-[#6C5CE7] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                                        <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-card">
                                             {{ strtoupper($initials) }}
                                         </div>
                                         <div>
-                                            <p class="font-bold text-[#2D2A3E]">{{ $userName }}</p>
-                                            <p class="text-[11px] text-[#7C7896]">{{ $posName }}</p>
+                                            <p class="font-bold text-slate-900">{{ $userName }}</p>
+                                            <p class="text-[11px] text-slate-500">{{ $posName }}</p>
                                         </div>
                                     </div>
                                 </td>
 
                                 {{-- Tanggal --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="font-semibold text-[#2D2A3E]">
+                                    <div class="font-semibold text-slate-900">
                                         {{ $availability->start_time->translatedFormat('d M Y') }}
                                     </div>
-                                    <div class="text-[11px] text-[#7C7896]">
+                                    <div class="text-[11px] text-slate-500">
                                         {{ $availability->start_time->translatedFormat('l') }}
                                     </div>
                                 </td>
 
                                 {{-- Waktu --}}
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="font-semibold text-[#2D2A3E] flex items-center gap-1.5">
-                                        <i data-lucide="clock" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                                    <div class="font-semibold text-slate-900 flex items-center gap-1.5">
+                                        <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-600"></i>
                                         <span>{{ $availability->start_time->format('H:i') }} - {{ $availability->end_time->format('H:i') }}</span>
                                     </div>
-                                    <div class="text-[10px] text-[#7C7896] mt-0.5">
+                                    <div class="text-[10px] text-slate-500 mt-0.5">
                                         Termasuk buffer
                                     </div>
                                 </td>
 
                                 {{-- Alasan --}}
                                 <td class="px-6 py-4 max-w-xs">
-                                    <p class="text-[#2D2A3E] font-medium line-clamp-2">
+                                    <p class="text-slate-900 font-medium line-clamp-2">
                                         {{ $availability->reason }}
                                     </p>
                                 </td>
@@ -276,7 +276,7 @@
                                                 @csrf
                                                 <button
                                                     type="submit"
-                                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition"
+                                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-card transition"
                                                 >
                                                     <i data-lucide="check" class="w-3.5 h-3.5"></i>
                                                     Setujui
@@ -292,7 +292,7 @@
             </div>
 
             {{-- Mobile Cards View --}}
-            <div class="divide-y divide-[#E2E0F7] md:hidden">
+            <div class="divide-y divide-slate-100 md:hidden">
                 @foreach ($availabilities as $availability)
                     @php
                         $userName = $availability->user->name ?? 'Karyawan';
@@ -306,12 +306,12 @@
                     >
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-[#6C5CE7] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-card">
                                     {{ strtoupper($initials) }}
                                 </div>
                                 <div>
-                                    <p class="font-bold text-[#2D2A3E] text-sm">{{ $userName }}</p>
-                                    <p class="text-xs text-[#7C7896]">{{ $posName }}</p>
+                                    <p class="font-bold text-slate-900 text-sm">{{ $userName }}</p>
+                                    <p class="text-xs text-slate-500">{{ $posName }}</p>
                                 </div>
                             </div>
 
@@ -333,30 +333,30 @@
                             @endif
                         </div>
 
-                        <div class="bg-[#F5F3FF]/40 border border-[#E2E0F7] rounded-xl p-3 space-y-2 text-xs">
+                        <div class="bg-indigo-50/40 border border-slate-200 rounded-xl p-3 space-y-2 text-xs">
                             <div class="flex items-center justify-between">
-                                <span class="text-[#7C7896] flex items-center gap-1">
-                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                                <span class="text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-indigo-600"></i>
                                     Tanggal
                                 </span>
-                                <span class="font-semibold text-[#2D2A3E]">
+                                <span class="font-semibold text-slate-900">
                                     {{ $availability->start_time->translatedFormat('d M Y') }} ({{ $availability->start_time->translatedFormat('l') }})
                                 </span>
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <span class="text-[#7C7896] flex items-center gap-1">
-                                    <i data-lucide="clock" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                                <span class="text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-600"></i>
                                     Waktu
                                 </span>
-                                <span class="font-semibold text-[#2D2A3E]">
+                                <span class="font-semibold text-slate-900">
                                     {{ $availability->start_time->format('H:i') }} - {{ $availability->end_time->format('H:i') }}
                                 </span>
                             </div>
 
-                            <div class="pt-1.5 border-t border-[#E2E0F7]">
-                                <span class="text-[#7C7896]">Alasan:</span>
-                                <p class="text-[#2D2A3E] font-medium mt-0.5">
+                            <div class="pt-1.5 border-t border-slate-200">
+                                <span class="text-slate-500">Alasan:</span>
+                                <p class="text-slate-900 font-medium mt-0.5">
                                     {{ $availability->reason }}
                                 </p>
                             </div>
@@ -390,7 +390,7 @@
                                     @csrf
                                     <button
                                         type="submit"
-                                        class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition"
+                                        class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-card transition"
                                     >
                                         <i data-lucide="check" class="w-3.5 h-3.5"></i>
                                         Setujui
@@ -417,23 +417,23 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="fixed inset-0 bg-[#2D2A3E]/60 backdrop-blur-xs" @click="closeRejectModal()"></div>
+        <div class="fixed inset-0 bg-[#0F172A]/60 backdrop-blur-xs" @click="closeRejectModal()"></div>
 
         <div class="relative min-h-screen flex items-center justify-center p-4">
             <div
                 @click.outside="closeRejectModal()"
-                class="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#E2E0F7] space-y-4"
+                class="relative bg-white rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4"
             >
-                <div class="flex items-center justify-between pb-3 border-b border-[#E2E0F7]">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200">
                     <div class="flex items-center gap-2.5">
                         <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
                             <i data-lucide="x-circle" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h3 class="text-base font-bold text-[#2D2A3E]">
+                            <h3 class="text-base font-bold text-slate-900">
                                 Tolak Pengajuan Ketersediaan
                             </h3>
-                            <p class="text-xs text-[#7C7896]">
+                            <p class="text-xs text-slate-500">
                                 Berikan alasan penolakan untuk karyawan
                             </p>
                         </div>
@@ -441,7 +441,7 @@
                     <button
                         type="button"
                         @click="closeRejectModal()"
-                        class="p-1.5 rounded-xl text-[#7C7896] hover:text-[#2D2A3E] hover:bg-[#F5F3FF] transition"
+                        class="p-1.5 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-indigo-50 transition"
                     >
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
@@ -457,7 +457,7 @@
                     <div>
                         <label
                             for="rejection_reason"
-                            class="block text-xs font-semibold text-[#2D2A3E] mb-1.5"
+                            class="block text-xs font-semibold text-slate-900 mb-1.5"
                         >
                             Alasan Penolakan <span class="text-rose-500">*</span>
                         </label>
@@ -469,24 +469,24 @@
                             rows="4"
                             maxlength="255"
                             required
-                            class="w-full rounded-xl border border-[#E2E0F7] bg-[#F5F3FF]/30 px-3.5 py-2.5 text-xs md:text-sm text-[#2D2A3E] placeholder-[#7C7896]/60 focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] focus:outline-none transition"
+                            class="w-full rounded-xl border border-slate-200 bg-indigo-50/30 px-3.5 py-2.5 text-xs md:text-sm text-slate-900 placeholder-[#64748B]/60 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 focus:outline-none transition"
                             placeholder="Contoh: Jadwal kerja memerlukan staf penuh pada jam tersebut."
                         ></textarea>
-                        <p class="text-[11px] text-[#7C7896] mt-1">Maksimal 255 karakter.</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Maksimal 255 karakter.</p>
                     </div>
 
-                    <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-[#E2E0F7]">
+                    <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200">
                         <button
                             type="button"
                             @click="closeRejectModal()"
-                            class="px-4 py-2.5 text-xs font-semibold rounded-xl text-[#7C7896] hover:text-[#2D2A3E] hover:bg-[#F5F3FF] transition"
+                            class="px-4 py-2.5 text-xs font-semibold rounded-xl text-slate-500 hover:text-slate-900 hover:bg-indigo-50 transition"
                         >
                             Batal
                         </button>
 
                         <button
                             type="submit"
-                            class="px-4 py-2.5 text-xs font-semibold rounded-xl text-white bg-rose-600 hover:bg-rose-700 shadow-2xs transition"
+                            class="px-4 py-2.5 text-xs font-semibold rounded-xl text-white bg-rose-600 hover:bg-rose-700 shadow-card transition"
                         >
                             Tolak Pengajuan
                         </button>

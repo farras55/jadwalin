@@ -13,21 +13,21 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 {{-- Breadcrumb --}}
-                <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
                     <span>Karyawan</span>
                     <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                    <span class="text-[#6C5CE7] font-medium">Ketersediaan Waktu</span>
+                    <span class="text-indigo-600 font-medium">Ketersediaan Waktu</span>
                 </div>
 
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Ketersediaan Waktu
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-1">
+                <p class="text-xs md:text-sm text-slate-500 mt-1">
                     Atur jadwal halangan Anda agar penjadwalan tidak bentrok.
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100">
                     <i data-lucide="shield-check" class="h-3.5 w-3.5"></i>
                     Karyawan
                 </span>
@@ -52,7 +52,7 @@
             {{-- Riwayat halangan --}}
             <div class="lg:col-span-2 space-y-4">
                 <div class="flex items-center justify-between gap-4">
-                    <h2 class="text-lg font-bold text-[#2D2A3E]">Riwayat Halangan</h2>
+                    <h2 class="text-lg font-bold text-slate-900">Riwayat Halangan</h2>
                     <a href="{{ route('employee.availability.create') }}"
                        class="inline-flex items-center justify-center gap-2 px-4 min-h-[44px] rounded-xl text-sm font-semibold text-white bg-brand-primary hover:bg-brand-hover transition shadow-sm">
                         <i data-lucide="plus" class="h-4 w-4"></i>
@@ -67,14 +67,14 @@
                         $inputStart = $item->start_time->copy()->addMinutes($bufferMinutes);
                         $inputEnd = $item->end_time->copy()->subMinutes($bufferMinutes);
                     @endphp
-                    <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs">
+                    <div class="bg-white rounded-xl border border-brand-border p-5 shadow-card">
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                             <div class="min-w-0">
-                                <p class="font-bold text-[#2D2A3E]">
+                                <p class="font-bold text-slate-900">
                                     {{ $inputStart->copy()->locale('id')->translatedFormat('l, j M Y') }}
-                                    <span class="text-[#7C7896] font-semibold">&bull; {{ $inputStart->format('H:i') }}&ndash;{{ $inputEnd->format('H:i') }}</span>
+                                    <span class="text-slate-500 font-semibold">&bull; {{ $inputStart->format('H:i') }}&ndash;{{ $inputEnd->format('H:i') }}</span>
                                 </p>
-                                <p class="text-sm text-[#7C7896] mt-1 break-words">
+                                <p class="text-sm text-slate-500 mt-1 break-words">
                                     {{ $item->reason }}
                                     <span class="mx-1">&bull;</span>
                                     Tercatat {{ $item->start_time->format('H:i') }}&ndash;{{ $item->end_time->format('H:i') }}
@@ -108,13 +108,13 @@
                         </div>
                     </div>
                 @empty
-                    <div class="bg-white rounded-2xl border border-brand-border p-8 md:p-12 text-center shadow-2xs">
+                    <div class="bg-white rounded-xl border border-brand-border p-8 md:p-12 text-center shadow-card">
                         <div class="max-w-md mx-auto flex flex-col items-center">
-                            <div class="w-16 h-16 bg-[#F5F3FF] border border-[#E2E0F7] rounded-2xl flex items-center justify-center text-[#6C5CE7] mb-4">
+                            <div class="w-16 h-16 bg-indigo-50 border border-slate-200 rounded-xl flex items-center justify-center text-indigo-600 mb-4">
                                 <i data-lucide="calendar-off" class="h-8 w-8"></i>
                             </div>
-                            <h3 class="text-lg font-bold text-[#2D2A3E] mb-2">Belum ada halangan</h3>
-                            <p class="text-sm text-[#7C7896] leading-relaxed">
+                            <h3 class="text-lg font-bold text-slate-900 mb-2">Belum ada halangan</h3>
+                            <p class="text-sm text-slate-500 leading-relaxed">
                                 Anda belum mengajukan halangan. Ajukan jika ada kuliah, kegiatan keluarga, atau keperluan lain agar tidak dijadwalkan bentrok.
                             </p>
                         </div>
@@ -124,8 +124,8 @@
 
             {{-- Alur persetujuan --}}
             <div>
-                <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs">
-                    <h2 class="text-lg font-bold text-[#2D2A3E] mb-4">Alur Persetujuan</h2>
+                <div class="bg-white rounded-xl border border-brand-border p-5 shadow-card">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4">Alur Persetujuan</h2>
                     <ul class="space-y-4">
                         @foreach ([
                             'Ajukan halangan beserta alasan',
@@ -133,14 +133,14 @@
                             'Hanya halangan yang disetujui dipakai saat penyusunan jadwal',
                         ] as $step)
                             <li class="flex items-start gap-3">
-                                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F5F3FF] text-brand-primary">
+                                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-brand-primary">
                                     <i data-lucide="check" class="h-3.5 w-3.5"></i>
                                 </span>
-                                <span class="text-sm text-[#2D2A3E]">{{ $step }}</span>
+                                <span class="text-sm text-slate-900">{{ $step }}</span>
                             </li>
                         @endforeach
                     </ul>
-                    <p class="mt-5 flex items-start gap-2 rounded-xl bg-[#F5F3FF] p-3 text-xs text-brand-primary">
+                    <p class="mt-5 flex items-start gap-2 rounded-xl bg-indigo-50 p-3 text-xs text-brand-primary">
                         <i data-lucide="info" class="h-4 w-4 shrink-0 mt-0.5"></i>
                         <span>Sistem menambah buffer {{ $bufferMinutes }} menit sebelum dan sesudah halangan.</span>
                     </p>

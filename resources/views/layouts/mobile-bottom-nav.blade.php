@@ -76,8 +76,8 @@
                 <div class="grid grid-cols-2 gap-2">
                     {{-- 1. Shift Terbuka --}}
                     <a href="{{ route('employee.open-shifts') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('employee.open-shifts*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('employee.open-shifts*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('employee.open-shifts*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('employee.open-shifts*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="megaphone" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -88,8 +88,8 @@
 
                     {{-- 2. Timesheet --}}
                     <a href="{{ route('employee.timesheet') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('employee.timesheet*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('employee.timesheet*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('employee.timesheet*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('employee.timesheet*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="clock" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -100,8 +100,8 @@
 
                     {{-- 3. Ketersediaan Waktu --}}
                     <a href="{{ route('employee.availability') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('employee.availability*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('employee.availability*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('employee.availability*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('employee.availability*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="calendar-check" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -112,8 +112,8 @@
 
                     {{-- 4. Pengaturan Profil --}}
                     <a href="{{ route('profile.edit') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('profile*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('profile*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('profile*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('profile*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="settings" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -127,8 +127,8 @@
                 <div class="grid grid-cols-2 gap-2">
                     {{-- 1. Open Shift Manager --}}
                     <a href="{{ route('manager.open-shifts.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.open-shifts*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.open-shifts*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.open-shifts*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.open-shifts*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="megaphone" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -139,8 +139,8 @@
 
                     {{-- 2. Persetujuan Ketersediaan --}}
                     <a href="{{ route('manager.availability.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.availability*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.availability*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.availability*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.availability*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="calendar-check" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -151,8 +151,8 @@
 
                     {{-- 3. Koreksi Kehadiran --}}
                     <a href="{{ route('manager.attendance.regularizations.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.attendance.regularizations*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.attendance.regularizations*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.attendance.regularizations*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.attendance.regularizations*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="file-pen-line" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -163,8 +163,8 @@
 
                     {{-- 4. Timesheet & Laporan --}}
                     <a href="{{ route('manager.timesheets.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.timesheets*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.timesheets*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.timesheets*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.timesheets*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="clock" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -175,8 +175,8 @@
 
                     {{-- 5. Data Karyawan Tim --}}
                     <a href="{{ route('manager.employees.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.employees*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.employees*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('manager.employees*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('manager.employees*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="users" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -187,8 +187,8 @@
 
                     {{-- 6. Pengaturan Profil --}}
                     <a href="{{ route('profile.edit') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('profile*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('profile*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('profile*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('profile*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="settings" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -202,8 +202,8 @@
                 <div class="grid grid-cols-2 gap-2">
                     {{-- 1. Pengaturan Perusahaan --}}
                     <a href="{{ route('admin.settings.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('admin.settings*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('admin.settings*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('admin.settings*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('admin.settings*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="sliders" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -214,8 +214,8 @@
 
                     {{-- 2. Audit Logs --}}
                     <a href="{{ route('admin.audit-logs.index') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('admin.audit-logs*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('admin.audit-logs*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('admin.audit-logs*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('admin.audit-logs*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="shield-check" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -226,8 +226,8 @@
 
                     {{-- 3. Laporan Timesheet --}}
                     <a href="{{ route('admin.reports.timesheet') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('admin.reports*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('admin.reports*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('admin.reports*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('admin.reports*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="file-bar-chart" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -238,8 +238,8 @@
 
                     {{-- 4. Pengaturan Profil --}}
                     <a href="{{ route('profile.edit') }}" 
-                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('profile*') ? 'bg-purple-50/70 border-purple-200 text-purple-900' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
-                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('profile*') ? 'bg-[#6C5CE7] text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+                       class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 {{ request()->routeIs('profile*') ? 'bg-indigo-50/70 border-indigo-200 text-indigo-950 font-semibold' : 'bg-slate-50/60 border-slate-200/80 text-slate-800 hover:bg-white hover:border-slate-300' }}">
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center {{ request()->routeIs('profile*') ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
                             <i data-lucide="settings" class="h-4 w-4"></i>
                         </div>
                         <div>
@@ -285,31 +285,29 @@
             @if ($isEmployee)
                 {{-- Slot 1: Beranda --}}
                 <a href="{{ route('employee.dashboard') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.dashboard*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.dashboard*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="layout-grid" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Beranda</span>
                 </a>
 
                 {{-- Slot 2: Jadwal --}}
                 <a href="{{ route('employee.schedule') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.schedule*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.schedule*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="calendar" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Jadwal</span>
                 </a>
 
-                {{-- Slot 3: Presensi (Refined Center Action Button) --}}
-                <div class="flex items-center justify-center h-full relative -top-2">
-                    <a href="{{ route('employee.attendance') }}" 
-                       class="h-10 w-10 rounded-xl bg-[#6C5CE7] text-white flex flex-col items-center justify-center shadow-md shadow-purple-500/20 active:scale-95 transition-transform"
-                       title="Clock-In / Clock-Out">
-                        <i data-lucide="map-pin" class="h-4 w-4"></i>
-                        <span class="text-[8px] font-bold uppercase mt-0.5 tracking-tight">Absen</span>
-                    </a>
-                </div>
+                {{-- Slot 3: Presensi --}}
+                <a href="{{ route('employee.attendance') }}" 
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.attendance*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}"
+                   title="Clock-In / Clock-Out">
+                    <i data-lucide="map-pin" class="h-4.5 w-4.5"></i>
+                    <span class="text-[10px] leading-none">Presensi</span>
+                </a>
 
                 {{-- Slot 4: Tukar Shift --}}
                 <a href="{{ route('employee.swaps') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.swaps*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('employee.swaps*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="arrow-left-right" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Tukar</span>
                 </a>
@@ -317,31 +315,29 @@
             @elseif ($isManager)
                 {{-- Slot 1: Beranda Manajer --}}
                 <a href="{{ route('manager.dashboard') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.dashboard*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.dashboard*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="layout-grid" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Beranda</span>
                 </a>
 
                 {{-- Slot 2: Roster Jadwal Tim --}}
                 <a href="{{ route('manager.shifts.index') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.shifts*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.shifts*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="calendar" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Roster</span>
                 </a>
 
-                {{-- Slot 3: Presensi Tim (Center Action Button) --}}
-                <div class="flex items-center justify-center h-full relative -top-2">
-                    <a href="{{ route('manager.attendance.index') }}" 
-                       class="h-10 w-10 rounded-xl bg-[#6C5CE7] text-white flex flex-col items-center justify-center shadow-md shadow-purple-500/20 active:scale-95 transition-transform"
-                       title="Monitoring Presensi Tim">
-                        <i data-lucide="user-check" class="h-4 w-4"></i>
-                        <span class="text-[8px] font-bold uppercase mt-0.5 tracking-tight">Tim</span>
-                    </a>
-                </div>
+                {{-- Slot 3: Presensi Tim --}}
+                <a href="{{ route('manager.attendance.index') }}" 
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.attendance*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}"
+                   title="Monitoring Presensi Tim">
+                    <i data-lucide="user-check" class="h-4.5 w-4.5"></i>
+                    <span class="text-[10px] leading-none">Presensi</span>
+                </a>
 
                 {{-- Slot 4: Persetujuan Tukar --}}
                 <a href="{{ route('manager.swaps.index') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.swaps*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('manager.swaps*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="arrow-left-right" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Tukar</span>
                 </a>
@@ -349,28 +345,27 @@
             @else
                 {{-- Admin (Superadmin & Company Admin) --}}
                 <a href="{{ route('admin.dashboard') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.dashboard*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.dashboard*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="layout-grid" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Dashboard</span>
                 </a>
 
                 <a href="{{ route('admin.users.index') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.users*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.users*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="users" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Pengguna</span>
                 </a>
 
-                <div class="flex items-center justify-center h-full relative -top-2">
-                    <a href="{{ route('admin.shifts.index') }}" 
-                       class="h-10 w-10 rounded-xl bg-[#6C5CE7] text-white flex flex-col items-center justify-center shadow-md shadow-purple-500/20 active:scale-95 transition-transform"
-                       title="Template Shift">
-                        <i data-lucide="calendar" class="h-4 w-4"></i>
-                        <span class="text-[8px] font-bold uppercase mt-0.5 tracking-tight">Shift</span>
-                    </a>
-                </div>
+                {{-- Slot 3: Template Shift --}}
+                <a href="{{ route('admin.shifts.index') }}" 
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.shifts*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}"
+                   title="Template Shift">
+                    <i data-lucide="calendar" class="h-4.5 w-4.5"></i>
+                    <span class="text-[10px] leading-none">Shift</span>
+                </a>
 
                 <a href="{{ route('admin.departments.index') }}" 
-                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.departments*') ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
+                   class="flex flex-col items-center justify-center gap-1 h-full transition {{ request()->routeIs('admin.departments*') ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}">
                     <i data-lucide="briefcase" class="h-4.5 w-4.5"></i>
                     <span class="text-[10px] leading-none">Departemen</span>
                 </a>
@@ -379,12 +374,12 @@
             {{-- Slot 5: Menu Lainnya (Triggers Bottom Sheet Popup) --}}
             <button type="button" 
                     @click="moreDrawerOpen = true"
-                    class="flex flex-col items-center justify-center gap-1 h-full transition relative {{ $isSecondaryActive ? 'text-[#6C5CE7] font-semibold' : 'text-slate-500 hover:text-slate-900' }}"
+                    class="flex flex-col items-center justify-center gap-1 h-full transition relative {{ $isSecondaryActive ? 'text-indigo-600 font-semibold' : 'text-slate-500 hover:text-slate-900' }}"
                     title="Menu Lainnya">
                 <div class="relative">
                     <i data-lucide="more-horizontal" class="h-4.5 w-4.5"></i>
                     @if ($isSecondaryActive)
-                        <span class="absolute -top-1 -right-1 h-1.5 w-1.5 rounded-full bg-[#6C5CE7]"></span>
+                        <span class="absolute -top-1 -right-1 h-1.5 w-1.5 rounded-full bg-indigo-600"></span>
                     @endif
                 </div>
                 <span class="text-[10px] leading-none">Lainnya</span>

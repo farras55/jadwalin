@@ -1,20 +1,20 @@
 <x-app-layout>
-
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-
-        {{-- Header --}}
-        <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <x-slot name="header">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">
+                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                    <a href="{{ route('dashboard') }}" class="hover:text-indigo-600 transition">Dashboard</a>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span class="text-slate-900 font-medium">Pusat Notifikasi</span>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                     Pusat Notifikasi
                 </h1>
-                <p class="mt-1 text-sm text-gray-500">
-                    Lihat informasi dan pemberitahuan terbaru untuk akun Anda.
+                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                    Lihat informasi, pengumuman jadwal, dan pemberitahuan aktivitas akun Anda.
                 </p>
             </div>
 
-            {{-- Tandai Semua Dibaca --}}
             @if($unreadNotifCount > 0)
                 <form action="{{ route('notifications.read-all') }}" method="POST">
                     @csrf
@@ -22,145 +22,216 @@
 
                     <button
                         type="submit"
-                        class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+                        class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-card transition"
                     >
-                        {{-- Check-check icon --}}
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <path d="m18 7 4 4-4 4"></path>
-                            <path d="m6 7 4 4-4 4"></path>
-                            <path d="M2 12h20"></path>
-                        </svg>
-
-                        Tandai Semua Dibaca
+                        <i data-lucide="check-check" class="w-4 h-4 text-indigo-600"></i>
+                        <span>Tandai Semua Dibaca</span>
                     </button>
                 </form>
             @endif
         </div>
+    </x-slot>
+
+    <div class="space-y-4" x-data="{
+        selectedNotification: null,
+        openDetail(notif) {
+            this.selectedNotification = notif;
+        },
+        closeDetail() {
+            this.selectedNotification = null;
+        }
+    }" @keydown.escape.window="closeDetail()">
 
         {{-- Success Message --}}
         @if(session('success'))
-            <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                {{ session('success') }}
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-card flex items-center gap-2.5 text-xs font-medium">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <span>{{ session('success') }}</span>
             </div>
         @endif
 
-        {{-- Notification List --}}
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-
-            @forelse($notifications as $notification)
-
-                <div class="flex items-start gap-4 border-b border-gray-100 px-5 py-4 last:border-b-0
-                    {{ !$notification->is_read ? 'bg-blue-50/50' : 'bg-white' }}">
-
-                    {{-- Unread Marker --}}
-                    <div class="mt-2 flex h-2.5 w-2.5 shrink-0 items-center justify-center">
-                        @if(!$notification->is_read)
-                            <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
-                        @endif
-                    </div>
-
-                    {{-- Notification Content --}}
-                    <div class="min-w-0 flex-1">
-
-                        <div class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <h2 class="text-sm font-semibold text-gray-900">
-                                    {{ $notification->title }}
-                                </h2>
-
-                                <p class="mt-1 text-sm leading-relaxed text-gray-600">
-                                    {{ $notification->message }}
-                                </p>
-                            </div>
-
-                            <span class="shrink-0 text-xs text-gray-400">
-                                {{ $notification->created_at->diffForHumans() }}
-                            </span>
+        {{-- Notification List Card --}}
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
+            <div class="divide-y divide-slate-100">
+                @forelse($notifications as $notification)
+                    <div 
+                        class="flex items-start gap-3.5 px-4 sm:px-5 py-4 transition cursor-pointer {{ !$notification->is_read ? 'bg-indigo-50/30 hover:bg-indigo-50/50' : 'hover:bg-slate-50/80' }}"
+                        @click="openDetail({
+                            id: {{ $notification->id }},
+                            title: {{ json_encode($notification->title) }},
+                            message: {{ json_encode($notification->message) }},
+                            type: {{ json_encode($notification->type ?? 'Info') }},
+                            time: {{ json_encode($notification->created_at->translatedFormat('d F Y, H:i') . ' WIB (' . $notification->created_at->diffForHumans() . ')') }},
+                            isRead: {{ $notification->is_read ? 'true' : 'false' }},
+                            readUrl: {{ json_encode(route('notifications.read', $notification)) }}
+                        })"
+                    >
+                        {{-- Unread Status Indicator --}}
+                        <div class="mt-1.5 shrink-0">
+                            <span class="block h-2 w-2 rounded-full {{ !$notification->is_read ? 'bg-indigo-600 ring-2 ring-indigo-200' : 'bg-slate-300' }}"></span>
                         </div>
 
-                        {{-- Type --}}
-                        @if($notification->type)
-                            <span class="mt-2 inline-block rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
-                                {{ $notification->type }}
-                            </span>
-                        @endif
+                        {{-- Content --}}
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                                <h2 class="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                                    {{ $notification->title }}
+                                </h2>
+                                <span class="text-[11px] text-slate-400 shrink-0 font-medium">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </span>
+                            </div>
 
-                        {{-- Mark as Read --}}
-                        @if(!$notification->is_read)
-                            <form
-                                action="{{ route('notifications.read', $notification) }}"
-                                method="POST"
-                                class="mt-3"
-                            >
-                                @csrf
-                                @method('PATCH')
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed line-clamp-2">
+                                {{ $notification->message }}
+                            </p>
 
-                                <button
-                                    type="submit"
-                                    class="text-xs font-medium text-blue-600 hover:text-blue-800"
-                                >
-                                    Tandai sudah dibaca
-                                </button>
-                            </form>
-                        @endif
+                            <div class="mt-2.5 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    @if($notification->type)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                                            {{ $notification->type }}
+                                        </span>
+                                    @endif
+                                </div>
 
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800">
+                                        Lihat Rincian &rarr;
+                                    </span>
+
+                                    @if(!$notification->is_read)
+                                        <form
+                                            action="{{ route('notifications.read', $notification) }}"
+                                            method="POST"
+                                            @click.stop
+                                        >
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <button
+                                                type="submit"
+                                                class="text-[11px] font-semibold text-slate-500 hover:text-slate-800"
+                                            >
+                                                Tandai Dibaca
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-            @empty
-
-                {{-- Empty State --}}
-                <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
-
-                    {{-- Inbox Icon --}}
-                    <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="28"
-                            height="28"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="text-gray-400"
-                        >
-                            <path d="M22 12h-6l-2 3h-4l-2-3H2"></path>
-                            <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"></path>
-                        </svg>
+                @empty
+                    <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
+                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                            <i data-lucide="inbox" class="w-6 h-6"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-slate-900">
+                            Belum Ada Notifikasi
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1 max-w-sm">
+                            Pemberitahuan aktivitas, perubahan jadwal, dan persetujuan akan tampil di halaman ini.
+                        </p>
                     </div>
-
-                    <h2 class="text-base font-semibold text-gray-900">
-                        Belum Ada Notifikasi
-                    </h2>
-
-                    <p class="mt-1 max-w-sm text-sm text-gray-500">
-                        Notifikasi terbaru akan muncul di halaman ini.
-                    </p>
-                </div>
-
-            @endforelse
-
+                @endforelse
+            </div>
         </div>
 
         {{-- Pagination --}}
         @if($notifications->hasPages())
-            <div class="mt-6">
+            <div class="pt-2">
                 {{ $notifications->links() }}
             </div>
         @endif
 
+        {{-- MODAL DETAIL NOTIFIKASI --}}
+        <div 
+            x-show="selectedNotification !== null" 
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" 
+            style="display: none;"
+        >
+            {{-- Backdrop --}}
+            <div 
+                x-show="selectedNotification !== null"
+                x-transition:enter="ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity" 
+                @click="closeDetail()"
+            ></div>
+
+            {{-- Dialog Content --}}
+            <div 
+                x-show="selectedNotification !== null"
+                x-transition:enter="ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="ease-in duration-150"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="relative bg-white rounded-xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden z-10"
+                @click.stop
+            >
+                {{-- Modal Header --}}
+                <div class="px-5 py-4 border-b border-slate-100 flex items-start justify-between gap-3 bg-slate-50/50">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200" x-text="selectedNotification?.type || 'Notifikasi'"></span>
+                            <span class="text-[11px] text-slate-400" x-text="selectedNotification?.time || ''"></span>
+                        </div>
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900" x-text="selectedNotification?.title || ''"></h3>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        @click="closeDetail()" 
+                        class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+                        title="Tutup"
+                    >
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                {{-- Modal Body --}}
+                <div class="p-5">
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-wrap" x-text="selectedNotification?.message || ''"></p>
+                </div>
+
+                {{-- Modal Footer --}}
+                <div class="px-5 py-3.5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-2">
+                    <template x-if="selectedNotification && !selectedNotification.isRead">
+                        <form :action="selectedNotification?.readUrl" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button 
+                                type="submit" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition"
+                            >
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                <span>Tandai Sudah Dibaca</span>
+                            </button>
+                        </form>
+                    </template>
+                    <template x-if="selectedNotification && selectedNotification.isRead">
+                        <span class="text-xs font-medium text-slate-400 flex items-center gap-1">
+                            <i data-lucide="check-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+                            Sudah dibaca
+                        </span>
+                    </template>
+
+                    <button 
+                        type="button" 
+                        @click="closeDetail()" 
+                        class="px-4 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                    >
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
-</div>
 </x-app-layout>

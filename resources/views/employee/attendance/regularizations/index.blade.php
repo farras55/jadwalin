@@ -4,9 +4,9 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <nav class="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-1">
-                    <a href="{{ route('employee.attendance') }}" class="hover:text-[#6C5CE7] transition-colors">Presensi</a>
+                    <a href="{{ route('employee.attendance') }}" class="hover:text-indigo-600 transition-colors">Presensi</a>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <span class="text-[#6C5CE7] font-semibold">Riwayat Koreksi Kehadiran</span>
+                    <span class="text-indigo-600 font-semibold">Riwayat Koreksi Kehadiran</span>
                 </nav>
                 <h1 class="text-2xl font-bold text-gray-900 tracking-tight">
                     Riwayat Koreksi Kehadiran
@@ -16,7 +16,7 @@
                 </p>
             </div>
             <div>
-                <a href="{{ route('employee.attendance') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-gray-700 bg-white border border-gray-200 hover:border-[#6C5CE7]/40 hover:text-[#6C5CE7] shadow-2xs transition-all">
+                <a href="{{ route('employee.attendance') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-gray-700 bg-white border border-gray-200 hover:border-indigo-300 hover:text-indigo-600 shadow-card transition-all">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
                     <span>Kembali ke Presensi</span>
                 </a>
@@ -25,24 +25,24 @@
 
         {{-- Alerts --}}
         @if (session('success'))
-            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 text-sm">
+            <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 text-sm">
                 <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-3 text-sm">
+            <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-3 text-sm">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-rose-600 shrink-0"></i>
                 <span>{{ session('error') }}</span>
             </div>
         @endif
 
         {{-- Main Table Container --}}
-        <div class="bg-white rounded-3xl border border-gray-100 shadow-xl/5 overflow-hidden">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-xl/5 overflow-hidden">
             <div class="p-5 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex items-center gap-2.5">
-                    <div class="p-2 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7]">
+                    <div class="p-2 rounded-xl bg-indigo-50 text-indigo-600">
                         <i data-lucide="history" class="w-5 h-5"></i>
                     </div>
                     <div>

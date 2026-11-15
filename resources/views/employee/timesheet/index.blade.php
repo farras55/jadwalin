@@ -17,12 +17,12 @@
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <a href="{{ route('employee.timesheet.export.excel', ['month' => $month, 'year' => $year]) }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-card transition-colors">
                     <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
                     <span>Export Excel</span>
                 </a>
                 <a href="{{ route('employee.timesheet.export.pdf', ['month' => $month, 'year' => $year]) }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-2xs transition-colors">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-card transition-colors">
                     <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
                     <span>Export PDF</span>
                 </a>
@@ -40,7 +40,7 @@
             submitFilter() {
                 $refs.filterForm.submit();
             }
-        }" class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-2xs">
+        }" class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-card">
             <form x-ref="filterForm" method="GET" action="{{ route('employee.timesheet') }}" class="flex flex-col sm:flex-row items-stretch sm:items-end gap-2.5 text-xs">
                 {{-- Dropdown Pilih Bulan --}}
                 <div class="flex-1">
@@ -49,7 +49,7 @@
                             name="month" 
                             x-model="selectedMonth"
                             @change="submitFilter()"
-                            class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-2xs py-2 font-medium text-slate-800">
+                            class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-card py-2 font-medium text-slate-800">
                         @foreach ($monthNames as $mNum => $mLabel)
                             <option value="{{ $mNum }}" {{ (int) $month === (int) $mNum ? 'selected' : '' }}>
                                 {{ $mLabel }}
@@ -65,7 +65,7 @@
                             name="year" 
                             x-model="selectedYear"
                             @change="submitFilter()"
-                            class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-2xs py-2 font-medium text-slate-800">
+                            class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-card py-2 font-medium text-slate-800">
                         @for ($y = now()->year + 1; $y >= 2024; $y--)
                             <option value="{{ $y }}" {{ (int) $year === (int) $y ? 'selected' : '' }}>
                                 {{ $y }}
@@ -75,13 +75,14 @@
                 </div>
 
                 {{-- Tombol Filter & Reset --}}
-                <div class="flex items-center gap-2 pt-1 sm:pt-0">
-                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-2xs transition-colors w-full sm:w-auto">
+                <div class="flex items-center gap-2 pt-1 sm:pt-0 w-full sm:w-auto">
+                    <button type="submit" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-card transition-colors">
                         <i data-lucide="filter" class="w-3.5 h-3.5"></i>
                         <span>Filter</span>
                     </button>
-                    <a href="{{ route('employee.timesheet') }}" title="Reset ke Bulan Berjalan" class="inline-flex items-center justify-center px-2.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold transition-colors">
+                    <a href="{{ route('employee.timesheet') }}" title="Reset ke Bulan Berjalan" class="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs transition-colors shrink-0">
                         <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Reset</span>
                     </a>
                 </div>
             </form>
@@ -90,7 +91,7 @@
         {{-- 3 Card Ringkasan (PP 35/2021) --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {{-- Card 1: Total Jam Reguler --}}
-            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs">
+            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-card">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Jam Reguler</p>
@@ -106,7 +107,7 @@
             </div>
 
             {{-- Card 2: Total Jam Lembur --}}
-            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs">
+            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-card">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Jam Lembur</p>
@@ -122,7 +123,7 @@
             </div>
 
             {{-- Card 3: Persentase Kehadiran --}}
-            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs">
+            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-card">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Persentase Kehadiran</p>
@@ -139,7 +140,7 @@
         </div>
 
         {{-- Tabel Riwayat Kehadiran Personal --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
             <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex items-center gap-2">
                     <div class="p-1.5 rounded-lg bg-indigo-50 text-brand-primary">

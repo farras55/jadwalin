@@ -16,12 +16,12 @@
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('employee.swaps') }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-2xs">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-card">
                     <i data-lucide="arrow-left-right" class="h-3.5 w-3.5 text-slate-400"></i>
                     Tukar Shift
                 </a>
                 <a href="{{ route('employee.open-shifts') }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-2xs">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-card">
                     <i data-lucide="megaphone" class="h-3.5 w-3.5"></i>
                     Shift Terbuka
                 </a>
@@ -68,7 +68,7 @@
         {{-- =====================================================
              INTEGRATED WEEK NAVIGATOR & METRICS BAR (CLEAN HIGH DENSITY)
         ====================================================== --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-2xs">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-card">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
                 {{-- Left: Week Navigation Controls --}}
@@ -145,9 +145,9 @@
 
                         <div class="flex flex-col min-h-[250px] rounded-xl border transition-all
                             {{ $isToday
-                                ? 'border-brand-primary bg-indigo-50/20 ring-1 ring-brand-primary/20 shadow-2xs'
+                                ? 'border-brand-primary bg-indigo-50/20 ring-1 ring-brand-primary/20 shadow-card'
                                 : ($hasShifts
-                                    ? 'border-slate-200/80 bg-white shadow-2xs hover:border-slate-300'
+                                    ? 'border-slate-200/80 bg-white shadow-card hover:border-slate-300'
                                     : 'border-dashed border-slate-200 bg-slate-50/40') }}
                             p-2">
 
@@ -164,7 +164,7 @@
                                 </div>
 
                                 <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold font-mono
-                                    {{ $isToday ? 'bg-brand-primary text-white shadow-2xs' : 'text-slate-700 bg-slate-50 border border-slate-200' }}">
+                                    {{ $isToday ? 'bg-brand-primary text-white shadow-card' : 'text-slate-700 bg-slate-50 border border-slate-200' }}">
                                     {{ $day['date']->format('d') }}
                                 </div>
                             </div>
@@ -176,7 +176,7 @@
                                         @php
                                             $shiftStart = $assignment->shift->start_time;
                                             $shiftEnd = $assignment->shift->end_time;
-                                            $color = $assignment->template_color ?? '#6C5CE7';
+                                            $color = $assignment->template_color ?? '#4F46E5';
                                             $statusText = match($assignment->schedule_status) {
                                                 'upcoming'  => 'Mendatang',
                                                 'ongoing'   => 'Berjalan',
@@ -191,7 +191,7 @@
                                             };
                                         @endphp
                                         <a href="{{ route('employee.schedule.show', $assignment) }}"
-                                           class="group block bg-white rounded-lg border border-slate-200/90 p-2 shadow-2xs hover:border-brand-primary/50 transition-all relative overflow-hidden">
+                                           class="group block bg-white rounded-lg border border-slate-200/90 p-2 shadow-card hover:border-brand-primary/50 transition-all relative overflow-hidden">
                                             {{-- Color accent indicator stripe --}}
                                             <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: {{ $color }};"></div>
 
@@ -237,14 +237,14 @@
 
                         <div class="rounded-xl border p-3.5 transition-all
                             {{ $isToday
-                                ? 'border-brand-primary bg-white ring-1 ring-brand-primary/20 shadow-2xs'
-                                : ($hasShifts ? 'border-slate-200/80 bg-white shadow-2xs' : 'border-dashed border-slate-200 bg-slate-50/50') }}">
+                                ? 'border-brand-primary bg-white ring-1 ring-brand-primary/20 shadow-card'
+                                : ($hasShifts ? 'border-slate-200/80 bg-white shadow-card' : 'border-dashed border-slate-200 bg-slate-50/50') }}">
 
                             {{-- Mobile Day Header --}}
                             <div class="flex items-center justify-between pb-2.5 border-b {{ $isToday ? 'border-brand-primary/20' : 'border-slate-100' }}">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-lg flex flex-col items-center justify-center font-bold font-mono
-                                        {{ $isToday ? 'bg-brand-primary text-white shadow-2xs' : 'bg-slate-50 border border-slate-200 text-slate-700' }}">
+                                        {{ $isToday ? 'bg-brand-primary text-white shadow-card' : 'bg-slate-50 border border-slate-200 text-slate-700' }}">
                                         <span class="text-[8px] uppercase leading-none">{{ substr($dayNames[$index], 0, 3) }}</span>
                                         <span class="text-xs leading-tight mt-0.5">{{ $day['date']->format('d') }}</span>
                                     </div>
@@ -272,7 +272,7 @@
                                         @php
                                             $shiftStart = $assignment->shift->start_time;
                                             $shiftEnd = $assignment->shift->end_time;
-                                            $color = $assignment->template_color ?? '#6C5CE7';
+                                            $color = $assignment->template_color ?? '#4F46E5';
                                             $statusText = match($assignment->schedule_status) {
                                                 'upcoming'  => 'Mendatang',
                                                 'ongoing'   => 'Sedang Berlangsung',
@@ -333,11 +333,11 @@
             <div class="lg:col-span-4 space-y-4">
 
                 {{-- WIDGET: SHIFT HARI INI (DAILY BRIEFING) --}}
-                <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+                <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
                     <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full {{ $todayAssignments->isNotEmpty() ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300' }}"></span>
+                                <span class="w-2 h-2 rounded-full {{ $todayAssignments->isNotEmpty() ? 'bg-emerald-500' : 'bg-slate-300' }}"></span>
                                 <h3 class="text-xs md:text-sm font-bold text-slate-900">Shift Hari Ini</h3>
                             </div>
                             <p class="text-[11px] text-slate-500 mt-0.5">
@@ -377,7 +377,7 @@
                                         $shiftStart = $assignment->shift->start_time;
                                         $shiftEnd = $assignment->shift->end_time;
                                         $durationH = round(max(0, $shiftStart->diffInMinutes($shiftEnd, false)) / 60, 1);
-                                        $color = $assignment->template_color ?? '#6C5CE7';
+                                        $color = $assignment->template_color ?? '#4F46E5';
                                     @endphp
                                     <div class="bg-slate-50/70 border border-slate-200/80 rounded-lg p-3 relative overflow-hidden">
                                         <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: {{ $color }};"></div>
@@ -422,7 +422,7 @@
                 </div>
 
                 {{-- WIDGET: AKSI CEPAT / SHORTCUTS --}}
-                <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+                <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
                     <div class="px-4 py-3 border-b border-slate-100">
                         <h3 class="text-xs md:text-sm font-bold text-slate-900">Aksi Cepat</h3>
                     </div>

@@ -656,14 +656,14 @@
 
         {{-- Flash Alerts --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-2xs flex items-center gap-2.5">
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-card flex items-center gap-2.5">
                 <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                 <span class="text-xs font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-2xs flex items-center gap-2.5">
+            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-card flex items-center gap-2.5">
                 <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
                 <span class="text-xs font-medium">{{ session('error') }}</span>
             </div>
@@ -690,19 +690,19 @@
 
             {{-- Compact High-Density Metrics Bar --}}
             <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
+                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-card flex items-center gap-2 shrink-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Kehadiran</span>
                     <span class="text-xs font-extrabold text-slate-900 font-mono">{{ $stats['attendance_percentage'] }}%</span>
                     <span class="text-[10px] text-slate-400">({{ $stats['present_shifts'] }}/{{ $stats['total_shifts'] }})</span>
                 </div>
 
-                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
+                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-card flex items-center gap-2 shrink-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tepat Waktu</span>
                     <span class="text-xs font-extrabold text-emerald-600 font-mono">{{ $stats['on_time_days'] }} Hari</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200/70">{{ $stats['on_time_status'] }}</span>
                 </div>
 
-                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2 shrink-0">
+                <div class="px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-card flex items-center gap-2 shrink-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Jam</span>
                     <span class="text-xs font-extrabold text-slate-900 font-mono">{{ $stats['total_work_hours'] }} Jam</span>
                     <span class="text-[10px] text-slate-400">Bulan Ini</span>
@@ -720,7 +720,7 @@
             {{-- --------------------------------------------------------------------- --}}
             <div class="lg:col-span-8 space-y-4">
                 {{-- Card Utama --}}
-                <div id="live-lock" data-testid="live-lock" class="bg-white rounded-xl border border-slate-200/80 p-5 md:p-6 shadow-2xs space-y-4">
+                <div id="live-lock" data-testid="live-lock" class="bg-white rounded-xl border border-slate-200/80 p-5 md:p-6 shadow-card space-y-4">
                     
                     {{-- Header Card & Status Badge (State dari Backend, tidak bisa diubah manual) --}}
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100">
@@ -736,7 +736,7 @@
                         {{-- Status Pill (Read-Only, dikontrol backend) --}}
                         @if ($attendanceState === 'working')
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold self-start sm:self-auto">
-                                <span class="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
+                                <span class="w-2 h-2 rounded-full bg-teal-600"></span>
                                 Sedang Bekerja
                             </span>
                         @elseif ($attendanceState === 'completed')
@@ -756,7 +756,7 @@
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold self-start sm:self-auto">
-                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                                 Belum Masuk
                             </span>
                         @endif
@@ -766,7 +766,7 @@
                     <div class="bg-slate-50/70 border border-slate-200/80 rounded-xl p-3.5 grid grid-cols-1 sm:grid-cols-3 gap-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60">
                         {{-- Karyawan --}}
                         <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                            <div class="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-card">
                                 {{ $initials }}
                             </div>
                             <div class="min-w-0">
@@ -814,7 +814,7 @@
                          :class="isInsideRadius ? 'bg-emerald-50/60 border-emerald-200/80' : 'bg-rose-50/60 border-rose-200/80'"
                          class="border rounded-xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 transition-colors">
                         <div class="flex items-center gap-2">
-                            <span :class="isInsideRadius ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'"
+                            <span :class="isInsideRadius ? 'bg-emerald-500' : 'bg-rose-500'"
                                   class="w-2 h-2 rounded-full shrink-0"></span>
                             <p class="text-xs text-slate-800">
                                 <strong :class="isInsideRadius ? 'text-emerald-950' : 'text-rose-950'"
@@ -837,7 +837,7 @@
                         @if ($attendanceState === 'working')
                             @php $isTodayLate = $todayLateMinutes > 0; @endphp
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 font-semibold">
-                                <span class="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
+                                <span class="w-2 h-2 rounded-full bg-teal-600"></span>
                                 Sedang Bekerja
                             </span>
                             <span class="text-slate-400 font-medium">•</span>
@@ -872,7 +872,7 @@
 
                         @else
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                                 Belum Masuk
                             </span>
                             <span class="text-slate-400 font-medium">• Menunggu Clock In</span>
@@ -1054,7 +1054,7 @@
                 </div>
 
                 {{-- Banner Catatan Supervisor (Di Bawah Card Utama) --}}
-                <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-2xs flex items-start gap-2.5">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-card flex items-start gap-2.5">
                     <div class="p-1 rounded bg-teal-50 text-teal-700 shrink-0 mt-0.5">
                         <i data-lucide="info" class="w-3.5 h-3.5"></i>
                     </div>
@@ -1071,13 +1071,13 @@
             <div class="lg:col-span-4 space-y-4">
 
                 {{-- Widget 1: Lokasi Presensi Anda --}}
-                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs space-y-3">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-card space-y-3">
                     {{-- Header Widget --}}
                     <div class="flex items-center justify-between">
                         <h3 class="text-xs md:text-sm font-bold text-slate-900" data-testid="location-heading">Lokasi Presensi Anda</h3>
                         <span :class="isLocationConfigured ? 'text-emerald-600' : 'text-amber-600'"
                               class="inline-flex items-center gap-1.5 text-xs font-semibold">
-                            <span :class="isLocationConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'"
+                            <span :class="isLocationConfigured ? 'bg-emerald-500' : 'bg-amber-500'"
                                   class="w-1.5 h-1.5 rounded-full"></span>
                             <span x-text="connectionStatusText">Terhubung</span>
                         </span>
@@ -1101,7 +1101,7 @@
                                 <p class="text-[10px] text-slate-500 truncate" x-text="outletInfo.address">{{ $outletAddress }}</p>
                             </div>
                             <span :class="isInsideRadius ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200'" 
-                                  class="text-[11px] font-bold border px-2 py-0.5 rounded-md whitespace-nowrap shadow-2xs transition-colors shrink-0"
+                                  class="text-[11px] font-bold border px-2 py-0.5 rounded-md whitespace-nowrap shadow-card transition-colors shrink-0"
                                   x-text="distanceText">
                                 Mendeteksi...
                             </span>
@@ -1122,7 +1122,7 @@
                 </div>
 
                 {{-- Widget 2: Ketentuan Presensi Outlet --}}
-                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs space-y-3">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-card space-y-3">
                     {{-- Header Widget --}}
                     <div class="flex items-center gap-2">
                         <div class="p-1 rounded-md bg-teal-50 text-teal-700">
@@ -1194,7 +1194,7 @@
         {{-- ========================================================================= --}}
         {{-- 3. TABEL RIWAYAT 7 HARI TERAKHIR (BAWAH)                                  --}}
         {{-- ========================================================================= --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
             <div class="p-4 md:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <h2 class="text-sm md:text-base font-bold text-slate-900" data-testid="history-heading">Riwayat Kehadiran</h2>
@@ -1535,7 +1535,7 @@
                                        x-model="regularizationForm.requested_clock_out_time"
                                        :disabled="submittingRegularization"
                                        required
-                                       class="w-full text-xs font-mono rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-2xs">
+                                       class="w-full text-xs font-mono rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-card">
                                 <p class="text-[10px] text-slate-400 mt-1">
                                     Wajib melewati jam selesai shift resmi dan berada dalam kurun 24 jam.
                                 </p>
@@ -1551,7 +1551,7 @@
                                           required
                                           minlength="10"
                                           placeholder="Tuliskan alasan mengapa Anda belum sempat clock-out atau rincian pekerjaan lembur yang dilakukan (minimal 10 karakter)..."
-                                          class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-2xs"></textarea>
+                                          class="w-full text-xs rounded-lg border-slate-300 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-card"></textarea>
                                 <p class="text-[10px] text-slate-400 mt-1">
                                     Minimal 10 karakter. Alasan ini akan diverifikasi oleh manajer Anda.
                                 </p>
@@ -1567,7 +1567,7 @@
                                 </button>
                                 <button type="submit" 
                                         :disabled="submittingRegularization"
-                                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-75 text-white rounded-lg text-xs font-semibold shadow-2xs transition-all">
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-75 text-white rounded-lg text-xs font-semibold shadow-card transition-all">
                                     <template x-if="submittingRegularization">
                                         <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
                                     </template>
@@ -1659,7 +1659,7 @@
                             </button>
                             <button type="button" 
                                     @click="lateClockOutConfirmed = true; $nextTick(() => document.getElementById('form-clock-out').submit());"
-                                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow-2xs transition-all">
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow-card transition-all">
                                 <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                                 <span>Konfirmasi Clock-Out</span>
                             </button>

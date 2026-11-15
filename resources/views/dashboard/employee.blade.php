@@ -57,12 +57,12 @@
 
         <div class="flex items-center gap-2.5">
             <a href="{{ route('employee.schedule') }}" 
-               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition shadow-2xs">
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition shadow-2xs active:translate-y-px">
                 <i data-lucide="calendar" class="h-3.5 w-3.5 text-slate-400"></i>
                 <span>Jadwal Saya</span>
             </a>
             <a href="{{ route('employee.attendance') }}" 
-               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition shadow-xs">
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shadow-xs shadow-indigo-600/20 active:translate-y-px">
                 <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
                 <span>Presensi Masuk/Pulang</span>
             </a>
@@ -75,7 +75,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
         {{-- LEFT: TODAY'S SHIFT STATUS CARD (7 COLS) --}}
-        <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex flex-col justify-between overflow-hidden">
+        <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200/90 border-l-4 border-l-indigo-600 shadow-card flex flex-col justify-between overflow-hidden">
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div class="flex items-center gap-2">
                     <i data-lucide="calendar-check" class="h-4 w-4 text-slate-500"></i>
@@ -128,7 +128,7 @@
                                         {{ ucfirst(str_replace('_', ' ', $assignment->status ?? 'Terjadwal')) }}
                                     </span>
                                     <a href="{{ route('employee.attendance') }}" 
-                                       class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#6C5CE7] text-white text-xs font-semibold hover:bg-[#5b4bd5] transition">
+                                       class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shadow-xs shadow-indigo-600/20 active:translate-y-px">
                                         <span>Absen</span>
                                         <i data-lucide="arrow-right" class="h-3 w-3"></i>
                                     </a>
@@ -141,7 +141,7 @@
 
             <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between text-xs">
                 <span class="text-slate-500">Kebutuhan pergantian shift mendesak?</span>
-                <a href="{{ route('employee.swaps') }}" class="font-medium text-[#6C5CE7] hover:underline inline-flex items-center gap-1">
+                <a href="{{ route('employee.swaps') }}" class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                     <span>Ajukan Tukar Shift</span>
                     <i data-lucide="arrow-right" class="h-3 w-3"></i>
                 </a>
@@ -149,7 +149,7 @@
         </div>
 
         {{-- RIGHT: WEEKLY CAPACITY & HOURS METER (5 COLS) --}}
-        <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs flex flex-col justify-between">
+        <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200/90 p-5 shadow-card flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -164,10 +164,10 @@
                 <div class="space-y-2 mb-5">
                     <div class="flex items-center justify-between text-xs">
                         <span class="text-slate-500">Kapasitas Terpakai</span>
-                        <span class="font-mono font-semibold {{ $isOverLimit ? 'text-rose-600' : 'text-[#6C5CE7]' }}">{{ $progressPercent }}%</span>
+                        <span class="font-mono font-semibold {{ $isOverLimit ? 'text-rose-600' : 'text-indigo-600' }}">{{ $progressPercent }}%</span>
                     </div>
                     <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-300 {{ $isOverLimit ? 'bg-rose-500' : 'bg-[#6C5CE7]' }}" 
+                        <div class="h-full rounded-full transition-all duration-300 {{ $isOverLimit ? 'bg-rose-500' : 'bg-indigo-600' }}" 
                              style="width: {{ $progressPercent }}%"></div>
                     </div>
                 </div>
@@ -192,7 +192,7 @@
 
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span class="text-slate-400">Aturan jam mengacu PP 35</span>
-                <a href="{{ route('employee.timesheet') }}" class="font-medium text-[#6C5CE7] hover:underline inline-flex items-center gap-1">
+                <a href="{{ route('employee.timesheet') }}" class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                     <span>Lihat Timesheet</span>
                     <i data-lucide="arrow-right" class="h-3 w-3"></i>
                 </a>
@@ -204,7 +204,7 @@
     {{-- --------------------------------------------------------------------- --}}
     {{-- 3. WEEKLY SCHEDULE STRIP (7-DAYS HORIZONTAL CALENDAR)                 --}}
     {{-- --------------------------------------------------------------------- --}}
-    <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200/90 shadow-card overflow-hidden">
         <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
             <div>
                 <h3 class="text-sm font-semibold text-slate-900">Jadwal Sepekan</h3>
@@ -213,7 +213,7 @@
                 </p>
             </div>
             <a href="{{ route('employee.schedule') }}" 
-               class="text-xs font-semibold text-[#6C5CE7] hover:underline inline-flex items-center gap-1">
+               class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                 <span>Buka Kalender Lengkap</span>
                 <i data-lucide="arrow-right" class="h-3 w-3"></i>
             </a>
@@ -221,13 +221,13 @@
 
         <div class="grid grid-cols-7 divide-x divide-slate-100">
             @foreach ($weekDays as $wd)
-                <div class="flex flex-col items-center py-3.5 px-1.5 {{ $wd['isToday'] ? 'bg-purple-50/40' : '' }}">
-                    <span class="text-[10px] font-medium uppercase tracking-wider {{ $wd['isToday'] ? 'text-[#6C5CE7] font-bold' : 'text-slate-400' }}">
+                <div class="flex flex-col items-center py-3.5 px-1.5 {{ $wd['isToday'] ? 'bg-indigo-50/40' : '' }}">
+                    <span class="text-[10px] font-medium uppercase tracking-wider {{ $wd['isToday'] ? 'text-indigo-600 font-bold' : 'text-slate-400' }}">
                         {{ $wd['dayLabel'] }}
                     </span>
                     
                     <div class="mt-1 w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold font-mono
-                        {{ $wd['isToday'] ? 'bg-[#6C5CE7] text-white shadow-2xs' : 'text-slate-700' }}">
+                        {{ $wd['isToday'] ? 'bg-indigo-600 text-white shadow-xs shadow-indigo-600/20' : 'text-slate-700' }}">
                         {{ $wd['dayNum'] }}
                     </div>
 
@@ -237,7 +237,7 @@
                         @else
                             @foreach ($wd['assignments'] as $wa)
                                 <div class="w-full text-center">
-                                    <div class="hidden sm:block bg-purple-50 border border-purple-200/60 text-[#6C5CE7] rounded px-1 py-0.5">
+                                    <div class="hidden sm:block bg-indigo-50 border border-indigo-200/60 text-indigo-700 rounded px-1 py-0.5">
                                         <p class="text-[10px] font-semibold font-mono leading-tight">
                                             {{ $wa->shift?->start_time?->format('H:i') ?? '?' }}
                                         </p>
@@ -245,7 +245,7 @@
                                             {{ $wa->shift?->end_time?->format('H:i') ?? '?' }}
                                         </p>
                                     </div>
-                                    <div class="sm:hidden w-2 h-2 rounded-full bg-[#6C5CE7] mx-auto" title="Shift Terjadwal"></div>
+                                    <div class="sm:hidden w-2 h-2 rounded-full bg-indigo-600 mx-auto" title="Shift Terjadwal"></div>
                                 </div>
                             @endforeach
                         @endif
@@ -258,14 +258,14 @@
     {{-- --------------------------------------------------------------------- --}}
     {{-- 4. OPEN SHIFT OPPORTUNITIES (HIGH DENSITY TABLE)                      --}}
     {{-- --------------------------------------------------------------------- --}}
-    <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+    <div class="bg-white rounded-xl border border-slate-200/90 shadow-card overflow-hidden">
         <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
             <div>
                 <h3 class="text-sm font-semibold text-slate-900">Lowongan Shift Terbuka</h3>
                 <p class="text-xs text-slate-500">Klaim shift kosong untuk menambah jam kerja dan pendapatan.</p>
             </div>
             <a href="{{ route('employee.open-shifts') }}" 
-               class="text-xs font-semibold text-[#6C5CE7] hover:underline inline-flex items-center gap-1">
+               class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                 <span>Lihat Semua ({{ $openShiftCount ?? 0 }})</span>
                 <i data-lucide="arrow-right" class="h-3 w-3"></i>
             </a>

@@ -26,7 +26,7 @@
             </div>
 
             <div class="flex items-center gap-2.5">
-                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-2xs">
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-card">
                     <i data-lucide="users" class="w-3.5 h-3.5 text-slate-400"></i>
                     <span>Total Staf:</span>
                     <strong class="font-mono text-slate-900 font-bold">{{ $employees->total() }}</strong>
@@ -36,7 +36,7 @@
 
         {{-- Flash Alerts --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 flex items-center gap-3 text-xs sm:text-sm shadow-2xs">
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 flex items-center gap-3 text-xs sm:text-sm shadow-card">
                 <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                 <span class="font-medium">{{ session('success') }}</span>
             </div>
@@ -45,7 +45,7 @@
         {{-- ----------------------------------------------------------------- --}}
         {{-- 2. PENCARIAN & FILTER TOOLBAR                                     --}}
         {{-- ----------------------------------------------------------------- --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-4 shadow-2xs">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-4 shadow-card">
             <form method="GET" action="{{ route('manager.employees.index') }}" class="space-y-3">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5">
 
@@ -58,7 +58,7 @@
                             type="text"
                             value="{{ $search }}"
                             placeholder="Cari nama, email, NIK, telepon..."
-                            class="w-full pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                            class="w-full pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
                         >
                     </div>
 
@@ -68,7 +68,7 @@
                             <select
                                 id="department_id"
                                 name="department_id"
-                                class="w-full px-3 py-1.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                                class="w-full px-3 py-1.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
                             >
                                 <option value="">Semua Departemen</option>
                                 @foreach ($departments as $department)
@@ -88,7 +88,7 @@
                         <select
                             id="position_id"
                             name="position_id"
-                            class="w-full px-3 py-1.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                            class="w-full px-3 py-1.5 text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
                         >
                             <option value="">Semua Posisi</option>
                             @foreach ($positions as $position)
@@ -127,7 +127,7 @@
         {{-- ----------------------------------------------------------------- --}}
         {{-- 3. TABEL DIREKTORI KARYAWAN (HIGH DENSITY)                        --}}
         {{-- ----------------------------------------------------------------- --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
             
             {{-- Toolbar Atas Tabel: Title & Segmented Type Filter --}}
             <div class="px-4 py-3 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
@@ -139,11 +139,11 @@
                 </div>
 
                 {{-- Horizontal Filter Segment Pills (Menggantikan 4 KPI Cards raksasa) --}}
-                <div class="inline-flex p-1 bg-white border border-slate-200 rounded-lg text-xs self-start sm:self-auto shadow-2xs">
+                <div class="inline-flex p-1 bg-white border border-slate-200 rounded-lg text-xs self-start sm:self-auto shadow-card">
                     <button
                         type="button"
                         @click="selectedType = 'all'"
-                        :class="selectedType === 'all' ? 'bg-slate-900 text-white font-semibold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                        :class="selectedType === 'all' ? 'bg-slate-900 text-white font-semibold shadow-card' : 'text-slate-600 hover:text-slate-900'"
                         class="px-2.5 py-1 rounded-md transition"
                     >
                         Semua ({{ $employees->total() }})
@@ -151,7 +151,7 @@
                     <button
                         type="button"
                         @click="selectedType = 'full_time'"
-                        :class="selectedType === 'full_time' ? 'bg-slate-900 text-white font-semibold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                        :class="selectedType === 'full_time' ? 'bg-slate-900 text-white font-semibold shadow-card' : 'text-slate-600 hover:text-slate-900'"
                         class="px-2.5 py-1 rounded-md transition"
                     >
                         Full-Time
@@ -159,7 +159,7 @@
                     <button
                         type="button"
                         @click="selectedType = 'part_time'"
-                        :class="selectedType === 'part_time' ? 'bg-slate-900 text-white font-semibold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                        :class="selectedType === 'part_time' ? 'bg-slate-900 text-white font-semibold shadow-card' : 'text-slate-600 hover:text-slate-900'"
                         class="px-2.5 py-1 rounded-md transition"
                     >
                         Part-Time
@@ -167,7 +167,7 @@
                     <button
                         type="button"
                         @click="selectedType = 'freelance'"
-                        :class="selectedType === 'freelance' ? 'bg-slate-900 text-white font-semibold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                        :class="selectedType === 'freelance' ? 'bg-slate-900 text-white font-semibold shadow-card' : 'text-slate-600 hover:text-slate-900'"
                         class="px-2.5 py-1 rounded-md transition"
                     >
                         Freelance
@@ -328,7 +328,7 @@
                                 <td class="px-4 py-3 whitespace-nowrap">
                                     <p class="font-medium text-slate-800">{{ $employee->position?->name ?? 'Belum ditentukan' }}</p>
                                     @if ($isGlobalManager && $employee->department)
-                                        <p class="text-[11px] text-[#6C5CE7] font-semibold flex items-center gap-1 mt-0.5">
+                                        <p class="text-[11px] text-indigo-600 font-semibold flex items-center gap-1 mt-0.5">
                                             <i data-lucide="building-2" class="w-3 h-3"></i>
                                             <span>{{ $employee->department->name }}</span>
                                         </p>
@@ -354,7 +354,7 @@
                                 <td class="px-4 py-3 whitespace-nowrap text-right">
                                     <a
                                         href="{{ route('manager.employees.show', $employee) }}"
-                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-card transition"
                                     >
                                         <i data-lucide="eye" class="w-3.5 h-3.5 text-slate-400"></i>
                                         <span>Detail</span>

@@ -57,8 +57,8 @@
             </div>
 
             <div class="flex items-center gap-2.5">
-                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-2xs">
-                    <span class="h-2 w-2 rounded-full {{ ($counts['pending'] ?? 0) > 0 ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500' }}"></span>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-card">
+                    <span class="h-2 w-2 rounded-full {{ ($counts['pending'] ?? 0) > 0 ? 'bg-amber-500' : 'bg-emerald-500' }}"></span>
                     <span>Menunggu Review:</span>
                     <strong class="font-mono text-slate-900 font-bold">{{ $counts['pending'] ?? 0 }}</strong>
                 </span>
@@ -69,21 +69,21 @@
         {{-- 2. FLASH NOTIFICATIONS                                            --}}
         {{-- ----------------------------------------------------------------- --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 flex items-center gap-3 text-xs sm:text-sm shadow-2xs">
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 flex items-center gap-3 text-xs sm:text-sm shadow-card">
                 <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                 <span class="font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 flex items-center gap-3 text-xs sm:text-sm shadow-2xs">
+            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 flex items-center gap-3 text-xs sm:text-sm shadow-card">
                 <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
                 <span class="font-medium">{{ session('error') }}</span>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 text-xs space-y-1 shadow-2xs">
+            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 text-xs space-y-1 shadow-card">
                 <div class="flex items-center gap-2 font-bold">
                     <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600 shrink-0"></i>
                     <span>Terdapat kesalahan pada input formulir:</span>
@@ -99,13 +99,13 @@
         {{-- ----------------------------------------------------------------- --}}
         {{-- 3. UNIFIED TOOLBAR: SEGMENT FILTER PILLS & SEARCH BAR             --}}
         {{-- ----------------------------------------------------------------- --}}
-        <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200/90 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-3">
             
             {{-- Horizontal Filter Segment Pills (Menggantikan 4 KPI Cards yang boros ruang) --}}
             <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
                 {{-- Tab Menunggu --}}
                 <a href="{{ route('manager.attendance.regularizations.index', ['status' => 'pending']) }}"
-                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'pending' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
+                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'pending' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
                     <span>Menunggu Review</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold font-mono {{ $status === 'pending' ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800' }}">
                         {{ $counts['pending'] ?? 0 }}
@@ -114,7 +114,7 @@
 
                 {{-- Tab Disetujui --}}
                 <a href="{{ route('manager.attendance.regularizations.index', ['status' => 'approved']) }}"
-                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'approved' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
+                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'approved' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
                     <span>Disetujui</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold font-mono {{ $status === 'approved' ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800' }}">
                         {{ $counts['approved'] ?? 0 }}
@@ -123,7 +123,7 @@
 
                 {{-- Tab Ditolak --}}
                 <a href="{{ route('manager.attendance.regularizations.index', ['status' => 'rejected']) }}"
-                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'rejected' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
+                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'rejected' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
                     <span>Ditolak</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold font-mono {{ $status === 'rejected' ? 'bg-white/20 text-white' : 'bg-rose-100 text-rose-800' }}">
                         {{ $counts['rejected'] ?? 0 }}
@@ -132,7 +132,7 @@
 
                 {{-- Tab Semua --}}
                 <a href="{{ route('manager.attendance.regularizations.index', ['status' => 'all']) }}"
-                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'all' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
+                   class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 {{ $status === 'all' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-50 border border-slate-200/80 text-slate-700 hover:bg-slate-100' }}">
                     <span>Semua Status</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold font-mono {{ $status === 'all' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700' }}">
                         {{ $counts['all'] ?? 0 }}
@@ -148,7 +148,7 @@
                         type="text"
                         x-model="searchQuery"
                         placeholder="Cari staf, NIK, tanggal..."
-                        class="w-full pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                        class="w-full pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
                     >
                 </div>
 
@@ -162,7 +162,7 @@
         {{-- ----------------------------------------------------------------- --}}
         {{-- 4. REGULARIZATION DATA TABLE (HIGH DENSITY)                       --}}
         {{-- ----------------------------------------------------------------- --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
             <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h2 class="text-sm font-semibold text-slate-900">
@@ -334,7 +334,7 @@
                                 <td class="px-4 py-3 whitespace-nowrap text-center">
                                     @if ($reg->status === 'pending')
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
                                             Menunggu
                                         </span>
                                     @elseif ($reg->status === 'approved')
@@ -422,7 +422,7 @@
             x-transition:leave="transition ease-in duration-200 transform"
             x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
-            class="fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] bg-white border-l border-slate-200 shadow-2xl flex flex-col justify-between overflow-hidden"
+            class="fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] bg-white border-l border-slate-200 shadow-xl flex flex-col justify-between overflow-hidden"
             style="display: none;"
         >
             {{-- Drawer Header --}}
@@ -564,7 +564,7 @@
                                 <button
                                     type="button"
                                     @click="decisionTab = 'approve'"
-                                    :class="decisionTab === 'approve' ? 'bg-white text-emerald-700 font-bold shadow-2xs' : 'text-slate-600'"
+                                    :class="decisionTab === 'approve' ? 'bg-white text-emerald-700 font-bold shadow-card' : 'text-slate-600'"
                                     class="px-3 py-1 rounded-md transition"
                                 >
                                     Setujui
@@ -572,7 +572,7 @@
                                 <button
                                     type="button"
                                     @click="decisionTab = 'reject'"
-                                    :class="decisionTab === 'reject' ? 'bg-white text-rose-700 font-bold shadow-2xs' : 'text-slate-600'"
+                                    :class="decisionTab === 'reject' ? 'bg-white text-rose-700 font-bold shadow-card' : 'text-slate-600'"
                                     class="px-3 py-1 rounded-md transition"
                                 >
                                     Tolak
@@ -593,7 +593,7 @@
                                         name="overtime_status"
                                         x-model="overtimeStatus"
                                         required
-                                        class="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2.5 focus:bg-white focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] font-medium text-slate-800"
+                                        class="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 font-medium text-slate-800"
                                     >
                                         <option value="approved">Setujui Sebagai Lembur (Dihitung Jam Lembur Resmi)</option>
                                         <option value="none">Setujui Jam Riil Saja (Tanpa Kompensasi Lembur)</option>
@@ -613,7 +613,7 @@
                                         x-model="approveNote"
                                         rows="2"
                                         placeholder="Tambahkan catatan untuk staf jika diperlukan..."
-                                        class="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2.5 focus:bg-white focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] text-slate-800"
+                                        class="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 text-slate-800"
                                     ></textarea>
                                 </div>
 

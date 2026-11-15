@@ -15,16 +15,16 @@
     <x-slot name="header">
         <div class="space-y-3">
             <nav aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                <ol class="flex items-center gap-2 text-xs font-medium text-slate-500">
                     <li>
-                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-indigo-600">
                             Admin
                         </a>
                     </li>
                     <li aria-hidden="true">
                         <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
                     </li>
-                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">
+                    <li aria-current="page" class="font-semibold text-indigo-600">
                         Pengaturan Platform
                     </li>
                 </ol>
@@ -64,7 +64,7 @@
         ];
     @endphp
 
-    <div class="min-h-screen bg-[#F5F3FF] py-8">
+    <div class="min-h-screen bg-indigo-50 py-8">
         <div class="mx-auto max-w-5xl px-4 pb-10 sm:px-6 lg:px-8"
              x-data="branchLocationManager(@js($branchesData), @js($companySettingsData), {{ $selectedBranchId ? (int) $selectedBranchId : 'null' }})">
 
@@ -766,7 +766,7 @@
          class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm"
          style="display: none;"
          aria-modal="true" role="dialog">
-        <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 max-w-md w-full mx-4 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-xl border border-gray-100 max-w-md w-full mx-4 overflow-hidden">
             {{-- Header Modal --}}
             <div class="flex items-center gap-3 p-6 pb-4 border-b border-gray-100">
                 <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">

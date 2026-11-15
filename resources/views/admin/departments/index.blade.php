@@ -2,31 +2,31 @@
     <x-slot name="header">
         <div class="space-y-3">
             <nav aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                <ol class="flex items-center gap-2 text-xs font-medium text-slate-500">
                     <li>
-                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">Admin</a>
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-indigo-600">Admin</a>
                     </li>
                     <li aria-hidden="true">
                         <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
                     </li>
-                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">Departemen &amp; Posisi</li>
+                    <li aria-current="page" class="font-semibold text-indigo-600">Departemen &amp; Posisi</li>
                 </ol>
             </nav>
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Departemen & Posisi
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-1">
+                <p class="text-xs md:text-sm text-slate-500 mt-1">
                     Kelola struktur divisi dan jabatan kerja perusahaan.
                 </p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.positions.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-[#6C5CE7] bg-white border border-[#E2E0F7] hover:bg-[#F5F3FF] transition shadow-2xs">
+                <a href="{{ route('admin.positions.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-indigo-600 bg-white border border-slate-200 hover:bg-indigo-50 transition shadow-card">
                     <i data-lucide="briefcase" class="h-4 w-4"></i>
                     <span>Kelola Posisi</span>
                 </a>
-                <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#6C5CE7] hover:bg-[#4F46E5] transition shadow-sm">
+                <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-600 transition shadow-sm">
                     <i data-lucide="plus" class="h-4 w-4"></i>
                     <span>Tambah Department</span>
                 </a>
@@ -37,29 +37,29 @@
 
     <div class="space-y-6">
         {{-- Navigation Tabs --}}
-        <div class="flex items-center gap-2 border-b border-[#E2E0F7] pb-3">
+        <div class="flex items-center gap-2 border-b border-slate-200 pb-3">
             <a href="{{ route('admin.departments.index') }}" 
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#6C5CE7] text-white shadow-sm transition">
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 text-white shadow-sm transition">
                 <i data-lucide="building-2" class="h-4 w-4"></i>
                 <span>Daftar Departemen</span>
                 <span class="ml-1 px-2 py-0.5 rounded-full text-[11px] bg-white/20 text-white">{{ $departments->count() }}</span>
             </a>
             <a href="{{ route('admin.positions.index') }}" 
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-[#7C7896] hover:text-[#2D2A3E] hover:bg-[#F5F3FF] transition">
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-indigo-50 transition">
                 <i data-lucide="briefcase" class="h-4 w-4"></i>
                 <span>Posisi Jabatan</span>
             </a>
         </div>
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm shadow-2xs">
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm shadow-card">
                 <i data-lucide="check-circle" class="h-5 w-5 text-emerald-600 shrink-0"></i>
                 <span class="font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm shadow-2xs">
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm shadow-card">
                 <i data-lucide="alert-circle" class="h-5 w-5 text-red-600 shrink-0"></i>
                 <span class="font-medium">{{ session('error') }}</span>
             </div>
@@ -67,38 +67,38 @@
 
         {{-- Main Table / Empty State Card --}}
         @if ($departments->isEmpty())
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-8 md:p-12 text-center shadow-sm">
+            <div class="bg-white rounded-xl border border-slate-200 p-8 md:p-12 text-center shadow-sm">
                 <div class="max-w-md mx-auto flex flex-col items-center">
-                    <div class="w-16 h-16 bg-[#F5F3FF] border border-[#E2E0F7] rounded-2xl flex items-center justify-center text-[#6C5CE7] mb-4 shadow-2xs">
+                    <div class="w-16 h-16 bg-indigo-50 border border-slate-200 rounded-xl flex items-center justify-center text-indigo-600 mb-4 shadow-card">
                         <i data-lucide="layers" class="h-8 w-8"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-[#2D2A3E] mb-2">Belum Ada Department</h3>
-                    <p class="text-xs md:text-sm text-[#7C7896] leading-relaxed mb-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Belum Ada Department</h3>
+                    <p class="text-xs md:text-sm text-slate-500 leading-relaxed mb-6">
                         Mulai atur struktur organisasi perusahaan dengan menambahkan data department pertama Anda.
                     </p>
-                    <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#6C5CE7] hover:bg-[#4F46E5] transition shadow-sm">
+                    <a href="{{ route('admin.departments.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-600 transition shadow-sm">
                         <i data-lucide="plus" class="h-4 w-4"></i>
                         <span>Tambah Department</span>
                     </a>
                 </div>
             </div>
         @else
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-sm overflow-hidden">
-                <div class="p-5 sm:p-6 border-b border-[#E2E0F7] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-5 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#E2E0F7] flex items-center justify-center text-[#6C5CE7]">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 border border-slate-200 flex items-center justify-center text-indigo-600">
                             <i data-lucide="building-2" class="h-4 w-4"></i>
                         </div>
                         <div>
-                            <h2 class="text-sm md:text-base font-bold text-[#2D2A3E]">Daftar Department</h2>
-                            <p class="text-xs text-[#7C7896]">Total {{ $departments->count() }} department terdaftar</p>
+                            <h2 class="text-sm md:text-base font-bold text-slate-900">Daftar Department</h2>
+                            <p class="text-xs text-slate-500">Total {{ $departments->count() }} department terdaftar</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs md:text-sm text-[#2D2A3E] min-w-[650px]">
-                        <thead class="bg-[#F5F3FF]/80 text-[#2D2A3E] font-semibold border-b border-[#E2E0F7]">
+                    <table class="w-full text-left text-xs md:text-sm text-slate-900 min-w-[650px]">
+                        <thead class="bg-indigo-50/80 text-slate-900 font-semibold border-b border-slate-200">
                             <tr>
                                 <th class="px-5 py-3.5 text-center w-16">No</th>
                                 <th class="px-5 py-3.5">Nama Department</th>
@@ -108,24 +108,24 @@
                                 <th class="px-5 py-3.5 text-center w-36">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-[#E2E0F7]">
+                        <tbody class="divide-y divide-slate-100">
                             @foreach ($departments as $department)
-                                <tr class="hover:bg-[#F5F3FF]/40 transition duration-150">
-                                    <td class="px-5 py-4 text-center font-medium text-[#7C7896]">
+                                <tr class="hover:bg-indigo-50/40 transition duration-150">
+                                    <td class="px-5 py-4 text-center font-medium text-slate-500">
                                         {{ $loop->iteration }}
                                     </td>
                                     <td class="px-5 py-4 whitespace-nowrap">
-                                        <div class="font-bold text-[#2D2A3E] flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-[#6C5CE7]"></span>
+                                        <div class="font-bold text-slate-900 flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
                                             <span>{{ $department->name }}</span>
                                         </div>
                                     </td>
-                                    <td class="px-5 py-4 text-[#7C7896] max-w-xs truncate">
+                                    <td class="px-5 py-4 text-slate-500 max-w-xs truncate">
                                         {{ $department->description ?: '-' }}
                                     </td>
                                     <td class="px-5 py-4 text-center whitespace-nowrap">
                                         <a href="{{ route('admin.positions.index') }}" 
-                                           class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20 hover:bg-[#6C5CE7] hover:text-white transition duration-150"
+                                           class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-600 hover:text-white transition duration-150"
                                            title="Lihat dan kelola posisi departemen ini">
                                             <i data-lucide="briefcase" class="h-3 w-3"></i>
                                             <span>{{ $department->positions_count }} Posisi</span>
@@ -141,7 +141,7 @@
                                         <div class="flex items-center justify-center gap-2">
                                             {{-- Tombol Edit --}}
                                             <a href="{{ route('admin.departments.edit', $department) }}" 
-                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#6C5CE7] bg-[#6C5CE7]/10 hover:bg-[#6C5CE7] hover:text-white transition duration-150"
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-600 hover:text-white transition duration-150"
                                                title="Edit Department">
                                                 <i data-lucide="pencil" class="h-3.5 w-3.5"></i>
                                                 <span>Edit</span>
@@ -169,17 +169,17 @@
                                                         <i data-lucide="alert-triangle" class="h-5 w-5"></i>
                                                     </div>
                                                     <div>
-                                                        <h2 class="text-base font-bold text-[#2D2A3E]">
+                                                        <h2 class="text-base font-bold text-slate-900">
                                                             Hapus Department
                                                         </h2>
-                                                        <p class="text-xs text-[#7C7896] mt-0.5">
+                                                        <p class="text-xs text-slate-500 mt-0.5">
                                                             Konfirmasi penghapusan data department dari sistem.
                                                         </p>
                                                     </div>
                                                 </div>
 
-                                                <p class="text-xs sm:text-sm text-[#7C7896] leading-relaxed mb-4">
-                                                    Apakah Anda yakin ingin menghapus department <strong class="text-[#2D2A3E]">{{ $department->name }}</strong>? Data yang dihapus tidak dapat dikembalikan.
+                                                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed mb-4">
+                                                    Apakah Anda yakin ingin menghapus department <strong class="text-slate-900">{{ $department->name }}</strong>? Data yang dihapus tidak dapat dikembalikan.
                                                 </p>
 
                                                 @if ($department->employees_count > 0)
@@ -189,10 +189,10 @@
                                                     </div>
                                                 @endif
 
-                                                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#E2E0F7]">
+                                                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                                                     <button type="button" 
                                                             x-on:click="$dispatch('close')" 
-                                                            class="px-4 py-2 text-xs font-semibold text-[#7C7896] hover:text-[#2D2A3E] bg-[#F5F3FF] hover:bg-[#E2E0F7] rounded-xl transition duration-150">
+                                                            class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 bg-indigo-50 hover:bg-[#E2E8F0] rounded-xl transition duration-150">
                                                         Batal
                                                     </button>
                                                     <button type="submit" 

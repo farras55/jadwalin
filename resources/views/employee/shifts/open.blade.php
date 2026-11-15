@@ -24,7 +24,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     {{ $availableShifts->count() }} Lowongan Terbuka
                 </span>
             </div>
@@ -39,21 +39,21 @@
     >
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-2xs flex items-center gap-2.5">
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-card flex items-center gap-2.5">
                 <i data-lucide="check-circle" class="h-4 w-4 text-emerald-600 shrink-0"></i>
                 <span class="text-xs font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-2xs flex items-center gap-2.5">
+            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-card flex items-center gap-2.5">
                 <i data-lucide="alert-circle" class="h-4 w-4 text-rose-600 shrink-0"></i>
                 <span class="text-xs font-medium">{{ session('error') }}</span>
             </div>
         @endif
 
         @if (session('info'))
-            <div class="bg-blue-50 text-blue-800 p-3.5 rounded-xl border border-blue-200 shadow-2xs flex items-center gap-2.5">
+            <div class="bg-blue-50 text-blue-800 p-3.5 rounded-xl border border-blue-200 shadow-card flex items-center gap-2.5">
                 <i data-lucide="info" class="h-4 w-4 text-blue-600 shrink-0"></i>
                 <span class="text-xs font-medium">{{ session('info') }}</span>
             </div>
@@ -62,13 +62,13 @@
         {{-- =====================================================
              TABS TOOLBAR & MARKETPLACE METRICS
         ====================================================== --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-2xs">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-card">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="inline-flex max-w-full overflow-x-auto p-1 bg-slate-100 rounded-lg border border-slate-200/80">
                     <button
                         type="button"
                         @click="activeTab = 'available'"
-                        :class="activeTab === 'available' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                        :class="activeTab === 'available' ? 'bg-white text-slate-900 shadow-card' : 'text-slate-600 hover:text-slate-900'"
                         class="px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 shrink-0"
                     >
                         <i data-lucide="megaphone" class="h-3.5 w-3.5"></i>
@@ -82,7 +82,7 @@
                     <button
                         type="button"
                         @click="activeTab = 'my_claims'"
-                        :class="activeTab === 'my_claims' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                        :class="activeTab === 'my_claims' ? 'bg-white text-slate-900 shadow-card' : 'text-slate-600 hover:text-slate-900'"
                         class="px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 shrink-0"
                     >
                         <i data-lucide="history" class="h-3.5 w-3.5"></i>
@@ -113,7 +113,7 @@
         ====================================================== --}}
         <div x-show="activeTab === 'available'" class="space-y-3">
             @if ($availableShifts->isEmpty())
-                <div class="bg-white rounded-xl border border-slate-200/80 p-8 text-center shadow-2xs">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-8 text-center shadow-card">
                     <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
                         <i data-lucide="inbox" class="h-5 w-5"></i>
                     </div>
@@ -134,7 +134,7 @@
                     @endphp
 
                     {{-- Dynamic Opportunity Card --}}
-                    <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all overflow-hidden group">
+                    <div class="bg-white rounded-xl border border-slate-200/80 shadow-card hover:border-slate-300 transition-all overflow-hidden group">
                         <div class="p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
 
                             {{-- Left Column: Shift Details & Badges --}}
@@ -234,7 +234,7 @@
                                         @csrf
                                         <button
                                             type="submit"
-                                            class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-2xs transition-colors whitespace-nowrap
+                                            class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-card transition-colors whitespace-nowrap
                                                 {{ $isInstant
                                                     ? 'bg-slate-900 hover:bg-slate-800'
                                                     : 'bg-indigo-600 hover:bg-indigo-700' }}"
@@ -263,7 +263,7 @@
                     $shift = $claim->shift;
                     [$statusLabel, $statusClass, $statusIcon] = $statusMap[$claim->status] ?? [$claim->status, 'bg-slate-100 text-slate-700 border-slate-200', 'clock'];
                 @endphp
-                <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all p-3.5">
+                <div class="bg-white rounded-xl border border-slate-200/80 shadow-card hover:border-slate-300 transition-all p-3.5">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
                         <div class="space-y-1 flex-1 min-w-0">
@@ -311,7 +311,7 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-xl border border-slate-200/80 p-8 text-center shadow-2xs">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-8 text-center shadow-card">
                     <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
                         <i data-lucide="history" class="h-5 w-5"></i>
                     </div>

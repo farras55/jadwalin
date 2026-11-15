@@ -522,7 +522,7 @@
                             class="w-full h-14 bg-brand-primary hover:bg-brand-hover text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-primary/25 hover:shadow-xl hover:shadow-brand-primary/35 transition-all"
                         >
                             <span x-show="!isSimulating" class="flex items-center gap-2">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                <i data-lucide="play" class="w-4 h-4"></i>
                                 <span>Simulasikan Roster</span>
                             </span>
                             <span x-show="isSimulating" x-cloak class="flex items-center gap-2">
@@ -843,7 +843,7 @@
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14 reveal">
                 <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-xs font-bold text-brand-primary uppercase tracking-wider mb-3">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <i data-lucide="layers" class="w-3.5 h-3.5"></i>
                     <span>Ekosistem Lengkap Platform</span>
                 </div>
                 <h2 class="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-text tracking-tight">

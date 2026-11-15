@@ -26,21 +26,21 @@
     <div class="space-y-6">
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm shadow-2xs">
+            <div class="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm shadow-card">
                 <i data-lucide="check-circle" class="h-4 w-4 text-emerald-600 shrink-0"></i>
                 <span class="font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="flex items-center gap-3 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm shadow-2xs">
+            <div class="flex items-center gap-3 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm shadow-card">
                 <i data-lucide="alert-circle" class="h-4 w-4 text-rose-600 shrink-0"></i>
                 <span class="font-medium">{{ session('error') }}</span>
             </div>
         @endif
 
         {{-- Filter & Search Toolbar --}}
-        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-4 shadow-2xs">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-4 shadow-card">
             <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 items-end">
                 {{-- Search Box --}}
                 <div class="lg:col-span-5">
@@ -54,7 +54,7 @@
                                id="search" 
                                value="{{ request('search') }}" 
                                placeholder="Cari nama, email, NIK, atau nomor HP..." 
-                               class="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] outline-none transition">
+                               class="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition">
                     </div>
                 </div>
 
@@ -65,7 +65,7 @@
                     </label>
                     <select name="role" 
                             id="role" 
-                            class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] outline-none transition">
+                            class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition">
                         <option value="">Semua Peran</option>
                         <option value="superadmin" @selected(request('role') === 'superadmin')>Super Admin</option>
                         <option value="manager" @selected(request('role') === 'manager')>Manager</option>
@@ -80,7 +80,7 @@
                     </label>
                     <select name="department_id" 
                             id="department_id" 
-                            class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] outline-none transition">
+                            class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white text-slate-800 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition">
                         <option value="">Semua Departemen</option>
                         @foreach ($departments as $department)
                             <option value="{{ $department->id }}" @selected(request('department_id') == $department->id)>
@@ -99,7 +99,7 @@
                     </button>
                     @if (request('search') || request('role') || request('department_id'))
                         <a href="{{ route('admin.users.index') }}" 
-                           class="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-slate-800 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition shadow-2xs" 
+                           class="inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:text-slate-800 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition shadow-xs" 
                            title="Reset Filter">
                             <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
                         </a>
@@ -110,7 +110,7 @@
 
         {{-- Main Table / Empty State Card --}}
         @if ($users->isEmpty())
-            <div class="bg-white rounded-xl border border-slate-200/80 p-10 text-center shadow-2xs">
+            <div class="bg-white rounded-xl border border-slate-200/80 p-10 text-center shadow-card">
                 <div class="max-w-md mx-auto flex flex-col items-center">
                     <div class="w-12 h-12 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center text-slate-400 mb-3">
                         <i data-lucide="users" class="h-6 w-6"></i>
@@ -137,7 +137,7 @@
                 </div>
             </div>
         @else
-            <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+            <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
                 <div class="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-slate-50/50">
                     <div>
                         <h2 class="text-sm font-semibold text-slate-900">Daftar Pengguna</h2>
@@ -189,7 +189,7 @@
                                                 <div class="font-semibold text-slate-900 flex items-center gap-1.5">
                                                     <span>{{ $user->name }}</span>
                                                     @if ($user->id === auth()->id())
-                                                        <span class="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-[#6C5CE7] text-white">Anda</span>
+                                                        <span class="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-indigo-600 text-white">Anda</span>
                                                     @endif
                                                 </div>
                                                 <div class="text-[11px] text-slate-500">

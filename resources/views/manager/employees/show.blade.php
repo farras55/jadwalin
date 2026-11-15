@@ -31,62 +31,62 @@
 
     <div class="space-y-6">
         {{-- Breadcrumb Standar Permanen Manager --}}
-        <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-2">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-2">
             <span>Manager</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
             <span>Data Karyawan Tim</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            <span class="text-[#6C5CE7] font-medium">Profil Karyawan</span>
+            <span class="text-indigo-600 font-medium">Profil Karyawan</span>
         </div>
 
         {{-- Header Halaman dengan Tombol Kembali --}}
         <div class="flex items-center gap-3">
             <a
                 href="{{ route('manager.employees.index') }}"
-                class="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#E2E0F7] bg-white text-[#7C7896] hover:text-[#6C5CE7] hover:bg-[#F8F7FF] shadow-2xs transition"
+                class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-indigo-600 hover:bg-slate-50 shadow-card transition"
                 aria-label="Kembali ke daftar karyawan"
             >
                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </a>
 
             <div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Profil Karyawan
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-0.5">
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
                     Informasi karyawan dan ringkasan aktivitas shift.
                 </p>
             </div>
         </div>
 
-        {{-- Header Profil Card (Modern Lavender Styling) --}}
-        <div class="bg-gradient-to-r from-[#F5F3FF] via-white to-[#F8F7FF] rounded-3xl border border-[#E2E0F7] p-4 sm:p-6 shadow-2xs">
+        {{-- Header Profil Card --}}
+        <div class="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-6 shadow-card">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                     @if ($employee->profile_photo)
                         <img
                             src="{{ asset('storage/' . $employee->profile_photo) }}"
                             alt="{{ $employee->name }}"
-                            class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-white object-cover shadow-2xs"
+                            class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 border-white object-cover shadow-card"
                         >
                     @else
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#6C5CE7] text-white flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-2xs">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-card">
                             {{ $initial }}
                         </div>
                     @endif
 
                     <div class="space-y-1">
-                        <h2 class="text-lg sm:text-xl font-bold text-[#2D2A3E]">
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900">
                             {{ $employee->name }}
                         </h2>
-                        <div class="flex flex-wrap items-center gap-2 text-xs text-[#7C7896]">
-                            <span class="inline-flex items-center gap-1 font-semibold text-[#2D2A3E]">
-                                <i data-lucide="briefcase" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                        <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                            <span class="inline-flex items-center gap-1 font-semibold text-slate-900">
+                                <i data-lucide="briefcase" class="w-3.5 h-3.5 text-indigo-600"></i>
                                 {{ $employee->position?->name ?? 'Posisi belum ditentukan' }}
                             </span>
                             <span>&bull;</span>
-                            <span class="inline-flex items-center gap-1 font-medium text-[#7C7896]">
-                                <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#6C5CE7]"></i>
+                            <span class="inline-flex items-center gap-1 font-medium text-slate-500">
+                                <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
                                 {{ $employee->department?->name ?? 'Tim' }}
                             </span>
                             <span>&bull;</span>
@@ -109,44 +109,44 @@
         {{-- Ringkasan Aktivitas (3 KPI Cards) --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {{-- Card 1: Kehadiran 30 Hari --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-card flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-emerald-700">Kehadiran 30 Hari</p>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 font-mono">
                         {{ $attendanceCount }}
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5">Shift berstatus hadir atau terlambat</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">Shift berstatus hadir atau terlambat</p>
                 </div>
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-card">
                     <i data-lucide="calendar-check" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Card 2: Jam Kerja Bulan Ini --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-card flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-[#6C5CE7]">Jam Kerja Bulan Ini</p>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                    <p class="text-xs font-semibold text-indigo-600">Jam Kerja Bulan Ini</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 font-mono">
                         {{ number_format((float) $monthlyHours, 1, ',', '.') }}
-                        <span class="text-xs font-sans font-normal text-[#7C7896]">jam</span>
+                        <span class="text-xs font-sans font-normal text-slate-500">jam</span>
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5">Jam reguler ditambah jam lembur</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">Jam reguler ditambah jam lembur</p>
                 </div>
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-xl bg-indigo-50 text-indigo-600 border border-slate-200 flex items-center justify-center shrink-0 shadow-card">
                     <i data-lucide="clock" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Card 3: Total Shift Bulan Ini --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-card flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-amber-700">Total Shift Bulan Ini</p>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 font-mono">
                         {{ $monthlyShiftCount }}
                     </p>
-                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5">Shift yang tercatat pada bulan berjalan</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">Shift yang tercatat pada bulan berjalan</p>
                 </div>
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-card">
                     <i data-lucide="calendar-days" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
@@ -155,23 +155,23 @@
         {{-- 2-Kolom Layout: Informasi Karyawan (Kiri) & Riwayat Shift (Kanan) --}}
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             {{-- Kolom Kiri: Informasi Karyawan (5 Kolom) --}}
-            <div class="lg:col-span-5 bg-white rounded-2xl border border-[#E2E0F7] p-6 shadow-2xs space-y-4">
-                <div class="flex items-center gap-2 pb-3 border-b border-[#E2E0F7]">
-                    <div class="w-8 h-8 rounded-xl bg-[#F5F3FF] text-[#6C5CE7] flex items-center justify-center">
+            <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-6 shadow-card space-y-4">
+                <div class="flex items-center gap-2 pb-3 border-b border-slate-200">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                         <i data-lucide="user" class="w-4 h-4"></i>
                     </div>
-                    <h3 class="text-sm font-bold text-[#2D2A3E]">Informasi Karyawan</h3>
+                    <h3 class="text-sm font-bold text-slate-900">Informasi Karyawan</h3>
                 </div>
 
                 <div class="space-y-4 text-xs">
                     {{-- Email --}}
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#F8F7FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                             <i data-lucide="mail" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#7C7896]">Email</p>
-                            <p class="font-bold text-[#2D2A3E] mt-0.5 break-all">
+                            <p class="text-slate-500">Email</p>
+                            <p class="font-bold text-slate-900 mt-0.5 break-all">
                                 {{ $employee->email }}
                             </p>
                         </div>
@@ -179,11 +179,11 @@
 
                     {{-- Telepon / WhatsApp --}}
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#F8F7FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                             <i data-lucide="phone" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#7C7896]">Nomor Telepon / WhatsApp</p>
+                            <p class="text-slate-500">Nomor Telepon / WhatsApp</p>
                             @if ($employee->phone_number)
                                 <a
                                     href="https://wa.me/{{ preg_replace('/\D+/', '', $employee->phone_number) }}"
@@ -195,19 +195,19 @@
                                     <i data-lucide="external-link" class="w-3 h-3"></i>
                                 </a>
                             @else
-                                <p class="text-[#7C7896]/60 mt-0.5">Belum tersedia</p>
+                                <p class="text-slate-500/60 mt-0.5">Belum tersedia</p>
                             @endif
                         </div>
                     </div>
 
                     {{-- Departemen --}}
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#F8F7FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                             <i data-lucide="building-2" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#7C7896]">Departemen</p>
-                            <p class="font-bold text-[#2D2A3E] mt-0.5">
+                            <p class="text-slate-500">Departemen</p>
+                            <p class="font-bold text-slate-900 mt-0.5">
                                 {{ $employee->department?->name ?? 'Belum ditentukan' }}
                             </p>
                         </div>
@@ -215,11 +215,11 @@
 
                     {{-- Tipe Karyawan --}}
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#F8F7FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                             <i data-lucide="briefcase" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#7C7896]">Tipe Karyawan</p>
+                            <p class="text-slate-500">Tipe Karyawan</p>
                             <div class="mt-1">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-semibold border {{ $employmentClasses[$employmentType] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}">
                                     {{ $employmentLabels[$employmentType] ?? ucfirst($employmentType) }}
@@ -230,12 +230,12 @@
 
                     {{-- Kuota Jam Kerja Mingguan --}}
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#F8F7FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                             <i data-lucide="timer" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#7C7896]">Kuota Jam Kerja Mingguan</p>
-                            <p class="font-bold text-[#2D2A3E] mt-0.5">
+                            <p class="text-slate-500">Kuota Jam Kerja Mingguan</p>
+                            <p class="font-bold text-slate-900 mt-0.5">
                                 {{ $employee->max_weekly_hours ?? 'Belum ditentukan' }}
                                 @if ($employee->max_weekly_hours !== null)
                                     jam/minggu
@@ -246,12 +246,12 @@
 
                     {{-- Tanggal Bergabung --}}
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#F8F7FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                             <i data-lucide="calendar" class="w-4 h-4"></i>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-[#7C7896]">Tanggal Bergabung</p>
-                            <p class="font-bold text-[#2D2A3E] mt-0.5">
+                            <p class="text-slate-500">Tanggal Bergabung</p>
+                            <p class="font-bold text-slate-900 mt-0.5">
                                 {{ $employee->join_date?->format('d M Y') ?? 'Belum tersedia' }}
                             </p>
                         </div>
@@ -260,20 +260,20 @@
             </div>
 
             {{-- Kolom Kanan: Aktivitas Shift 30 Hari Terakhir (7 Kolom) --}}
-            <div class="lg:col-span-7 bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
-                <div class="p-5 border-b border-[#E2E0F7] flex items-center justify-between">
+            <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden">
+                <div class="p-5 border-b border-slate-200 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl bg-[#F5F3FF] text-[#6C5CE7] flex items-center justify-center">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                             <i data-lucide="calendar" class="w-4 h-4"></i>
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-[#2D2A3E]">Aktivitas Shift 30 Hari Terakhir</h3>
-                            <p class="text-xs text-[#7C7896]">Riwayat jadwal dan status kehadiran karyawan.</p>
+                            <h3 class="text-sm font-bold text-slate-900">Aktivitas Shift 30 Hari Terakhir</h3>
+                            <p class="text-xs text-slate-500">Riwayat jadwal dan status kehadiran karyawan.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="divide-y divide-[#E2E0F7] text-xs">
+                <div class="divide-y divide-slate-100 text-xs">
                     @forelse ($recentAssignments as $assignment)
                         @php
                             $shiftStatusLabels = [
@@ -293,16 +293,16 @@
                             $shiftStatus = $assignment->status ?? 'scheduled';
                         @endphp
 
-                        <div class="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-[#F8F7FF]/50 transition">
+                        <div class="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-slate-50/50 transition">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-xl bg-[#F5F3FF] text-[#6C5CE7] flex items-center justify-center shrink-0 border border-[#E2E0F7]">
+                                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-slate-200">
                                     <i data-lucide="calendar" class="w-4 h-4"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-[#2D2A3E]">
+                                    <p class="font-bold text-slate-900">
                                         {{ $assignment->shift?->title ?? 'Shift' }}
                                     </p>
-                                    <p class="text-[11px] text-[#7C7896] mt-0.5">
+                                    <p class="text-[11px] text-slate-500 mt-0.5">
                                         @if ($assignment->shift?->start_time)
                                             {{ $assignment->shift->start_time->format('d M Y, H:i') }}
                                         @else
@@ -321,12 +321,12 @@
                             </span>
                         </div>
                     @empty
-                        <div class="p-8 text-center text-[#7C7896]">
-                            <div class="w-12 h-12 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] flex items-center justify-center mx-auto mb-2">
+                        <div class="p-8 text-center text-slate-500">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-2">
                                 <i data-lucide="calendar-x" class="w-6 h-6"></i>
                             </div>
-                            <p class="text-xs font-bold text-[#2D2A3E]">Belum Ada Aktivitas Shift</p>
-                            <p class="text-[11px] text-[#7C7896] mt-0.5">Tidak ada jadwal yang tercatat dalam 30 hari terakhir.</p>
+                            <p class="text-xs font-bold text-slate-900">Belum Ada Aktivitas Shift</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Tidak ada jadwal yang tercatat dalam 30 hari terakhir.</p>
                         </div>
                     @endforelse
                 </div>
@@ -337,7 +337,7 @@
         <div>
             <a
                 href="{{ route('manager.employees.index') }}"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E2E0F7] bg-white text-[#2D2A3E] hover:bg-[#F8F7FF] text-xs font-semibold shadow-2xs transition"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 text-xs font-semibold shadow-card transition"
             >
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span>Kembali ke Daftar Karyawan</span>

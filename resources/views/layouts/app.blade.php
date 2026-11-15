@@ -12,6 +12,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    {{-- Dark Mode Initializer Script (Defaults to Light, enables Dark only if selected) --}}
+    <script>
+        if (localStorage.getItem('jadwalin_theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
     {{-- Tailwind CSS & JS via Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -20,14 +29,14 @@
     
     <style>
         :root {
-            --c-primary: #6C5CE7;
-            --c-primary-dark: #5B4BD5;
-            --c-secondary: #A29BFE;
+            --c-primary: #4F46E5;
+            --c-primary-dark: #4338CA;
+            --c-secondary: #6366F1;
             --c-ink: #0F172A;
             --c-ink-strong: #020617;
             --c-muted: #64748B;
             --c-line: #E2E8F0;
-            --bg-body: #F8FAFC;
+            --bg-body: #EAEEF4;
         }
 
         [x-cloak] { display: none !important; }
@@ -50,13 +59,13 @@
             window.dispatchEvent(new Event('resize'));
         }, 310);
     }
-}" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm antialiased selection:bg-[#6C5CE7]/20 selection:text-[#6C5CE7]">
+}" @keydown.escape.window="sidebarOpen = false" class="flex h-screen overflow-hidden text-sm antialiased selection:bg-indigo-600/20 selection:text-indigo-700">
 
     {{-- ===== SIDEBAR (Desktop & Mobile Drawer) ===== --}}
     @include('layouts.sidebar')
 
     {{-- ===== MAIN WRAPPER ===== --}}
-    <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC] overflow-hidden relative">
+    <main class="flex-1 flex flex-col min-w-0 bg-[#EAEEF4] overflow-hidden relative">
         
         {{-- ===== GLOBAL FLOATING TOAST NOTIFICATIONS ===== --}}
         <div class="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0" aria-live="polite">
@@ -155,7 +164,7 @@
                     x-transition:leave-end="opacity-0 scale-95 translate-x-4"
                     class="pointer-events-auto w-full rounded-xl shadow-lg border border-slate-200/80 bg-white/95 backdrop-blur-md p-3.5 text-slate-800 flex items-start gap-3 transition-all"
                 >
-                    <div class="w-8 h-8 rounded-lg bg-slate-50 text-[#6C5CE7] flex items-center justify-center shrink-0 border border-slate-200/60">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-200/60">
                         <i data-lucide="info" class="w-4 h-4"></i>
                     </div>
                     <div class="flex-1 min-w-0">

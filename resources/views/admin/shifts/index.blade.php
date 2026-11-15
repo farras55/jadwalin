@@ -2,16 +2,16 @@
     <x-slot name="header">
         <div class="space-y-3">
             <nav aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 text-xs font-medium text-[#7C7896]">
+                <ol class="flex items-center gap-2 text-xs font-medium text-slate-500">
                     <li>
-                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-[#6C5CE7]">
+                        <a href="{{ route('admin.dashboard') }}" class="transition hover:text-indigo-600">
                             Admin
                         </a>
                     </li>
                     <li aria-hidden="true">
                         <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
                     </li>
-                    <li aria-current="page" class="font-semibold text-[#6C5CE7]">
+                    <li aria-current="page" class="font-semibold text-indigo-600">
                         Template Shift
                     </li>
                 </ol>
@@ -30,7 +30,7 @@
                 <button
                     type="button"
                     @click="window.dispatchEvent(new CustomEvent('open-shift-modal'))"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6C5CE7] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5848d6]"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5848d6]"
                 >
                     <i data-lucide="plus" class="h-4 w-4"></i>
                     Tambah Template Shift
@@ -81,7 +81,7 @@
 
             {{-- Ringkasan --}}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm transition">
+                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Total Template</p>
@@ -89,7 +89,7 @@
                                 {{ $templates->count() }}
                             </p>
                         </div>
-                        <div class="rounded-xl bg-violet-50 p-3 text-[#6C5CE7]">
+                        <div class="rounded-xl bg-violet-50 p-3 text-indigo-600">
                             <i data-lucide="layers" class="h-6 w-6"></i>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
 
                 <a
                     href="{{ route('admin.departments.index') }}"
-                    class="group block rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#6C5CE7] hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6C5CE7] focus-visible:ring-offset-2"
+                    class="group block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-indigo-600 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4F46E5] focus-visible:ring-offset-2"
                 >
                     <div class="flex items-center justify-between">
                         <div>
@@ -106,13 +106,13 @@
                                 {{ $departments->count() }}
                             </p>
                         </div>
-                        <div class="rounded-xl bg-[#F5F3FF] p-3 text-[#6C5CE7] transition group-hover:bg-[#6C5CE7]/10">
+                        <div class="rounded-xl bg-indigo-50 p-3 text-indigo-600 transition group-hover:bg-indigo-50">
                             <i data-lucide="building-2" class="h-6 w-6"></i>
                         </div>
                     </div>
                 </a>
 
-                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm">
+                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-500">Total Kuota</p>
@@ -128,7 +128,7 @@
             </div>
 
             {{-- Tabel template shift --}}
-            <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+            <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
                 <div class="flex flex-col gap-3 border-b border-gray-100 p-5 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-gray-800">
@@ -145,7 +145,7 @@
                             type="search"
                             x-model="search"
                             placeholder="Cari nama atau departemen..."
-                            class="w-full rounded-xl border-gray-200 py-2.5 pl-9 pr-3 text-sm focus:border-[#6C5CE7] focus:ring-[#6C5CE7]"
+                            class="w-full rounded-xl border-gray-200 py-2.5 pl-9 pr-3 text-sm focus:border-indigo-600 focus:ring-indigo-600"
                         >
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                                     </td>
 
                                     <td class="whitespace-nowrap px-5 py-4">
-                                        <span class="inline-flex items-center gap-1.5 rounded-lg bg-violet-50 px-2.5 py-1.5 text-sm font-semibold text-[#6C5CE7]">
+                                        <span class="inline-flex items-center gap-1.5 rounded-lg bg-violet-50 px-2.5 py-1.5 text-sm font-semibold text-indigo-600">
                                             <i data-lucide="users" class="h-3.5 w-3.5"></i>
                                             {{ $template->default_quota }} orang
                                         </span>
@@ -269,7 +269,7 @@
                                                     default_quota: {{ $template->default_quota }},
                                                     color_code: @js($template->color_code)
                                                 })"
-                                                class="rounded-lg border border-gray-200 p-2 text-gray-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-[#6C5CE7]"
+                                                class="rounded-lg border border-gray-200 p-2 text-gray-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-indigo-600"
                                             >
                                                 <i data-lucide="pencil" class="h-4 w-4"></i>
                                             </button>
@@ -289,7 +289,7 @@
                                 <tr>
                                     <td colspan="6" class="px-5 py-14 text-center">
                                         <div class="mx-auto flex max-w-sm flex-col items-center">
-                                            <div class="rounded-2xl bg-violet-50 p-4 text-[#6C5CE7]">
+                                            <div class="rounded-xl bg-violet-50 p-4 text-indigo-600">
                                                 <i data-lucide="calendar-days" class="h-8 w-8"></i>
                                             </div>
                                             <h4 class="mt-4 font-semibold text-gray-800">
@@ -301,7 +301,7 @@
                                             <button
                                                 type="button"
                                                 @click="openCreate()"
-                                                class="mt-4 rounded-xl bg-[#6C5CE7] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5848d6]"
+                                                class="mt-4 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#5848d6]"
                                             >
                                                 Tambah Template
                                             </button>
@@ -337,7 +337,7 @@
                 x-show="formOpen"
                 x-transition
                 @click.outside="formOpen = false"
-                class="my-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+                class="my-auto w-full max-w-2xl overflow-hidden rounded-xl bg-white shadow-xl"
             >
                 <div class="flex items-start justify-between border-b border-gray-100 p-5 sm:p-6">
                     <div>
@@ -381,7 +381,7 @@
                             maxlength="100"
                             required
                             placeholder="Contoh: Shift Pagi"
-                            class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-[#6C5CE7] focus:ring-[#6C5CE7]"
+                            class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-indigo-600 focus:ring-indigo-600"
                         >
                         @error('title')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -397,7 +397,7 @@
                             name="department_id"
                             x-model="form.department_id"
                             required
-                            class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-[#6C5CE7] focus:ring-[#6C5CE7]"
+                            class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-indigo-600 focus:ring-indigo-600"
                         >
                             <option value="">Pilih departemen</option>
                             @foreach ($departments as $department)
@@ -429,7 +429,7 @@
                                 name="start_time"
                                 x-model="form.start_time"
                                 required
-                                class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-[#6C5CE7] focus:ring-[#6C5CE7]"
+                                class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-indigo-600 focus:ring-indigo-600"
                             >
                             @error('start_time')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -446,7 +446,7 @@
                                 name="end_time"
                                 x-model="form.end_time"
                                 required
-                                class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-[#6C5CE7] focus:ring-[#6C5CE7]"
+                                class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-indigo-600 focus:ring-indigo-600"
                             >
                             @error('end_time')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -468,7 +468,7 @@
                                 step="1"
                                 required
                                 placeholder="Contoh: 10"
-                                class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-[#6C5CE7] focus:ring-[#6C5CE7]"
+                                class="w-full rounded-xl border-gray-200 px-3.5 py-3 text-sm focus:border-indigo-600 focus:ring-indigo-600"
                             >
                             @error('default_quota')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -514,7 +514,7 @@
                         <button
                             type="submit"
                             :disabled="{{ $departments->isEmpty() ? 'true' : 'false' }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6C5CE7] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#5848d6] disabled:cursor-not-allowed disabled:opacity-50"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#5848d6] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <i data-lucide="save" class="h-4 w-4"></i>
                             <span x-text="isEditing ? 'Simpan Perubahan' : 'Simpan Template'"></span>
@@ -536,7 +536,7 @@
                 x-show="deleteOpen"
                 x-transition
                 @click.outside="deleteOpen = false"
-                class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+                class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
             >
                 <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600">
                     <i data-lucide="trash-2" class="h-6 w-6"></i>
@@ -597,7 +597,7 @@
                         start_time: '08:00',
                         end_time: '16:00',
                         default_quota: 1,
-                        color_code: '#6C5CE7',
+                        color_code: '#4F46E5',
                     },
 
                     init() {
@@ -646,7 +646,7 @@
                             start_time: '08:00',
                             end_time: '16:00',
                             default_quota: 1,
-                            color_code: '#6C5CE7',
+                            color_code: '#4F46E5',
                         };
                         this.formOpen = true;
                     },
@@ -660,7 +660,7 @@
                             start_time: data.start_time,
                             end_time: data.end_time,
                             default_quota: data.default_quota,
-                            color_code: data.color_code || '#6C5CE7',
+                            color_code: data.color_code || '#4F46E5',
                         };
                         this.updateUrl = `/admin/shifts/${data.id}`;
                         this.formOpen = true;

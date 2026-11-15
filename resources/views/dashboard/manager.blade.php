@@ -32,12 +32,12 @@
 
         <div class="flex items-center gap-2.5">
             <a href="{{ route('manager.shifts.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition shadow-xs">
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shadow-xs shadow-indigo-600/20 active:translate-y-px">
                 <i data-lucide="calendar" class="h-3.5 w-3.5"></i>
                 <span>Jadwal Kerja Tim</span>
             </a>
             <a href="{{ route('manager.attendance.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition">
+               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition shadow-2xs active:translate-y-px">
                 <i data-lucide="user-check" class="h-3.5 w-3.5 text-slate-400"></i>
                 <span>Presensi Hari Ini</span>
             </a>
@@ -47,7 +47,7 @@
     {{-- --------------------------------------------------------------------- --}}
     {{-- 2. MORNING BRIEFING STRIP (1-BARIS OPERATIONAL SUMMARY)               --}}
     {{-- --------------------------------------------------------------------- --}}
-    <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-4 shadow-2xs">
+    <div class="bg-white rounded-xl border border-slate-200/90 border-l-4 border-l-indigo-600 p-3.5 sm:p-4 shadow-card">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
             
             {{-- Staf Bertugas --}}
@@ -126,9 +126,9 @@
                     
                     {{-- 1. Ketersediaan Waktu --}}
                     <a href="{{ route('manager.availability.index') }}"
-                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $availCount > 0 ? 'bg-white border-slate-200/90 hover:border-slate-400 shadow-2xs' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
+                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $availCount > 0 ? 'bg-white border-slate-200/90 hover:border-indigo-300 shadow-card' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
                         <div class="flex items-center justify-between">
-                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-[#6C5CE7] group-hover:text-white text-slate-700 flex items-center justify-center transition">
+                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-indigo-600 group-hover:text-white text-slate-700 flex items-center justify-center transition">
                                 <i data-lucide="calendar-check" class="h-4 w-4"></i>
                             </div>
                             @if ($availCount > 0)
@@ -141,7 +141,7 @@
                             <p class="text-xs font-semibold text-slate-800 leading-tight">Ketersediaan</p>
                             <p class="text-[11px] text-slate-400 mt-0.5">Jadwal kuliah &amp; izin</p>
                         </div>
-                        <span class="text-[11px] font-semibold text-[#6C5CE7] inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
+                        <span class="text-[11px] font-semibold text-indigo-600 group-hover:text-indigo-700 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
                             <span>Tinjau</span>
                             <i data-lucide="arrow-right" class="h-3 w-3"></i>
                         </span>
@@ -149,9 +149,9 @@
 
                     {{-- 2. Tukar Shift --}}
                     <a href="{{ route('manager.swaps.index') }}"
-                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $swapCount > 0 ? 'bg-white border-slate-200/90 hover:border-slate-400 shadow-2xs' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
+                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $swapCount > 0 ? 'bg-white border-slate-200/90 hover:border-indigo-300 shadow-card' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
                         <div class="flex items-center justify-between">
-                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-[#6C5CE7] group-hover:text-white text-slate-700 flex items-center justify-center transition">
+                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-indigo-600 group-hover:text-white text-slate-700 flex items-center justify-center transition">
                                 <i data-lucide="arrow-left-right" class="h-4 w-4"></i>
                             </div>
                             @if ($swapCount > 0)
@@ -164,7 +164,7 @@
                             <p class="text-xs font-semibold text-slate-800 leading-tight">Tukar Shift</p>
                             <p class="text-[11px] text-slate-400 mt-0.5">Barter antar staf</p>
                         </div>
-                        <span class="text-[11px] font-semibold text-[#6C5CE7] inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
+                        <span class="text-[11px] font-semibold text-indigo-600 group-hover:text-indigo-700 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
                             <span>Tinjau</span>
                             <i data-lucide="arrow-right" class="h-3 w-3"></i>
                         </span>
@@ -172,9 +172,9 @@
 
                     {{-- 3. Klaim Shift Terbuka --}}
                     <a href="{{ route('manager.open-shifts.index') }}"
-                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $claimCount > 0 ? 'bg-white border-slate-200/90 hover:border-slate-400 shadow-2xs' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
+                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $claimCount > 0 ? 'bg-white border-slate-200/90 hover:border-indigo-300 shadow-card' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
                         <div class="flex items-center justify-between">
-                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-[#6C5CE7] group-hover:text-white text-slate-700 flex items-center justify-center transition">
+                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-indigo-600 group-hover:text-white text-slate-700 flex items-center justify-center transition">
                                 <i data-lucide="megaphone" class="h-4 w-4"></i>
                             </div>
                             @if ($claimCount > 0)
@@ -187,7 +187,7 @@
                             <p class="text-xs font-semibold text-slate-800 leading-tight">Klaim Terbuka</p>
                             <p class="text-[11px] text-slate-400 mt-0.5">Permintaan jam ekstra</p>
                         </div>
-                        <span class="text-[11px] font-semibold text-[#6C5CE7] inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
+                        <span class="text-[11px] font-semibold text-indigo-600 group-hover:text-indigo-700 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
                             <span>Tinjau</span>
                             <i data-lucide="arrow-right" class="h-3 w-3"></i>
                         </span>
@@ -197,7 +197,7 @@
             </div>
 
             {{-- Priority Action Desk (Spotlight Pengajuan Paling Mendesak) --}}
-            <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-card overflow-hidden">
                 <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                     <div class="flex items-center gap-2">
                         <i data-lucide="inbox" class="h-4 w-4 text-slate-500"></i>
@@ -224,7 +224,7 @@
                                         <h5 class="text-sm font-semibold text-slate-900 truncate">
                                             {{ $pendingAvailability->user->name ?? 'Karyawan' }}
                                         </h5>
-                                        <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-purple-50 text-[#6C5CE7] border border-purple-200/60">
+                                        <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/60">
                                             Ketersediaan
                                         </span>
                                     </div>
@@ -271,7 +271,7 @@
         <div class="lg:col-span-5 space-y-4">
             
             {{-- Antrean Status Breakdown (High-Density List) --}}
-            <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs">
+            <div class="bg-white rounded-xl border border-slate-200/90 p-4 shadow-card">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3.5">
                     <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500">
                         Distribusi Antrean
@@ -290,7 +290,7 @@
                     @endphp
                     <div class="h-2 bg-slate-100 rounded-full overflow-hidden flex">
                         @if ($totalPending > 0)
-                            <div class="bg-[#6C5CE7] h-full" style="width: {{ $availPct }}%" title="Ketersediaan: {{ $availCount }}"></div>
+                            <div class="bg-indigo-600 h-full" style="width: {{ $availPct }}%" title="Ketersediaan: {{ $availCount }}"></div>
                             <div class="bg-blue-600 h-full" style="width: {{ $swapPct }}%" title="Tukar Shift: {{ $swapCount }}"></div>
                             <div class="bg-amber-500 h-full" style="width: {{ $claimPct }}%" title="Klaim Shift: {{ $claimCount }}"></div>
                         @else
@@ -302,7 +302,7 @@
                     <div class="space-y-2 pt-1 text-xs">
                         <div class="flex items-center justify-between text-slate-700">
                             <span class="flex items-center gap-2">
-                                <span class="h-2 w-2 rounded-full bg-[#6C5CE7]"></span>
+                                <span class="h-2 w-2 rounded-full bg-indigo-600"></span>
                                 <span>Ketersediaan Waktu</span>
                             </span>
                             <span class="font-bold font-mono text-slate-900">{{ number_format($availCount) }}</span>
@@ -328,7 +328,7 @@
             </div>
 
             {{-- Akses Cepat Operasional Manager --}}
-            <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-card overflow-hidden">
                 <div class="px-4 py-3 border-b border-slate-100">
                     <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500">
                         Akses Cepat Operasional

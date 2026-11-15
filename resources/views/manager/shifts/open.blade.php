@@ -10,20 +10,20 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+                <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
                     <span>Manager</span>
                     <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                    <span class="text-[#6C5CE7] font-medium">Shift Terbuka</span>
+                    <span class="text-indigo-600 font-medium">Shift Terbuka</span>
                 </div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Kelola Shift Terbuka (Open Shift)
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-0.5">
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
                     Publikasikan kuota shift lembur/tambahan dan tinjau klaim dari staf berdasarkan urutan waktu.
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100">
                     <i data-lucide="shield-check" class="h-3.5 w-3.5"></i>
                     Manajer
                 </span>
@@ -90,7 +90,7 @@
     >
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-4 rounded-2xl border border-emerald-200 shadow-2xs flex items-center justify-between">
+            <div class="bg-emerald-50 text-emerald-800 p-4 rounded-xl border border-emerald-200 shadow-card flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <i data-lucide="check-circle" class="h-5 w-5 text-emerald-600 shrink-0"></i>
                     <span class="text-sm font-medium">{{ session('success') }}</span>
@@ -99,7 +99,7 @@
         @endif
 
         @if (session('error'))
-            <div class="bg-red-50 text-red-800 p-4 rounded-2xl border border-red-200 shadow-2xs flex items-center justify-between">
+            <div class="bg-red-50 text-red-800 p-4 rounded-xl border border-red-200 shadow-card flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <i data-lucide="alert-circle" class="h-5 w-5 text-red-600 shrink-0"></i>
                     <span class="text-sm font-medium">{{ session('error') }}</span>
@@ -108,7 +108,7 @@
         @endif
 
         @if (session('info'))
-            <div class="bg-blue-50 text-blue-800 p-4 rounded-2xl border border-blue-200 shadow-2xs flex items-center justify-between">
+            <div class="bg-blue-50 text-blue-800 p-4 rounded-xl border border-blue-200 shadow-card flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <i data-lucide="info" class="h-5 w-5 text-blue-600 shrink-0"></i>
                     <span class="text-sm font-medium">{{ session('info') }}</span>
@@ -118,18 +118,18 @@
 
         {{-- Tabs Header & Action Button --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="flex overflow-x-auto p-1 bg-white border border-[#E2E0F7] rounded-2xl shadow-2xs max-w-full">
+            <div class="flex overflow-x-auto p-1 bg-white border border-slate-200 rounded-xl shadow-card max-w-full">
                 <button 
                     type="button" 
                     @click="activeTab = 'pending'"
-                    :class="activeTab === 'pending' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
+                    :class="activeTab === 'pending' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'"
                     class="relative px-3 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="clock" class="h-4 w-4"></i>
                     <span>Antrean Klaim</span>
                     @if ($pendingClaims->count() > 0)
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                              :class="activeTab === 'pending' ? 'bg-white text-[#6C5CE7]' : 'bg-[#6C5CE7] text-white'">
+                              :class="activeTab === 'pending' ? 'bg-white text-indigo-600' : 'bg-indigo-600 text-white'">
                             {{ $pendingClaims->count() }}
                         </span>
                     @endif
@@ -138,14 +138,14 @@
                 <button 
                     type="button" 
                     @click="activeTab = 'active_shifts'"
-                    :class="activeTab === 'active_shifts' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
+                    :class="activeTab === 'active_shifts' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'"
                     class="px-3 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="megaphone" class="h-4 w-4"></i>
                     <span>Open Shift Aktif</span>
                     @if ($openShifts->total() > 0)
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                              :class="activeTab === 'active_shifts' ? 'bg-white text-[#6C5CE7]' : 'bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7]'">
+                              :class="activeTab === 'active_shifts' ? 'bg-white text-indigo-600' : 'bg-indigo-50 text-indigo-600 border border-slate-200'">
                             {{ $openShifts->total() }}
                         </span>
                     @endif
@@ -154,14 +154,14 @@
                 <button 
                     type="button" 
                     @click="activeTab = 'history'"
-                    :class="activeTab === 'history' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
+                    :class="activeTab === 'history' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'"
                     class="px-3 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="history" class="h-4 w-4"></i>
                     <span>Riwayat Keputusan</span>
                     @if ($claimHistory->total() > 0)
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                              :class="activeTab === 'history' ? 'bg-white text-[#6C5CE7]' : 'bg-[#F5F3FF] text-[#7C7896] border border-[#E2E0F7]'">
+                              :class="activeTab === 'history' ? 'bg-white text-indigo-600' : 'bg-indigo-50 text-slate-500 border border-slate-200'">
                             {{ $claimHistory->total() }}
                         </span>
                     @endif
@@ -171,7 +171,7 @@
             <button 
                 type="button" 
                 @click="showBroadcastModal = true"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-white bg-[#6C5CE7] hover:bg-[#5B4BD5] transition shadow-xs"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-xs"
             >
                 <i data-lucide="plus" class="h-4 w-4"></i>
                 <span>Broadcast Open Shift</span>
@@ -186,7 +186,7 @@
                     $currentAssignments = $shift->shiftAssignments()->count();
                     $remaining = max(0, $shift->quota - $currentAssignments);
                 @endphp
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-xs transition-all">
+                <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-card hover:border-indigo-600/40 hover:shadow-xs transition-all">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                         <div class="space-y-3 flex-1 min-w-0">
                             {{-- Header tags --}}
@@ -195,9 +195,9 @@
                                     <i data-lucide="clock" class="h-3.5 w-3.5"></i>
                                     Menunggu Persetujuan
                                 </span>
-                                <span class="text-xs text-[#7C7896] flex items-center gap-1">
+                                <span class="text-xs text-slate-500 flex items-center gap-1">
                                     <span>Waktu Pengajuan:</span>
-                                    <strong class="text-[#2D2A3E] font-mono">{{ $claim->applied_at ? $claim->applied_at->format('H:i:s.u') : $claim->created_at->format('H:i:s') }}</strong>
+                                    <strong class="text-slate-900 font-mono">{{ $claim->applied_at ? $claim->applied_at->format('H:i:s.u') : $claim->created_at->format('H:i:s') }}</strong>
                                 </span>
                                 <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
                                     Sisa Kuota: {{ $remaining }} / {{ $shift->quota }}
@@ -206,14 +206,14 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                                 {{-- Karyawan Pemohon --}}
-                                <div class="bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl p-3.5 flex flex-col justify-between">
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col justify-between">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-white border border-[#E2E0F7] text-[#6C5CE7] font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                        <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-indigo-600 font-bold text-xs flex items-center justify-center shrink-0 shadow-card">
                                             {{ strtoupper(substr($claim->user->name, 0, 2)) }}
                                         </div>
                                         <div class="min-w-0">
                                             <div class="flex items-center gap-1.5">
-                                                <p class="font-bold text-[#2D2A3E] text-sm leading-tight truncate">{{ $claim->user->name }}</p>
+                                                <p class="font-bold text-slate-900 text-sm leading-tight truncate">{{ $claim->user->name }}</p>
                                                 @php
                                                     $cType = $claim->user->employment_type ?? 'full_time';
                                                     $cBadge = match ($cType) {
@@ -236,36 +236,36 @@
                                                     {{ $cLabel }}
                                                 </span>
                                             </div>
-                                            <p class="text-xs text-[#7C7896] mt-0.5">{{ $claim->user->position?->name ?? 'Staf' }} &bull; {{ $claim->user->department?->name ?? '-' }}</p>
+                                            <p class="text-xs text-slate-500 mt-0.5">{{ $claim->user->position?->name ?? 'Staf' }} &bull; {{ $claim->user->department?->name ?? '-' }}</p>
                                         </div>
                                     </div>
-                                    <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-[#7C7896]">
+                                    <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                                         <span>Email Kontak:</span>
-                                        <span class="font-mono text-[#2D2A3E] truncate max-w-[200px]">{{ $claim->user->email }}</span>
+                                        <span class="font-mono text-slate-900 truncate max-w-[200px]">{{ $claim->user->email }}</span>
                                     </div>
                                 </div>
 
                                 {{-- Shift yang Diminta --}}
-                                <div class="bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl p-3.5 flex flex-col justify-between">
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col justify-between">
                                     <div>
                                         <div class="flex items-center justify-between gap-2 mb-1">
-                                            <p class="text-sm font-bold text-[#2D2A3E] truncate">{{ $shift->title }}</p>
+                                            <p class="text-sm font-bold text-slate-900 truncate">{{ $shift->title }}</p>
                                             @if ($shift->is_global_broadcast)
                                                 <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-700 border border-purple-200 shrink-0">
                                                     <i data-lucide="globe" class="h-3 w-3"></i> Global
                                                 </span>
                                             @endif
                                         </div>
-                                        <p class="text-xs text-[#7C7896] flex items-center gap-1.5 mt-0.5">
-                                            <i data-lucide="calendar" class="h-3.5 w-3.5 text-[#6C5CE7] shrink-0"></i>
-                                            <span class="font-medium text-[#2D2A3E]">{{ $shift->start_time->translatedFormat('l, d M Y') }}</span>
+                                        <p class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                                            <i data-lucide="calendar" class="h-3.5 w-3.5 text-indigo-600 shrink-0"></i>
+                                            <span class="font-medium text-slate-900">{{ $shift->start_time->translatedFormat('l, d M Y') }}</span>
                                             <span>&bull;</span>
                                             <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} WIB</span>
                                         </p>
                                     </div>
-                                    <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-[#7C7896]">
+                                    <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                                         <span>Departemen Asal:</span>
-                                        <span class="font-semibold text-[#2D2A3E]">{{ $shift->department?->name ?? 'Lintas Departemen' }}</span>
+                                        <span class="font-semibold text-slate-900">{{ $shift->department?->name ?? 'Lintas Departemen' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -301,12 +301,12 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-12 text-center shadow-2xs">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-3">
+                <div class="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-card">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-3">
                         <i data-lucide="check-circle-2" class="h-7 w-7"></i>
                     </div>
-                    <p class="font-bold text-[#2D2A3E] text-base">Tidak Ada Klaim yang Menunggu Persetujuan</p>
-                    <p class="text-xs md:text-sm text-[#7C7896] mt-1 max-w-md mx-auto">
+                    <p class="font-bold text-slate-900 text-base">Tidak Ada Klaim yang Menunggu Persetujuan</p>
+                    <p class="text-xs md:text-sm text-slate-500 mt-1 max-w-md mx-auto">
                         Saat ada staf yang mengajukan klaim untuk open shift mode approval, pengajuan akan masuk ke antrean ini secara real-time.
                     </p>
                 </div>
@@ -316,12 +316,12 @@
         {{-- TAB 2: ACTIVE OPEN SHIFTS --}}
         <div x-show="activeTab === 'active_shifts'" class="space-y-4" style="display: none;">
             @if ($openShifts->isEmpty())
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-12 text-center shadow-2xs">
-                    <div class="w-14 h-14 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] mx-auto flex items-center justify-center mb-3">
+                <div class="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-card">
+                    <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 mx-auto flex items-center justify-center mb-3">
                         <i data-lucide="megaphone" class="h-7 w-7"></i>
                     </div>
-                    <p class="font-bold text-[#2D2A3E] text-base">Belum Ada Open Shift Aktif</p>
-                    <p class="text-xs md:text-sm text-[#7C7896] mt-1 max-w-md mx-auto">
+                    <p class="font-bold text-slate-900 text-base">Belum Ada Open Shift Aktif</p>
+                    <p class="text-xs md:text-sm text-slate-500 mt-1 max-w-md mx-auto">
                         Klik tombol "Broadcast Open Shift" di kanan atas untuk mempublikasikan alokasi kuota shift tambahan baru atau shift kekurangan personel.
                     </p>
                 </div>
@@ -335,7 +335,7 @@
                             $isInstant = !$shift->requires_approval;
                             $remaining = max(0, $quota - $filledCount);
                         @endphp
-                        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-xs transition-all flex flex-col justify-between">
+                        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-card hover:border-indigo-600/40 hover:shadow-xs transition-all flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between gap-2">
                                     @if ($isInstant)
@@ -355,14 +355,14 @@
 
                                 <div>
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <h4 class="font-bold text-[#2D2A3E] text-base leading-snug">{{ $shift->title }}</h4>
+                                        <h4 class="font-bold text-slate-900 text-base leading-snug">{{ $shift->title }}</h4>
                                         @if ($shift->is_global_broadcast)
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200">
                                                 <i data-lucide="globe" class="h-3 w-3"></i> Global Broadcast
                                             </span>
                                         @endif
                                     </div>
-                                    <p class="text-xs text-[#7C7896] mt-0.5">
+                                    <p class="text-xs text-slate-500 mt-0.5">
                                         @if ($shift->is_global_broadcast)
                                             Semua Departemen {{ $shift->department ? '('.$shift->department->name.')' : '' }}
                                         @else
@@ -371,12 +371,12 @@
                                     </p>
                                 </div>
 
-                                <div class="text-xs text-slate-700 bg-[#F8F7FF] rounded-xl p-3 border border-[#E2E0F7] space-y-1">
-                                    <p class="font-semibold text-[#2D2A3E] flex items-center gap-1.5">
-                                        <i data-lucide="calendar" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
+                                <div class="text-xs text-slate-700 bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-1">
+                                    <p class="font-semibold text-slate-900 flex items-center gap-1.5">
+                                        <i data-lucide="calendar" class="h-3.5 w-3.5 text-indigo-600"></i>
                                         <span>{{ $shift->start_time->translatedFormat('l, d M Y') }}</span>
                                     </p>
-                                    <p class="text-[11px] text-[#7C7896] flex items-center gap-1.5">
+                                    <p class="text-[11px] text-slate-500 flex items-center gap-1.5">
                                         <i data-lucide="clock" class="h-3.5 w-3.5 text-slate-400"></i>
                                         <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} WIB</span>
                                     </p>
@@ -384,11 +384,11 @@
 
                                 <div class="space-y-1.5">
                                     <div class="flex justify-between text-xs">
-                                        <span class="text-[#7C7896]">Terisi: <strong class="text-[#2D2A3E]">{{ $filledCount }}</strong> / {{ $quota }} Slot</span>
-                                        <span class="font-bold text-[#6C5CE7]">{{ $percentage }}%</span>
+                                        <span class="text-slate-500">Terisi: <strong class="text-slate-900">{{ $filledCount }}</strong> / {{ $quota }} Slot</span>
+                                        <span class="font-bold text-indigo-600">{{ $percentage }}%</span>
                                     </div>
                                     <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200/60">
-                                        <div class="h-2 rounded-full bg-[#6C5CE7] transition-all duration-300" style="width: {{ $percentage }}%"></div>
+                                        <div class="h-2 rounded-full bg-indigo-600 transition-all duration-300" style="width: {{ $percentage }}%"></div>
                                     </div>
                                 </div>
                             </div>
@@ -423,7 +423,7 @@
                     $shift = $claim->shift;
                     [$statusLabel, $statusClass, $statusIcon] = $statusMap[$claim->status] ?? [$claim->status, 'bg-slate-100 text-slate-700 border-slate-200', 'clock'];
                 @endphp
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs hover:border-[#6C5CE7]/30 transition-all">
+                <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-card hover:border-indigo-600/30 transition-all">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div class="space-y-1.5 min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-2">
@@ -431,16 +431,16 @@
                                     <i data-lucide="{{ $statusIcon }}" class="h-3 w-3"></i>
                                     {{ $statusLabel }}
                                 </span>
-                                <span class="text-xs font-bold text-[#2D2A3E]">
+                                <span class="text-xs font-bold text-slate-900">
                                     {{ $shift->title }}
                                 </span>
-                                <span class="text-xs text-[#7C7896]">
+                                <span class="text-xs text-slate-500">
                                     ({{ $shift->start_time->translatedFormat('d M Y, H:i') }})
                                 </span>
                             </div>
 
                             <div class="flex items-center gap-1.5">
-                                <p class="text-sm font-bold text-[#2D2A3E]">
+                                <p class="text-sm font-bold text-slate-900">
                                     {{ $claim->user->name }}
                                     <span class="text-xs font-normal text-slate-400">({{ $claim->user->position?->name ?? 'Staf' }})</span>
                                 </p>
@@ -462,9 +462,9 @@
                                 </span>
                             </div>
 
-                            <p class="text-xs text-[#7C7896]">
+                            <p class="text-xs text-slate-500">
                                 Diajukan: <span class="font-mono text-slate-600">{{ $claim->applied_at ? $claim->applied_at->format('d M Y, H:i:s.u') : '-' }}</span> &bull;
-                                Ditinjau oleh: <span class="font-medium text-[#2D2A3E]">{{ $claim->approvedBy?->name ?? 'Sistem FCFS' }}</span>
+                                Ditinjau oleh: <span class="font-medium text-slate-900">{{ $claim->approvedBy?->name ?? 'Sistem FCFS' }}</span>
                             </p>
                             @if ($claim->status === 'rejected' && $claim->rejection_reason)
                                 <div class="mt-2 p-2.5 rounded-xl bg-red-50/70 border border-red-100 text-xs text-red-700">
@@ -473,19 +473,19 @@
                             @endif
                         </div>
 
-                        <div class="text-xs text-[#7C7896] sm:text-right shrink-0">
+                        <div class="text-xs text-slate-500 sm:text-right shrink-0">
                             <p class="text-[11px] text-slate-400">Keputusan:</p>
-                            <p class="font-semibold text-[#2D2A3E]">{{ $claim->updated_at->translatedFormat('d M Y') }}</p>
+                            <p class="font-semibold text-slate-900">{{ $claim->updated_at->translatedFormat('d M Y') }}</p>
                         </div>
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] p-12 text-center shadow-2xs">
-                    <div class="w-14 h-14 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] mx-auto flex items-center justify-center mb-3">
+                <div class="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-card">
+                    <div class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-600 mx-auto flex items-center justify-center mb-3">
                         <i data-lucide="history" class="h-7 w-7"></i>
                     </div>
-                    <p class="font-bold text-[#2D2A3E] text-base">Belum Ada Riwayat Keputusan Klaim</p>
-                    <p class="text-xs md:text-sm text-[#7C7896] mt-1 max-w-sm mx-auto">
+                    <p class="font-bold text-slate-900 text-base">Belum Ada Riwayat Keputusan Klaim</p>
+                    <p class="text-xs md:text-sm text-slate-500 mt-1 max-w-sm mx-auto">
                         Daftar klaim yang telah disetujui atau ditolak akan tersimpan secara terstruktur di sini.
                     </p>
                 </div>
@@ -511,11 +511,11 @@
             <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" @click="showBroadcastModal = false"></div>
 
             <div class="relative min-h-screen flex items-center justify-center p-4">
-                <div class="relative bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[#E2E0F7] space-y-5 my-8">
+                <div class="relative bg-white rounded-xl max-w-lg w-full p-6 shadow-xl border border-slate-200 space-y-5 my-8">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div>
-                            <h3 class="text-base font-bold text-[#2D2A3E]">Broadcast Open Shift Dadakan</h3>
-                            <p class="text-xs text-[#7C7896] mt-0.5">Buka alokasi kuota shift tambahan untuk staf departemen.</p>
+                            <h3 class="text-base font-bold text-slate-900">Broadcast Open Shift Dadakan</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Buka alokasi kuota shift tambahan untuk staf departemen.</p>
                         </div>
                         <button type="button" @click="showBroadcastModal = false" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
                             <i data-lucide="x" class="h-5 w-5"></i>
@@ -527,13 +527,13 @@
 
                         {{-- 1. Pilihan Sumber Open Shift (Shift Baru vs Shift Kurang Staf) --}}
                         <div>
-                            <label class="block text-xs font-bold text-[#2D2A3E] uppercase tracking-wider mb-2">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
                                 Tipe Open Shift: <span class="text-red-500">*</span>
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <label 
                                     class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
-                                    :class="broadcastSource === 'new' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    :class="broadcastSource === 'new' ? 'border-indigo-600 bg-indigo-600/5 font-semibold text-indigo-600 shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -542,16 +542,16 @@
                                         </div>
                                         <input type="radio" name="broadcast_source" value="new" x-model="broadcastSource" class="hidden">
                                         <span class="w-4 h-4 rounded-full border flex items-center justify-center"
-                                              :class="broadcastSource === 'new' ? 'border-[#6C5CE7] bg-[#6C5CE7]' : 'border-slate-300'">
+                                              :class="broadcastSource === 'new' ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'">
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="broadcastSource === 'new'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">Buat jadwal shift dadakan / lembur baru.</p>
+                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">Buat jadwal shift dadakan / lembur baru.</p>
                                 </label>
 
                                 <label 
                                     class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
-                                    :class="broadcastSource === 'existing' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    :class="broadcastSource === 'existing' ? 'border-indigo-600 bg-indigo-600/5 font-semibold text-indigo-600 shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -560,11 +560,11 @@
                                         </div>
                                         <input type="radio" name="broadcast_source" value="existing" x-model="broadcastSource" class="hidden">
                                         <span class="w-4 h-4 rounded-full border flex items-center justify-center"
-                                              :class="broadcastSource === 'existing' ? 'border-[#6C5CE7] bg-[#6C5CE7]' : 'border-slate-300'">
+                                              :class="broadcastSource === 'existing' ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'">
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="broadcastSource === 'existing'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">
+                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">
                                         Buka slot dari shift terjadwal ({{ $existingUnderstaffedShifts->count() }} tersedia).
                                     </p>
                                 </label>
@@ -588,7 +588,7 @@
                             @else
                                 <div>
                                     <div class="flex items-center justify-between mb-1.5">
-                                        <label for="existing_shift_id" class="block text-xs font-semibold text-[#2D2A3E]">
+                                        <label for="existing_shift_id" class="block text-xs font-semibold text-slate-900">
                                             Pilih Shift yang Kekurangan Karyawan: <span class="text-red-500">*</span>
                                         </label>
 
@@ -599,7 +599,7 @@
                                                     id="filter_dept" 
                                                     x-model="filterDeptId"
                                                     @change="selectedExistingShiftId = ''"
-                                                    class="text-[11px] rounded-lg border border-slate-300 py-0.5 px-2 bg-white text-slate-700 focus:border-[#6C5CE7]"
+                                                    class="text-[11px] rounded-lg border border-slate-300 py-0.5 px-2 bg-white text-slate-700 focus:border-indigo-600"
                                                 >
                                                     <option value="">Semua Dept ({{ $existingUnderstaffedShifts->count() }})</option>
                                                     @foreach ($departments as $dept)
@@ -617,7 +617,7 @@
                                         @change="onExistingShiftChange()"
                                         :disabled="broadcastSource !== 'existing'"
                                         :required="broadcastSource === 'existing'"
-                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] bg-white disabled:bg-slate-100 disabled:text-slate-400"
+                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 bg-white disabled:bg-slate-100 disabled:text-slate-400"
                                     >
                                         <option value="" disabled selected>-- Pilih Shift Terjadwal --</option>
                                         <template x-for="s in filteredExistingShifts" :key="s.id">
@@ -628,14 +628,14 @@
 
                                 {{-- Preview Card Shift Terpilih --}}
                                 <template x-if="selectedExistingShift">
-                                    <div class="bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl p-3.5 space-y-2">
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
                                         <div class="flex items-center justify-between">
-                                            <p class="font-bold text-[#2D2A3E] text-xs" x-text="selectedExistingShift.title"></p>
+                                            <p class="font-bold text-slate-900 text-xs" x-text="selectedExistingShift.title"></p>
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800">
                                                 Kurang <span x-text="selectedExistingShift.remaining_slots" class="mx-0.5"></span> Staf
                                             </span>
                                         </div>
-                                        <p class="text-[11px] text-[#7C7896]">
+                                        <p class="text-[11px] text-slate-500">
                                             <span x-text="selectedExistingShift.department ? selectedExistingShift.department.name : 'Lintas Departemen'"></span> &bull;
                                             Waktu: <span class="font-medium text-slate-700" x-text="selectedExistingShift.start_time.substring(0, 16) + ' s/d ' + selectedExistingShift.end_time.substring(11, 16)"></span>
                                         </p>
@@ -646,7 +646,7 @@
                                 </template>
 
                                 <div>
-                                    <label for="open_slots" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                    <label for="open_slots" class="block text-xs font-semibold text-slate-900 mb-1.5">
                                         Jumlah Slot Terbuka yang Dibutuhkan untuk Diisi: <span class="text-red-500">*</span>
                                     </label>
                                     <input 
@@ -658,16 +658,16 @@
                                         x-model.number="openSlots"
                                         :disabled="broadcastSource !== 'existing'"
                                         placeholder="Contoh: 2"
-                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100 disabled:text-slate-400"
+                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 disabled:bg-slate-100 disabled:text-slate-400"
                                     >
                                     <template x-if="selectedExistingShift">
                                         <div class="mt-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                                             <span>
                                                 Staf terjadwal saat ini: <strong class="text-slate-800" x-text="selectedExistingShift.shift_assignments_count"></strong> orang + 
-                                                Slot terbuka: <strong class="text-[#6C5CE7]" x-text="openSlots || 0"></strong> slot
+                                                Slot terbuka: <strong class="text-indigo-600" x-text="openSlots || 0"></strong> slot
                                             </span>
-                                            <span class="font-bold text-[#2D2A3E]">
-                                                Kuota total menjadi: <span class="text-[#6C5CE7]" x-text="parseInt(selectedExistingShift.shift_assignments_count || 0) + parseInt(openSlots || 0)"></span> staf
+                                            <span class="font-bold text-slate-900">
+                                                Kuota total menjadi: <span class="text-indigo-600" x-text="parseInt(selectedExistingShift.shift_assignments_count || 0) + parseInt(openSlots || 0)"></span> staf
                                             </span>
                                         </div>
                                     </template>
@@ -704,7 +704,7 @@
                         <div x-show="broadcastSource === 'new'" class="space-y-4">
                             {{-- Judul Shift --}}
                             <div>
-                                <label for="title" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                <label for="title" class="block text-xs font-semibold text-slate-900 mb-1.5">
                                     Judul Shift: <span class="text-red-500">*</span>
                                 </label>
                                 <input 
@@ -714,22 +714,22 @@
                                     :disabled="broadcastSource !== 'new'"
                                     :required="broadcastSource === 'new'"
                                     placeholder="Contoh: Shift Tambahan Operasional Weekend"
-                                    class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100 disabled:text-slate-400"
+                                    class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 disabled:bg-slate-100 disabled:text-slate-400"
                                 >
                             </div>
 
                             {{-- Pilihan Jangkauan & Departemen --}}
                             @if ($isGlobalManager)
                                 <div class="space-y-2">
-                                    <label class="block text-xs font-semibold text-[#2D2A3E]">
+                                    <label class="block text-xs font-semibold text-slate-900">
                                         Jangkauan & Departemen: <span class="text-red-500">*</span>
                                     </label>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                         <label 
                                             class="flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition text-xs"
-                                            :class="broadcastScope === 'department' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7]' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                            :class="broadcastScope === 'department' ? 'border-indigo-600 bg-indigo-600/5 font-semibold text-indigo-600' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                         >
-                                            <input type="radio" name="broadcast_scope" value="department" x-model="broadcastScope" class="text-[#6C5CE7] focus:ring-[#6C5CE7]">
+                                            <input type="radio" name="broadcast_scope" value="department" x-model="broadcastScope" class="text-indigo-600 focus:ring-indigo-600">
                                             <div class="flex flex-col">
                                                 <span class="flex items-center gap-1.5 font-medium">
                                                     <i data-lucide="building-2" class="h-3.5 w-3.5"></i>
@@ -765,7 +765,7 @@
                                             x-model="selectedDepartmentId"
                                             :disabled="broadcastSource !== 'new' || broadcastScope === 'global'"
                                             :required="broadcastSource === 'new' && broadcastScope === 'department'"
-                                            class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] bg-white disabled:bg-slate-100 disabled:text-slate-400"
+                                            class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 bg-white disabled:bg-slate-100 disabled:text-slate-400"
                                         >
                                             <option value="" disabled>-- Pilih Departemen --</option>
                                             @foreach ($departments as $dept)
@@ -775,12 +775,12 @@
                                     </div>
 
                                     {{-- Banner Informasi Global Broadcast --}}
-                                    <div x-show="broadcastScope === 'global'" class="bg-purple-50/70 border border-purple-200 rounded-xl p-3 text-xs text-purple-800 space-y-1" style="display: none;">
+                                    <div x-show="broadcastScope === 'global'" class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3 text-xs text-indigo-900 space-y-1" style="display: none;">
                                         <div class="flex items-center gap-1.5 font-bold">
-                                            <i data-lucide="sparkles" class="h-3.5 w-3.5 text-purple-600"></i>
+                                            <i data-lucide="globe" class="h-3.5 w-3.5 text-indigo-600"></i>
                                             <span>Shift Terbuka untuk Seluruh Departemen</span>
                                         </div>
-                                        <p class="text-[11px] text-purple-700">
+                                        <p class="text-[11px] text-indigo-700">
                                             Shift ini akan dipublikasikan secara global dan dapat diklaim oleh semua karyawan aktif dari departemen apapun.
                                         </p>
                                         <input type="hidden" name="is_global_broadcast" value="1" :disabled="broadcastSource !== 'new' || broadcastScope !== 'global'">
@@ -790,7 +790,7 @@
                             @else
                                 {{-- Manager Departemen: Terkunci ke Departemennya Sendiri --}}
                                 <div>
-                                    <label class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                    <label class="block text-xs font-semibold text-slate-900 mb-1.5">
                                         Departemen:
                                     </label>
                                     <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs">
@@ -809,7 +809,7 @@
 
                             {{-- Template Shift (Opsional) --}}
                             <div>
-                                <label for="template_id" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                <label for="template_id" class="block text-xs font-semibold text-slate-900 mb-1.5">
                                     Gunakan Jam dari Template (Opsional):
                                 </label>
                                 <select 
@@ -818,7 +818,7 @@
                                     x-model="selectedTemplateId"
                                     @change="onTemplateChange()"
                                     :disabled="broadcastSource !== 'new'"
-                                    class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] bg-white disabled:bg-slate-100 disabled:text-slate-400"
+                                    class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 bg-white disabled:bg-slate-100 disabled:text-slate-400"
                                 >
                                     <option value="">-- Atur Jam Manual --</option>
                                     @foreach ($templates as $tmpl)
@@ -832,7 +832,7 @@
                             {{-- Waktu Mulai & Selesai --}}
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
-                                    <label for="start_time" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                    <label for="start_time" class="block text-xs font-semibold text-slate-900 mb-1.5">
                                         Waktu Mulai: <span class="text-red-500">*</span>
                                     </label>
                                     <input 
@@ -842,12 +842,12 @@
                                         x-model="startTime"
                                         :disabled="broadcastSource !== 'new'"
                                         :required="broadcastSource === 'new'"
-                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100 disabled:text-slate-400"
+                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 disabled:bg-slate-100 disabled:text-slate-400"
                                     >
                                 </div>
 
                                 <div>
-                                    <label for="end_time" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                    <label for="end_time" class="block text-xs font-semibold text-slate-900 mb-1.5">
                                         Waktu Selesai: <span class="text-red-500">*</span>
                                     </label>
                                     <input 
@@ -857,14 +857,14 @@
                                         x-model="endTime"
                                         :disabled="broadcastSource !== 'new'"
                                         :required="broadcastSource === 'new'"
-                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100 disabled:text-slate-400"
+                                        class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 disabled:bg-slate-100 disabled:text-slate-400"
                                     >
                                 </div>
                             </div>
 
                             {{-- Kuota Slot --}}
                             <div>
-                                <label for="quota" class="block text-xs font-semibold text-[#2D2A3E] mb-1.5">
+                                <label for="quota" class="block text-xs font-semibold text-slate-900 mb-1.5">
                                     Kuota Staf Dibutuhkan: <span class="text-red-500">*</span>
                                 </label>
                                 <input 
@@ -876,7 +876,7 @@
                                     value="2" 
                                     :disabled="broadcastSource !== 'new'"
                                     :required="broadcastSource === 'new'"
-                                    class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100 disabled:text-slate-400"
+                                    class="w-full text-xs md:text-sm rounded-xl border border-slate-300 px-3 py-2.5 focus:border-indigo-600 focus:ring-indigo-600 disabled:bg-slate-100 disabled:text-slate-400"
                                 >
                             </div>
 
@@ -888,9 +888,9 @@
                                     name="is_holiday" 
                                     value="1" 
                                     :disabled="broadcastSource !== 'new'"
-                                    class="rounded border-slate-300 text-[#6C5CE7] focus:ring-[#6C5CE7] disabled:bg-slate-100"
+                                    class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 disabled:bg-slate-100"
                                 >
-                                <label for="is_holiday" class="text-xs text-[#7C7896]">
+                                <label for="is_holiday" class="text-xs text-slate-500">
                                     Tandai sebagai hari libur / tanggal merah (tarif lembur)
                                 </label>
                             </div>
@@ -900,13 +900,13 @@
                         {{-- FIELD BERSAMA: METODE ALOKASI KLAIM                      --}}
                         {{-- ======================================================== --}}
                         <div>
-                            <label class="block text-xs font-bold text-[#2D2A3E] uppercase tracking-wider mb-2">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
                                 Metode Alokasi Klaim: <span class="text-red-500">*</span>
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" x-data="{ mode: '0' }">
                                 <label 
                                     class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
-                                    :class="mode === '0' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    :class="mode === '0' ? 'border-indigo-600 bg-indigo-600/5 font-semibold text-indigo-600 shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -915,16 +915,16 @@
                                         </div>
                                         <input type="radio" name="requires_approval" value="0" x-model="mode" class="hidden">
                                         <span class="w-4 h-4 rounded-full border flex items-center justify-center"
-                                              :class="mode === '0' ? 'border-[#6C5CE7] bg-[#6C5CE7]' : 'border-slate-300'">
+                                              :class="mode === '0' ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'">
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="mode === '0'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">Siapa cepat langsung otomatis masuk jadwal.</p>
+                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">Siapa cepat langsung otomatis masuk jadwal.</p>
                                 </label>
 
                                 <label 
                                     class="relative flex flex-col p-3.5 rounded-xl border cursor-pointer transition-all"
-                                    :class="mode === '1' ? 'border-[#6C5CE7] bg-[#6C5CE7]/5 font-semibold text-[#6C5CE7] shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
+                                    :class="mode === '1' ? 'border-indigo-600 bg-indigo-600/5 font-semibold text-indigo-600 shadow-xs' : 'border-slate-200 text-slate-700 hover:bg-slate-50'"
                                 >
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
@@ -933,11 +933,11 @@
                                         </div>
                                         <input type="radio" name="requires_approval" value="1" x-model="mode" class="hidden">
                                         <span class="w-4 h-4 rounded-full border flex items-center justify-center"
-                                              :class="mode === '1' ? 'border-[#6C5CE7] bg-[#6C5CE7]' : 'border-slate-300'">
+                                              :class="mode === '1' ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'">
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="mode === '1'"></span>
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-[#7C7896] font-normal mt-1.5">Klaim ditampung & dipilih manual manajer.</p>
+                                    <p class="text-[11px] text-slate-500 font-normal mt-1.5">Klaim ditampung & dipilih manual manajer.</p>
                                 </label>
                             </div>
                         </div>
@@ -952,7 +952,7 @@
                             </button>
                             <button 
                                 type="submit" 
-                                class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#6C5CE7] hover:bg-[#5B4BD5] shadow-xs transition"
+                                class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition"
                             >
                                 Publikasikan Sekarang
                             </button>
@@ -977,15 +977,15 @@
             <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" @click="closeRejectModal()"></div>
 
             <div class="relative min-h-screen flex items-center justify-center p-4">
-                <div class="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#E2E0F7] space-y-5">
+                <div class="relative bg-white rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-5">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div class="flex items-center gap-2.5 text-red-600">
                             <div class="p-2.5 rounded-xl bg-red-50 text-red-600">
                                 <i data-lucide="alert-triangle" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold text-[#2D2A3E]">Tolak Klaim Shift</h3>
-                                <p class="text-xs text-[#7C7896]">Konfirmasi penolakan klaim staf</p>
+                                <h3 class="text-base font-bold text-slate-900">Tolak Klaim Shift</h3>
+                                <p class="text-xs text-slate-500">Konfirmasi penolakan klaim staf</p>
                             </div>
                         </div>
                         <button type="button" @click="closeRejectModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
@@ -996,13 +996,13 @@
                     <form method="POST" :action="rejectActionUrl" class="space-y-4">
                         @csrf
 
-                        <div class="p-3.5 rounded-2xl bg-[#F8F7FF] border border-[#E2E0F7] text-xs space-y-1">
-                            <p class="text-[#7C7896]">Staf: <span class="font-bold text-[#2D2A3E]" x-text="rejectEmployeeName"></span></p>
-                            <p class="text-[#7C7896]">Shift: <span class="font-semibold text-[#2D2A3E]" x-text="rejectShiftTitle"></span></p>
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                            <p class="text-slate-500">Staf: <span class="font-bold text-slate-900" x-text="rejectEmployeeName"></span></p>
+                            <p class="text-slate-500">Shift: <span class="font-semibold text-slate-900" x-text="rejectShiftTitle"></span></p>
                         </div>
 
                         <div>
-                            <label for="rejection_reason" class="block text-xs font-bold text-[#2D2A3E] uppercase tracking-wider mb-1.5">
+                            <label for="rejection_reason" class="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
                                 Alasan Penolakan <span class="text-slate-400 font-normal lowercase">(opsional)</span>
                             </label>
                             <textarea 
@@ -1012,7 +1012,7 @@
                                 maxlength="255"
                                 x-model="rejectionReason"
                                 placeholder="Contoh: Jadwal bertabrakan dengan shift lain atau kuota staf terpenuhi..."
-                                class="w-full text-xs rounded-xl border border-slate-300 focus:border-[#6C5CE7] focus:ring-[#6C5CE7] p-3 text-[#2D2A3E] placeholder:text-slate-400 resize-none"
+                                class="w-full text-xs rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-indigo-600 p-3 text-slate-900 placeholder:text-slate-400 resize-none"
                             ></textarea>
                             <p class="text-[11px] text-slate-400 text-right mt-1">Maksimal 255 karakter</p>
                         </div>

@@ -1,7 +1,7 @@
 @php
     $statusMap = [
         'pending_target' => ['Menunggu Rekan', 'bg-amber-50 text-amber-800 border-amber-200', 'clock'],
-        'pending_manager' => ['Menunggu Manajer', 'bg-purple-50 text-[#6C5CE7] border-purple-200', 'shield-alert'],
+        'pending_manager' => ['Menunggu Manajer', 'bg-indigo-50 text-indigo-700 border-indigo-200', 'shield-alert'],
         'approved' => ['Disetujui', 'bg-emerald-50 text-emerald-800 border-emerald-200', 'check-circle'],
         'rejected' => ['Ditolak', 'bg-rose-50 text-rose-800 border-rose-200', 'x-circle'],
     ];
@@ -47,8 +47,8 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-2xs">
-                    <span class="h-2 w-2 rounded-full {{ $pendingSwaps->count() > 0 ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500' }}"></span>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-card">
+                    <span class="h-2 w-2 rounded-full {{ $pendingSwaps->count() > 0 ? 'bg-amber-500' : 'bg-emerald-500' }}"></span>
                     <span>Menunggu Review:</span>
                     <strong class="font-mono text-slate-900 font-bold">{{ $pendingSwaps->count() }}</strong>
                 </span>
@@ -57,21 +57,21 @@
 
         {{-- Flash Messages --}}
         @if (session('success'))
-            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-2xs flex items-center gap-3 text-xs sm:text-sm">
+            <div class="bg-emerald-50 text-emerald-800 p-3.5 rounded-xl border border-emerald-200 shadow-card flex items-center gap-3 text-xs sm:text-sm">
                 <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                 <span class="font-medium">{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-2xs flex items-center gap-3 text-xs sm:text-sm">
+            <div class="bg-rose-50 text-rose-800 p-3.5 rounded-xl border border-rose-200 shadow-card flex items-center gap-3 text-xs sm:text-sm">
                 <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
                 <span class="font-medium">{{ session('error') }}</span>
             </div>
         @endif
 
         @if (session('info'))
-            <div class="bg-blue-50 text-blue-800 p-3.5 rounded-xl border border-blue-200 shadow-2xs flex items-center gap-3 text-xs sm:text-sm">
+            <div class="bg-blue-50 text-blue-800 p-3.5 rounded-xl border border-blue-200 shadow-card flex items-center gap-3 text-xs sm:text-sm">
                 <i data-lucide="info" class="w-4 h-4 text-blue-600 shrink-0"></i>
                 <span class="font-medium">{{ session('info') }}</span>
             </div>
@@ -81,11 +81,11 @@
         {{-- 2. TABS NAVIGASI (MENUNGGU & RIWAYAT)                             --}}
         {{-- ----------------------------------------------------------------- --}}
         <div class="flex items-center justify-between gap-4">
-            <div class="inline-flex p-1 bg-white border border-slate-200 rounded-lg text-xs shadow-2xs">
+            <div class="inline-flex p-1 bg-white border border-slate-200/90 rounded-lg text-xs shadow-card">
                 <button 
                     type="button" 
                     @click="activeTab = 'pending'"
-                    :class="activeTab === 'pending' ? 'bg-slate-900 text-white font-semibold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                    :class="activeTab === 'pending' ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                     class="px-3.5 py-1.5 rounded-md transition flex items-center gap-2"
                 >
                     <i data-lucide="clock" class="w-3.5 h-3.5"></i>
@@ -101,7 +101,7 @@
                 <button 
                     type="button" 
                     @click="activeTab = 'history'"
-                    :class="activeTab === 'history' ? 'bg-slate-900 text-white font-semibold shadow-2xs' : 'text-slate-600 hover:text-slate-900'"
+                    :class="activeTab === 'history' ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                     class="px-3.5 py-1.5 rounded-md transition flex items-center gap-2"
                 >
                     <i data-lucide="history" class="w-3.5 h-3.5"></i>
@@ -122,7 +122,7 @@
                     $reqInitial = strtoupper(substr($swap->requester->name, 0, 1));
                     $targetInitial = strtoupper(substr($swap->targetUser->name, 0, 1));
                 @endphp
-                <div class="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition space-y-3.5">
+                <div class="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-5 shadow-card hover:border-slate-300 transition space-y-3.5">
                     
                     {{-- Row 1: Dual Person Comparison Grid --}}
                     <div class="grid grid-cols-1 md:grid-cols-11 gap-2.5 items-center">
@@ -228,7 +228,7 @@
                                 @csrf
                                 <button 
                                     type="submit" 
-                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 shadow-xs transition"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs shadow-indigo-600/20 active:translate-y-px transition"
                                     onclick="return confirm('Apakah Anda yakin ingin menyetujui pertukaran shift ini? Penugasan jadwal akan otomatis diperbarui secara atomik.')"
                                 >
                                     <i data-lucide="check" class="w-3.5 h-3.5"></i>
@@ -247,7 +247,7 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-xl border border-slate-200/80 p-10 text-center shadow-2xs">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-10 text-center shadow-card">
                     <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2.5">
                         <i data-lucide="check" class="w-5 h-5"></i>
                     </div>
@@ -270,7 +270,7 @@
                     $targetShift = $swap->targetShiftAssignment?->shift;
                     [$statusLabel, $statusClass, $statusIcon] = $statusMap[$swap->status] ?? [$swap->status, 'bg-slate-100 text-slate-700 border-slate-200', 'clock'];
                 @endphp
-                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-2xs space-y-2.5">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-4 shadow-card space-y-2.5">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
@@ -315,7 +315,7 @@
                     </div>
                 </div>
             @empty
-                <div class="bg-white rounded-xl border border-slate-200/80 p-10 text-center shadow-2xs">
+                <div class="bg-white rounded-xl border border-slate-200/80 p-10 text-center shadow-card">
                     <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2.5">
                         <i data-lucide="history" class="w-5 h-5"></i>
                     </div>
@@ -347,7 +347,7 @@
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px]" @click="closeRejectModal()"></div>
 
             <div class="relative min-h-screen flex items-center justify-center p-4">
-                <div class="relative bg-white rounded-xl max-w-md w-full p-5 shadow-2xl border border-slate-200 space-y-4">
+                <div class="relative bg-white rounded-xl max-w-md w-full p-5 shadow-xl border border-slate-200 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
