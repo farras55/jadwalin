@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Notification;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class NotificationService
 {
@@ -15,7 +16,7 @@ class NotificationService
         $userId = $user instanceof User ? $user->id : $user;
         $companyId = $companyId ?? ($user instanceof User ? $user->company_id : User::find($userId)?->company_id);
 
-        return Notification::create([
+        $notification = Notification::create([
             'company_id' => $companyId,
             'user_id' => $userId,
             'type' => $type,
@@ -23,5 +24,9 @@ class NotificationService
             'message' => $message,
             'is_read' => false,
         ]);
+
+        Cache::forget("user_{$userId}_unread_notif_count");
+
+        return $notification;
     }
 }

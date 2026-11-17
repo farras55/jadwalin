@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\AuditLog;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -49,9 +50,11 @@ class AppServiceProvider extends ServiceProvider
             if (auth()->check()) {
                 $userId = auth()->id();
 
-                $unreadNotifCount = Notification::where('user_id', $userId)
-                    ->where('is_read', false)
-                    ->count();
+                $unreadNotifCount = Cache::remember("user_{$userId}_unread_notif_count", 30, function () use ($userId) {
+                    return Notification::where('user_id', $userId)
+                        ->where('is_read', false)
+                        ->count();
+                });
 
                 $latestNotifications = Notification::where('user_id', $userId)
                     ->orderByDesc('created_at')
