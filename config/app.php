@@ -54,7 +54,14 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => (function () {
+        $url = env('APP_URL', 'http://localhost');
+        if (! is_string($url) || str_contains($url, '<') || str_contains($url, '>') || trim($url) === '') {
+            return 'http://localhost';
+        }
+
+        return rtrim($url, '/');
+    })(),
 
     /*
     |--------------------------------------------------------------------------

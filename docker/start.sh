@@ -35,34 +35,40 @@ chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 755 /var/www/html/public
 
-# 4. Ensure application key exists
+# 4. Clean up malformed APP_URL containing placeholder brackets < >
+if [ -n "${APP_URL}" ] && echo "${APP_URL}" | grep -q '[<>]'; then
+    echo "--> WARNING: APP_URL contains invalid placeholder brackets (< >). Falling back to http://localhost"
+    export APP_URL="http://localhost"
+fi
+
+# 5. Ensure application key exists
 if [ -z "${APP_KEY}" ]; then
     echo "--> WARNING: APP_KEY environment variable is not set! Generating a new one..."
     php artisan key:generate --force
 fi
 
-# 5. Run database migrations if enabled (default: true)
+# 6. Run database migrations if enabled (default: true)
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
     echo "--> Running database migrations..."
     php artisan migrate --force
 fi
 
-# 6. Optional database seeding (default: false)
+# 7. Optional database seeding (default: false)
 if [ "${SEED_DATABASE:-false}" = "true" ]; then
     echo "--> Running database seeder..."
     php artisan db:seed --force
 fi
 
-# 7. Create storage symlink
+# 8. Create storage symlink
 echo "--> Creating storage symlink..."
 php artisan storage:link || true
 
-# 8. Cache Laravel config, routes, and views for optimal performance
+# 9. Cache Laravel config, routes, and views for optimal performance
 echo "--> Optimizing Laravel caches..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# 9. Start Supervisord (runs Nginx and PHP-FPM in foreground)
+# 10. Start Supervisord (runs Nginx and PHP-FPM in foreground)
 echo "--> Launching Supervisord..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
