@@ -278,7 +278,7 @@
                         <span>Hapus Draf</span>
                     </button>
 
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-bold px-3.5 py-2 rounded-xl bg-white border border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF] hover:border-[#6C5CE7] transition flex items-center gap-1.5 shadow-2xs">
                         <i data-lucide="sliders" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
                         <span>Atur Ulang Kebutuhan</span>
@@ -324,7 +324,7 @@
                         <span>Hapus Draf</span>
                     </button>
 
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-bold px-3.5 py-2 rounded-xl bg-white border border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF] hover:border-[#6C5CE7] transition flex items-center gap-1.5 shadow-2xs">
                         <i data-lucide="sliders" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
                         <span>Atur Ulang Kebutuhan</span>
@@ -364,7 +364,7 @@
 
                 {{-- Action Buttons --}}
                 <div class="flex items-center flex-wrap gap-2.5 shrink-0 self-end md:self-auto">
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-bold px-4 py-2.5 rounded-xl bg-[#6C5CE7] hover:bg-[#5b4cdb] text-white shadow-sm transition flex items-center gap-2">
                         <i data-lucide="sliders" class="h-4 w-4"></i>
                         <span>Buat Jadwal Baru / Re-Build</span>
@@ -394,7 +394,7 @@
                 </div>
 
                 <div class="shrink-0 self-end md:self-auto">
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs sm:text-sm font-extrabold px-5 py-3 rounded-2xl bg-[#6C5CE7] hover:bg-[#5b4cdb] text-white shadow-md transition flex items-center gap-2">
                         <i data-lucide="sparkles" class="h-4 w-4"></i>
                         <span>Mulai Susun Jadwal Cerdas</span>

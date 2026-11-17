@@ -19,7 +19,7 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
    * Skenario 1: Translasi test_superadmin_can_access_admin_routes_and_not_manager_routes
    * PHPUnit: Superadmin dapat membuka /admin/dashboard & /admin/companies, namun ditolak di /manager/dashboard (403)
    */
-  test('TC-NAV-01: Hak akses dan menu navigasi Super Admin', async ({ page }) => {
+  test('TC-NAV-01: Hak akses dan menu navigasi Super Admin', async ({ page, isMobile }) => {
     // 1. Login sebagai Super Admin
     await page.goto('/login');
     await page.locator('input#email').fill('owner@senjawisata.co.id');
@@ -28,14 +28,20 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
 
     // 2. Akses Dashboard Super Admin
     await expect(page).toHaveURL(/\/admin\/dashboard/);
-    await expect(page.getByText('Super Admin', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('#main-content').getByText('Super Admin', { exact: false }).first()).toBeVisible();
 
-    // 3. Verifikasi Menu Navigasi Sidebar Super Admin
-    await expect(page.getByRole('link', { name: /Perusahaan & Cabang/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Kelola Pengguna/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Departemen & Posisi/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Template Shift/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Rekap Timesheet/i }).first()).toBeVisible();
+    // 3. Verifikasi Menu Navigasi
+    if (isMobile) {
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Dashboard/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Pengguna/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('button', { name: /Lainnya/i })).toBeVisible();
+    } else {
+      await expect(page.getByRole('link', { name: /Perusahaan & Cabang/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Kelola Pengguna/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Departemen & Posisi/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Template Shift/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Rekap Timesheet/i }).first()).toBeVisible();
+    }
 
     // 4. Kunjungi halaman Perusahaan & Cabang
     await page.goto('/admin/companies');
@@ -50,7 +56,7 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
    * Skenario 2: Translasi test_manager_can_access_manager_routes_and_not_admin_routes
    * PHPUnit: Manager dapat membuka /manager/dashboard & /manager/shifts, namun ditolak di /admin/dashboard (403)
    */
-  test('TC-NAV-02: Hak akses dan menu navigasi Manager', async ({ page }) => {
+  test('TC-NAV-02: Hak akses dan menu navigasi Manager', async ({ page, isMobile }) => {
     // 1. Login sebagai Manager
     await page.goto('/login');
     await page.locator('input#email').fill('manager@senjawisata.co.id');
@@ -59,14 +65,20 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
 
     // 2. Akses Dashboard Manager
     await expect(page).toHaveURL(/\/manager\/dashboard/);
-    await expect(page.getByText('Manager', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('#main-content').getByText('Manager', { exact: false }).first()).toBeVisible();
 
-    // 3. Verifikasi Menu Navigasi Sidebar Manager
-    await expect(page.getByRole('link', { name: /Jadwal Kerja Tim/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Persetujuan Ketersediaan/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Persetujuan Tukar Shift/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Presensi Tim/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Timesheet & Laporan/i }).first()).toBeVisible();
+    // 3. Verifikasi Menu Navigasi
+    if (isMobile) {
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Roster/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Presensi/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Tukar/i })).toBeVisible();
+    } else {
+      await expect(page.getByRole('link', { name: /Jadwal Kerja Tim/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Persetujuan Ketersediaan/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Persetujuan Tukar Shift/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Presensi Tim/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Timesheet & Laporan/i }).first()).toBeVisible();
+    }
 
     // 4. Kunjungi halaman Jadwal Kerja Tim
     await page.goto('/manager/shifts');
@@ -81,7 +93,7 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
    * Skenario 3: Translasi test_employee_can_access_employee_routes_and_not_admin_routes
    * PHPUnit: Employee dapat membuka /employee/dashboard & /employee/schedule, namun ditolak di /admin/dashboard (403)
    */
-  test('TC-NAV-03: Hak akses dan menu navigasi Karyawan (Employee)', async ({ page }) => {
+  test('TC-NAV-03: Hak akses dan menu navigasi Karyawan (Employee)', async ({ page, isMobile }) => {
     // 1. Login sebagai Karyawan
     await page.goto('/login');
     await page.locator('input#email').fill('karyawan@senjawisata.co.id');
@@ -90,14 +102,20 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
 
     // 2. Akses Dashboard Karyawan
     await expect(page).toHaveURL(/\/employee\/dashboard/);
-    await expect(page.getByText('Karyawan', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('#main-content').getByText('Karyawan', { exact: false }).first()).toBeVisible();
 
-    // 3. Verifikasi Menu Navigasi Sidebar Karyawan
-    await expect(page.getByRole('link', { name: /Jadwal Saya/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Tukar Shift/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Presensi \/ Absensi/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Timesheet/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /Ketersediaan Waktu/i }).first()).toBeVisible();
+    // 3. Verifikasi Menu Navigasi
+    if (isMobile) {
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Jadwal/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Presensi/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Tukar/i })).toBeVisible();
+    } else {
+      await expect(page.getByRole('link', { name: /Jadwal Saya/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Tukar Shift/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Presensi \/ Absensi/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Timesheet/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Ketersediaan Waktu/i }).first()).toBeVisible();
+    }
 
     // 4. Kunjungi halaman Jadwal Saya
     await page.goto('/employee/schedule');

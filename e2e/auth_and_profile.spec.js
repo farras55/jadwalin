@@ -58,21 +58,21 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
     await expect(page.locator('.text-red-600')).toBeVisible();
   });
 
-  test('TC-AUTH-03: Sesi pengguna dapat diakhiri melalui aksi Logout', async ({ page, isMobile }) => {
+  test('TC-AUTH-03: Sesi pengguna dapat diakhiri melalui aksi Logout', async ({ page }) => {
     await loginAsEmployee(page);
 
-    // Pada layar mobile, buka sidebar drawer melalui hamburger button terlebih dahulu
-    if (isMobile) {
-      const hamburgerBtn = page.getByTitle('Buka Menu').or(page.locator('button[title="Buka Menu"]')).first();
-      await hamburgerBtn.click();
-    }
+    // Buka dropdown profil pada header
+    const profileButton = page.locator('header [x-data*="open"] > button');
+    await expect(profileButton).toBeVisible();
+    await profileButton.click();
 
-    // Buka menu profil di topbar/sidebar dan klik tombol keluar
-    const logoutBtn = page.getByRole('button', { name: /Keluar|Log out/i }).or(page.locator('button[title="Keluar"]')).first();
+    // Klik tombol Keluar di dalam dropdown header
+    const logoutBtn = page.locator('header').getByRole('button', { name: /Keluar/i });
+    await expect(logoutBtn).toBeVisible();
     await logoutBtn.click();
 
     // Verifikasi sesi berakhir dan dialihkan kembali ke /login
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login(?:\?.*)?$/);
   });
 
   // --------------------------------------------------------------------------
@@ -114,9 +114,9 @@ test.describe('Modul Autentikasi & Profil Pengguna (Auth & Profile)', () => {
     await expect(page.getByText(/Kelola identitas profil, nomor kontak, serta keamanan akun Anda/i)).toBeVisible();
 
     // Verifikasi Kartu Identitas Pengguna
-    await expect(page.getByText('Dewi Lestari', { exact: false }).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Dewi Lestari/i })).toBeVisible();
     await expect(page.getByText('karyawan@senjawisata.co.id')).toBeVisible();
-    await expect(page.getByText(/PT Senja Wisata Nusantara/i).first()).toBeVisible();
+    await expect(page.locator('.max-w-7xl').getByText(/PT Senja Wisata Nusantara/i).first()).toBeVisible();
 
     // Verifikasi Form Informasi Profil & Form Keamanan
     await expect(page.getByRole('heading', { name: /Informasi Profil/i })).toBeVisible();
