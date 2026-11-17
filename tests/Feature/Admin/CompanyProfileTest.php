@@ -32,7 +32,7 @@ class CompanyProfileTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('admin.companies.index');
         $response->assertSee($company->name);
-        $response->assertSee('Perusahaan &amp; Cabang', false);
+        $response->assertSee('Identitas Perusahaan', false);
         $response->assertSee('2');
         $response->assertSee('Departemen');
     }

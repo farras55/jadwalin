@@ -128,7 +128,7 @@ class Department extends Model
     }
 
     /**
-     * Memeriksa apakah koordinat lokasi cabang sudah dikonfigurasi.
+     * Memeriksa apakah koordinat lokasi kerja sudah dikonfigurasi.
      */
     public function isLocationConfigured(): bool
     {

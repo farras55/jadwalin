@@ -10,7 +10,7 @@
                     <li aria-hidden="true">
                         <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
                     </li>
-                    <li aria-current="page" class="font-semibold text-indigo-600">Perusahaan &amp; Cabang</li>
+                    <li aria-current="page" class="font-semibold text-indigo-600">Identitas Perusahaan</li>
                 </ol>
             </nav>
 
@@ -18,7 +18,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-                        Perusahaan &amp; Cabang
+                        Identitas Perusahaan
                     </h1>
                     <p class="text-xs md:text-sm text-slate-500 mt-1">
                         Kelola identitas legalitas organisasi, lisensi tenant, dan zona waktu operasional.

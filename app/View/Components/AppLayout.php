@@ -103,7 +103,7 @@ class AppLayout extends Component
         return match ($role) {
             'superadmin' => [
                 ['label' => 'Dashboard', 'icon' => 'layout-grid', 'route' => 'admin.dashboard', 'fallback' => '/admin/dashboard', 'active_pattern' => 'admin/dashboard*'],
-                ['label' => 'Perusahaan & Cabang', 'icon' => 'building-2', 'route' => 'admin.companies.index', 'fallback' => '/admin/companies', 'active_pattern' => 'admin/companies*'],
+                ['label' => 'Identitas Perusahaan', 'icon' => 'building-2', 'route' => 'admin.companies.index', 'fallback' => '/admin/companies', 'active_pattern' => 'admin/companies*'],
                 ['label' => 'Kelola Pengguna', 'icon' => 'users', 'route' => 'admin.users.index', 'fallback' => '/admin/users', 'active_pattern' => 'admin/users*'],
                 ['label' => 'Departemen & Posisi', 'icon' => 'briefcase', 'route' => 'admin.departments.index', 'fallback' => '/admin/departments', 'active_pattern' => 'admin/departments*'],
                 ['label' => 'Template Shift', 'icon' => 'calendar-days', 'route' => 'admin.shifts.index', 'fallback' => '/admin/shifts', 'active_pattern' => 'admin/shifts*'],

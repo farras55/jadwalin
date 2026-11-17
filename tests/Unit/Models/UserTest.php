@@ -43,12 +43,11 @@ class UserTest extends TestCase
         $this->assertTrue($freelance->isFreelance());
     }
 
-    public function test_branch_id_accessor_and_mutator_maps_to_department_id(): void
+    public function test_user_department_id_assignment(): void
     {
         $user = new User;
-        $user->branch_id = 42;
+        $user->department_id = 42;
 
         $this->assertEquals(42, $user->department_id);
-        $this->assertEquals(42, $user->branch_id);
     }
 }

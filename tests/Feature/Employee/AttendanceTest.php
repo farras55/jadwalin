@@ -82,9 +82,9 @@ class AttendanceTest extends TestCase
             'radius' => 150,
         ]);
 
-        $this->assertEquals(-6.917464, $this->user->branch->latitude);
-        $this->assertEquals(107.619123, $this->user->branch->longitude);
-        $this->assertEquals(150, $this->user->branch->radius);
+        $this->assertEquals(-6.917464, $this->user->department->latitude);
+        $this->assertEquals(107.619123, $this->user->department->longitude);
+        $this->assertEquals(150, $this->user->department->radius);
 
         $response = $this->actingAs($this->user)->get(route('employee.attendance'));
 
@@ -322,7 +322,7 @@ class AttendanceTest extends TestCase
 
         $response->assertSessionHas(
             'error',
-            'Lokasi cabang belum diatur oleh admin. Presensi tidak dapat dilakukan.'
+            'Lokasi kerja belum diatur oleh admin. Presensi tidak dapat dilakukan.'
         );
     }
 

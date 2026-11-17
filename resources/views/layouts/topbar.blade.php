@@ -7,7 +7,7 @@
             <span class="text-[16px] font-bold text-slate-900 tracking-tight">Jadwal<span class="text-indigo-600">in</span></span>
         </div>
 
-        {{-- Nama Perusahaan / Cabang --}}
+        {{-- Nama Perusahaan / Organisasi --}}
         <div class="hidden sm:flex items-center h-8 gap-2 text-xs font-semibold text-slate-800 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-lg max-w-[180px] md:max-w-[320px] transition hover:bg-slate-100/80" title="{{ $companyName }}">
             <i data-lucide="building-2" class="h-3.5 w-3.5 shrink-0 text-slate-500"></i>
             <span class="truncate">{{ $companyName }}</span>

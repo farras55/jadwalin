@@ -36,7 +36,7 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
       await expect(page.locator('nav.fixed').getByRole('link', { name: /Pengguna/i })).toBeVisible();
       await expect(page.locator('nav.fixed').getByRole('button', { name: /Lainnya/i })).toBeVisible();
     } else {
-      await expect(page.getByRole('link', { name: /Perusahaan & Cabang/i }).first()).toBeVisible();
+      await expect(page.getByRole('link', { name: /Identitas Perusahaan/i }).first()).toBeVisible();
       await expect(page.getByRole('link', { name: /Kelola Pengguna/i }).first()).toBeVisible();
       await expect(page.getByRole('link', { name: /Departemen & Posisi/i }).first()).toBeVisible();
       await expect(page.getByRole('link', { name: /Template Shift/i }).first()).toBeVisible();

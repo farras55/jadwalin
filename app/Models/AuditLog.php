@@ -21,7 +21,7 @@ class AuditLog extends Model
         'OpenShiftClaim' => 'Klaim Shift Terbuka',
         'CompanySetting' => 'Pengaturan Perusahaan',
         'Availability' => 'Ketersediaan Waktu',
-        'Department' => 'Departemen & Cabang',
+        'Department' => 'Departemen & Lokasi Kerja',
         'User' => 'Pengguna',
         'AttendanceRegularization' => 'Koreksi Presensi',
     ];

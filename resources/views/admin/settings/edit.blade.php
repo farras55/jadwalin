@@ -96,37 +96,37 @@
                 </div>
             @endif
 
-            {{-- FORM PENGATURAN LOKASI CABANG DINAMIS (OWNER MULTI-BRANCH GEOFENCING) --}}
+            {{-- FORM PENGATURAN LOKASI KERJA DINAMIS (GEOFENCING PRESENSI) --}}
             <section class="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">
-                            Pengaturan Titik Koordinat &amp; Geofencing Cabang
+                            Pengaturan Titik Koordinat &amp; Geofencing Lokasi Kerja
                         </h3>
                         <p class="mt-1 text-sm text-gray-500">
-                            Pilih cabang perusahaan dan tentukan titik koordinat GPS (latitude, longitude) serta radius batas absensi secara dinamis.
+                            Pilih lokasi kerja dan tentukan titik koordinat GPS (latitude, longitude) serta radius batas absensi secara dinamis.
                         </p>
                     </div>
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 self-start sm:self-auto">
                         <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
-                        <span>Multi-Branch Dinamis</span>
+                        <span>Lokasi Kerja Dinamis</span>
                     </span>
                 </div>
 
-                <form method="POST" action="{{ route('admin.settings.update-branch-location') }}" @submit="prepareSubmit()" class="mt-6 space-y-6">
+                <form method="POST" action="{{ route('admin.settings.update-work-location') }}" @submit="prepareSubmit()" class="mt-6 space-y-6">
                     @csrf
                     @method('PUT')
 
-                    {{-- Dropdown Pemilihan Cabang --}}
+                    {{-- Dropdown Pemilihan Lokasi Kerja --}}
                     <div>
                         <div class="flex items-center justify-between">
                             <label for="branch_id_select" class="block text-sm font-medium text-gray-700">
-                                Pilih Cabang / Branch Perusahaan <span class="text-red-500">*</span>
+                                Pilih Lokasi Kerja / Departemen <span class="text-red-500">*</span>
                             </label>
                             <span class="text-xs text-indigo-600 font-medium" x-show="branchName" x-text="'Aktif: ' + branchName"></span>
                         </div>
                         <select id="branch_id_select"
-                                name="branch_id"
+                                name="work_location_id"
                                 x-model="selectedBranchId"
                                 @change="onBranchChange()"
                                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -138,15 +138,16 @@
                                 <option value="{{ $b->id }}">{{ $dName }}{{ $b->address ? ' — ' . $b->address : '' }}</option>
                             @endforeach
                         </select>
+                        <input type="hidden" name="branch_id" :value="selectedBranchId">
                         <p class="mt-1 text-xs text-gray-500">
-                            Pilih cabang tempat kerja yang ingin diatur titik GPS dan batas radius presensinya.
+                            Pilih lokasi kerja yang ingin diatur titik GPS dan batas radius presensinya.
                         </p>
                     </div>
 
-                    {{-- Input Nama Lokasi / Alamat Cabang dengan Autocomplete Real-Time & Matikan Browser Autofill --}}
+                    {{-- Input Nama Lokasi / Alamat dengan Autocomplete Real-Time & Matikan Browser Autofill --}}
                     <div class="relative" @click.outside="showDropdown = false">
                         <label for="branch_address_input" class="block text-sm font-medium text-gray-700 mb-1">
-                            Nama Lokasi / Alamat Cabang <span class="text-xs font-normal text-gray-500">(Ketik nama lokasi atau geser pin di peta)</span>
+                            Nama / Alamat Lokasi Kerja <span class="text-xs font-normal text-gray-500">(Ketik nama lokasi atau geser pin di peta)</span>
                         </label>
                         <div class="relative mt-1">
                             <input id="branch_address_input"
@@ -158,7 +159,7 @@
                                    @keydown.enter.prevent="searchLocations(locationName, true)"
                                    @focus="if (searchResults.length > 0) showDropdown = true"
                                    @keydown.escape="showDropdown = false"
-                                   placeholder="Ketik nama lokasi / alamat cabang (contoh: Politeknik Negeri Malang, Menara Cakrawala, dsb.)"
+                                   placeholder="Ketik nama lokasi / alamat lokasi kerja (contoh: Politeknik Negeri Malang, Menara Cakrawala, dsb.)"
                                    class="block w-full rounded-lg border-gray-300 pl-10 pr-28 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -220,7 +221,7 @@
                         </p>
                     </div>
 
-                    {{-- PETA INTERAKTIF GEOFENCING CABANG (LEAFLET.JS) --}}
+                    {{-- PETA INTERAKTIF GEOFENCING LOKASI KERJA (LEAFLET.JS) --}}
                     <div>
                         <div class="flex items-center justify-between">
                             <label class="block text-sm font-medium text-gray-700 flex items-center gap-1.5">
@@ -252,10 +253,10 @@
                     </div>
 
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                        {{-- Latitude Cabang --}}
+                        {{-- Latitude Lokasi Kerja --}}
                         <div>
                             <label for="branch_latitude_input" class="block text-sm font-medium text-gray-700">
-                                Latitude Cabang <span class="text-red-500">*</span>
+                                Latitude Lokasi Kerja <span class="text-red-500">*</span>
                             </label>
                             <input id="branch_latitude_input"
                                    name="latitude"
@@ -269,10 +270,10 @@
                             <p class="mt-1 text-xs text-gray-500">Garis lintang (contoh: -7.9439111)</p>
                         </div>
 
-                        {{-- Longitude Cabang --}}
+                        {{-- Longitude Lokasi Kerja --}}
                         <div>
                             <label for="branch_longitude_input" class="block text-sm font-medium text-gray-700">
-                                Longitude Cabang <span class="text-red-500">*</span>
+                                Longitude Lokasi Kerja <span class="text-red-500">*</span>
                             </label>
                             <input id="branch_longitude_input"
                                    name="longitude"
@@ -286,7 +287,7 @@
                             <p class="mt-1 text-xs text-gray-500">Garis bujur (contoh: 112.6148093)</p>
                         </div>
 
-                        {{-- Radius Cabang --}}
+                        {{-- Radius Lokasi Kerja --}}
                         <div>
                             <label for="branch_radius_input" class="block text-sm font-medium text-gray-700">
                                 Radius Absensi (Meter) <span class="text-red-500">*</span>
@@ -310,9 +311,9 @@
                     <div class="rounded-lg bg-gray-50 border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div class="text-xs text-gray-700 space-y-1">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                <span>Cabang: <strong class="text-indigo-600 font-semibold" x-text="branchName">Cabang</strong></span>
+                                <span>Lokasi Kerja: <strong class="text-indigo-600 font-semibold" x-text="branchName">Lokasi Kerja</strong></span>
                                 <span class="text-gray-300">&bull;</span>
-                                <span class="text-gray-600">Alamat: <strong class="text-gray-900 font-medium" x-text="locationName || 'Belum diatur'">Alamat Cabang</strong></span>
+                                <span class="text-gray-600">Alamat: <strong class="text-gray-900 font-medium" x-text="locationName || 'Belum diatur'">Alamat Lokasi Kerja</strong></span>
                             </div>
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-gray-600">
                                 <span>Titik: <strong class="font-mono text-gray-900" x-text="hasValidCoordinates() ? (branchLatitude + ', ' + branchLongitude) : 'Belum diatur'">Belum diatur</strong></span>
@@ -324,7 +325,7 @@
                         <button type="submit"
                                 class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-sm shrink-0">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            <span>Simpan Lokasi Cabang</span>
+                            <span>Simpan Lokasi Kerja</span>
                         </button>
                     </div>
                 </form>
@@ -339,7 +340,7 @@
                 @csrf
                 @method('PUT')
 
-                {{-- Sinkronisasi Cabang yang Sedang Dipilih ke Form Global --}}
+                {{-- Sinkronisasi Lokasi Kerja yang Sedang Dipilih ke Form Global --}}
                 <input type="hidden" name="branch_id" :value="selectedBranchId">
                 <input type="hidden" name="branch_address" :value="locationName">
                 <input type="hidden" name="branch_latitude" :value="branchLatitude">
@@ -889,7 +890,7 @@
             const list = Array.isArray(branches) ? branches : [];
             const init = initialSettings || {};
 
-            // Prioritaskan cabang yang dipilih dari URL / flash session (setelah simpan)
+            // Prioritaskan lokasi kerja yang dipilih dari URL / flash session (setelah simpan)
             let targetBranch = null;
             if (initialBranchId) {
                 targetBranch = list.find(b => String(b.id) === String(initialBranchId));
@@ -1057,7 +1058,7 @@
 
                 updatePopup() {
                     if (!this.marker) return;
-                    const name = this.branchName || 'Cabang';
+                    const name = this.branchName || 'Lokasi Kerja';
                     const addr = this.locationName || 'Titik koordinat presensi';
                     this.marker.bindPopup(`<div style="font-size: 12px; line-height: 1.4;"><strong>${name}</strong><br><span style="color: #64748b;">${addr}</span></div>`);
                 },
@@ -1142,7 +1143,7 @@
                         }
                     }
 
-                    this.autoFilledNotice = `Cabang ${found.name} dipilih.`;
+                    this.autoFilledNotice = `Lokasi kerja ${found.name} dipilih.`;
                     setTimeout(() => { this.autoFilledNotice = ''; }, 3500);
                 },
 

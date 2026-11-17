@@ -480,7 +480,7 @@ class OpenShiftController extends Controller
                 $isInstant = ! $lockedShift->requires_approval;
 
                 if ($isInstant) {
-                    // Cabang A: Instant FCFS (Langsung terkonfirmasi)
+                    // Jalur 1: Instant FCFS (Langsung terkonfirmasi)
                     ShiftAssignment::create([
                         'company_id' => $lockedShift->company_id,
                         'shift_id' => $lockedShift->id,
@@ -502,7 +502,7 @@ class OpenShiftController extends Controller
                         $lockedShift->update(['is_open_shift' => false]);
                     }
                 } else {
-                    // Cabang B: Membutuhkan Approval Manajer
+                    // Jalur 2: Membutuhkan Approval Manajer
                     OpenShiftClaim::create([
                         'company_id' => $lockedShift->company_id,
                         'shift_id' => $lockedShift->id,

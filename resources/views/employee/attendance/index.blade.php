@@ -234,7 +234,7 @@
 
                 // Teks status reaktif
                 distanceText: isConfigured ? 'Mendeteksi...' : 'Lokasi Belum Diatur',
-                radiusNotificationText: isConfigured ? 'Menghubungkan ke titik presensi outlet...' : 'Lokasi cabang belum diatur oleh admin di Pengaturan Platform.',
+                radiusNotificationText: isConfigured ? 'Menghubungkan ke titik presensi...' : 'Lokasi kerja belum diatur oleh admin di Pengaturan Platform.',
                 verificationStatusText: isConfigured ? 'Lokasi Presensi Terverifikasi' : 'Lokasi Belum Diatur',
                 accuracyStatusText: isConfigured ? 'Di Dalam Radius Aman' : 'Lokasi Belum Diatur',
                 connectionStatusText: isConfigured ? 'Terhubung' : 'Lokasi Belum Diatur',
@@ -373,7 +373,7 @@
                         const data = await response.json();
                         this.applyLocationUpdate(data);
                     } catch (e) {
-                        console.warn('Gagal sinkronisasi lokasi cabang:', e);
+                        console.warn('Gagal sinkronisasi lokasi kerja:', e);
                     }
                 },
 
@@ -436,7 +436,7 @@
                 syncLocationTexts() {
                     if (!this.isLocationConfigured || this.officeLatitude === null || this.officeLongitude === null) {
                         this.distanceText = 'Lokasi Belum Diatur';
-                        this.radiusNotificationText = 'Lokasi cabang belum diatur oleh admin di Pengaturan Platform.';
+                        this.radiusNotificationText = 'Lokasi kerja belum diatur oleh admin di Pengaturan Platform.';
                         this.connectionStatusText = 'Lokasi Belum Diatur';
                         this.accuracyStatusText = 'Lokasi Belum Diatur';
                         this.verificationStatusText = 'Lokasi Belum Diatur';
@@ -451,7 +451,7 @@
                         this.distanceText = (this.distanceMeters / 1000).toFixed(1) + ' km';
                     }
 
-                    this.radiusNotificationText = 'Berada ' + this.distanceText + ' dari titik presensi ' + (this.outletInfo.name || 'Cabang');
+                    this.radiusNotificationText = 'Berada ' + this.distanceText + ' dari titik presensi ' + (this.outletInfo.name || 'Lokasi Kerja');
                     this.connectionStatusText = 'Terhubung';
                     this.verificationStatusText = 'Lokasi Presensi Terverifikasi';
                     this.accuracyStatusText = this.isInsideRadius ? 'Di Dalam Radius Aman' : 'Di Luar Radius Aman';
@@ -518,7 +518,7 @@
                         iconAnchor: [16, 42]
                     });
 
-                    const popupHtml = '<strong>' + (this.outletInfo.name || 'Cabang') + '</strong><br>' + (this.outletInfo.address || '');
+                    const popupHtml = '<strong>' + (this.outletInfo.name || 'Lokasi Kerja') + '</strong><br>' + (this.outletInfo.address || '');
 
                     if (this.markers.outlet) {
                         this.markers.outlet.setLatLng([lat, lng]);
@@ -839,10 +839,10 @@
                         </div>
                     </div>
 
-                    {{-- Banner Peringatan Jika Lokasi Cabang Belum Dikonfigurasi --}}
+                    {{-- Banner Peringatan Jika Lokasi Kerja Belum Dikonfigurasi --}}
                     <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 text-xs font-semibold text-amber-900">
                         <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
-                        <span>Lokasi cabang belum diatur oleh admin di Pengaturan Platform. Tombol Clock-In dinonaktifkan.</span>
+                        <span>Lokasi kerja belum diatur oleh admin di Pengaturan Platform. Tombol Clock-In dinonaktifkan.</span>
                     </div>
 
                     {{-- Banner Notifikasi Titik Presensi Outlet Dinamis --}}
@@ -1021,7 +1021,7 @@
                                     @elseif ($attendanceState === 'working')
                                         Presensi masuk {{ $outletName }} tercatat pada {{ $clockInFormatted }}
                                     @else
-                                        Pencatatan presensi terverifikasi dengan koordinat resmi cabang.
+                                        Pencatatan presensi terverifikasi dengan koordinat resmi lokasi kerja.
                                     @endif
                                 </p>
                             </div>
@@ -1057,7 +1057,7 @@
                                             :class="(!isInsideRadius || !isLocationConfigured) 
                                                 ? 'opacity-50 cursor-not-allowed bg-slate-300 hover:bg-slate-300 active:bg-slate-300 shadow-none pointer-events-none' 
                                                 : 'bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white shadow-xs hover:shadow-sm'"
-                                            :title="!isLocationConfigured ? 'Tombol nonaktif: Lokasi cabang belum diatur oleh admin' : (!isInsideRadius ? 'Tombol nonaktif: Anda berada di luar radius kantor (' + distanceText + ')' : 'Klik untuk mencatat kehadiran')"
+                                            :title="!isLocationConfigured ? 'Tombol nonaktif: Lokasi kerja belum diatur oleh admin' : (!isInsideRadius ? 'Tombol nonaktif: Anda berada di luar radius kantor (' + distanceText + ')' : 'Klik untuk mencatat kehadiran')"
                                             class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-bold transition-all text-xs tracking-wide">
                                         <i data-lucide="log-in" class="w-4 h-4 shrink-0"></i>
                                         <span class="whitespace-nowrap">Clock-In</span>
@@ -1096,7 +1096,7 @@
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
                         <strong class="font-bold text-slate-900">Petunjuk Operasional Presensi:</strong> 
-                        Pastikan Anda berada dalam radius presensi cabang <span x-text="outletInfo.name">{{ $outletName }}</span> (<span x-text="outletInfo.radius + 'm'">{{ $outletInfo['radius'] ?? 50 }}m</span>) dan memverifikasi kehadiran sebelum shift berakhir pukul {{ $shiftEnd }} {{ $tzAbbr }}.
+                        Pastikan Anda berada dalam radius presensi lokasi kerja <span x-text="outletInfo.name">{{ $outletName }}</span> (<span x-text="outletInfo.radius + 'm'">{{ $outletInfo['radius'] ?? 50 }}m</span>) dan memverifikasi kehadiran sebelum shift berakhir pukul {{ $shiftEnd }} {{ $tzAbbr }}.
                     </p>
                 </div>
             </div>
@@ -1122,7 +1122,7 @@
                     {{-- Banner Peringatan Jika Lokasi Belum Dikonfigurasi --}}
                     <div x-show="!isLocationConfigured" class="bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-amber-900 text-xs font-medium flex items-start gap-2">
                         <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                        <span>Lokasi cabang belum diatur oleh admin di Pengaturan Platform. Presensi dinonaktifkan.</span>
+                        <span>Lokasi kerja belum diatur oleh admin di Pengaturan Platform. Presensi dinonaktifkan.</span>
                     </div>
 
                     {{-- Map View Container --}}
@@ -1176,7 +1176,7 @@
                             </span>
                             <p class="leading-relaxed text-[11.5px]">
                                 <strong class="font-bold text-slate-900">Radius Presensi:</strong> 
-                                Maksimal <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik koordinat resmi cabang.
+                                Maksimal <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik koordinat resmi lokasi kerja.
                             </p>
                         </div>
 
@@ -1442,7 +1442,7 @@
                                     <i data-lucide="book-open" class="w-4 h-4"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-sm font-bold text-slate-900" id="modal-title">SOP Presensi Cabang <span x-text="outletInfo.name">{{ $outletName }}</span></h3>
+                                    <h3 class="text-sm font-bold text-slate-900" id="modal-title">SOP Presensi Lokasi Kerja <span x-text="outletInfo.name">{{ $outletName }}</span></h3>
                                     <p class="text-[11px] text-slate-500">Standar Prosedur Operasional Kehadiran Karyawan</p>
                                 </div>
                             </div>
@@ -1454,7 +1454,7 @@
                         <div class="space-y-3 text-xs text-slate-600 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
                             <div>
                                 <h4 class="font-bold text-slate-900 text-xs mb-0.5">1. Ketentuan Radius Presensi</h4>
-                                <p>Setiap presensi tercatat otomatis dalam radius aman <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik resmi cabang. Pastikan lokasi cabang telah diatur oleh admin di Pengaturan Platform.</p>
+                                <p>Setiap presensi tercatat otomatis dalam radius aman <span x-text="outletInfo.radius + ' meter'">{{ $outletInfo['radius'] ?? 50 }} meter</span> dari titik resmi lokasi kerja. Pastikan lokasi kerja telah diatur oleh admin di Pengaturan Platform.</p>
                             </div>
                             <div>
                                 <h4 class="font-bold text-slate-900 text-xs mb-0.5">2. Waktu Clock-In &amp; Toleransi</h4>

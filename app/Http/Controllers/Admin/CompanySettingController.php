@@ -79,10 +79,10 @@ class CompanySettingController extends Controller
             }
         }
 
-        // Cabang dibatasi hanya untuk perusahaan pengguna yang sedang aktif (isolasi multi-tenant)
-        $branches = Department::with('company')->where('company_id', $companyId)->orderBy('name')->get();
+        // Lokasi kerja (departemen) dibatasi hanya untuk perusahaan pengguna yang sedang aktif (isolasi multi-tenant)
+        $workLocations = Department::with('company')->where('company_id', $companyId)->orderBy('name')->get();
 
-        $branchesData = $branches->map(function ($b) {
+        $workLocationsData = $workLocations->map(function ($b) {
             $companyName = $b->company?->name;
             $displayName = $b->name.($companyName ? " ({$companyName})" : '');
 
@@ -104,15 +104,18 @@ class CompanySettingController extends Controller
             'radius' => (int) ($setting->attendance_radius_meters ?? ($company?->attendance_radius_meters ?? 100)),
         ];
 
-        $selectedBranchId = $request->query('branch_id', session('selected_branch_id'));
+        $selectedWorkLocationId = $request->query('work_location_id', $request->query('branch_id', session('selected_work_location_id', session('selected_branch_id'))));
 
         return view('admin.settings.edit', [
             'setting' => $setting,
             'company' => $company,
-            'branches' => $branches,
-            'branchesData' => $branchesData,
+            'workLocations' => $workLocations,
+            'workLocationsData' => $workLocationsData,
+            'selectedWorkLocationId' => $selectedWorkLocationId ? (int) $selectedWorkLocationId : null,
+            'branches' => $workLocations,
+            'branchesData' => $workLocationsData,
+            'selectedBranchId' => $selectedWorkLocationId ? (int) $selectedWorkLocationId : null,
             'companySettingsData' => $companySettingsData,
-            'selectedBranchId' => $selectedBranchId ? (int) $selectedBranchId : null,
         ]);
     }
 
@@ -323,12 +326,13 @@ class CompanySettingController extends Controller
             }
         }
 
-        // Jika tombol global save mengirimkan juga perubahan lokasi cabang
-        if ($request->filled('branch_id')) {
-            $branch = Department::where('company_id', $companyId)->find($request->input('branch_id'));
-            if ($branch) {
-                $bLat = $request->input('branch_latitude');
-                $bLng = $request->input('branch_longitude');
+        // Jika tombol global save mengirimkan juga perubahan titik koordinat lokasi kerja
+        $targetLocationId = $request->input('work_location_id') ?? $request->input('department_id') ?? $request->input('branch_id');
+        if (! empty($targetLocationId)) {
+            $location = Department::where('company_id', $companyId)->find($targetLocationId);
+            if ($location) {
+                $bLat = $request->input('location_latitude') ?? $request->input('department_latitude') ?? $request->input('branch_latitude');
+                $bLng = $request->input('location_longitude') ?? $request->input('department_longitude') ?? $request->input('branch_longitude');
                 if ($bLat !== null && $bLat !== '') {
                     $bLat = (float) str_replace(',', '.', (string) $bLat);
                 } else {
@@ -351,21 +355,24 @@ class CompanySettingController extends Controller
                 if ($bLng !== null) {
                     $bData['longitude'] = $bLng;
                 }
-                if ($request->filled('branch_address')) {
-                    $bData['address'] = $request->input('branch_address');
+                $locAddress = $request->input('location_address') ?? $request->input('department_address') ?? $request->input('branch_address');
+                if ($locAddress !== null && $locAddress !== '') {
+                    $bData['address'] = $locAddress;
                 }
-                $branch->update($bData);
+                $location->update($bData);
             }
         }
 
         $redirectParams = [];
-        if ($request->filled('branch_id')) {
-            $redirectParams['branch_id'] = $request->input('branch_id');
+        if (! empty($targetLocationId)) {
+            $redirectParams['work_location_id'] = $targetLocationId;
+            $redirectParams['branch_id'] = $targetLocationId;
         }
 
         return redirect()
             ->route('admin.settings.index', $redirectParams)
-            ->with('selected_branch_id', $request->input('branch_id'))
+            ->with('selected_work_location_id', $targetLocationId)
+            ->with('selected_branch_id', $targetLocationId)
             ->with(
                 'success',
                 'Pengaturan perusahaan berhasil diperbarui.'
@@ -373,13 +380,15 @@ class CompanySettingController extends Controller
     }
 
     /**
-     * Memperbarui titik koordinat dan radius cabang tertentu (multi-branch geofencing).
+     * Memperbarui titik koordinat dan radius lokasi kerja tertentu (geofencing presensi).
      */
-    public function updateBranchLocation(Request $request): RedirectResponse
+    public function updateWorkLocation(Request $request): RedirectResponse
     {
         $user = $request->user();
         abort_unless($user, 403);
         $companyId = $this->ensureCompany($request);
+
+        $locationField = ($request->has('branch_id') && ! $request->has('work_location_id')) ? 'branch_id' : 'work_location_id';
 
         // Normalisasi format desimal jika input koordinat menggunakan koma
         if ($request->has('latitude')) {
@@ -393,7 +402,7 @@ class CompanySettingController extends Controller
         }
 
         $validated = $request->validate([
-            'branch_id' => [
+            $locationField => [
                 'required',
                 'integer',
                 Rule::exists('departments', 'id')->where('company_id', $companyId),
@@ -420,30 +429,30 @@ class CompanySettingController extends Controller
                 'max:10000',
             ],
         ], [
-            'branch_id.required' => 'Cabang wajib dipilih.',
-            'branch_id.exists' => 'Cabang tidak ditemukan atau bukan milik perusahaan Anda.',
-            'latitude.required' => 'Latitude cabang wajib diisi.',
-            'latitude.numeric' => 'Latitude cabang harus berupa angka valid.',
+            "{$locationField}.required" => 'Lokasi kerja wajib dipilih.',
+            "{$locationField}.exists" => 'Lokasi kerja tidak ditemukan atau bukan milik perusahaan Anda.',
+            'latitude.required' => 'Latitude lokasi kerja wajib diisi.',
+            'latitude.numeric' => 'Latitude lokasi kerja harus berupa angka valid.',
             'latitude.between' => 'Nilai latitude harus di antara -90 dan 90.',
-            'longitude.required' => 'Longitude cabang wajib diisi.',
-            'longitude.numeric' => 'Longitude cabang harus berupa angka valid.',
+            'longitude.required' => 'Longitude lokasi kerja wajib diisi.',
+            'longitude.numeric' => 'Longitude lokasi kerja harus berupa angka valid.',
             'longitude.between' => 'Nilai longitude harus di antara -180 dan 180.',
             'radius.required' => 'Radius presensi wajib diisi.',
             'radius.min' => 'Radius presensi minimal 5 meter.',
             'radius.max' => 'Radius presensi maksimal 10.000 meter.',
         ]);
 
-        $branch = Department::where('company_id', $companyId)->findOrFail($validated['branch_id']);
-        $updateBranchData = [
+        $location = Department::where('company_id', $companyId)->findOrFail($validated[$locationField]);
+        $updateLocationData = [
             'latitude' => (float) $validated['latitude'],
             'longitude' => (float) $validated['longitude'],
             'radius' => (int) $validated['radius'],
             'radius_meters' => (int) $validated['radius'],
         ];
         if (array_key_exists('address', $validated) && $validated['address'] !== null) {
-            $updateBranchData['address'] = $validated['address'];
+            $updateLocationData['address'] = $validated['address'];
         }
-        $branch->update($updateBranchData);
+        $location->update($updateLocationData);
 
         // Sinkronisasi koordinat acuan ke company_settings & companies milik perusahaan tersebut
         $setting = CompanySetting::firstOrCreate(['company_id' => $companyId], $this->defaultSettings());
@@ -466,9 +475,25 @@ class CompanySettingController extends Controller
             $targetCompany->update($companyData);
         }
 
+        $redirectParams = [];
+        if ($request->filled('work_location_id') && ! $request->filled('branch_id')) {
+            $redirectParams['work_location_id'] = $location->id;
+        } else {
+            $redirectParams['branch_id'] = $location->id;
+        }
+
         return redirect()
-            ->route('admin.settings.index', ['branch_id' => $branch->id])
-            ->with('selected_branch_id', $branch->id)
-            ->with('success', "Pengaturan lokasi & radius presensi cabang {$branch->name} berhasil disimpan.");
+            ->route('admin.settings.index', $redirectParams)
+            ->with('selected_work_location_id', $location->id)
+            ->with('selected_branch_id', $location->id)
+            ->with('success', "Pengaturan lokasi & radius presensi {$location->name} berhasil disimpan.");
+    }
+
+    /**
+     * Alias backward-compatible untuk updateWorkLocation.
+     */
+    public function updateBranchLocation(Request $request): RedirectResponse
+    {
+        return $this->updateWorkLocation($request);
     }
 }

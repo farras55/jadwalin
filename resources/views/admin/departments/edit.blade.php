@@ -99,22 +99,22 @@
                     @enderror
                 </div>
 
-                {{-- Titik Koordinat & Geofencing Cabang --}}
+                {{-- Titik Koordinat & Geofencing Lokasi Kerja --}}
                 <div class="rounded-xl border border-slate-200 bg-indigo-50/40 p-4 sm:p-5 space-y-4">
                     <div>
                         <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                             <i data-lucide="map-pin" class="h-4 w-4 text-indigo-600"></i>
-                            <span>Titik Koordinat &amp; Geofencing Presensi Cabang</span>
+                            <span>Titik Koordinat &amp; Geofencing Presensi Lokasi Kerja</span>
                         </h3>
                         <p class="text-xs text-slate-500 mt-0.5">
-                            Koordinat GPS yang digunakan sebagai acuan validasi Clock-In karyawan pada cabang ini.
+                            Koordinat GPS yang digunakan sebagai acuan validasi Clock-In karyawan pada lokasi kerja departemen ini.
                         </p>
                     </div>
 
-                    {{-- Alamat Cabang --}}
+                    {{-- Alamat Lokasi Kerja --}}
                     <div>
                         <label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-900 mb-2">
-                            Alamat Kantor Cabang <span class="text-xs font-normal normal-case text-slate-500">(Opsional)</span>
+                            Alamat Kantor / Lokasi Kerja <span class="text-xs font-normal normal-case text-slate-500">(Opsional)</span>
                         </label>
                         <input type="text"
                                name="address"
@@ -128,7 +128,7 @@
                         {{-- Latitude --}}
                         <div>
                             <label for="latitude" class="block text-xs font-bold uppercase tracking-wider text-slate-900 mb-2">
-                                Latitude Cabang
+                                Latitude Lokasi Kerja
                             </label>
                             <input type="number"
                                    step="any"
@@ -142,7 +142,7 @@
                         {{-- Longitude --}}
                         <div>
                             <label for="longitude" class="block text-xs font-bold uppercase tracking-wider text-slate-900 mb-2">
-                                Longitude Cabang
+                                Longitude Lokasi Kerja
                             </label>
                             <input type="number"
                                    step="any"

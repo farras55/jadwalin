@@ -83,7 +83,7 @@ class AuditLogController extends Controller
             'OpenShiftClaim' => 'Klaim Shift Terbuka',
             'Availability' => 'Ketersediaan Waktu',
             'CompanySetting' => 'Pengaturan Perusahaan',
-            'Department' => 'Departemen & Cabang',
+            'Department' => 'Departemen & Lokasi Kerja',
         ];
 
         return view('admin.audit-logs.index', [
