@@ -28,7 +28,7 @@
             <div class="flex items-center gap-2.5">
                 <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 shadow-card">
                     <i data-lucide="users" class="w-3.5 h-3.5 text-slate-400"></i>
-                    <span>Total Staf:</span>
+                    <span>Total Karyawan:</span>
                     <strong class="font-mono text-slate-900 font-bold">{{ $employees->total() }}</strong>
                 </span>
             </div>

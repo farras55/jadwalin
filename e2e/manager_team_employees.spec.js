@@ -28,7 +28,7 @@ test.describe('Modul Manager: Data Karyawan Tim (PBL-25)', () => {
 
     // Verifikasi Elemen Utama
     await expect(page.getByRole('heading', { name: /Data Karyawan Tim|Direktori Staf/i })).toBeVisible();
-    await expect(page.getByText(/Total Karyawan/i)).toBeVisible();
+    await expect(page.getByText(/Total (Karyawan|Staf)/i).first()).toBeVisible();
     await expect(page.getByText(/Full-Time/i).first()).toBeVisible();
 
     // Verifikasi Form Pencarian & Filter
