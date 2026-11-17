@@ -43,7 +43,7 @@ test.describe('Modul Manager: Smart Scheduling Builder (Roster Kerja Tim)', () =
     await expect(page.getByText('Minggu', { exact: true }).first()).toBeVisible();
 
     // Verifikasi Tombol Builder & Aksi
-    await expect(page.getByRole('button', { name: /Atur Kebutuhan|Susun Ulang Roster|Mulai Susun Jadwal|Build Jadwal|Buat Jadwal Otomatis|Generate/i }).or(page.locator('#btn-open-auto-builder')).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Atur Kebutuhan|Atur Ulang Kebutuhan|Susun Ulang Roster|Buat Jadwal Baru|Mulai Susun Jadwal|Atur Kebutuhan & Build Jadwal|Build Jadwal|Buat Jadwal Otomatis|Generate/i }).or(page.locator('#btn-open-auto-builder')).first()).toBeVisible();
   });
 
   /**
