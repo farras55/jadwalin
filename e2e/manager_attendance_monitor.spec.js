@@ -28,13 +28,13 @@ test.describe('Modul Manager: Realtime Attendance Monitoring (PBL-27)', () => {
 
     // Verifikasi Heading & Subtitle
     await expect(page.getByRole('heading', { name: /Monitoring Kehadiran Tim/i })).toBeVisible();
-    await expect(page.getByText(/Pantau kehadiran staf secara realtime/i)).toBeVisible();
+    await expect(page.getByText(/Pantau kehadiran staf secara real-?time/i)).toBeVisible();
 
     // Verifikasi Kartu Metrik Kehadiran
     await expect(page.getByText(/Dijadwalkan Hari Ini|Total Dijadwalkan|Tepat Waktu|Terlambat/i).first()).toBeVisible();
 
     // Verifikasi Indikator Live Clock & Polling Status
-    await expect(page.getByText(/WIB/i)).toBeVisible();
+    await expect(page.locator('#main-content').getByText(/WIB|WITA|WIT/i).first()).toBeVisible();
     await expect(page.getByText(/Live|Terputus/i)).toBeVisible();
   });
 

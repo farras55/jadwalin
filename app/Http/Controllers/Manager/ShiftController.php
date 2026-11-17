@@ -89,22 +89,13 @@ class ShiftController extends Controller
         // 3. Bangun Struktur Kolom Tanggal Dinamis
         $days = [];
         $dayCursor = $startDate->copy();
-        $indonesianDays = [
-            1 => 'Senin',
-            2 => 'Selasa',
-            3 => 'Rabu',
-            4 => 'Kamis',
-            5 => 'Jumat',
-            6 => 'Sabtu',
-            7 => 'Minggu',
-        ];
 
         while ($dayCursor->lte($endDate)) {
             $days[] = [
                 'date_str' => $dayCursor->format('Y-m-d'),
-                'day_name' => $indonesianDays[$dayCursor->dayOfWeekIso],
-                'formatted' => $dayCursor->translatedFormat('d M'),
-                'full_date' => $dayCursor->translatedFormat('l, d F Y'),
+                'day_name' => $dayCursor->locale('id')->translatedFormat('l'),
+                'formatted' => $dayCursor->locale('id')->translatedFormat('d M'),
+                'full_date' => $dayCursor->locale('id')->translatedFormat('l, d F Y'),
                 'day_of_week' => $dayCursor->dayOfWeekIso,
                 'is_today' => $dayCursor->isToday(),
             ];
@@ -578,7 +569,7 @@ class ShiftController extends Controller
             'start_time' => strlen($validated['start_time']) === 5 ? $validated['start_time'].':00' : $validated['start_time'],
             'end_time' => strlen($validated['end_time']) === 5 ? $validated['end_time'].':00' : $validated['end_time'],
             'default_quota' => (int) $validated['default_quota'],
-            'color_code' => $validated['color_code'] ?? $template->color_code ?? '#6C5CE7',
+            'color_code' => $validated['color_code'] ?? $template->color_code ?? config('jadwalin.branding.primary_color', '#4F46E5'),
         ]);
 
         if ($request->wantsJson()) {

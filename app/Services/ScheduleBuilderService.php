@@ -45,22 +45,22 @@ class ScheduleBuilderService
             $settings = CompanySetting::firstOrCreate(
                 ['company_id' => $companyId],
                 [
-                    'max_regular_hours' => 40,
+                    'max_regular_hours' => config('jadwalin.compliance.max_weekly_hours', 40),
                     'max_overtime_hours' => 18,
                     'work_hour_limit_type' => 'weekly',
-                    'min_rest_hours' => 11,
-                    'max_working_days_per_week' => 6,
+                    'min_rest_hours' => config('jadwalin.compliance.min_rest_hours_between_shifts', 11),
+                    'max_working_days_per_week' => config('jadwalin.compliance.consecutive_work_days_limit', 6),
                     'auto_buffer_minutes' => 30,
                     'grace_period_minutes' => 15,
                     'is_auto_clockout' => true,
                 ]
             );
 
-            $maxRegularHours = (int) ($settings->max_regular_hours ?? 40);
+            $maxRegularHours = (int) ($settings->max_regular_hours ?? config('jadwalin.compliance.max_weekly_hours', 40));
             $maxOvertimeHours = (int) ($settings->max_overtime_hours ?? 18);
             $absoluteMaxHours = $maxRegularHours > 0 ? ($maxRegularHours + $maxOvertimeHours) : 0;
-            $minRestHours = (int) ($settings->min_rest_hours ?? 11);
-            $maxWorkingDays = (int) ($settings->max_working_days_per_week ?? 6);
+            $minRestHours = (int) ($settings->min_rest_hours ?? config('jadwalin.compliance.min_rest_hours_between_shifts', 11));
+            $maxWorkingDays = (int) ($settings->max_working_days_per_week ?? config('jadwalin.compliance.consecutive_work_days_limit', 6));
             $bufferMinutes = (int) ($settings->auto_buffer_minutes ?? 30);
 
             $rangeStart = $startDate->copy()->startOfDay();
@@ -140,7 +140,7 @@ class ScheduleBuilderService
                         $endTime = $reqItem['end_time'] ?? ($tmpl?->end_time ?? '16:00:00');
                         $quota = max(1, (int) ($reqItem['quota'] ?? ($tmpl?->default_quota ?? 1)));
                         $days = isset($reqItem['days']) && is_array($reqItem['days']) ? array_map('intval', $reqItem['days']) : [1, 2, 3, 4, 5, 6, 7];
-                        $colorCode = $reqItem['color_code'] ?? ($tmpl?->color_code ?? '#6C5CE7');
+                        $colorCode = $reqItem['color_code'] ?? ($tmpl?->color_code ?? config('jadwalin.branding.primary_color', '#4F46E5'));
 
                         $formattedStartTime = strlen($startTime) === 5 ? $startTime.':00' : $startTime;
                         $formattedEndTime = strlen($endTime) === 5 ? $endTime.':00' : $endTime;
@@ -199,7 +199,7 @@ class ScheduleBuilderService
                             'end_time' => $t->end_time,
                             'quota' => $t->default_quota,
                             'days' => [1, 2, 3, 4, 5, 6, 7],
-                            'color_code' => $t->color_code ?? '#6C5CE7',
+                            'color_code' => $t->color_code ?? config('jadwalin.branding.primary_color', '#4F46E5'),
                         ];
                     }
                 }

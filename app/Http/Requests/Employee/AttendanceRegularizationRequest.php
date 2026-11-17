@@ -4,6 +4,7 @@ namespace App\Http\Requests\Employee;
 
 use App\Console\Commands\AutoClockOutCommand;
 use App\Models\AttendanceRegularization;
+use App\Models\AuditLog;
 use App\Models\ShiftAssignment;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -115,11 +116,13 @@ class AttendanceRegularizationRequest extends FormRequest
             if ($shift) {
                 $requestedOut = Carbon::parse($rawRequestedTime, $timezone);
 
+                $tzAbbr = AuditLog::getTimezoneAbbreviation($timezone);
+
                 // Jam pulang yang diminta harus SETELAH end_time shift resmi
                 if ($shiftEnd && $requestedOut->lessThanOrEqualTo($shiftEnd)) {
                     $validator->errors()->add(
                         'requested_clock_out_time',
-                        'Jam pulang riil harus setelah jam selesai shift resmi ('.$shiftEnd->format('H:i').' WIB).'
+                        'Jam pulang riil harus setelah jam selesai shift resmi ('.$shiftEnd->format('H:i').' '.$tzAbbr.').'
                     );
                 }
 
@@ -137,7 +140,7 @@ class AttendanceRegularizationRequest extends FormRequest
                     if ($requestedOut->lessThan($clockIn)) {
                         $validator->errors()->add(
                             'requested_clock_out_time',
-                            'Jam pulang riil tidak boleh lebih awal dari jam clock-in ('.$clockIn->format('H:i').' WIB).'
+                            'Jam pulang riil tidak boleh lebih awal dari jam clock-in ('.$clockIn->format('H:i').' '.$tzAbbr.').'
                         );
                     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\AuditLog;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -23,6 +24,8 @@ class TimesheetExport implements FromView, ShouldAutoSize, WithTitle
         if (is_array($reports) && isset($reports['reports'])) {
             $this->data = $reports;
         } else {
+            $companyTz = is_object($company) ? ($company->timezone ?? config('app.timezone', 'Asia/Jakarta')) : config('app.timezone', 'Asia/Jakarta');
+            $tzAbbr = AuditLog::getTimezoneAbbreviation($companyTz);
             $this->data = [
                 'reports' => $reports,
                 'company' => $company,
@@ -32,7 +35,8 @@ class TimesheetExport implements FromView, ShouldAutoSize, WithTitle
                 'periodLabel' => $periodLabel,
                 'totalMetrics' => $totalMetrics,
                 'status' => $status ?? 'Final',
-                'generatedAt' => $generatedAt ?? (now()->translatedFormat('d F Y, H:i').' WIB'),
+                'generatedAt' => $generatedAt ?? (now($companyTz)->locale('id')->translatedFormat('d F Y, H:i').' '.$tzAbbr),
+                'timezoneAbbr' => $tzAbbr,
             ];
         }
     }

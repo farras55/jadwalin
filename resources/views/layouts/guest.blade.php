@@ -22,7 +22,7 @@
     </style>
 </head>
 
-<body class="font-sans antialiased bg-[#F5F3FF] text-[#2D2A3E]">
+<body class="font-sans antialiased bg-indigo-50 text-slate-900">
     <div class="min-h-screen flex flex-col justify-center items-center p-4">
 
         <!-- Logo & Subtitle Wrapper -->
@@ -32,28 +32,28 @@
             <a href="/" class="flex items-center justify-center gap-2.5">
                 <x-application-logo class="h-9 w-auto shrink-0" />
                 <div class="flex flex-col text-left">
-                    <span class="font-display font-extrabold text-2xl tracking-tight leading-none text-[#2D2A3E]">
-                        Jadwal<span class="text-[#6C5CE7]">in</span>
+                    <span class="font-display font-extrabold text-2xl tracking-tight leading-none text-slate-900">
+                        Jadwal<span class="text-indigo-600">in</span>
                     </span>
-                    <span class="text-[10px] font-semibold tracking-wider text-[#6C5CE7]/80 uppercase mt-0.5">
+                    <span class="text-[10px] font-semibold tracking-wider text-indigo-600/80 uppercase mt-0.5">
                         Smart Shift Scheduling
                     </span>
                 </div>
             </a>
             
             <!-- Subtitle -->
-            <p class="mt-1 text-[13.5px] text-[#7C7896]">
+            <p class="mt-1 text-[13.5px] text-slate-500">
                 Sistem Otomatisasi &amp; Penjadwalan Roster Kerja Terpadu
             </p>
         </div>
 
         <!-- Card Wrapper (Sistem Breeze akan memasukkan form login/register ke dalam variabel $slot ini) -->
-        <div class="w-full max-w-[448px] mt-7 p-8 bg-white shadow-sm rounded-xl border border-[#E2E0F7]">
+        <div class="w-full max-w-[448px] mt-7 p-8 bg-white shadow-sm rounded-xl border border-slate-200">
             {{ $slot }}
         </div>
 
         <!-- Footer -->
-        <div class="mt-8 text-center text-[13px] text-[#7C7896] font-medium">
+        <div class="mt-8 text-center text-[13px] text-slate-500 font-medium">
             &copy; {{ date('Y') }} Jadwalin
         </div>
         

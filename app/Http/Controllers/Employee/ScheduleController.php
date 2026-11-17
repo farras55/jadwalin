@@ -83,7 +83,7 @@ class ScheduleController extends Controller
             $assignment->schedule_status = $scheduleStatus;
             $assignment->coworkers_list = $coworkers;
             $assignment->location = optional(optional($assignment->shift)->company)->address ?? '-';
-            $assignment->template_color = optional(optional($assignment->shift)->template)->color_code ?? '#6C5CE7';
+            $assignment->template_color = optional(optional($assignment->shift)->template)->color_code ?? config('jadwalin.branding.primary_color', '#4F46E5');
 
             $days[$dayIndex]['assignments']->push($assignment);
         }
@@ -144,7 +144,7 @@ class ScheduleController extends Controller
             ->values();
 
         $location = optional(optional($assignment->shift)->company)->address ?? '-';
-        $templateColor = optional(optional($assignment->shift)->template)->color_code ?? '#6C5CE7';
+        $templateColor = optional(optional($assignment->shift)->template)->color_code ?? config('jadwalin.branding.primary_color', '#4F46E5');
 
         return view('employee.schedule.show', compact(
             'assignment',

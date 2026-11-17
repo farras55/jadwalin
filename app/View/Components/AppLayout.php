@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Models\AuditLog;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -54,11 +55,10 @@ class AppLayout extends Component
         $companyName = $user?->company?->name ?? config('app.name', 'Jadwalin');
         $timezone = $user?->company?->timezone ?? 'Asia/Jakarta';
 
-        // Tanggal dan waktu realtime server
+        // Tanggal dan waktu realtime server (format lokal Indonesia secara native)
         $now = Carbon::now($timezone);
-        $hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        $bulanPendek = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sept', 'Okt', 'Nov', 'Des'];
-        $tanggalStr = $hari[$now->dayOfWeek].', '.$now->day.' '.$bulanPendek[$now->month - 1].' '.$now->year;
+        $tanggalStr = $now->locale('id')->translatedFormat('l, j M Y');
+        $timezoneAbbr = AuditLog::getTimezoneAbbreviation($timezone);
 
         // Daftar menu dinamis sesuai role
         $rawMenus = $this->getMenuDefinitions($userRole);
@@ -88,6 +88,7 @@ class AppLayout extends Component
             'profilePhotoUrl',
             'companyName',
             'timezone',
+            'timezoneAbbr',
             'now',
             'tanggalStr',
             'sidebarMenus'

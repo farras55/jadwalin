@@ -3,8 +3,8 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <div class="text-center mb-8">
-        <h2 class="text-[22px] font-bold text-[#2D2A3E]">Selamat Datang di Jadwalin</h2>
-        <p class="text-[13.5px] text-[#7C7896] mt-2 max-w-[320px] mx-auto leading-relaxed">
+        <h2 class="text-[22px] font-bold text-slate-900">Selamat Datang di Jadwalin</h2>
+        <p class="text-[13.5px] text-slate-500 mt-2 max-w-[320px] mx-auto leading-relaxed">
             Masuk untuk mengelola dan memantau jadwal kerja Anda secara lebih teratur
         </p>
     </div>
@@ -14,7 +14,7 @@
 
         <!-- Email Address -->
         <div>
-            <label for="email" class="block font-bold text-[13px] text-[#2D2A3E] mb-1.5">
+            <label for="email" class="block font-bold text-[13px] text-slate-900 mb-1.5">
                 Email / Username
             </label>
             <div class="relative">
@@ -25,7 +25,7 @@
                     </svg>
                 </div>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="user@perusahaan.com"
-                    class="block w-full pl-10 pr-4 py-2.5 bg-[#F5F3FF]/40 border border-[#E2E0F7] rounded-lg text-[14px] text-[#2D2A3E] placeholder-slate-400 focus:bg-white focus:border-[#6C5CE7] focus:ring focus:ring-[#6C5CE7]/20 transition-colors shadow-none" />
+                    class="block w-full pl-10 pr-4 py-2.5 bg-indigo-50/40 border border-slate-200 rounded-lg text-[14px] text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-600 focus:ring focus:ring-indigo-600/20 transition-colors shadow-none" />
             </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
@@ -33,11 +33,11 @@
         <!-- Password -->
         <div class="mt-5">
             <div class="flex items-center justify-between mb-1.5">
-                <label for="password" class="block font-bold text-[13px] text-[#2D2A3E] mb-1.5">
+                <label for="password" class="block font-bold text-[13px] text-slate-900 mb-1.5">
                     Kata Sandi
                 </label>
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-[12.5px] font-bold text-[#6C5CE7] hover:text-[#4F46E5] transition-colors">
+                    <a href="{{ route('password.request') }}" class="text-[12.5px] font-bold text-indigo-600 hover:text-indigo-600 transition-colors">
                         Lupa Kata Sandi?
                     </a>
                 @endif
@@ -52,7 +52,7 @@
                 </div>
                 
                 <input id="password" type="password" :type="show ? 'text' : 'password'" name="password" required autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-                    class="block w-full pl-10 pr-10 py-2.5 bg-[#F5F3FF]/40 border border-[#E2E0F7] rounded-lg text-[14px] text-[#2D2A3E] placeholder-slate-400 tracking-widest focus:bg-white focus:border-[#6C5CE7] focus:ring focus:ring-[#6C5CE7]/20 transition-colors shadow-none" />
+                    class="block w-full pl-10 pr-10 py-2.5 bg-indigo-50/40 border border-slate-200 rounded-lg text-[14px] text-slate-900 placeholder-slate-400 tracking-widest focus:bg-white focus:border-indigo-600 focus:ring focus:ring-indigo-600/20 transition-colors shadow-none" />
                 
                 <!-- Toggle Password Visibility -->
                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none">
@@ -77,7 +77,7 @@
             <button type="submit" 
                     :disabled="isSubmitting"
                     :class="isSubmitting ? 'opacity-75 cursor-not-allowed' : ''"
-                    class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#6C5CE7] hover:bg-[#4F46E5] text-white text-[14px] font-bold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] focus:ring-offset-2 shadow-sm">
+                    class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-indigo-600 hover:bg-indigo-600 text-white text-[14px] font-bold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 shadow-sm">
                 <span x-show="!isSubmitting" class="flex items-center gap-2">
                     <span>Masuk ke Workspace</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -96,12 +96,12 @@
         </div>
         
         <div class="mt-6 text-center">
-            <p class="text-[12.5px] text-[#7C7896]">
+            <p class="text-[12.5px] text-slate-500">
                 Belum memiliki Akun? 
                 @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="font-bold text-[#6C5CE7] hover:text-[#4F46E5] ml-0.5">Daftar Sekarang ></a>
+                    <a href="{{ route('register') }}" class="font-bold text-indigo-600 hover:text-indigo-600 ml-0.5">Daftar Sekarang ></a>
                 @else
-                    <a href="#" class="font-bold text-[#6C5CE7] hover:text-[#4F46E5] ml-0.5">Daftar Sekarang ></a>
+                    <a href="#" class="font-bold text-indigo-600 hover:text-indigo-600 ml-0.5">Daftar Sekarang ></a>
                 @endif
             </p>
         </div>

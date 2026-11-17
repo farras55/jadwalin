@@ -25,27 +25,27 @@
             @method('delete')
 
             <div class="flex items-start gap-4">
-                <div class="p-3 bg-red-100 text-red-600 rounded-2xl shrink-0">
+                <div class="p-3 bg-red-100 text-red-600 rounded-xl shrink-0">
                     <i data-lucide="alert-octagon" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h2 class="text-base font-bold text-[#2D2A3E]">
+                    <h2 class="text-base font-bold text-slate-900">
                         {{ __('Konfirmasi Penghapusan Akun') }}
                     </h2>
-                    <p class="mt-1 text-xs text-[#7C7896]">
+                    <p class="mt-1 text-xs text-slate-500">
                         {{ __('Tindakan ini tidak dapat dibatalkan. Masukkan kata sandi akun Anda untuk mengonfirmasi bahwa Anda benar-benar ingin menghapus akun ini.') }}
                     </p>
                 </div>
             </div>
 
             <div class="mt-5">
-                <x-input-label for="password" value="{{ __('Kata Sandi Konfirmasi') }}" class="text-xs font-semibold text-[#2D2A3E]" />
+                <x-input-label for="password" value="{{ __('Kata Sandi Konfirmasi') }}" class="text-xs font-semibold text-slate-900" />
 
                 <x-text-input
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-full text-xs md:text-sm rounded-xl border-[#E2E0F7] focus:border-red-500 focus:ring-red-500"
+                    class="mt-1 block w-full text-xs md:text-sm rounded-xl border-slate-200 focus:border-red-500 focus:ring-red-500"
                     placeholder="{{ __('Masukkan kata sandi Anda') }}"
                 />
 
@@ -55,7 +55,7 @@
             <div class="mt-6 flex justify-end gap-3">
                 <button type="button" 
                         x-on:click="$dispatch('close')" 
-                        class="px-4 py-2 text-xs font-semibold rounded-xl border border-[#E2E0F7] text-[#2D2A3E] hover:bg-[#F5F3FF] transition">
+                        class="px-4 py-2 text-xs font-semibold rounded-xl border border-slate-200 text-slate-900 hover:bg-indigo-50 transition">
                     {{ __('Batal') }}
                 </button>
 

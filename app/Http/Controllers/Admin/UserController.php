@@ -39,7 +39,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->latest()->paginate(15)->withQueryString();
+        $users = $query->latest()->paginate(config('jadwalin.pagination.users', 15))->withQueryString();
         $departments = Department::where('company_id', $companyId)->orderBy('name')->get();
 
         return view('admin.users.index', compact('users', 'departments'));

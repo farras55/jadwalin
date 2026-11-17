@@ -45,6 +45,11 @@ class Company extends Model
             : (int) config('jadwalin.attendance.default_radius_meters', 100);
     }
 
+    public function getTimezoneAbbrAttribute(): string
+    {
+        return AuditLog::getTimezoneAbbreviation($this->timezone ?? config('app.timezone', 'Asia/Jakarta'));
+    }
+
     public function companySetting(): HasOne
     {
         return $this->hasOne(CompanySetting::class);

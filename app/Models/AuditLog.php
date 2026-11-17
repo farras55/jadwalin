@@ -170,13 +170,13 @@ class AuditLog extends Model
      */
     public static function getTimezoneAbbreviation(string $timezone): string
     {
-        $map = [
+        $map = config('jadwalin.timezones', [
             'Asia/Jakarta' => 'WIB',
             'Asia/Pontianak' => 'WIB',
             'Asia/Makassar' => 'WITA',
             'Asia/Ujung_Pandang' => 'WITA',
             'Asia/Jayapura' => 'WIT',
-        ];
+        ]);
 
         if (isset($map[$timezone])) {
             return $map[$timezone];
@@ -192,7 +192,7 @@ class AuditLog extends Model
                 default => $abbr,
             };
         } catch (\Throwable) {
-            return 'WIB';
+            return config('jadwalin.timezones.default', 'WIB');
         }
     }
 

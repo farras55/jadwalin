@@ -65,7 +65,7 @@ class ShiftTemplateController extends Controller
             'end_time.date_format' => 'Format jam selesai harus HH:MM.',
             'end_time.different' => 'Jam selesai tidak boleh sama dengan jam mulai.',
             'default_quota.min' => 'Kuota minimal 1 orang.',
-            'color_code.regex' => 'Kode warna harus berupa hex, misalnya #6C5CE7.',
+            'color_code.regex' => 'Kode warna harus berupa hex, misalnya #4F46E5.',
         ]);
 
         ShiftTemplate::create([
@@ -117,7 +117,7 @@ class ShiftTemplateController extends Controller
             'end_time.date_format' => 'Format jam selesai harus HH:MM.',
             'end_time.different' => 'Jam selesai tidak boleh sama dengan jam mulai.',
             'default_quota.min' => 'Kuota minimal 1 orang.',
-            'color_code.regex' => 'Kode warna harus berupa hex, misalnya #6C5CE7.',
+            'color_code.regex' => 'Kode warna harus berupa hex, misalnya #4F46E5.',
         ]);
 
         $shift->update([

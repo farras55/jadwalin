@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exports\TimesheetExport;
+use App\Models\AuditLog;
 use App\Models\Department;
 use App\Models\TimesheetReport;
 use App\Models\User;
@@ -252,7 +253,8 @@ class TimesheetExportService
             'status' => $statusOverall,
             'isPeriodPast' => $isPeriodPast,
             'monthNames' => $monthNames,
-            'generatedAt' => now()->translatedFormat('d F Y, H:i').' WIB',
+            'generatedAt' => now($user->company?->timezone ?: config('app.timezone', 'Asia/Jakarta'))->locale('id')->translatedFormat('d F Y, H:i').' '.AuditLog::getTimezoneAbbreviation($user->company?->timezone ?: config('app.timezone', 'Asia/Jakarta')),
+            'timezoneAbbr' => AuditLog::getTimezoneAbbreviation($user->company?->timezone ?: config('app.timezone', 'Asia/Jakarta')),
             'isEmployee' => $user->role === 'employee',
             'attendanceLogs' => $user->role === 'employee' ? ($reports->first()?->attendance_logs ?? collect()) : collect(),
         ];

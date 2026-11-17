@@ -2,26 +2,26 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-xs text-[#7C7896] mb-1">
+                <div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium mb-1">
                     <span>Karyawan</span>
-                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                    <span class="text-[#6C5CE7] font-medium">Jadwal Saya</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span class="text-brand-primary font-semibold">Jadwal Saya</span>
                 </div>
-                <h1 class="text-xl md:text-2xl font-bold text-[#2D2A3E] tracking-tight">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Jadwal Saya
                 </h1>
-                <p class="text-xs md:text-sm text-[#7C7896] mt-1">
-                    Kalender jadwal kerja dan penugasan shift mingguan pribadi Anda.
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                    Kalender jadwal kerja dan penugasan shift mingguan pribadi Anda
                 </p>
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('employee.swaps') }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#6C5CE7] bg-[#6C5CE7]/10 border border-[#6C5CE7]/20 hover:bg-[#6C5CE7]/15 transition-all">
-                    <i data-lucide="arrow-left-right" class="h-3.5 w-3.5"></i>
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-card">
+                    <i data-lucide="arrow-left-right" class="h-3.5 w-3.5 text-slate-400"></i>
                     Tukar Shift
                 </a>
                 <a href="{{ route('employee.open-shifts') }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white bg-[#6C5CE7] hover:bg-[#5A4AD1] transition-all shadow-sm">
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-card">
                     <i data-lucide="megaphone" class="h-3.5 w-3.5"></i>
                     Shift Terbuka
                 </a>
@@ -63,69 +63,64 @@
         $todayAssignments = $todayDayIndex !== null ? $days[$todayDayIndex]['assignments'] : collect();
     @endphp
 
-    <div class="space-y-5">
+    <div class="space-y-4">
 
         {{-- =====================================================
-             INTEGRATED WEEK NAVIGATOR & METRICS BAR
+             INTEGRATED WEEK NAVIGATOR & METRICS BAR (CLEAN HIGH DENSITY)
         ====================================================== --}}
-        <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-4 shadow-2xs">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-card">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
                 {{-- Left: Week Navigation Controls --}}
-                <div class="flex items-center justify-between sm:justify-start gap-2 sm:gap-3">
+                <div class="flex items-center justify-between sm:justify-start gap-2">
                     <a href="{{ route('employee.schedule', ['week_offset' => $weekOffset - 1]) }}"
-                       class="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-[#7C7896] bg-[#F5F3FF] border border-[#E2E0F7] hover:border-[#6C5CE7]/40 hover:text-[#6C5CE7] transition-all"
+                       class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
                        title="Minggu Sebelumnya">
-                        <i data-lucide="chevron-left" class="h-4 w-4"></i>
+                        <i data-lucide="chevron-left" class="h-3.5 w-3.5"></i>
                         <span class="hidden sm:inline">Minggu Lalu</span>
                     </a>
 
-                    <div class="flex items-center gap-2 px-3 py-1.5 bg-[#F5F3FF]/70 rounded-xl border border-[#E2E0F7]/60">
-                        <div class="w-7 h-7 rounded-lg bg-[#6C5CE7]/10 flex items-center justify-center text-[#6C5CE7]">
-                            <i data-lucide="calendar" class="h-3.5 w-3.5"></i>
-                        </div>
+                    <div class="flex items-center gap-2 px-3 py-1 bg-slate-50 rounded-lg border border-slate-200/80">
+                        <i data-lucide="calendar" class="h-3.5 w-3.5 text-brand-primary"></i>
                         <div class="text-left">
-                            <p class="text-xs md:text-sm font-bold text-[#2D2A3E] leading-tight">
+                            <p class="text-xs font-bold text-slate-900 leading-tight">
                                 {{ $weekLabel }}
                             </p>
-                            <p class="text-[10px] font-semibold mt-0.5">
+                            <p class="text-[10px] font-medium text-slate-500">
                                 @if ($weekOffset === 0)
-                                    <span class="text-[#6C5CE7]">Minggu Berjalan (Aktif)</span>
+                                    <span class="text-brand-primary font-semibold">Minggu Berjalan</span>
                                 @elseif ($weekOffset < 0)
-                                    <span class="text-[#7C7896]">{{ abs($weekOffset) }} minggu yang lalu</span>
+                                    <span>{{ abs($weekOffset) }} minggu lalu</span>
                                 @else
-                                    <span class="text-[#7C7896]">{{ $weekOffset }} minggu mendatang</span>
+                                    <span>{{ $weekOffset }} minggu depan</span>
                                 @endif
                             </p>
                         </div>
                     </div>
 
                     <a href="{{ route('employee.schedule', ['week_offset' => $weekOffset + 1]) }}"
-                       class="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-[#7C7896] bg-[#F5F3FF] border border-[#E2E0F7] hover:border-[#6C5CE7]/40 hover:text-[#6C5CE7] transition-all"
+                       class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
                        title="Minggu Berikutnya">
                         <span class="hidden sm:inline">Minggu Depan</span>
-                        <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
                     </a>
                 </div>
 
                 {{-- Right: Compact Integrated Weekly Metrics --}}
-                <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 md:pb-0">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F5F3FF] rounded-xl border border-[#E2E0F7] shrink-0">
-                        <i data-lucide="briefcase" class="h-3.5 w-3.5 text-[#6C5CE7]"></i>
-                        <span class="text-xs text-[#7C7896]">Total Shift:</span>
-                        <span class="text-xs font-bold text-[#2D2A3E]">{{ $totalShifts }}</span>
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200/80 shrink-0 text-xs">
+                        <span class="text-slate-500">Total Shift:</span>
+                        <span class="font-bold text-slate-900 font-mono">{{ $totalShifts }}</span>
                     </div>
 
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50/70 rounded-xl border border-blue-100 shrink-0">
-                        <i data-lucide="clock" class="h-3.5 w-3.5 text-blue-600"></i>
-                        <span class="text-xs text-blue-700">Jam Kerja:</span>
-                        <span class="text-xs font-bold text-blue-900">{{ $totalHours }} jam</span>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50/70 border border-blue-200/70 shrink-0 text-xs">
+                        <span class="text-blue-700">Jam Kerja:</span>
+                        <span class="font-bold text-blue-900 font-mono">{{ $totalHours }} jam</span>
                     </div>
 
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50/70 rounded-xl border border-amber-100 shrink-0">
-                        <i data-lucide="coffee" class="h-3.5 w-3.5 text-amber-600"></i>
-                        <span class="text-xs text-amber-700">Hari Libur:</span>
-                        <span class="text-xs font-bold text-amber-900">{{ $offDaysCount }} hari</span>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200/80 shrink-0 text-xs">
+                        <span class="text-slate-500">Hari Libur:</span>
+                        <span class="font-bold text-slate-700 font-mono">{{ $offDaysCount }} hari</span>
                     </div>
                 </div>
 
@@ -141,47 +136,47 @@
             <div class="lg:col-span-8 space-y-3">
 
                 {{-- DESKTOP: 7-Column Grid --}}
-                <div class="hidden md:grid grid-cols-7 gap-2.5">
+                <div class="hidden md:grid grid-cols-7 gap-2">
                     @foreach ($days as $index => $day)
                         @php
                             $isToday = $day['date']->isSameDay($today);
                             $hasShifts = $day['assignments']->isNotEmpty();
                         @endphp
 
-                        <div class="flex flex-col min-h-[260px] rounded-2xl border transition-all
+                        <div class="flex flex-col min-h-[250px] rounded-xl border transition-all
                             {{ $isToday
-                                ? 'border-[#6C5CE7] bg-[#6C5CE7]/[0.02] ring-2 ring-[#6C5CE7]/15 shadow-sm'
+                                ? 'border-brand-primary bg-indigo-50/20 ring-1 ring-brand-primary/20 shadow-card'
                                 : ($hasShifts
-                                    ? 'border-[#E2E0F7] bg-white shadow-2xs hover:border-[#6C5CE7]/30'
-                                    : 'border-dashed border-slate-200 bg-slate-50/50') }}
-                            p-2.5">
+                                    ? 'border-slate-200/80 bg-white shadow-card hover:border-slate-300'
+                                    : 'border-dashed border-slate-200 bg-slate-50/40') }}
+                            p-2">
 
                             {{-- Day Column Header --}}
-                            <div class="pb-2 border-b {{ $isToday ? 'border-[#6C5CE7]/20' : 'border-slate-100' }} flex items-center justify-between">
+                            <div class="pb-2 border-b {{ $isToday ? 'border-brand-primary/20' : 'border-slate-100' }} flex items-center justify-between">
                                 <div>
                                     <p class="text-[10px] font-bold uppercase tracking-wider
-                                        {{ $isToday ? 'text-[#6C5CE7]' : 'text-[#7C7896]' }}">
+                                        {{ $isToday ? 'text-brand-primary' : 'text-slate-500' }}">
                                         {{ substr($dayNames[$index], 0, 3) }}
                                     </p>
-                                    <p class="text-xs font-semibold text-slate-400">
+                                    <p class="text-[11px] font-medium text-slate-400">
                                         {{ $day['date']->translatedFormat('d M') }}
                                     </p>
                                 </div>
 
-                                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold
-                                    {{ $isToday ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#2D2A3E] bg-white border border-[#E2E0F7]' }}">
+                                <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold font-mono
+                                    {{ $isToday ? 'bg-brand-primary text-white shadow-card' : 'text-slate-700 bg-slate-50 border border-slate-200' }}">
                                     {{ $day['date']->format('d') }}
                                 </div>
                             </div>
 
                             {{-- Day Shift Items --}}
-                            <div class="flex flex-col gap-2 pt-2.5 flex-1">
+                            <div class="flex flex-col gap-1.5 pt-2 flex-1">
                                 @if ($hasShifts)
                                     @foreach ($day['assignments'] as $assignment)
                                         @php
                                             $shiftStart = $assignment->shift->start_time;
                                             $shiftEnd = $assignment->shift->end_time;
-                                            $color = $assignment->template_color ?? '#6C5CE7';
+                                            $color = $assignment->template_color ?? '#4F46E5';
                                             $statusText = match($assignment->schedule_status) {
                                                 'upcoming'  => 'Mendatang',
                                                 'ongoing'   => 'Berjalan',
@@ -196,23 +191,23 @@
                                             };
                                         @endphp
                                         <a href="{{ route('employee.schedule.show', $assignment) }}"
-                                           class="group block bg-white rounded-xl border border-[#E2E0F7] p-2 shadow-2xs hover:border-[#6C5CE7]/50 hover:shadow-sm transition-all relative overflow-hidden">
+                                           class="group block bg-white rounded-lg border border-slate-200/90 p-2 shadow-card hover:border-brand-primary/50 transition-all relative overflow-hidden">
                                             {{-- Color accent indicator stripe --}}
                                             <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: {{ $color }};"></div>
 
                                             <div class="pl-1">
-                                                <p class="text-[11px] font-bold text-[#2D2A3E] truncate group-hover:text-[#6C5CE7] transition-colors">
+                                                <p class="text-[11px] font-bold text-slate-900 truncate group-hover:text-brand-primary transition-colors">
                                                     {{ $assignment->shift->title }}
                                                 </p>
-                                                <p class="text-[10px] text-[#7C7896] mt-0.5 flex items-center gap-1">
-                                                    <i data-lucide="clock" class="h-2.5 w-2.5 shrink-0 text-[#6C5CE7]"></i>
+                                                <p class="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1 font-mono">
+                                                    <i data-lucide="clock" class="h-2.5 w-2.5 shrink-0 text-slate-400"></i>
                                                     <span>{{ $shiftStart->format('H:i') }}–{{ $shiftEnd->format('H:i') }}</span>
                                                 </p>
-                                                <div class="mt-1.5 flex items-center justify-between">
-                                                    <span class="text-[9px] px-1.5 py-0.5 rounded-md border {{ $statusBadge }}">
+                                                <div class="mt-1 flex items-center justify-between">
+                                                    <span class="text-[9px] px-1.5 py-0.2 rounded border {{ $statusBadge }}">
                                                         {{ $statusText }}
                                                     </span>
-                                                    <i data-lucide="chevron-right" class="h-3 w-3 text-slate-300 group-hover:text-[#6C5CE7] transition-colors"></i>
+                                                    <i data-lucide="chevron-right" class="h-3 w-3 text-slate-300 group-hover:text-brand-primary transition-colors"></i>
                                                 </div>
                                             </div>
                                         </a>
@@ -220,10 +215,10 @@
                                 @else
                                     {{-- Empty Day State (Hari Libur / Bebas Shift) --}}
                                     <div class="flex-1 flex flex-col items-center justify-center py-4 text-center">
-                                        <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-1">
-                                            <i data-lucide="coffee" class="h-3.5 w-3.5"></i>
+                                        <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-1">
+                                            <i data-lucide="coffee" class="h-3 w-3"></i>
                                         </div>
-                                        <span class="text-[11px] font-medium text-slate-400">Libur</span>
+                                        <span class="text-[10px] font-medium text-slate-400">Libur</span>
                                     </div>
                                 @endif
                             </div>
@@ -233,51 +228,51 @@
                 </div>
 
                 {{-- MOBILE: Vertical Agenda / Timeline List --}}
-                <div class="md:hidden space-y-3">
+                <div class="md:hidden space-y-2.5">
                     @foreach ($days as $index => $day)
                         @php
                             $isToday = $day['date']->isSameDay($today);
                             $hasShifts = $day['assignments']->isNotEmpty();
                         @endphp
 
-                        <div class="rounded-2xl border p-4 transition-all
+                        <div class="rounded-xl border p-3.5 transition-all
                             {{ $isToday
-                                ? 'border-[#6C5CE7] bg-white ring-2 ring-[#6C5CE7]/15 shadow-sm'
-                                : ($hasShifts ? 'border-[#E2E0F7] bg-white shadow-2xs' : 'border-dashed border-slate-200 bg-slate-50/60') }}">
+                                ? 'border-brand-primary bg-white ring-1 ring-brand-primary/20 shadow-card'
+                                : ($hasShifts ? 'border-slate-200/80 bg-white shadow-card' : 'border-dashed border-slate-200 bg-slate-50/50') }}">
 
                             {{-- Mobile Day Header --}}
-                            <div class="flex items-center justify-between pb-3 border-b {{ $isToday ? 'border-[#6C5CE7]/20' : 'border-slate-100' }}">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl flex flex-col items-center justify-center font-bold
-                                        {{ $isToday ? 'bg-[#6C5CE7] text-white shadow-xs' : 'bg-white border border-[#E2E0F7] text-[#2D2A3E]' }}">
-                                        <span class="text-[9px] uppercase leading-none">{{ substr($dayNames[$index], 0, 3) }}</span>
-                                        <span class="text-sm leading-tight mt-0.5">{{ $day['date']->format('d') }}</span>
+                            <div class="flex items-center justify-between pb-2.5 border-b {{ $isToday ? 'border-brand-primary/20' : 'border-slate-100' }}">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg flex flex-col items-center justify-center font-bold font-mono
+                                        {{ $isToday ? 'bg-brand-primary text-white shadow-card' : 'bg-slate-50 border border-slate-200 text-slate-700' }}">
+                                        <span class="text-[8px] uppercase leading-none">{{ substr($dayNames[$index], 0, 3) }}</span>
+                                        <span class="text-xs leading-tight mt-0.5">{{ $day['date']->format('d') }}</span>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-bold {{ $isToday ? 'text-[#6C5CE7]' : 'text-[#2D2A3E]' }}">
+                                        <p class="text-xs font-bold {{ $isToday ? 'text-brand-primary' : 'text-slate-900' }}">
                                             {{ $dayNames[$index] }}, {{ $day['date']->translatedFormat('d F Y') }}
                                         </p>
-                                        <p class="text-[11px] text-[#7C7896]">
+                                        <p class="text-[11px] text-slate-500">
                                             {{ $hasShifts ? $day['assignments']->count().' shift terjadwal' : 'Hari Libur / Tidak ada shift' }}
                                         </p>
                                     </div>
                                 </div>
 
                                 @if ($isToday)
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#6C5CE7]/10 text-[#6C5CE7] border border-[#6C5CE7]/20">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-brand-primary border border-indigo-200/70">
                                         Hari Ini
                                     </span>
                                 @endif
                             </div>
 
                             {{-- Mobile Shift List --}}
-                            <div class="pt-3 space-y-2">
+                            <div class="pt-2.5 space-y-2">
                                 @if ($hasShifts)
                                     @foreach ($day['assignments'] as $assignment)
                                         @php
                                             $shiftStart = $assignment->shift->start_time;
                                             $shiftEnd = $assignment->shift->end_time;
-                                            $color = $assignment->template_color ?? '#6C5CE7';
+                                            $color = $assignment->template_color ?? '#4F46E5';
                                             $statusText = match($assignment->schedule_status) {
                                                 'upcoming'  => 'Mendatang',
                                                 'ongoing'   => 'Sedang Berlangsung',
@@ -292,31 +287,31 @@
                                             };
                                         @endphp
                                         <a href="{{ route('employee.schedule.show', $assignment) }}"
-                                           class="block bg-[#F5F3FF]/40 rounded-xl border border-[#E2E0F7] p-3 hover:border-[#6C5CE7]/40 transition-all">
-                                            <div class="flex items-start justify-between gap-2 mb-2">
+                                           class="block bg-slate-50/70 rounded-lg border border-slate-200 p-2.5 hover:border-brand-primary/40 transition-all">
+                                            <div class="flex items-start justify-between gap-2 mb-1.5">
                                                 <div class="flex items-center gap-2">
-                                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $color }};"></span>
-                                                    <span class="text-sm font-bold text-[#2D2A3E]">{{ $assignment->shift->title }}</span>
+                                                    <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ $color }};"></span>
+                                                    <span class="text-xs font-bold text-slate-900">{{ $assignment->shift->title }}</span>
                                                 </div>
-                                                <span class="text-[10px] px-2 py-0.5 rounded-md border {{ $statusBadge }} shrink-0">
+                                                <span class="text-[10px] px-1.5 py-0.2 rounded border {{ $statusBadge }} shrink-0">
                                                     {{ $statusText }}
                                                 </span>
                                             </div>
 
-                                            <div class="space-y-1 text-xs text-[#7C7896]">
-                                                <p class="flex items-center gap-1.5">
-                                                    <i data-lucide="clock" class="h-3.5 w-3.5 text-[#6C5CE7] shrink-0"></i>
-                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }}</span>
+                                            <div class="space-y-1 text-xs text-slate-500">
+                                                <p class="flex items-center gap-1.5 font-mono">
+                                                    <i data-lucide="clock" class="h-3 w-3 text-slate-400 shrink-0"></i>
+                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                                 </p>
                                                 @if ($assignment->location && $assignment->location !== '-')
                                                     <p class="flex items-center gap-1.5">
-                                                        <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
+                                                        <i data-lucide="map-pin" class="h-3 w-3 text-slate-400 shrink-0"></i>
                                                         <span class="truncate">{{ $assignment->location }}</span>
                                                     </p>
                                                 @endif
                                                 @if ($assignment->coworkers_list->isNotEmpty())
                                                     <p class="flex items-center gap-1.5">
-                                                        <i data-lucide="users" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
+                                                        <i data-lucide="users" class="h-3 w-3 text-slate-400 shrink-0"></i>
                                                         <span class="truncate">{{ $assignment->coworkers_list->take(2)->implode(', ') }}{{ $assignment->coworkers_list->count() > 2 ? ' +'.($assignment->coworkers_list->count()-2).' lainnya' : '' }}</span>
                                                     </p>
                                                 @endif
@@ -324,7 +319,7 @@
                                         </a>
                                     @endforeach
                                 @else
-                                    <p class="text-xs text-slate-400 italic py-1">Tidak ada penugasan kerja pada hari ini.</p>
+                                    <p class="text-xs text-slate-400 italic py-0.5">Tidak ada penugasan kerja pada hari ini.</p>
                                 @endif
                             </div>
 
@@ -338,87 +333,84 @@
             <div class="lg:col-span-4 space-y-4">
 
                 {{-- WIDGET: SHIFT HARI INI (DAILY BRIEFING) --}}
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
-                    <div class="px-5 py-4 border-b border-[#E2E0F7] bg-gradient-to-r from-white to-[#F5F3FF] flex items-center justify-between">
+                <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
+                    <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full {{ $todayAssignments->isNotEmpty() ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300' }}"></span>
-                                <h3 class="text-sm font-bold text-[#2D2A3E]">Shift Hari Ini</h3>
+                                <span class="w-2 h-2 rounded-full {{ $todayAssignments->isNotEmpty() ? 'bg-emerald-500' : 'bg-slate-300' }}"></span>
+                                <h3 class="text-xs md:text-sm font-bold text-slate-900">Shift Hari Ini</h3>
                             </div>
-                            <p class="text-xs text-[#7C7896] mt-0.5">
+                            <p class="text-[11px] text-slate-500 mt-0.5">
                                 {{ now()->translatedFormat('l, d F Y') }}
                             </p>
                         </div>
 
                         @if ($todayAssignments->isNotEmpty())
-                            <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                {{ $todayAssignments->count() }} Shift Aktif
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                {{ $todayAssignments->count() }} Aktif
                             </span>
                         @endif
                     </div>
 
-                    <div class="p-5">
+                    <div class="p-4">
                         @if ($todayAssignments->isEmpty())
                             {{-- Off Today State --}}
-                            <div class="text-center py-6">
-                                <div class="w-14 h-14 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] flex items-center justify-center mx-auto mb-3">
-                                    <i data-lucide="coffee" class="h-7 w-7"></i>
+                            <div class="text-center py-4">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-2">
+                                    <i data-lucide="coffee" class="h-5 w-5"></i>
                                 </div>
-                                <h4 class="text-sm font-bold text-[#2D2A3E]">Hari Bebas Tugas</h4>
-                                <p class="text-xs text-[#7C7896] mt-1 max-w-xs mx-auto">
-                                    Tidak ada jadwal shift untuk Anda hari ini. Gunakan waktu untuk beristirahat atau cek Shift Terbuka jika ingin mengambil jam tambahan.
+                                <h4 class="text-xs font-bold text-slate-900">Hari Bebas Tugas</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5 max-w-xs mx-auto">
+                                    Tidak ada jadwal shift untuk Anda hari ini. Gunakan waktu untuk beristirahat atau cek Shift Terbuka.
                                 </p>
                                 <a href="{{ route('employee.open-shifts') }}"
-                                   class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6C5CE7] mt-3 hover:underline">
+                                   class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-primary mt-2.5 hover:underline">
                                     <span>Cari shift tambahan</span>
-                                    <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                                    <i data-lucide="arrow-right" class="h-3 w-3"></i>
                                 </a>
                             </div>
                         @else
                             {{-- Active Today Shifts --}}
-                            <div class="space-y-4">
+                            <div class="space-y-3">
                                 @foreach ($todayAssignments as $assignment)
                                     @php
                                         $shiftStart = $assignment->shift->start_time;
                                         $shiftEnd = $assignment->shift->end_time;
                                         $durationH = round(max(0, $shiftStart->diffInMinutes($shiftEnd, false)) / 60, 1);
-                                        $color = $assignment->template_color ?? '#6C5CE7';
+                                        $color = $assignment->template_color ?? '#4F46E5';
                                     @endphp
-                                    <div class="bg-[#F5F3FF]/70 border border-[#E2E0F7] rounded-xl p-4 relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 bottom-0 w-1.5" style="background-color: {{ $color }};"></div>
+                                    <div class="bg-slate-50/70 border border-slate-200/80 rounded-lg p-3 relative overflow-hidden">
+                                        <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: {{ $color }};"></div>
 
-                                        <div class="pl-1 space-y-2.5">
+                                        <div class="pl-1 space-y-2">
                                             <div>
                                                 <div class="flex items-center justify-between gap-2">
-                                                    <h4 class="text-sm font-bold text-[#2D2A3E]">{{ $assignment->shift->title }}</h4>
-                                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#E2E0F7] text-[#6C5CE7]">
+                                                    <h4 class="text-xs font-bold text-slate-900">{{ $assignment->shift->title }}</h4>
+                                                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-white border border-slate-200 text-slate-700 font-mono">
                                                         {{ $durationH }} jam
                                                     </span>
                                                 </div>
-                                                <p class="text-xs font-semibold text-[#6C5CE7] mt-0.5 flex items-center gap-1.5">
-                                                    <i data-lucide="clock" class="h-3.5 w-3.5"></i>
-                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} WIB</span>
+                                                <p class="text-xs font-semibold text-brand-primary mt-0.5 flex items-center gap-1.5 font-mono">
+                                                    <i data-lucide="clock" class="h-3 w-3"></i>
+                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                                 </p>
                                             </div>
 
                                             @if ($assignment->location && $assignment->location !== '-')
-                                                <div class="flex items-start gap-2 text-xs text-[#7C7896] bg-white/80 p-2 rounded-lg border border-slate-100">
-                                                    <i data-lucide="map-pin" class="h-3.5 w-3.5 text-[#6C5CE7] shrink-0 mt-0.5"></i>
-                                                    <div class="min-w-0">
-                                                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Lokasi Kerja</span>
-                                                        <span class="text-[#2D2A3E] font-medium truncate block">{{ $assignment->location }}</span>
-                                                    </div>
+                                                <div class="flex items-start gap-1.5 text-xs text-slate-500 bg-white p-2 rounded border border-slate-100">
+                                                    <i data-lucide="map-pin" class="h-3 w-3 text-slate-400 shrink-0 mt-0.5"></i>
+                                                    <span class="text-slate-700 font-medium truncate block">{{ $assignment->location }}</span>
                                                 </div>
                                             @endif
 
-                                            <div class="pt-1 flex items-center justify-between">
+                                            <div class="pt-0.5 flex items-center justify-between">
                                                 <span class="text-[11px] text-slate-500">
-                                                    Status: <strong class="text-[#2D2A3E]">{{ ucfirst(str_replace('_', ' ', $assignment->schedule_status)) }}</strong>
+                                                    Status: <strong class="text-slate-800">{{ ucfirst(str_replace('_', ' ', $assignment->schedule_status)) }}</strong>
                                                 </span>
                                                 <a href="{{ route('employee.schedule.show', $assignment) }}"
-                                                   class="inline-flex items-center gap-1 text-xs font-semibold text-[#6C5CE7] hover:underline">
+                                                   class="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:underline">
                                                     <span>Detail</span>
-                                                    <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                                                    <i data-lucide="arrow-right" class="h-3 w-3"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -430,38 +422,38 @@
                 </div>
 
                 {{-- WIDGET: AKSI CEPAT / SHORTCUTS --}}
-                <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
-                    <div class="px-5 py-3.5 border-b border-[#E2E0F7]">
-                        <h3 class="text-sm font-bold text-[#2D2A3E]">Aksi Cepat</h3>
+                <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
+                    <div class="px-4 py-3 border-b border-slate-100">
+                        <h3 class="text-xs md:text-sm font-bold text-slate-900">Aksi Cepat</h3>
                     </div>
 
                     <div class="divide-y divide-slate-100">
                         <a href="{{ route('employee.swaps') }}"
-                           class="flex items-center justify-between px-5 py-3.5 hover:bg-[#F5F3FF] transition-all group">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7] flex items-center justify-center shrink-0 group-hover:bg-[#6C5CE7] group-hover:text-white transition-all">
-                                    <i data-lucide="arrow-left-right" class="h-4 w-4"></i>
+                           class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors group">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-brand-primary flex items-center justify-center shrink-0">
+                                    <i data-lucide="arrow-left-right" class="h-3.5 w-3.5"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-[#2D2A3E]">Ajukan Tukar Shift</p>
-                                    <p class="text-[11px] text-[#7C7896]">Tukar atau serahkan shift ke rekan</p>
+                                    <p class="text-xs font-bold text-slate-900">Ajukan Tukar Shift</p>
+                                    <p class="text-[11px] text-slate-500">Tukar atau serahkan shift ke rekan</p>
                                 </div>
                             </div>
-                            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-300 group-hover:text-[#6C5CE7] transition-colors"></i>
+                            <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-slate-300 group-hover:text-brand-primary transition-colors"></i>
                         </a>
 
                         <a href="{{ route('employee.open-shifts') }}"
-                           class="flex items-center justify-between px-5 py-3.5 hover:bg-[#F5F3FF] transition-all group">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                                    <i data-lucide="megaphone" class="h-4 w-4"></i>
+                           class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors group">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                    <i data-lucide="megaphone" class="h-3.5 w-3.5"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-[#2D2A3E]">Klaim Shift Terbuka</p>
-                                    <p class="text-[11px] text-[#7C7896]">Cari jadwal shift tambahan</p>
+                                    <p class="text-xs font-bold text-slate-900">Klaim Shift Terbuka</p>
+                                    <p class="text-[11px] text-slate-500">Cari jadwal shift tambahan</p>
                                 </div>
                             </div>
-                            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-300 group-hover:text-emerald-600 transition-colors"></i>
+                            <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-slate-300 group-hover:text-emerald-600 transition-colors"></i>
                         </a>
                     </div>
                 </div>

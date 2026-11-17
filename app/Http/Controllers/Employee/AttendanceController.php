@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceRegularization;
+use App\Models\AuditLog;
 use App\Models\CompanySetting;
 use App\Models\Department;
 use App\Models\ShiftAssignment;
@@ -518,10 +519,11 @@ class AttendanceController extends Controller
                 $reason = ! empty($reasonNote)
                     ? $reasonNote
                     : sprintf(
-                        'Koreksi jam pulang: Clock-out melebihi jadwal shift (%d menit). Jadwal selesai: %s, Clock-out: %s WIB.',
+                        'Koreksi jam pulang: Clock-out melebihi jadwal shift (%d menit). Jadwal selesai: %s, Clock-out: %s %s.',
                         round($excessMinutes),
                         $shiftEnd->format('H:i'),
-                        $now->format('H:i')
+                        $now->format('H:i'),
+                        AuditLog::getTimezoneAbbreviation($timezone)
                     );
 
                 AttendanceRegularization::create([
