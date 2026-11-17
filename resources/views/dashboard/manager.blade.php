@@ -2,7 +2,8 @@
     $availCount = $pendingAvailabilityCount ?? 0;
     $swapCount = $pendingSwapCount ?? 0;
     $claimCount = $openShiftClaimCount ?? 0;
-    $totalPending = $availCount + $swapCount + $claimCount;
+    $regCount = $pendingRegularizationCount ?? 0;
+    $totalPending = $availCount + $swapCount + $claimCount + $regCount;
 
     $attendancePercent = ($teamCount ?? 0) > 0 ? round((($presentStaffCount ?? 0) / $teamCount) * 100) : 0;
 @endphp
@@ -122,7 +123,7 @@
                     <span class="text-xs text-slate-400">Pilih kategori untuk memproses</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     
                     {{-- 1. Ketersediaan Waktu --}}
                     <a href="{{ route('manager.availability.index') }}"
@@ -193,6 +194,29 @@
                         </span>
                     </a>
 
+                    {{-- 4. Koreksi Kehadiran --}}
+                    <a href="{{ route('manager.attendance.regularizations.index') }}"
+                       class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-3 group {{ $regCount > 0 ? 'bg-white border-slate-200/90 hover:border-rose-300 shadow-card' : 'bg-slate-50/60 border-slate-200/60 hover:bg-white text-slate-600' }}">
+                        <div class="flex items-center justify-between">
+                            <div class="h-8 w-8 rounded-lg bg-slate-100 group-hover:bg-rose-600 group-hover:text-white text-slate-700 flex items-center justify-center transition">
+                                <i data-lucide="file-pen-line" class="h-4 w-4"></i>
+                            </div>
+                            @if ($regCount > 0)
+                                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 font-mono">
+                                    {{ $regCount }}
+                                </span>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-800 leading-tight">Koreksi Presensi</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Klaim jam &amp; lupa clock</p>
+                        </div>
+                        <span class="text-[11px] font-semibold text-rose-600 group-hover:text-rose-700 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform pt-1 border-t border-slate-100">
+                            <span>Tinjau</span>
+                            <i data-lucide="arrow-right" class="h-3 w-3"></i>
+                        </span>
+                    </a>
+
                 </div>
             </div>
 
@@ -205,14 +229,54 @@
                             Prioritas Peninjauan Teratas
                         </h4>
                     </div>
-                    @if ($pendingAvailability)
+                    @if ($pendingRegularization || $pendingAvailability)
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
                             Perlu Respon
                         </span>
                     @endif
                 </div>
 
-                @if ($pendingAvailability)
+                @if ($pendingRegularization)
+                    <div class="p-4 sm:p-5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 rounded-lg border border-slate-200/80 bg-slate-50/50">
+                            <div class="flex items-start gap-3">
+                                <div class="h-9 w-9 rounded-lg bg-rose-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                                    {{ strtoupper(substr($pendingRegularization->employee->name ?? 'K', 0, 2)) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h5 class="text-sm font-semibold text-slate-900 truncate">
+                                            {{ $pendingRegularization->employee->name ?? 'Karyawan' }}
+                                        </h5>
+                                        <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200/60">
+                                            Koreksi Kehadiran
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                                        <span class="font-medium text-slate-700">
+                                            Shift: {{ $pendingRegularization->shiftAssignment?->shift?->title ?? 'Shift' }}
+                                        </span>
+                                        <span class="text-slate-300">•</span>
+                                        <span class="font-mono text-slate-600">
+                                            Klaim Pulang: {{ $pendingRegularization->requested_clock_out_time?->format('d M Y, H:i') ?? '-' }}
+                                        </span>
+                                    </p>
+                                    @if ($pendingRegularization->reason)
+                                        <p class="text-xs text-slate-600 mt-1.5 italic bg-white p-2 rounded border border-slate-200/60">
+                                            &ldquo;{{ $pendingRegularization->reason }}&rdquo;
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <a href="{{ route('manager.attendance.regularizations.index') }}"
+                               class="shrink-0 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition">
+                                <span>Tinjau Sekarang</span>
+                                <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                @elseif ($pendingAvailability)
                     <div class="p-4 sm:p-5">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 rounded-lg border border-slate-200/80 bg-slate-50/50">
                             <div class="flex items-start gap-3">
@@ -259,7 +323,7 @@
                         </div>
                         <p class="text-xs font-semibold text-slate-800">Antrean Bersih</p>
                         <p class="text-xs text-slate-400 mt-0.5 max-w-sm mx-auto">
-                            Semua pengajuan ketersediaan tim telah selesai ditinjau. Anda dapat fokus pada penyusunan roster dan monitoring presensi harian.
+                            Semua pengajuan tim telah selesai ditinjau. Anda dapat fokus pada penyusunan roster dan monitoring presensi harian.
                         </p>
                     </div>
                 @endif
@@ -287,12 +351,14 @@
                         $availPct = $totalPending > 0 ? round(($availCount / $totalPending) * 100) : 0;
                         $swapPct  = $totalPending > 0 ? round(($swapCount / $totalPending) * 100) : 0;
                         $claimPct = $totalPending > 0 ? round(($claimCount / $totalPending) * 100) : 0;
+                        $regPct   = $totalPending > 0 ? round(($regCount / $totalPending) * 100) : 0;
                     @endphp
                     <div class="h-2 bg-slate-100 rounded-full overflow-hidden flex">
                         @if ($totalPending > 0)
                             <div class="bg-indigo-600 h-full" style="width: {{ $availPct }}%" title="Ketersediaan: {{ $availCount }}"></div>
                             <div class="bg-blue-600 h-full" style="width: {{ $swapPct }}%" title="Tukar Shift: {{ $swapCount }}"></div>
                             <div class="bg-amber-500 h-full" style="width: {{ $claimPct }}%" title="Klaim Shift: {{ $claimCount }}"></div>
+                            <div class="bg-rose-500 h-full" style="width: {{ $regPct }}%" title="Koreksi Kehadiran: {{ $regCount }}"></div>
                         @else
                             <div class="bg-emerald-500 h-full w-full"></div>
                         @endif
@@ -322,6 +388,14 @@
                                 <span>Klaim Shift Terbuka</span>
                             </span>
                             <span class="font-bold font-mono text-slate-900">{{ number_format($claimCount) }}</span>
+                        </div>
+
+                        <div class="flex items-center justify-between text-slate-700">
+                            <span class="flex items-center gap-2">
+                                <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+                                <span>Koreksi Kehadiran</span>
+                            </span>
+                            <span class="font-bold font-mono text-slate-900">{{ number_format($regCount) }}</span>
                         </div>
                     </div>
                 </div>
@@ -369,7 +443,14 @@
                                 <p class="text-[10px] text-slate-400">Persetujuan klaim jam presensi</p>
                             </div>
                         </div>
-                        <i data-lucide="chevron-right" class="h-4 w-4 text-slate-300 group-hover:text-slate-600 transition"></i>
+                        <div class="flex items-center gap-1.5">
+                            @if ($regCount > 0)
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 font-mono">
+                                    {{ $regCount }}
+                                </span>
+                            @endif
+                            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-300 group-hover:text-slate-600 transition"></i>
+                        </div>
                     </a>
 
                     <a href="{{ route('manager.timesheets.index') }}" 

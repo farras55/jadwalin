@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceRegularization;
 use App\Models\Availability;
 use App\Models\Company;
 use App\Models\Department;
@@ -153,6 +154,25 @@ class DashboardController extends Controller
                 }
             })->count();
 
+        $pendingRegularizationQuery = AttendanceRegularization::where(
+            'company_id',
+            $manager->company_id
+        )->where('status', 'pending')
+            ->whereHas('employee', function (Builder $query) use ($manager) {
+                $query->where('company_id', $manager->company_id);
+
+                if (! $manager->is_global_manager) {
+                    $query->where('department_id', $manager->department_id);
+                }
+            });
+
+        $pendingRegularizationCount = (clone $pendingRegularizationQuery)->count();
+
+        $pendingRegularization = (clone $pendingRegularizationQuery)
+            ->with(['employee.department', 'shiftAssignment.shift'])
+            ->latest('created_at')
+            ->first();
+
         return view('dashboard', [
             'roleTitle' => 'Manager',
             'teamCount' => $teamCount,
@@ -160,8 +180,10 @@ class DashboardController extends Controller
             'pendingAvailabilityCount' => (clone $pendingAvailabilityQuery)->count(),
             'pendingSwapCount' => $pendingSwapQuery->count(),
             'openShiftClaimCount' => $openShiftClaimCount,
+            'pendingRegularizationCount' => $pendingRegularizationCount,
             'weeklyRosterCount' => $weeklyRosterQuery->count(),
             'pendingAvailability' => $pendingAvailability,
+            'pendingRegularization' => $pendingRegularization,
         ]);
     }
 
