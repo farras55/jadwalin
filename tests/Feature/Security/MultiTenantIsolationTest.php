@@ -4,6 +4,7 @@ namespace Tests\Feature\Security;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\OpenShiftClaim;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
 use App\Models\ShiftSwap;
@@ -150,5 +151,62 @@ class MultiTenantIsolationTest extends TestCase
             ->get(route('employee.schedule.show', $assignmentB));
 
         $this->assertTrue(in_array($response->status(), [403, 404]), "Status was {$response->status()}");
+    }
+
+    /**
+     * TC-MT-06: Superadmin Perusahaan A dilarang memperbarui lokasi cabang Perusahaan B.
+     */
+    public function test_superadmin_cannot_update_branch_location_of_another_company(): void
+    {
+        $response = $this->actingAs($this->superadminA)
+            ->put(route('admin.settings.update-branch-location'), [
+                'branch_id' => $this->departmentB->id,
+                'latitude' => -7.9826,
+                'longitude' => 112.6308,
+                'radius' => 150,
+            ]);
+
+        $response->assertSessionHasErrors(['branch_id']);
+    }
+
+    /**
+     * TC-MT-07: Manager reguler dilarang menyetujui klaim open shift di departemen lain.
+     */
+    public function test_regular_manager_cannot_approve_open_shift_claim_from_another_department(): void
+    {
+        $deptA2 = Department::factory()->create(['company_id' => $this->companyA->id, 'name' => 'Departemen Lain']);
+        $shiftInDeptA2 = Shift::factory()->create([
+            'company_id' => $this->companyA->id,
+            'department_id' => $deptA2->id,
+            'is_open_shift' => true,
+        ]);
+
+        $claim = OpenShiftClaim::create([
+            'company_id' => $this->companyA->id,
+            'shift_id' => $shiftInDeptA2->id,
+            'user_id' => $this->employeeA->id,
+            'status' => 'pending_manager',
+            'applied_at' => now(),
+        ]);
+
+        // Manager A berada di departmentA, bukan deptA2
+        $response = $this->actingAs($this->managerA)
+            ->post(route('manager.open-shifts.claims.approve', $claim));
+
+        $response->assertStatus(403);
+    }
+
+    /**
+     * TC-MT-08: Superadmin tunggal dilarang menghapus akunnya sendiri di profil.
+     */
+    public function test_sole_superadmin_cannot_delete_their_own_account(): void
+    {
+        $response = $this->actingAs($this->superadminA)
+            ->delete('/profile', [
+                'password' => 'password',
+            ]);
+
+        $response->assertSessionHasErrorsIn('userDeletion', 'password');
+        $this->assertFalse($this->superadminA->fresh()->trashed());
     }
 }

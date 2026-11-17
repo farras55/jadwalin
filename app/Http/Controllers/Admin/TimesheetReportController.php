@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
-use App\Models\TimesheetReport;
 use App\Models\User;
 use App\Services\TimesheetExportService;
 use Carbon\Carbon;
@@ -85,7 +84,7 @@ class TimesheetReportController extends Controller
         $isPeriodPast = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay()->isPast();
 
         // Agregasi jam reguler, jam lembur, keterlambatan, dan kehadiran per karyawan
-        $reports = $users->map(function ($employee) use ($month, $year, $companyId, $isPeriodPast) {
+        $reports = $users->map(function ($employee) use ($month, $year, $isPeriodPast) {
             // Semua shift yang dijadwalkan pada periode terkait
             $scheduledShifts = $employee->shiftAssignments->filter(function ($assignment) use ($month, $year) {
                 $date = $assignment->clock_in_time ?? $assignment->shift?->start_time;
@@ -131,32 +130,6 @@ class TimesheetReportController extends Controller
 
             // Jika periode bulannya sudah lewat/selesai, status otomatis menjadi finalized
             $status = $isPeriodPast ? 'finalized' : ($timesheetReport ? $timesheetReport->status : 'draft');
-
-            if (! $timesheetReport && $attendedShifts->isNotEmpty()) {
-                $timesheetReport = TimesheetReport::create([
-                    'company_id' => $companyId,
-                    'user_id' => $employee->id,
-                    'period_month' => $month,
-                    'period_year' => $year,
-                    'total_regular_hours' => $totalRegularHours,
-                    'total_overtime_hours' => $totalOvertimeHours,
-                    'status' => $status,
-                    'generated_by' => auth()->id(),
-                ]);
-            } elseif ($timesheetReport && $isPeriodPast && $timesheetReport->status !== 'finalized') {
-                $timesheetReport->update([
-                    'total_regular_hours' => $totalRegularHours,
-                    'total_overtime_hours' => $totalOvertimeHours,
-                    'status' => 'finalized',
-                    'generated_by' => auth()->id(),
-                ]);
-            } elseif ($timesheetReport && $timesheetReport->status === 'draft') {
-                $timesheetReport->update([
-                    'total_regular_hours' => $totalRegularHours,
-                    'total_overtime_hours' => $totalOvertimeHours,
-                    'generated_by' => auth()->id(),
-                ]);
-            }
 
             return (object) [
                 'user' => $employee,

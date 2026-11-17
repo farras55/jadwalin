@@ -162,13 +162,17 @@ class ShiftSwapController extends Controller
             return back()->with('error', 'Anda tidak dapat melakukan pertukaran shift dengan diri sendiri.');
         }
 
-        // 3. Verifikasi rekan kerja berada di perusahaan yang sama
+        // 3. Verifikasi rekan kerja berada di perusahaan dan departemen yang sama
         $targetUser = User::where('id', $validated['target_user_id'])
             ->where('company_id', $user->company_id)
             ->first();
 
         if (! $targetUser) {
             return back()->with('error', 'Rekan kerja tujuan tidak valid.');
+        }
+
+        if ($user->department_id && (int) $targetUser->department_id !== (int) $user->department_id) {
+            return back()->with('error', 'Pertukaran shift hanya dapat dilakukan dengan rekan kerja di departemen yang sama.');
         }
 
         // 4. Verifikasi kepemilikan shift rekan kerja jika mode exchange
@@ -216,7 +220,50 @@ class ShiftSwapController extends Controller
             }
         }
 
-        // 6. Buat record swap
+        // 6. Validasi Bentrok Jadwal (Schedule Conflict Prevention):
+        if ($validated['swap_type'] === 'transfer') {
+            $hasTargetConflict = ShiftAssignment::where('user_id', $targetUser->id)
+                ->where('id', '!=', $myAssignment->id)
+                ->whereNotIn('status', ['cancelled'])
+                ->whereHas('shift', function ($q) use ($myAssignment) {
+                    $q->where('start_time', '<', $myAssignment->shift->end_time)
+                        ->where('end_time', '>', $myAssignment->shift->start_time);
+                })
+                ->exists();
+
+            if ($hasTargetConflict) {
+                return back()->with('error', 'Rekan kerja tujuan sudah memiliki jadwal shift lain yang bentrok pada waktu yang sama.');
+            }
+        } else {
+            // Mode Exchange: Cek kedua belah pihak
+            $hasTargetConflict = ShiftAssignment::where('user_id', $targetUser->id)
+                ->whereNotIn('id', [$myAssignment->id, $targetAssignment->id])
+                ->whereNotIn('status', ['cancelled'])
+                ->whereHas('shift', function ($q) use ($myAssignment) {
+                    $q->where('start_time', '<', $myAssignment->shift->end_time)
+                        ->where('end_time', '>', $myAssignment->shift->start_time);
+                })
+                ->exists();
+
+            if ($hasTargetConflict) {
+                return back()->with('error', 'Rekan kerja tujuan memiliki jadwal shift lain yang bentrok dengan shift yang ingin ditukar.');
+            }
+
+            $hasRequesterConflict = ShiftAssignment::where('user_id', $user->id)
+                ->whereNotIn('id', [$myAssignment->id, $targetAssignment->id])
+                ->whereNotIn('status', ['cancelled'])
+                ->whereHas('shift', function ($q) use ($targetAssignment) {
+                    $q->where('start_time', '<', $targetAssignment->shift->end_time)
+                        ->where('end_time', '>', $targetAssignment->shift->start_time);
+                })
+                ->exists();
+
+            if ($hasRequesterConflict) {
+                return back()->with('error', 'Anda memiliki jadwal shift lain yang bentrok dengan shift rekan kerja.');
+            }
+        }
+
+        // 7. Buat record swap
         $swap = ShiftSwap::create([
             'company_id' => $user->company_id,
             'shift_assignment_id' => $myAssignment->id,
@@ -371,6 +418,11 @@ class ShiftSwapController extends Controller
             abort(403, 'Akses tidak sah ke data perusahaan lain.');
         }
 
+        $swap->loadMissing('requester');
+        if (! $manager->is_global_manager && $manager->department_id && (int) $swap->requester?->department_id !== (int) $manager->department_id) {
+            abort(403, 'Anda tidak memiliki hak akses memproses pertukaran shift di luar departemen Anda.');
+        }
+
         try {
             DB::transaction(function () use ($swap, $manager) {
                 // 1. Kunci baris ShiftSwap dengan pessimistic lock
@@ -393,6 +445,54 @@ class ShiftSwapController extends Controller
                     $targetAssignment = ShiftAssignment::where('id', $lockedSwap->target_shift_assignment_id)
                         ->lockForUpdate()
                         ->firstOrFail();
+                }
+
+                // Validasi ulang bentrok jadwal sebelum eksekusi pertukaran
+                $requesterAssignment->loadMissing('shift');
+                $requesterShift = $requesterAssignment->shift;
+
+                if ($lockedSwap->isTransfer()) {
+                    $hasTargetConflict = ShiftAssignment::where('user_id', $lockedSwap->target_user_id)
+                        ->where('id', '!=', $requesterAssignment->id)
+                        ->whereNotIn('status', ['cancelled'])
+                        ->whereHas('shift', function ($q) use ($requesterShift) {
+                            $q->where('start_time', '<', $requesterShift->end_time)
+                                ->where('end_time', '>', $requesterShift->start_time);
+                        })
+                        ->exists();
+
+                    if ($hasTargetConflict) {
+                        throw new \RuntimeException('Rekan kerja tujuan sudah memiliki penugasan shift lain yang bentrok pada waktu yang sama.');
+                    }
+                } else {
+                    $targetAssignment->loadMissing('shift');
+                    $targetShift = $targetAssignment->shift;
+
+                    $hasTargetConflict = ShiftAssignment::where('user_id', $lockedSwap->target_user_id)
+                        ->whereNotIn('id', [$requesterAssignment->id, $targetAssignment->id])
+                        ->whereNotIn('status', ['cancelled'])
+                        ->whereHas('shift', function ($q) use ($requesterShift) {
+                            $q->where('start_time', '<', $requesterShift->end_time)
+                                ->where('end_time', '>', $requesterShift->start_time);
+                        })
+                        ->exists();
+
+                    if ($hasTargetConflict) {
+                        throw new \RuntimeException('Rekan kerja tujuan memiliki jadwal shift lain yang bentrok dengan shift baru.');
+                    }
+
+                    $hasRequesterConflict = ShiftAssignment::where('user_id', $lockedSwap->requester_id)
+                        ->whereNotIn('id', [$requesterAssignment->id, $targetAssignment->id])
+                        ->whereNotIn('status', ['cancelled'])
+                        ->whereHas('shift', function ($q) use ($targetShift) {
+                            $q->where('start_time', '<', $targetShift->end_time)
+                                ->where('end_time', '>', $targetShift->start_time);
+                        })
+                        ->exists();
+
+                    if ($hasRequesterConflict) {
+                        throw new \RuntimeException('Pemohon memiliki jadwal shift lain yang bentrok dengan shift baru.');
+                    }
                 }
 
                 $oldValues = [
@@ -475,6 +575,11 @@ class ShiftSwapController extends Controller
 
         if ($swap->company_id !== $manager->company_id) {
             abort(403, 'Akses tidak sah ke data perusahaan lain.');
+        }
+
+        $swap->loadMissing('requester');
+        if (! $manager->is_global_manager && $manager->department_id && (int) $swap->requester?->department_id !== (int) $manager->department_id) {
+            abort(403, 'Anda tidak memiliki hak akses memproses pertukaran shift di luar departemen Anda.');
         }
 
         $validated = $request->validate([

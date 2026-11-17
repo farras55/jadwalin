@@ -14,7 +14,6 @@ class ShiftAssignment extends Model
     use Auditable, HasFactory;
 
     protected $fillable = [
-        'date',
         'company_id',
         'shift_id',
         'user_id',

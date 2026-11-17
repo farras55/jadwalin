@@ -574,6 +574,11 @@ class OpenShiftController extends Controller
             abort(403, 'Akses tidak sah.');
         }
 
+        $claim->loadMissing('shift');
+        if (! $manager->is_global_manager && $claim->shift?->department_id && (int) $claim->shift->department_id !== (int) $manager->department_id) {
+            abort(403, 'Anda tidak memiliki hak akses memproses klaim di luar departemen Anda.');
+        }
+
         try {
             DB::transaction(function () use ($claim, $manager) {
                 $lockedClaim = OpenShiftClaim::where('id', $claim->id)->lockForUpdate()->firstOrFail();
@@ -591,6 +596,20 @@ class OpenShiftController extends Controller
                         'approved_by' => $manager->id,
                     ]);
                     abort(409, 'Kuota shift terbuka ini sudah penuh. Permohonan ditolak.');
+                }
+
+                // Validasi ulang bentrok jadwal karyawan sebelum menerbitkan assignment baru
+                $hasScheduleConflict = ShiftAssignment::where('user_id', $lockedClaim->user_id)
+                    ->whereNotIn('status', ['cancelled'])
+                    ->whereHas('shift', function ($query) use ($lockedShift) {
+                        $query->where('id', '!=', $lockedShift->id)
+                            ->where('start_time', '<', $lockedShift->end_time)
+                            ->where('end_time', '>', $lockedShift->start_time);
+                    })
+                    ->exists();
+
+                if ($hasScheduleConflict) {
+                    abort(422, 'Karyawan sudah memiliki jadwal shift lain yang bentrok pada waktu yang sama.');
                 }
 
                 // Terbitkan penugasan jadwal
@@ -636,6 +655,11 @@ class OpenShiftController extends Controller
 
         if ($claim->company_id !== $manager->company_id) {
             abort(403, 'Akses tidak sah.');
+        }
+
+        $claim->loadMissing('shift');
+        if (! $manager->is_global_manager && $claim->shift?->department_id && (int) $claim->shift->department_id !== (int) $manager->department_id) {
+            abort(403, 'Anda tidak memiliki hak akses memproses klaim di luar departemen Anda.');
         }
 
         $validated = $request->validate([

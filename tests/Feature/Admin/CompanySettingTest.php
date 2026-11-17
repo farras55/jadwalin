@@ -21,6 +21,10 @@ class CompanySettingTest extends TestCase
             'role' => 'superadmin',
         ]);
 
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
+        ]);
+
         $this->actingAs($user)
             ->get(route('admin.settings.index'))
             ->assertOk();
@@ -59,6 +63,10 @@ class CompanySettingTest extends TestCase
         $user = User::factory()->create([
             'company_id' => $company->id,
             'role' => 'superadmin',
+        ]);
+
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
         ]);
 
         $this->actingAs($user)
@@ -125,6 +133,10 @@ class CompanySettingTest extends TestCase
             'role' => 'superadmin',
         ]);
 
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
+        ]);
+
         $this->actingAs($user)
             ->from(route('admin.settings.index'))
             ->put(route('admin.settings.update'), [
@@ -152,6 +164,10 @@ class CompanySettingTest extends TestCase
         $user = User::factory()->create([
             'company_id' => $company->id,
             'role' => 'superadmin',
+        ]);
+
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
         ]);
 
         $this->actingAs($user)
@@ -195,6 +211,10 @@ class CompanySettingTest extends TestCase
             'role' => 'superadmin',
         ]);
 
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
+        ]);
+
         // Submit form dengan attendance_radius_meters null / empty
         $this->actingAs($user)
             ->put(route('admin.settings.update'), [
@@ -233,6 +253,10 @@ class CompanySettingTest extends TestCase
         $user = User::factory()->create([
             'company_id' => $company->id,
             'role' => 'superadmin',
+        ]);
+
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
         ]);
 
         $this->actingAs($user)
@@ -367,6 +391,10 @@ class CompanySettingTest extends TestCase
             'role' => 'superadmin',
         ]);
 
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
+        ]);
+
         $this->actingAs($user)
             ->put(route('admin.settings.update'), [
                 'is_unlimited' => '1',
@@ -395,6 +423,10 @@ class CompanySettingTest extends TestCase
         $user = User::factory()->create([
             'company_id' => $company->id,
             'role' => 'superadmin',
+        ]);
+
+        Department::factory()->count(3)->create([
+            'company_id' => $company->id,
         ]);
 
         $this->actingAs($user)

@@ -79,13 +79,8 @@ class CompanySettingController extends Controller
             }
         }
 
-        // Jika superadmin, tampilkan cabang dari seluruh perusahaan (dengan label perusahaan)
-        // agar superadmin dapat mengatur koordinat cabang manapun yang ditugaskan ke karyawan.
-        if ($user && $user->role === 'superadmin') {
-            $branches = Department::with('company')->orderBy('name')->get();
-        } else {
-            $branches = Department::where('company_id', $companyId)->orderBy('name')->get();
-        }
+        // Cabang dibatasi hanya untuk perusahaan pengguna yang sedang aktif (isolasi multi-tenant)
+        $branches = Department::with('company')->where('company_id', $companyId)->orderBy('name')->get();
 
         $branchesData = $branches->map(function ($b) {
             $companyName = $b->company?->name;
@@ -330,7 +325,7 @@ class CompanySettingController extends Controller
 
         // Jika tombol global save mengirimkan juga perubahan lokasi cabang
         if ($request->filled('branch_id')) {
-            $branch = Department::find($request->input('branch_id'));
+            $branch = Department::where('company_id', $companyId)->find($request->input('branch_id'));
             if ($branch) {
                 $bLat = $request->input('branch_latitude');
                 $bLng = $request->input('branch_longitude');
@@ -401,9 +396,7 @@ class CompanySettingController extends Controller
             'branch_id' => [
                 'required',
                 'integer',
-                $user->role === 'superadmin'
-                    ? Rule::exists('departments', 'id')
-                    : Rule::exists('departments', 'id')->where('company_id', $companyId),
+                Rule::exists('departments', 'id')->where('company_id', $companyId),
             ],
             'address' => [
                 'nullable',
@@ -440,7 +433,7 @@ class CompanySettingController extends Controller
             'radius.max' => 'Radius presensi maksimal 10.000 meter.',
         ]);
 
-        $branch = Department::findOrFail($validated['branch_id']);
+        $branch = Department::where('company_id', $companyId)->findOrFail($validated['branch_id']);
         $updateBranchData = [
             'latitude' => (float) $validated['latitude'],
             'longitude' => (float) $validated['longitude'],
@@ -452,28 +445,25 @@ class CompanySettingController extends Controller
         }
         $branch->update($updateBranchData);
 
-        // Sinkronisasi koordinat acuan ke company_settings & companies milik cabang tersebut
-        $targetCompanyId = $branch->company_id ?? $companyId;
-        if ($targetCompanyId) {
-            $setting = CompanySetting::firstOrCreate(['company_id' => $targetCompanyId], $this->defaultSettings());
-            $setting->update([
+        // Sinkronisasi koordinat acuan ke company_settings & companies milik perusahaan tersebut
+        $setting = CompanySetting::firstOrCreate(['company_id' => $companyId], $this->defaultSettings());
+        $setting->update([
+            'office_latitude' => (float) $validated['latitude'],
+            'office_longitude' => (float) $validated['longitude'],
+            'attendance_radius_meters' => (int) $validated['radius'],
+        ]);
+
+        $targetCompany = Company::find($companyId);
+        if ($targetCompany) {
+            $companyData = [
                 'office_latitude' => (float) $validated['latitude'],
                 'office_longitude' => (float) $validated['longitude'],
                 'attendance_radius_meters' => (int) $validated['radius'],
-            ]);
-
-            $targetCompany = Company::find($targetCompanyId);
-            if ($targetCompany) {
-                $companyData = [
-                    'office_latitude' => (float) $validated['latitude'],
-                    'office_longitude' => (float) $validated['longitude'],
-                    'attendance_radius_meters' => (int) $validated['radius'],
-                ];
-                if (array_key_exists('address', $validated) && $validated['address'] !== null) {
-                    $companyData['address'] = $validated['address'];
-                }
-                $targetCompany->update($companyData);
+            ];
+            if (array_key_exists('address', $validated) && $validated['address'] !== null) {
+                $companyData['address'] = $validated['address'];
             }
+            $targetCompany->update($companyData);
         }
 
         return redirect()

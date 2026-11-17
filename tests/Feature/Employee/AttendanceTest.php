@@ -508,6 +508,130 @@ class AttendanceTest extends TestCase
         $this->assertNotNull($assignment->clock_out_time);
         $this->assertEquals(8.0, $assignment->regular_hours);
         $this->assertEquals(0.0, $assignment->overtime_hours);
+        $this->assertEquals('completed', $assignment->status);
+    }
+
+    public function test_employee_can_clock_in_past_midnight_for_overnight_shift()
+    {
+        $yesterday = Carbon::yesterday();
+        $today = Carbon::today();
+
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Overnight Shift',
+            'start_time' => $yesterday->copy()->setTime(22, 0),
+            'end_time' => $today->copy()->setTime(6, 0),
+            'quota' => 1,
+        ]);
+
+        $assignment = ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+            'status' => 'scheduled',
+            'clock_in_time' => null,
+            'clock_out_time' => null,
+        ]);
+
+        // Clock in pukul 00:30 (melewati tengah malam)
+        Carbon::setTestNow($today->copy()->setTime(0, 30));
+
+        $response = $this->actingAs($this->user)->post(
+            route('employee.attendance.clock-in'),
+            [
+                'latitude' => -6.2088,
+                'longitude' => 106.8456,
+            ]
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $assignment->refresh();
+        $this->assertNotNull($assignment->clock_in_time);
+        $this->assertEquals('late', $assignment->status);
+        $this->assertEquals(150, $assignment->late_minutes);
+    }
+
+    public function test_clock_out_within_late_tolerance_buffer_does_not_create_regularization()
+    {
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Day Shift',
+            'start_time' => Carbon::today()->setTime(8, 0),
+            'end_time' => Carbon::today()->setTime(17, 0),
+            'quota' => 1,
+        ]);
+
+        $assignment = ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+            'clock_in_time' => Carbon::today()->setTime(8, 0),
+            'status' => 'present',
+        ]);
+
+        // Clock-out pada 17:10 (10 menit setelah shift, masih dalam toleransi 15 menit)
+        Carbon::setTestNow(Carbon::today()->setTime(17, 10));
+
+        $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-out'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $assignment->refresh();
+        $this->assertEquals('completed', $assignment->status);
+        $this->assertEquals(8.0, $assignment->regular_hours);
+        $this->assertEquals(0.0, $assignment->overtime_hours);
+        $this->assertEquals('none', $assignment->overtime_status);
+
+        // Tidak membuat tiket AttendanceRegularization
+        $this->assertDatabaseMissing('attendance_regularizations', [
+            'shift_assignment_id' => $assignment->id,
+        ]);
+    }
+
+    public function test_clock_out_exceeding_late_tolerance_buffer_creates_regularization()
+    {
+        $shift = Shift::forceCreate([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Day Shift',
+            'start_time' => Carbon::today()->setTime(8, 0),
+            'end_time' => Carbon::today()->setTime(17, 0),
+            'quota' => 1,
+        ]);
+
+        $assignment = ShiftAssignment::forceCreate([
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'shift_id' => $shift->id,
+            'clock_in_time' => Carbon::today()->setTime(8, 0),
+            'status' => 'present',
+        ]);
+
+        // Clock-out pada 17:25 (25 menit setelah shift, melebihi toleransi 15 menit)
+        Carbon::setTestNow(Carbon::today()->setTime(17, 25));
+
+        $response = $this->actingAs($this->user)->post(route('employee.attendance.clock-out'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $assignment->refresh();
+        $this->assertEquals('completed', $assignment->status);
+        $this->assertEquals(8.0, $assignment->regular_hours);
+        $this->assertEquals(0.0, $assignment->overtime_hours);
+        $this->assertEquals('pending_approval', $assignment->overtime_status);
+
+        // Membuat tiket AttendanceRegularization
+        $this->assertDatabaseHas('attendance_regularizations', [
+            'shift_assignment_id' => $assignment->id,
+            'status' => 'pending',
+            'overtime_status' => 'pending_approval',
+        ]);
     }
 
     public function test_history_shows_not_attended_status_when_employee_has_not_clocked_in()
