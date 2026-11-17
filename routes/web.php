@@ -97,6 +97,10 @@ Route::middleware(['auth', 'role:superadmin'])
         Route::put('/settings', [CompanySettingController::class, 'update'])
             ->name('settings.update');
 
+        Route::put('/settings/work-location', [CompanySettingController::class, 'updateWorkLocation'])
+            ->name('settings.update-work-location');
+
+        // Alias rute lama untuk backward-compatibility
         Route::put('/settings/branch-location', [CompanySettingController::class, 'updateBranchLocation'])
             ->name('settings.update-branch-location');
 

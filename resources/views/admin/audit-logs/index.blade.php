@@ -45,7 +45,7 @@
             'latitude': 'Titik Lintang',
             'longitude': 'Titik Bujur',
             'radius_meters': 'Radius Presensi (Meter)',
-            'address': 'Alamat Kantor/Cabang',
+            'address': 'Alamat Kantor / Lokasi Kerja',
             'max_regular_hours': 'Batas Jam Reguler',
             'max_overtime_hours': 'Batas Jam Lembur',
             'break_minutes': 'Durasi Istirahat',

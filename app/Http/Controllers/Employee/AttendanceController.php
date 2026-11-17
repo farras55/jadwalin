@@ -186,7 +186,7 @@ class AttendanceController extends Controller
         ];
 
         // ==============================================================================
-        // 3. Lokasi Acuan Presensi Cabang/Outlet Tersinkronisasi Superadmin
+        // 3. Lokasi Acuan Presensi Lokasi Kerja Tersinkronisasi Superadmin
         // ==============================================================================
         $location = $this->resolveAttendanceLocation($user, $todayShift);
         $branch = $location['department'];
@@ -312,14 +312,13 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Resolusi single source of truth untuk lokasi cabang/outlet presensi employee.
-     * Mengutamakan: Departemen Shift Hari Ini -> Departemen Penugasan Karyawan -> Cabang Pertama Perusahaan.
+     * Resolusi single source of truth untuk lokasi kerja presensi employee.
+     * Mengutamakan: Departemen Shift Hari Ini -> Departemen Penugasan Karyawan -> Departemen Pertama Perusahaan.
      */
     public function resolveAttendanceLocation(User $user, ?ShiftAssignment $todayShift = null): array
     {
         $targetDepartment = $todayShift?->shift?->department
             ?? $user->department
-            ?? $user->branch
             ?? Department::where('company_id', $user->company_id)->orderBy('id')->first();
 
         $company = $user->company;
@@ -400,12 +399,12 @@ class AttendanceController extends Controller
         }
 
         // =========================================================================
-        // VALIDASI STATUS LOKASI CABANG / OUTLET DARI DATABASE
+        // VALIDASI STATUS LOKASI KERJA DARI DATABASE
         // =========================================================================
         $location = $this->resolveAttendanceLocation($user, $assignment);
 
         if (! $location['is_configured']) {
-            return back()->with('error', 'Lokasi cabang belum diatur oleh admin. Presensi tidak dapat dilakukan.');
+            return back()->with('error', 'Lokasi kerja belum diatur oleh admin. Presensi tidak dapat dilakukan.');
         }
 
         // =========================================================================

@@ -810,17 +810,17 @@
                     </div>
                 </div>
 
-                <!-- Badge 4: Multi-Cabang & Outlet -->
+                <!-- Badge 4: Departemen & Tim -->
                 <div class="bg-white rounded-2xl border border-brand-border p-5 flex items-center gap-4 card-elevated card-elevated-hover reveal delay-400">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#DDD6FE] border border-brand-primary/20 flex items-center justify-center shrink-0 text-brand-primary shadow-inner">
                         <i data-lucide="briefcase" class="w-7 h-7"></i>
                     </div>
                     <div>
                         <h3 class="font-display font-bold text-base text-brand-text">
-                            Multi-Cabang &amp; Tim
+                            Departemen &amp; Tim
                         </h3>
                         <p class="text-xs text-[#7C7896] mt-0.5 leading-relaxed">
-                            Kelola banyak outlet &amp; divisi tanpa batasan.
+                            Kelola divisi operasional &amp; tim tanpa batasan.
                         </p>
                     </div>
                 </div>
@@ -1508,7 +1508,7 @@
                     </div>
                 </div>
 
-                <!-- Fitur 11: Multi-Cabang Outlet & Struktur Departemen -->
+                <!-- Fitur 11: Struktur Departemen & Posisi Jabatan -->
                 <div 
                     x-show="featureFilter === 'all' || featureFilter === 'admin'" 
                     class="bg-white rounded-3xl border border-brand-border p-6 sm:p-7 flex flex-col justify-between card-elevated card-elevated-hover reveal delay-200 group"
@@ -1529,16 +1529,16 @@
                         </div>
 
                         <h3 class="font-display font-bold text-xl text-brand-text group-hover:text-brand-primary transition-colors">
-                            Multi-Cabang &amp; Departemen
+                            Departemen &amp; Posisi Jabatan
                         </h3>
                         <p class="text-xs sm:text-[13px] text-[#7C7896] mt-2.5 leading-relaxed">
-                            Hirarki organisasi lengkap: Perusahaan, Cabang Outlet, Departemen, dan Posisi Jabatan (CRUD). Mendukung zona waktu berbeda (WIB, WITA, WIT) dalam satu akun.
+                            Hirarki organisasi terstruktur: Perusahaan, Departemen Operasional, dan Posisi Jabatan (CRUD). Mendukung zona waktu berbeda (WIB, WITA, WIT) dalam satu akun.
                         </p>
 
                         <ul class="mt-4 space-y-2 text-xs text-brand-text/90 pt-3 border-t border-brand-border/70">
                             <li class="flex items-center gap-2">
                                 <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0"></i>
-                                <span>Manajemen cabang waralaba &amp; multi-outlet</span>
+                                <span>Manajemen departemen &amp; lokasi kerja operasional</span>
                             </li>
                             <li class="flex items-center gap-2">
                                 <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0"></i>
@@ -1685,7 +1685,7 @@
                         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-brand-border">
                             <div>
                                 <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full">
-                                    Workspace Manajer Cabang
+                                    Workspace Manajer Operasional
                                 </span>
                                 <h4 class="font-display font-extrabold text-2xl text-brand-text mt-2">
                                     Penyusunan Roster &amp; Pengawasan Tim Real-Time
@@ -1846,7 +1846,7 @@
                                     Pusat Kendali Perusahaan
                                 </span>
                                 <h4 class="font-display font-extrabold text-2xl text-brand-text mt-2">
-                                    Manajemen Multi-Tenant, Cabang Outlet &amp; Audit Log
+                                    Manajemen Multi-Tenant, Lokasi Kerja &amp; Audit Log
                                 </h4>
                                 <p class="text-xs sm:text-sm text-[#7C7896] mt-1">
                                     Super Admin mengatur struktur departemen &amp; posisi jabatan (CRUD), mengelola master template shift, pengaturan lisensi, dan log audit global.
@@ -1860,8 +1860,8 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="bg-slate-50 border border-brand-border rounded-2xl p-4">
-                                <span class="text-[10px] font-bold text-[#7C7896] uppercase tracking-wider">Perusahaan &amp; Cabang</span>
-                                <p class="font-display font-extrabold text-lg text-brand-text mt-1">5 Outlet Aktif</p>
+                                <span class="text-[10px] font-bold text-[#7C7896] uppercase tracking-wider">Identitas Perusahaan</span>
+                                <p class="font-display font-extrabold text-lg text-brand-text mt-1">5 Lokasi Kerja</p>
                                 <p class="text-xs text-[#7C7896] mt-1">Malang Pusat, Soekarno-Hatta, Surabaya Barat, Batu, Ijen</p>
                                 <span class="inline-block mt-3 text-[10px] font-extrabold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">
                                     Paket Business (100 Staf)
@@ -1890,7 +1890,7 @@
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2">
                             <div class="p-3 bg-brand-bg/60 rounded-xl border border-brand-border flex items-center gap-2">
                                 <i data-lucide="building-2" class="w-4 h-4 text-brand-primary shrink-0"></i>
-                                <span class="font-semibold text-brand-text">Kelola Outlet Multi-Cabang</span>
+                                <span class="font-semibold text-brand-text">Identitas &amp; Lokasi Kerja</span>
                             </div>
                             <div class="p-3 bg-brand-bg/60 rounded-xl border border-brand-border flex items-center gap-2">
                                 <i data-lucide="briefcase" class="w-4 h-4 text-purple-600 shrink-0"></i>
@@ -1954,7 +1954,7 @@
                 <div class="bg-brand-bg/60 p-4 rounded-2xl text-xs space-y-2.5 text-brand-text">
                     <p class="font-bold text-brand-primary">Alur Kerja 3 Tahap:</p>
                     <div class="space-y-2 text-[#7C7896]">
-                        <p><strong class="text-brand-text">1. Penentuan Periode:</strong> Manajer memilih rentang waktu roster (mingguan/bulanan) dan cabang outlet.</p>
+                        <p><strong class="text-brand-text">1. Penentuan Periode:</strong> Manajer memilih rentang waktu roster (mingguan/bulanan) dan unit kerja departemen.</p>
                         <p><strong class="text-brand-text">2. Auto-Plotting:</strong> Algoritma mengisi kuota shift dengan staf yang tersedia dan memiliki jeda istirahat aman.</p>
                         <p><strong class="text-brand-text">3. Publikasi 1-Klik:</strong> Jadwal terbit seketika ke ponsel seluruh staf; notifikasi otomatis dikirim.</p>
                     </div>
@@ -2189,18 +2189,18 @@
                     </div>
                     <div>
                         <span class="text-[10px] font-bold text-purple-700 uppercase tracking-wider">Tata Kelola Organisasi</span>
-                        <h3 class="font-display font-extrabold text-xl sm:text-2xl text-brand-text">Multi-Cabang &amp; Departemen (CRUD)</h3>
+                        <h3 class="font-display font-extrabold text-xl sm:text-2xl text-brand-text">Departemen &amp; Posisi Jabatan (CRUD)</h3>
                     </div>
                 </div>
                 <p class="text-xs sm:text-sm text-[#7C7896] leading-relaxed">
-                    Struktur hirarki multi-tenant yang mendukung pengelolaan banyak cabang gerai (outlet), departemen operasional, dan pemetaan posisi jabatan staf secara terpusat.
+                    Struktur hirarki multi-tenant yang mendukung pengelolaan departemen operasional, lokasi kerja, dan pemetaan posisi jabatan staf secara terpusat.
                 </p>
                 <div class="bg-brand-bg/60 p-4 rounded-2xl text-xs space-y-2.5 text-brand-text">
                     <p class="font-bold text-brand-primary">Kapabilitas Utama:</p>
                     <div class="space-y-2 text-[#7C7896]">
-                        <p><strong class="text-brand-text">1. Multi-Outlet:</strong> Tambah, edit, dan atur batasan lisensi per cabang dengan zona waktu berbeda.</p>
+                        <p><strong class="text-brand-text">1. Lokasi Kerja &amp; Geofencing:</strong> Atur koordinat GPS presensi dan zona waktu operasional (WIB, WITA, WIT).</p>
                         <p><strong class="text-brand-text">2. CRUD Departemen &amp; Posisi:</strong> Buat struktur jabatan (Barista, Kasir, Head Cook, Supervisor).</p>
-                        <p><strong class="text-brand-text">3. Penempatan Staf:</strong> Mutasi atau penugasan staf ke cabang terkait dengan hak akses terisolasi.</p>
+                        <p><strong class="text-brand-text">3. Penempatan Staf:</strong> Penugasan staf ke departemen terkait dengan hak akses terisolasi.</p>
                     </div>
                 </div>
             </div>
@@ -2753,7 +2753,7 @@
                                 Business
                             </h3>
                             <p class="text-xs text-[#7C7896] mt-1 leading-relaxed">
-                                Fleksibilitas skala jaringan cabang.
+                                Fleksibilitas skala operasional tim.
                             </p>
 
                             <div class="mt-6 pb-6 border-b border-brand-border">
@@ -2770,7 +2770,7 @@
                                 </li>
                                 <li class="flex items-center gap-2.5">
                                     <i data-lucide="check" class="w-4 h-4 text-brand-primary shrink-0"></i>
-                                    <span>Manajemen Multi-Cabang Outlet</span>
+                                    <span>Manajemen Multi-Departemen &amp; Lokasi Kerja</span>
                                 </li>
                                 <li class="flex items-center gap-2.5">
                                     <i data-lucide="check" class="w-4 h-4 text-brand-primary shrink-0"></i>
@@ -2786,7 +2786,7 @@
                         <div class="mt-8">
                             <button 
                                 type="button" 
-                                @click="selectedPlanModal = { name: 'Business', price: 'Rp 399.000 / Bulan', desc: 'Sempurna untuk multi-outlet dan jaringan waralaba hingga 100 staf.' }"
+                                @click="selectedPlanModal = { name: 'Business', price: 'Rp 399.000 / Bulan', desc: 'Sempurna untuk multi-departemen dan tim hingga 100 staf.' }"
                                 class="w-full inline-flex items-center justify-center py-3 rounded-2xl bg-brand-bg hover:bg-brand-primary text-brand-primary hover:text-white font-bold text-xs transition-colors border border-brand-border/80 shadow-sm"
                             >
                                 Pilih Paket Business
@@ -2825,7 +2825,7 @@
                                 </li>
                                 <li class="flex items-center gap-2.5">
                                     <i data-lucide="check" class="w-4 h-4 text-brand-primary shrink-0"></i>
-                                    <span>Laporan Komprehensif Multi-Cabang</span>
+                                    <span>Laporan Komprehensif Seluruh Tim</span>
                                 </li>
                                 <li class="flex items-center gap-2.5">
                                     <i data-lucide="check" class="w-4 h-4 text-brand-primary shrink-0"></i>
@@ -2837,7 +2837,7 @@
                         <div class="mt-8">
                             <button 
                                 type="button" 
-                                @click="selectedPlanModal = { name: 'Luxury / Corp', price: 'Rp 899.000 / Bulan', desc: 'Solusi kustom operasional korporasi, karyawan tanpa batas, dan laporan komprehensif seluruh cabang outlet.' }"
+                                @click="selectedPlanModal = { name: 'Luxury / Corp', price: 'Rp 899.000 / Bulan', desc: 'Solusi kustom operasional korporasi, karyawan tanpa batas, dan laporan komprehensif seluruh departemen.' }"
                                 class="w-full inline-flex items-center justify-center py-3 rounded-2xl bg-brand-bg hover:bg-brand-primary text-brand-primary hover:text-white font-bold text-xs transition-colors border border-brand-border/80 shadow-sm"
                             >
                                 Hubungi Lisensi Corp
@@ -2912,7 +2912,7 @@
                         1. Atur Tim &amp; Posisi
                     </h3>
                     <p class="text-xs text-[#7C7896] mt-2 leading-relaxed max-w-xs">
-                        Masukkan daftar staf, departemen, dan aturan jam kerja per cabang.
+                        Masukkan daftar staf, departemen, dan aturan jam kerja perusahaan.
                     </p>
                 </div>
 
@@ -2983,7 +2983,7 @@
                                 <i data-lucide="building-2" class="w-5 h-5"></i>
                             </div>
                             <p class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight">150+</p>
-                            <p class="text-xs text-purple-200 mt-1 font-medium">Cabang Aktif</p>
+                            <p class="text-xs text-purple-200 mt-1 font-medium">Lokasi Aktif</p>
                         </div>
 
                         <div>

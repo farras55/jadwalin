@@ -154,7 +154,7 @@ class MultiTenantIsolationTest extends TestCase
     }
 
     /**
-     * TC-MT-06: Superadmin Perusahaan A dilarang memperbarui lokasi cabang Perusahaan B.
+     * TC-MT-06: Superadmin Perusahaan A dilarang memperbarui lokasi kerja Perusahaan B.
      */
     public function test_superadmin_cannot_update_branch_location_of_another_company(): void
     {

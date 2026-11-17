@@ -40,10 +40,10 @@
     {{-- --------------------------------------------------------------------- --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
 
-        {{-- Total Perusahaan & Cabang --}}
+        {{-- Identitas Perusahaan --}}
         <div class="bg-white rounded-xl border border-slate-200/90 shadow-card p-4 sm:p-5 flex flex-col justify-between hover:border-slate-300 transition">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-slate-500">Perusahaan &amp; Cabang</span>
+                <span class="text-xs font-medium text-slate-500">Identitas Perusahaan</span>
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
                     <i data-lucide="building-2" class="h-4 w-4"></i>
                 </div>
@@ -182,7 +182,7 @@
                     </div>
                     <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
                         <p class="text-[11px] text-slate-400 font-medium">Validasi Geofencing</p>
-                        <p class="text-xs font-semibold text-slate-800 mt-0.5">Radius GPS &amp; Cabang Aktif</p>
+                        <p class="text-xs font-semibold text-slate-800 mt-0.5">Radius GPS &amp; Lokasi Kerja</p>
                     </div>
                 </div>
             </div>

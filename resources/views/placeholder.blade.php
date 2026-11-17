@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if (($title ?? null) === 'Perusahaan & Cabang')
+    @if (($title ?? null) === 'Identitas Perusahaan')
         <x-slot name="header">
             <div class="space-y-3">
                 <nav aria-label="Breadcrumb">
@@ -13,7 +13,7 @@
                             <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-slate-400"></i>
                         </li>
                         <li aria-current="page" class="font-semibold text-indigo-600">
-                            Perusahaan &amp; Cabang
+                            Identitas Perusahaan
                         </li>
                     </ol>
                 </nav>
@@ -21,10 +21,10 @@
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h1 class="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
-                            Perusahaan &amp; Cabang
+                            Identitas Perusahaan
                         </h1>
                         <p class="mt-1 text-xs text-slate-500 md:text-sm">
-                            {{ $subtitle ?? 'Kelola tenant perusahaan, outlet cabang, dan batasan lisensi.' }}
+                            {{ $subtitle ?? 'Kelola profil perusahaan, identitas legal, dan batasan lisensi tenant.' }}
                         </p>
                     </div>
                     <span class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-indigo-700 shadow-card">
@@ -47,7 +47,7 @@
                                 Administrasi perusahaan
                             </p>
                             <p class="mt-0.5 text-xs text-slate-500">
-                                Daftar perusahaan dan cabang akan ditampilkan di area ini setelah integrasi backend tersedia.
+                                Data identitas perusahaan akan ditampilkan di area ini setelah integrasi backend tersedia.
                             </p>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                         Data perusahaan belum tersedia
                     </h2>
                     <p class="mx-auto mt-1.5 max-w-lg text-xs leading-relaxed text-slate-500">
-                        Halaman ini belum terhubung ke sumber data perusahaan atau cabang. Tidak ada data contoh yang ditampilkan.
+                        Halaman ini belum terhubung ke sumber data perusahaan. Tidak ada data contoh yang ditampilkan.
                     </p>
                     <span class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
                         <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>

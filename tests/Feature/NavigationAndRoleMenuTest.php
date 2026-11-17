@@ -23,7 +23,7 @@ class NavigationAndRoleMenuTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Super Admin');
-        $response->assertSee('Perusahaan & Cabang');
+        $response->assertSee('Identitas Perusahaan');
 
         $responseCompany = $this->actingAs($superadmin)
             ->get(route('admin.companies.index'));

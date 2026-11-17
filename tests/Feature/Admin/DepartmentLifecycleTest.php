@@ -38,7 +38,7 @@ class DepartmentLifecycleTest extends TestCase
     }
 
     /**
-     * TC-DEP-01: Superadmin dapat memperbarui data departemen termasuk titik koordinat GPS cabang.
+     * TC-DEP-01: Superadmin dapat memperbarui data departemen termasuk titik koordinat GPS lokasi kerja.
      */
     public function test_superadmin_can_update_department_details_and_geofence_coordinates(): void
     {

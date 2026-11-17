@@ -244,7 +244,7 @@ class CompanySettingTest extends TestCase
 
         $branch = Department::forceCreate([
             'company_id' => $company->id,
-            'name' => 'Cabang Bali Sunset',
+            'name' => 'Departemen Bali Sunset',
             'latitude' => -8.7185,
             'longitude' => 115.1686,
             'radius' => 80,
@@ -294,7 +294,7 @@ class CompanySettingTest extends TestCase
 
         $branch = Department::forceCreate([
             'company_id' => $company->id,
-            'name' => 'Cabang Surabaya Gubeng',
+            'name' => 'Departemen Surabaya Gubeng',
             'address' => 'Jl. Gubeng Pojok Lama',
             'latitude' => -7.2654,
             'longitude' => 112.7518,
@@ -312,7 +312,7 @@ class CompanySettingTest extends TestCase
             'role' => 'employee',
         ]);
 
-        // Superadmin mengupdate lokasi cabang ke lokasi baru
+        // Superadmin mengupdate lokasi kerja ke lokasi baru
         $newAddress = 'Jl. Pemuda No. 45, Surabaya';
         $newLat = -7.2635000;
         $newLng = 112.7482000;
@@ -329,7 +329,7 @@ class CompanySettingTest extends TestCase
             ->assertRedirect(route('admin.settings.index', ['branch_id' => $branch->id]))
             ->assertSessionHas('selected_branch_id', $branch->id);
 
-        // Halaman presensi karyawan harus langsung mencerminkan data cabang yang baru disimpan
+        // Halaman presensi karyawan harus langsung mencerminkan data lokasi kerja yang baru disimpan
         $response = $this->actingAs($employee)->get(route('employee.attendance'));
 
         $response->assertOk();
@@ -344,7 +344,7 @@ class CompanySettingTest extends TestCase
         });
 
         $response->assertSee($newAddress);
-        $response->assertSee('Cabang Surabaya Gubeng');
+        $response->assertSee('Departemen Surabaya Gubeng');
     }
 
     public function test_branch_location_supports_decimal_comma_normalization(): void
@@ -353,7 +353,7 @@ class CompanySettingTest extends TestCase
 
         $branch = Department::forceCreate([
             'company_id' => $company->id,
-            'name' => 'Cabang Malang Polinema',
+            'name' => 'Departemen Malang Polinema',
             'address' => 'Jl. Soekarno Hatta',
             'latitude' => null,
             'longitude' => null,

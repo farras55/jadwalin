@@ -25,7 +25,7 @@ class DashboardTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Super Admin');
-        $response->assertSee('Perusahaan & Cabang');
+        $response->assertSee('Identitas Perusahaan');
     }
 
     public function test_manager_without_company_is_forbidden(): void
