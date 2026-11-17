@@ -80,7 +80,7 @@ class CompanySettingController extends Controller
         }
 
         // Cabang dibatasi hanya untuk perusahaan pengguna yang sedang aktif (isolasi multi-tenant)
-        $branches = Department::where('company_id', $companyId)->orderBy('name')->get();
+        $branches = Department::with('company')->where('company_id', $companyId)->orderBy('name')->get();
 
         $branchesData = $branches->map(function ($b) {
             $companyName = $b->company?->name;
