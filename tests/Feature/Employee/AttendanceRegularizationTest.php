@@ -72,16 +72,16 @@ class AttendanceRegularizationTest extends TestCase
         $shift = Shift::factory()->create([
             'company_id' => $this->company->id,
             'department_id' => $this->department->id,
-            'start_time' => Carbon::today()->setTime(8, 0),
-            'end_time' => Carbon::today()->setTime(17, 0),
+            'start_time' => Carbon::yesterday()->setTime(8, 0),
+            'end_time' => Carbon::yesterday()->setTime(17, 0),
         ]);
 
         $assignment = ShiftAssignment::factory()->create([
             'company_id' => $this->company->id,
             'shift_id' => $shift->id,
             'user_id' => $this->employee->id,
-            'clock_in_time' => Carbon::today()->setTime(8, 0),
-            'clock_out_time' => Carbon::today()->setTime(17, 0),
+            'clock_in_time' => Carbon::yesterday()->setTime(8, 0),
+            'clock_out_time' => Carbon::yesterday()->setTime(17, 0),
             'status' => 'completed',
             'is_auto_clockout' => true,
         ]);
@@ -89,7 +89,7 @@ class AttendanceRegularizationTest extends TestCase
         $response = $this->actingAs($this->employee)
             ->post(route('employee.attendance.regularization.store'), [
                 'shift_assignment_id' => $assignment->id,
-                'requested_clock_out_time' => Carbon::today()->setTime(19, 0)->format('Y-m-d H:i:s'),
+                'requested_clock_out_time' => Carbon::yesterday()->setTime(19, 0)->format('Y-m-d H:i:s'),
                 'reason' => 'Lembur menyelesaikan laporan closing shift bulanan sampai malam.',
             ]);
 

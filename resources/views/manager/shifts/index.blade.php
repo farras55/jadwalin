@@ -278,7 +278,7 @@
                         <span>Hapus Draf</span>
                     </button>
 
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5">
                         <i data-lucide="sliders" class="h-3.5 w-3.5 text-slate-500"></i>
                         <span>Atur Kebutuhan</span>
@@ -324,7 +324,7 @@
                         <span>Hapus Draf</span>
                     </button>
 
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5">
                         <i data-lucide="sliders" class="h-3.5 w-3.5 text-slate-500"></i>
                         <span>Atur Kebutuhan</span>
@@ -364,7 +364,7 @@
 
                 {{-- Action Buttons --}}
                 <div class="flex items-center flex-wrap gap-2 shrink-0 self-end md:self-auto">
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-semibold px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition flex items-center gap-2">
                         <i data-lucide="sliders" class="h-3.5 w-3.5"></i>
                         <span>Susun Ulang Roster</span>
@@ -394,7 +394,7 @@
                 </div>
 
                 <div class="shrink-0 self-end md:self-auto">
-                    <button type="button" @click="showBuildModal = true"
+                    <button type="button" @click="showBuildModal = true" id="btn-open-auto-builder"
                             class="text-xs font-semibold px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-xs transition flex items-center gap-2">
                         <i data-lucide="sliders" class="h-3.5 w-3.5"></i>
                         <span>Mulai Susun Jadwal</span>

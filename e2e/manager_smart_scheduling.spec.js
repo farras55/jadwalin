@@ -36,14 +36,14 @@ test.describe('Modul Manager: Smart Scheduling Builder (Roster Kerja Tim)', () =
 
     // Verifikasi Heading & Informasi Roster
     await expect(page.getByRole('heading', { name: /Jadwal Kerja Tim \(Roster\)/i })).toBeVisible();
-    await expect(page.getByText(/Susun kebutuhan kuota orang per shift/i)).toBeVisible();
+    await expect(page.getByText(/Kelola penugasan shift tim|Susun kebutuhan kuota/i)).toBeVisible();
 
     // Verifikasi Hari-Hari dalam Grid Roster (Senin s.d. Minggu)
     await expect(page.getByText('Senin', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Minggu', { exact: true }).first()).toBeVisible();
 
     // Verifikasi Tombol Builder & Aksi
-    await expect(page.getByRole('button', { name: /Atur Kebutuhan & Build Jadwal|Build Jadwal|Buat Jadwal Otomatis|Generate/i }).or(page.locator('#btn-open-auto-builder')).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Atur Kebutuhan|Susun Ulang Roster|Mulai Susun Jadwal|Build Jadwal|Buat Jadwal Otomatis|Generate/i }).or(page.locator('#btn-open-auto-builder')).first()).toBeVisible();
   });
 
   /**

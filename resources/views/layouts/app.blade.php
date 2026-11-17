@@ -182,7 +182,7 @@
         @include('layouts.topbar')
 
         {{-- ===== DYNAMIC CONTENT AREA ===== --}}
-        <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-7 pb-28 md:pb-8">
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-7 pb-28 md:pb-8" id="main-content">
             @if (isset($header))
                 <div class="mb-5 md:mb-6">
                     {{ $header }}
