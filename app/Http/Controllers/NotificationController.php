@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class NotificationController extends Controller
@@ -42,6 +43,8 @@ class NotificationController extends Controller
             'is_read' => true,
         ]);
 
+        Cache::forget("user_{$user->id}_unread_notif_count");
+
         return redirect()
             ->back()
             ->with('success', 'Notifikasi ditandai sudah dibaca.');
@@ -59,6 +62,8 @@ class NotificationController extends Controller
             ->update([
                 'is_read' => true,
             ]);
+
+        Cache::forget("user_{$user->id}_unread_notif_count");
 
         return redirect()
             ->back()
