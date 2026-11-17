@@ -11,7 +11,7 @@
                     Pusat Notifikasi
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                    Lihat informasi, pengumuman jadwal, dan pemberitahuan aktivitas akun Anda.
+                    Lihat informasi dan pemberitahuan terbaru seputar aktivitas jadwal dan akun Anda.
                 </p>
             </div>
 

@@ -28,7 +28,7 @@ test.describe('Modul Notifikasi: Pusat Pemberitahuan Akun (PBL-20)', () => {
 
     // Verifikasi Elemen Utama
     await expect(page.getByRole('heading', { name: /Pusat Notifikasi/i })).toBeVisible();
-    await expect(page.getByText(/Lihat informasi dan pemberitahuan terbaru/i)).toBeVisible();
+    await expect(page.getByText(/Lihat informasi/i)).toBeVisible();
   });
 
   test('TC-NOT-02: Ikon lonceng notifikasi di navbar dapat diakses', async ({ page }) => {

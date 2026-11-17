@@ -14,13 +14,13 @@
                     <span class="text-slate-900 font-medium">Data Karyawan Tim</span>
                 </div>
                 <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-                    Direktori Staf &amp; Anggota Tim
+                    Data Karyawan Tim
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
                     @if ($isGlobalManager)
-                        Daftar karyawan aktif di seluruh unit dan departemen operasional (Akses Global).
+                        Direktori staf dan anggota tim di seluruh unit dan departemen operasional (Akses Global).
                     @else
-                        Daftar karyawan aktif di unit <span class="font-semibold text-slate-800">{{ $currentDepartment?->name ?? 'Departemen Anda' }}</span>.
+                        Direktori staf dan anggota tim di unit <span class="font-semibold text-slate-800">{{ $currentDepartment?->name ?? 'Departemen Anda' }}</span>.
                     @endif
                 </p>
             </div>

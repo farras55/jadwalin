@@ -17,7 +17,7 @@
                         Monitoring Kehadiran Tim
                     </h1>
                     <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                        Pantau kehadiran staf secara real-time untuk jadwal shift kerja hari ini.
+                        Pantau kehadiran staf secara realtime untuk jadwal shift kerja hari ini.
                     </p>
                 </div>
 
