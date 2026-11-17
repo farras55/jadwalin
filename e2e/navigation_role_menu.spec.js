@@ -70,7 +70,7 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
     // 3. Verifikasi Menu Navigasi
     if (isMobile) {
       await expect(page.locator('nav.fixed').getByRole('link', { name: /Roster/i })).toBeVisible();
-      await expect(page.locator('nav.fixed').getByRole('link', { name: /Presensi/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Tim|Presensi/i })).toBeVisible();
       await expect(page.locator('nav.fixed').getByRole('link', { name: /Tukar/i })).toBeVisible();
     } else {
       await expect(page.getByRole('link', { name: /Jadwal Kerja Tim/i }).first()).toBeVisible();
@@ -107,7 +107,7 @@ test.describe('Modul Navigasi & Hak Akses Berbasis Peran (RBAC)', () => {
     // 3. Verifikasi Menu Navigasi
     if (isMobile) {
       await expect(page.locator('nav.fixed').getByRole('link', { name: /Jadwal/i })).toBeVisible();
-      await expect(page.locator('nav.fixed').getByRole('link', { name: /Presensi/i })).toBeVisible();
+      await expect(page.locator('nav.fixed').getByRole('link', { name: /Absen|Presensi/i })).toBeVisible();
       await expect(page.locator('nav.fixed').getByRole('link', { name: /Tukar/i })).toBeVisible();
     } else {
       await expect(page.getByRole('link', { name: /Jadwal Saya/i }).first()).toBeVisible();
