@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Availability;
 use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
@@ -465,6 +466,45 @@ class ShiftController extends Controller
             ->whereIn('id', $assignedUserIds)
             ->get()
             ->keyBy('id');
+
+        // Validasi bentrok jadwal dan cuti staf
+        foreach ($validUsers as $uId => $employee) {
+            $conflictShift = ShiftAssignment::where('user_id', $uId)
+                ->where('shift_id', '!=', $shift->id)
+                ->whereNotIn('status', ['cancelled'])
+                ->whereHas('shift', function ($q) use ($newStart, $newEnd) {
+                    $q->where('start_time', '<', $newEnd)
+                        ->where('end_time', '>', $newStart);
+                })
+                ->with('shift')
+                ->first();
+
+            if ($conflictShift) {
+                return redirect()->back()->withInput()->with('error', sprintf(
+                    'Karyawan %s sudah ditugaskan pada shift "%s" yang bertabrakan waktu (%s - %s).',
+                    $employee->name,
+                    $conflictShift->shift?->title,
+                    Carbon::parse($conflictShift->shift?->start_time)->format('H:i'),
+                    Carbon::parse($conflictShift->shift?->end_time)->format('H:i')
+                ));
+            }
+
+            $conflictAvailability = Availability::where('user_id', $uId)
+                ->where('status', 'approved')
+                ->where(function ($q) use ($newStart, $newEnd) {
+                    $q->where('start_time', '<', $newEnd)
+                        ->where('end_time', '>', $newStart);
+                })
+                ->first();
+
+            if ($conflictAvailability) {
+                return redirect()->back()->withInput()->with('error', sprintf(
+                    'Karyawan %s memiliki pengajuan cuti/halangan yang telah disetujui pada waktu tersebut (%s).',
+                    $employee->name,
+                    $conflictAvailability->reason ?: 'Cuti'
+                ));
+            }
+        }
 
         $finalQuota = max((int) $validated['quota'], $validUsers->count());
 

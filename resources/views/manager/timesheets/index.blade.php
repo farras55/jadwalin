@@ -3,7 +3,7 @@
         // Agregasi analitik data riil dari $assignments
         $dailyData = [];
         $uniqueEmployees = $assignments->getCollection()->pluck('user_id')->unique()->count();
-        $totalEmpCount = $uniqueEmployees > 0 ? $uniqueEmployees : ($department?->users_count ?? 1);
+        $totalEmpCount = $uniqueEmployees > 0 ? $uniqueEmployees : ($department?->users_count ?? \App\Models\User::where('company_id', $manager->company_id)->where('role', 'employee')->count());
 
         foreach ($assignments as $a) {
             $dateKey = $a->shift?->start_time
@@ -222,8 +222,12 @@
                         <i data-lucide="users" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i>
                     </div>
                     <div class="min-w-0">
-                        <h2 class="text-sm sm:text-base font-bold text-slate-900 truncate">Rincian Presensi Staf Departemen</h2>
-                        <p class="text-xs text-slate-500 truncate hidden sm:block">Data shift dan jam kerja seluruh staf yang berada di bawah divisi Anda.</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900 truncate">
+                            {{ $department ? 'Rincian Presensi Divisi ' . $department->name : ($manager->is_global_manager ? 'Rincian Presensi Seluruh Departemen' : 'Rincian Presensi Staf Departemen') }}
+                        </h2>
+                        <p class="text-xs text-slate-500 truncate hidden sm:block">
+                            {{ $department ? 'Data shift dan jam kerja seluruh staf yang berada di bawah divisi ' . $department->name . '.' : 'Data shift dan jam kerja seluruh staf di perusahaan Anda.' }}
+                        </p>
                     </div>
                 </div>
 
@@ -362,7 +366,9 @@
                                         <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-1">
                                             <i data-lucide="users" class="w-6 h-6"></i>
                                         </div>
-                                        <p class="text-sm font-bold text-slate-900">Tidak Ada Riwayat Timesheet Pada Divisi Ini</p>
+                                        <p class="text-sm font-bold text-slate-900">
+                                            {{ $department ? 'Tidak Ada Riwayat Timesheet Pada Divisi Ini' : 'Belum Ada Riwayat Timesheet' }}
+                                        </p>
                                         <p class="text-xs text-slate-500 max-w-sm">Belum ada aktivitas shift staf yang tercatat pada rentang tanggal filter yang dipilih.</p>
                                     </div>
                                 </td>

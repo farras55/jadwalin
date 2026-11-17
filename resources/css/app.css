@@ -289,3 +289,42 @@ html.dark .hover\:bg-indigo-50\/80:hover {
     color: #C7D2FE !important;
 }
 
+/* ========================================================================= */
+/* MOBILE BOTTOM NAVIGATION & DRAWER (Dark Mode & Typography)                */
+/* ========================================================================= */
+html.dark nav.fixed.bottom-0,
+html.dark .bg-white\/95 {
+    background-color: rgba(13, 18, 31, 0.96) !important;
+    border-color: #1E293B !important;
+}
+
+/* Prevent harsh white and heavy bolding on mobile nav in dark mode */
+html.dark nav.fixed.bottom-0 a,
+html.dark nav.fixed.bottom-0 button {
+    font-weight: 500 !important;
+}
+
+html.dark nav.fixed.bottom-0 a span,
+html.dark nav.fixed.bottom-0 button span {
+    font-weight: 500 !important;
+}
+
+/* Inactive items: soft muted slate */
+html.dark nav.fixed.bottom-0 a.text-slate-500,
+html.dark nav.fixed.bottom-0 button.text-slate-500 {
+    color: #94A3B8 !important;
+}
+
+/* Hover on inactive: gentle soft slate (never harsh white) */
+html.dark nav.fixed.bottom-0 a.text-slate-500:hover,
+html.dark nav.fixed.bottom-0 button.text-slate-500:hover {
+    color: #CBD5E1 !important;
+}
+
+/* Active items: soft primary indigo (never bold white) */
+html.dark nav.fixed.bottom-0 a.text-indigo-600,
+html.dark nav.fixed.bottom-0 button.text-indigo-600 {
+    color: #818CF8 !important;
+}
+
+

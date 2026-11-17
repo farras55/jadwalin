@@ -307,9 +307,19 @@ class ShiftSwapTest extends TestCase
         ]);
 
         // Bagian B: Pengujian Mode Transfer (Penyerahan 1-Arah)
+        $shift3 = Shift::create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Pagi - Jumat',
+            'start_time' => Carbon::create(2026, 11, 6, 8, 0, 0),
+            'end_time' => Carbon::create(2026, 11, 6, 16, 0, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
         $assignmentC = ShiftAssignment::create([
             'company_id' => $this->company->id,
-            'shift_id' => $this->shift1->id,
+            'shift_id' => $shift3->id,
             'user_id' => $this->employeeA->id,
             'status' => 'scheduled',
         ]);
@@ -496,5 +506,81 @@ class ShiftSwapTest extends TestCase
 
         $response->assertSessionHas('error', 'Tidak dapat mengajukan pertukaran untuk shift yang sedang berjalan atau sudah selesai.');
         $this->assertEquals(0, ShiftSwap::count());
+    }
+
+    /**
+     * Skenario Integritas: Validasi pencegahan bentrok jadwal saat mengajukan tukar shift
+     */
+    public function test_employee_cannot_request_swap_if_target_has_schedule_conflict(): void
+    {
+        // Berikan assignment pada target (employeeB) yang bertabrakan waktu dengan shift1 (08:00 - 16:00)
+        $conflictingShift = Shift::create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Bentrok',
+            'start_time' => Carbon::create(2026, 11, 4, 10, 0, 0),
+            'end_time' => Carbon::create(2026, 11, 4, 14, 0, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        ShiftAssignment::create([
+            'company_id' => $this->company->id,
+            'shift_id' => $conflictingShift->id,
+            'user_id' => $this->employeeB->id,
+            'status' => 'scheduled',
+        ]);
+
+        $response = $this->actingAs($this->employeeA)->post(route('employee.swaps.request'), [
+            'swap_type' => 'transfer',
+            'shift_assignment_id' => $this->assignmentA->id,
+            'target_user_id' => $this->employeeB->id,
+            'reason' => 'Mencoba transfer ke staf yang sedang bertugas.',
+        ]);
+
+        $response->assertSessionHas('error', 'Rekan kerja tujuan sudah memiliki jadwal shift lain yang bentrok pada waktu yang sama.');
+        $this->assertEquals(0, ShiftSwap::count());
+    }
+
+    /**
+     * Skenario Integritas: Manajer tidak dapat menyetujui swap jika terjadi bentrok jadwal baru
+     */
+    public function test_manager_cannot_approve_swap_if_schedule_conflict_occurs(): void
+    {
+        $swap = ShiftSwap::create([
+            'company_id' => $this->company->id,
+            'shift_assignment_id' => $this->assignmentA->id,
+            'target_shift_assignment_id' => null,
+            'swap_type' => 'transfer',
+            'requester_id' => $this->employeeA->id,
+            'target_user_id' => $this->employeeB->id,
+            'reason' => 'Transfer shift sebelum ada bentrok.',
+            'status' => 'pending_manager',
+        ]);
+
+        // Di tengah jalan, employeeB ditugaskan pada shift yang bentrok dengan assignmentA
+        $conflictingShift = Shift::create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Bentrok Tengah Jalan',
+            'start_time' => Carbon::create(2026, 11, 4, 9, 0, 0),
+            'end_time' => Carbon::create(2026, 11, 4, 15, 0, 0),
+            'quota' => 2,
+            'status' => 'published',
+        ]);
+
+        ShiftAssignment::create([
+            'company_id' => $this->company->id,
+            'shift_id' => $conflictingShift->id,
+            'user_id' => $this->employeeB->id,
+            'status' => 'scheduled',
+        ]);
+
+        $response = $this->actingAs($this->manager)
+            ->post(route('manager.swaps.approve', $swap));
+
+        $response->assertSessionHas('error');
+        $this->assertEquals('pending_manager', $swap->fresh()->status);
+        $this->assertEquals($this->employeeA->id, $this->assignmentA->fresh()->user_id);
     }
 }

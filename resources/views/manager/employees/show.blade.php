@@ -332,16 +332,5 @@
                 </div>
             </div>
         </div>
-
-        {{-- Tombol Kembali di Bawah --}}
-        <div>
-            <a
-                href="{{ route('manager.employees.index') }}"
-                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 text-xs font-semibold shadow-card transition"
-            >
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span>Kembali ke Daftar Karyawan</span>
-            </a>
-        </div>
     </div>
 </x-app-layout>

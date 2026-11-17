@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Employee;
 
+use App\Console\Commands\AutoClockOutCommand;
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceRegularization;
 use App\Models\AuditLog;
@@ -18,12 +19,13 @@ class AttendanceController extends Controller
     /**
      * Menemukan penugasan shift aktif untuk karyawan:
      * 1. Shift yang sedang berjalan (sudah clock-in, belum clock-out), mendukung shift lintas hari (overnight).
-     * 2. Shift hari ini yang belum clock-out (mendukung shift ganda / split shift berurutan).
-     * 3. Fallback ke penugasan hari ini yang paling baru (untuk tampilan status).
+     * 2. Shift yang belum clock-out (shift hari ini atau overnight shift kemarin yang masih berlangsung).
+     * 3. Fallback ke penugasan hari ini yang paling baru atau overnight shift kemarin yang selesai hari ini.
      */
     protected function getActiveAssignment($user)
     {
         $timezone = $user->company?->timezone ?? 'Asia/Jakarta';
+        $now = Carbon::now($timezone);
         $today = Carbon::today($timezone);
 
         // 1. Shift in-progress (mendukung overnight shift kemarin malam)
@@ -38,12 +40,13 @@ class AttendanceController extends Controller
             return $inProgress;
         }
 
-        // 2. Shift hari ini yang belum selesai (clock_out_time null)
-        $upcomingToday = ShiftAssignment::with(['shift.department', 'shift.company'])
+        // 2. Shift yang belum selesai (clock_out_time null) dari rentang kemarin sampai hari ini
+        $pendingAssignments = ShiftAssignment::with(['shift.department', 'shift.company'])
             ->where('user_id', $user->id)
             ->whereNull('clock_out_time')
             ->whereHas('shift', function ($query) use ($today) {
-                $query->whereDate('start_time', $today);
+                $query->where('start_time', '>=', $today->copy()->subDay()->startOfDay())
+                    ->where('start_time', '<=', $today->copy()->endOfDay());
             })
             ->orderBy(
                 ShiftAssignment::select('start_time')
@@ -52,20 +55,63 @@ class AttendanceController extends Controller
                     ->limit(1),
                 'asc'
             )
-            ->first();
+            ->get();
 
-        if ($upcomingToday) {
-            return $upcomingToday;
+        // 2A. Periksa apakah ada overnight shift kemarin yang masih aktif (end_time >= now)
+        foreach ($pendingAssignments as $assignment) {
+            if (! $assignment->shift) {
+                continue;
+            }
+            $shiftStart = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
+            if ($shiftStart->lt($today)) {
+                $shiftEnd = AutoClockOutCommand::resolveShiftEndDateTime($assignment->shift, $timezone);
+                if ($shiftEnd->gte($now)) {
+                    return $assignment;
+                }
+            }
+        }
+
+        // 2B. Ambil shift hari ini yang belum selesai (diurutkan paling awal)
+        foreach ($pendingAssignments as $assignment) {
+            if (! $assignment->shift) {
+                continue;
+            }
+            $shiftStart = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
+            if ($shiftStart->gte($today)) {
+                return $assignment;
+            }
         }
 
         // 3. Fallback: penugasan shift hari ini yang terakhir
-        return ShiftAssignment::with(['shift.department', 'shift.company'])
+        $todayLatest = ShiftAssignment::with(['shift.department', 'shift.company'])
             ->where('user_id', $user->id)
             ->whereHas('shift', function ($query) use ($today) {
                 $query->whereDate('start_time', $today);
             })
             ->latest('id')
             ->first();
+
+        if ($todayLatest) {
+            return $todayLatest;
+        }
+
+        // 3B. Fallback alternatif: overnight shift kemarin yang selesai/clock-out hari ini
+        $yesterdayOvernight = ShiftAssignment::with(['shift.department', 'shift.company'])
+            ->where('user_id', $user->id)
+            ->whereHas('shift', function ($query) use ($today) {
+                $query->whereDate('start_time', $today->copy()->subDay());
+            })
+            ->latest('id')
+            ->first();
+
+        if ($yesterdayOvernight && $yesterdayOvernight->shift) {
+            $shiftEnd = AutoClockOutCommand::resolveShiftEndDateTime($yesterdayOvernight->shift, $timezone);
+            if ($shiftEnd->isSameDay($today) || ($yesterdayOvernight->clock_out_time && Carbon::parse($yesterdayOvernight->getRawOriginal('clock_out_time'), $timezone)->isSameDay($today))) {
+                return $yesterdayOvernight;
+            }
+        }
+
+        return null;
     }
 
     public function index()
@@ -174,7 +220,7 @@ class AttendanceController extends Controller
         // Apakah jam shift sudah lewat batas akhir?
         $shiftEnded = false;
         if ($todayShift && $todayShift->shift) {
-            $shiftEndTime = Carbon::parse($todayShift->shift->getRawOriginal('end_time'), $timezone);
+            $shiftEndTime = AutoClockOutCommand::resolveShiftEndDateTime($todayShift->shift, $timezone);
             $shiftEnded = Carbon::now($timezone)->greaterThan($shiftEndTime);
         }
 
@@ -389,8 +435,7 @@ class AttendanceController extends Controller
             // Bypass pemeriksaan GPS khusus untuk environment testing CI/CD
             $isTestingEnvironment = app()->runningUnitTests()
                 || app()->environment('testing')
-                || (bool) env('CI')
-                || (bool) env('PLAYWRIGHT_TEST');
+                || (bool) config('jadwalin.attendance.is_ci_or_testing', false);
 
             if (! $isTestingEnvironment || $request->header('X-Validate-Gps') === 'true') {
                 return back()->with('error', 'Koordinat lokasi GPS tidak terdeteksi. Harap izinkan akses lokasi di perangkat Anda.');
@@ -399,7 +444,7 @@ class AttendanceController extends Controller
 
         // Menggunakan getRawOriginal() dari branch Anda untuk menghindari isu mutasi zona waktu
         $startTime = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
-        $endTime = Carbon::parse($assignment->shift->getRawOriginal('end_time'), $timezone);
+        $endTime = AutoClockOutCommand::resolveShiftEndDateTime($assignment->shift, $timezone);
 
         // Batasi clock-in paling cepat 60 menit sebelum shift dimulai
         if ($now->lt($startTime->copy()->subMinutes(60))) {
@@ -461,10 +506,7 @@ class AttendanceController extends Controller
         $totalHours = round($totalMinutes / 60, 2);
 
         $shiftStart = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
-        $shiftEnd = Carbon::parse($assignment->shift->getRawOriginal('end_time'), $timezone);
-        if ($shiftEnd->lte($shiftStart)) {
-            $shiftEnd->addDay();
-        }
+        $shiftEnd = AutoClockOutCommand::resolveShiftEndDateTime($assignment->shift, $timezone);
         $scheduledHours = round(abs($shiftStart->diffInMinutes($shiftEnd)) / 60, 2);
 
         $settings = CompanySetting::where('company_id', $user->company_id)->first();
@@ -483,6 +525,7 @@ class AttendanceController extends Controller
 
             $assignment->update([
                 'clock_out_time' => $now,
+                'status' => 'completed',
                 'regular_hours' => $regularHours,
                 'overtime_hours' => $overtimeHours,
                 'overtime_status' => 'approved',
@@ -490,6 +533,11 @@ class AttendanceController extends Controller
 
             return back()->with('success', 'Clock Out berhasil disimpan.');
         }
+
+        // Toleransi keterlambatan clock-out (dalam menit), default 15 menit
+        $clockOutTolerance = ($settings && $settings->grace_period_minutes !== null)
+            ? (int) $settings->grace_period_minutes
+            : 15;
 
         // Skenario B: Shift reguler
         // Cek apakah clock-out melebihi batas jadwal shift
@@ -502,70 +550,84 @@ class AttendanceController extends Controller
             $regularMinutes = $effectiveEnd->gt($effectiveStart) ? $effectiveStart->diffInMinutes($effectiveEnd) : 0;
             $regularHours = min(round($regularMinutes / 60, 2), $regularThreshold);
 
-            // Kelebihan jam TIDAK langsung masuk lembur, tapi dibuatkan pengajuan koreksi jam (pending approval)
+            // Kelebihan jam dihitung dari akhir jadwal shift
             $excessMinutes = max(0, $shiftEnd->diffInMinutes($now));
 
+            // Jika kelebihan waktu masih dalam batas toleransi (misal <= 15 menit):
+            // Karyawan dianggap pulang normal tanpa lembur dan tanpa tiket dispute ke manajer.
+            if ($excessMinutes <= $clockOutTolerance) {
+                $assignment->update([
+                    'clock_out_time' => $now,
+                    'status' => 'completed',
+                    'regular_hours' => $regularHours,
+                    'overtime_hours' => 0.0,
+                    'is_overtime' => false,
+                    'overtime_status' => 'none',
+                ]);
+
+                return back()->with('success', 'Clock Out berhasil disimpan.');
+            }
+
+            // Kelebihan jam melebihi toleransi (> 15 menit): dibuatkan pengajuan koreksi jam (pending approval)
             $assignment->update([
                 'clock_out_time' => $now,
+                'status' => 'completed',
                 'regular_hours' => $regularHours,
                 'overtime_hours' => 0.0,
                 'is_overtime' => false,
                 'overtime_status' => 'pending_approval',
             ]);
 
-            // Buat tiket koreksi presensi otomatis jika ada kelebihan waktu
-            if ($excessMinutes > 0) {
-                $reasonNote = trim((string) $request->input('notes', ''));
-                $reason = ! empty($reasonNote)
-                    ? $reasonNote
-                    : sprintf(
-                        'Koreksi jam pulang: Clock-out melebihi jadwal shift (%d menit). Jadwal selesai: %s, Clock-out: %s %s.',
-                        round($excessMinutes),
-                        $shiftEnd->format('H:i'),
-                        $now->format('H:i'),
-                        AuditLog::getTimezoneAbbreviation($timezone)
-                    );
+            // Buat tiket koreksi presensi otomatis jika kelebihan waktu melebihi toleransi
+            $reasonNote = trim((string) $request->input('notes', ''));
+            $reason = ! empty($reasonNote)
+                ? $reasonNote
+                : sprintf(
+                    'Koreksi jam pulang: Clock-out melebihi jadwal shift (%d menit). Jadwal selesai: %s, Clock-out: %s %s.',
+                    round($excessMinutes),
+                    $shiftEnd->format('H:i'),
+                    $now->format('H:i'),
+                    AuditLog::getTimezoneAbbreviation($timezone)
+                );
 
-                AttendanceRegularization::create([
-                    'company_id' => $user->company_id,
-                    'shift_assignment_id' => $assignment->id,
-                    'employee_id' => $user->id,
-                    'requested_clock_out_time' => $now,
-                    'reason' => $reason,
-                    'status' => 'pending',
-                    'overtime_status' => 'pending_approval',
-                ]);
+            AttendanceRegularization::create([
+                'company_id' => $user->company_id,
+                'shift_assignment_id' => $assignment->id,
+                'employee_id' => $user->id,
+                'requested_clock_out_time' => $now,
+                'reason' => $reason,
+                'status' => 'pending',
+                'overtime_status' => 'pending_approval',
+            ]);
 
-                // Kirim notifikasi ke manajer terkait
-                $managers = User::query()
-                    ->where('company_id', $user->company_id)
-                    ->where('role', 'manager')
-                    ->where(function ($q) use ($user) {
-                        $q->where('department_id', $user->department_id)
-                            ->orWhere('is_global_manager', true);
-                    })
-                    ->get();
+            // Kirim notifikasi ke manajer terkait
+            $managers = User::query()
+                ->where('company_id', $user->company_id)
+                ->where('role', 'manager')
+                ->where(function ($q) use ($user) {
+                    $q->where('department_id', $user->department_id)
+                        ->orWhere('is_global_manager', true);
+                })
+                ->get();
 
-                foreach ($managers as $manager) {
-                    NotificationService::send(
-                        $manager->id,
-                        'regularization_submitted',
-                        'Pengajuan Koreksi Jam Shift',
-                        "Karyawan {$user->name} clock-out melebihi jadwal shift {$assignment->shift?->title} (".round($excessMinutes).' menit). Menunggu persetujuan koreksi.',
-                        $user->company_id
-                    );
-                }
-
-                return back()->with('success', sprintf('Clock Out berhasil. Kelebihan waktu %d menit telah diajukan ke manajer untuk persetujuan koreksi jam/lembur.', round($excessMinutes)));
+            foreach ($managers as $manager) {
+                NotificationService::send(
+                    $manager->id,
+                    'regularization_submitted',
+                    'Pengajuan Koreksi Jam Shift',
+                    "Karyawan {$user->name} clock-out melebihi jadwal shift {$assignment->shift?->title} (".round($excessMinutes).' menit). Menunggu persetujuan koreksi.',
+                    $user->company_id
+                );
             }
 
-            return back()->with('success', 'Clock Out berhasil disimpan.');
+            return back()->with('success', sprintf('Clock Out berhasil. Kelebihan waktu %d menit telah diajukan ke manajer untuk persetujuan koreksi jam/lembur.', round($excessMinutes)));
         }
 
         // Karyawan pulang tepat waktu atau sebelum jadwal berakhir
         $regularHours = min($totalHours, $regularThreshold);
         $assignment->update([
             'clock_out_time' => $now,
+            'status' => 'completed',
             'regular_hours' => $regularHours,
             'overtime_hours' => 0.0,
             'is_overtime' => false,

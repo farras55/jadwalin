@@ -25,8 +25,8 @@ class AttendanceMonitorService
     {
         // 1. Tentukan timezone dan waktu referensi (menghargai Carbon::setTestNow jika diset di test)
         $timezone = $manager->company?->timezone ?: config('app.timezone', 'Asia/Jakarta');
-        $now = $currentTime ? $currentTime->copy() : now();
-        $today = Carbon::today();
+        $now = $currentTime ? $currentTime->copy()->setTimezone($timezone) : Carbon::now($timezone);
+        $today = $now->copy()->startOfDay();
 
         // 2. Ambil toleransi keterlambatan dari company_settings (grace_period_minutes)
         // Default 0 menit bila setting belum diset / record tidak ditemukan

@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\OpenShiftClaim;
 use App\Models\Shift;
+use App\Models\ShiftAssignment;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -205,5 +206,56 @@ class OpenShiftManagementTest extends TestCase
 
         $claim->refresh();
         $this->assertEquals('pending_manager', $claim->status);
+    }
+
+    /**
+     * TC-MOP-07: Manager gagal menyetujui klaim jika staf memiliki bentrok jadwal aktif.
+     */
+    public function test_manager_cannot_approve_open_shift_claim_if_employee_has_schedule_conflict(): void
+    {
+        $shift = Shift::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'is_open_shift' => true,
+            'quota' => 2,
+            'start_time' => Carbon::tomorrow()->setTime(9, 0),
+            'end_time' => Carbon::tomorrow()->setTime(17, 0),
+        ]);
+
+        $claim = OpenShiftClaim::factory()->create([
+            'company_id' => $this->company->id,
+            'shift_id' => $shift->id,
+            'user_id' => $this->employee->id,
+            'status' => 'pending_manager',
+        ]);
+
+        // Karyawan ditugaskan pada shift lain yang bertabrakan waktu
+        $conflictingShift = Shift::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'start_time' => Carbon::tomorrow()->setTime(12, 0),
+            'end_time' => Carbon::tomorrow()->setTime(20, 0),
+        ]);
+
+        ShiftAssignment::create([
+            'company_id' => $this->company->id,
+            'shift_id' => $conflictingShift->id,
+            'user_id' => $this->employee->id,
+            'status' => 'scheduled',
+        ]);
+
+        $response = $this->actingAs($this->manager)
+            ->post(route('manager.open-shifts.claims.approve', $claim));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+
+        $claim->refresh();
+        $this->assertEquals('pending_manager', $claim->status);
+
+        $this->assertDatabaseMissing('shift_assignments', [
+            'shift_id' => $shift->id,
+            'user_id' => $this->employee->id,
+        ]);
     }
 }

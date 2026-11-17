@@ -16,9 +16,10 @@ class CompanyProfileController extends Controller
      */
     public function index(): View
     {
-        $company = auth()->user()->company ?? Company::first();
+        $user = auth()->user();
+        $company = $user?->company ?? new Company(['timezone' => 'Asia/Jakarta']);
 
-        if ($company) {
+        if ($company->exists) {
             $company->loadCount(['departments', 'users']);
         }
 
@@ -30,15 +31,12 @@ class CompanyProfileController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $company = auth()->user()->company ?? Company::first();
-
-        if (! $company) {
-            abort(404, 'Data perusahaan tenant tidak ditemukan.');
-        }
+        $user = auth()->user();
+        $company = $user?->company;
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:100', Rule::unique('companies')->ignore($company->id)],
+            'email' => ['required', 'email', 'max:100', Rule::unique('companies')->ignore($company?->id)],
             'phone_number' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string'],
             'timezone' => ['required', Rule::in(['Asia/Jakarta', 'Asia/Makassar', 'Asia/Jayapura'])],
@@ -54,7 +52,12 @@ class CompanyProfileController extends Controller
             'timezone.in' => 'Pilihan zona waktu harus salah satu dari WIB, WITA, atau WIT.',
         ]);
 
-        $company->update($validated);
+        if (! $company) {
+            $company = Company::create($validated);
+            $user?->update(['company_id' => $company->id]);
+        } else {
+            $company->update($validated);
+        }
 
         return redirect()->route('admin.companies.index')
             ->with('success', 'Profil legalitas dan zona waktu perusahaan berhasil diperbarui.');

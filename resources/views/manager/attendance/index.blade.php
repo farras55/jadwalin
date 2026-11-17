@@ -201,12 +201,12 @@
         {{-- ========================================================= --}}
         <div class="bg-white rounded-xl border border-slate-200/80 shadow-card overflow-hidden">
 
-            <div class="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <h2 class="text-sm font-semibold text-slate-900">
+                    <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
                         Daftar Presensi Staf Hari Ini
                     </h2>
-                    <p class="text-xs text-slate-500">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         Data otomatis disinkronisasi setiap 20 detik tanpa memuat ulang halaman.
                     </p>
                 </div>
@@ -217,36 +217,7 @@
                         <button
                             type="button"
                             @click="clearMetricFilter()"
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
-                        >
-                            <i data-lucide="x" class="w-3.5 h-3.5 text-slate-400"></i>
-                            Tampilkan Semua
-                        </button>
-                    </template>
-
-                    {{-- Monitoring Aktif --}}
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        <span>Monitoring Aktif</span>
-                    </div>
-                </div>
-            </div>
-                <div>
-                    <h2 class="text-base font-bold text-slate-900">
-                        Daftar Presensi Staf Hari Ini
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">
-                        Data otomatis disinkronisasi setiap 20 detik tanpa memuat ulang halaman.
-                    </p>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    {{-- Filter Aktif --}}
-                    <template x-if="selectedMetric !== null">
-                        <button
-                            type="button"
-                            @click="clearMetricFilter()"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition"
                         >
                             <i data-lucide="x" class="w-3.5 h-3.5"></i>
                             Tampilkan Semua
@@ -254,8 +225,8 @@
                     </template>
 
                     {{-- Monitoring Aktif --}}
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>Monitoring Aktif</span>
                     </div>
                 </div>

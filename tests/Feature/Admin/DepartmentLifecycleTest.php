@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Shift;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -97,6 +98,28 @@ class DepartmentLifecycleTest extends TestCase
         $response->assertSessionHas('success');
 
         $this->assertDatabaseMissing('departments', [
+            'id' => $this->department->id,
+        ]);
+    }
+
+    /**
+     * TC-DEP-04: Departemen tidak dapat dihapus jika masih memiliki riwayat shift/jadwal.
+     */
+    public function test_department_cannot_be_deleted_if_has_shifts(): void
+    {
+        // Buat riwayat shift pada departemen ini (tanpa karyawan aktif)
+        Shift::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+        ]);
+
+        $response = $this->actingAs($this->superadmin)
+            ->delete(route('admin.departments.destroy', $this->department));
+
+        $response->assertRedirect(route('admin.departments.index'));
+        $response->assertSessionHas('error');
+
+        $this->assertDatabaseHas('departments', [
             'id' => $this->department->id,
         ]);
     }

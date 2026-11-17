@@ -186,6 +186,15 @@ class DepartmentController extends Controller
                 );
         }
 
+        if ($department->shifts()->exists()) {
+            return redirect()
+                ->route('admin.departments.index')
+                ->with(
+                    'error',
+                    'Departemen tidak dapat dihapus karena masih memiliki riwayat shift/jadwal kerja.'
+                );
+        }
+
         $department->delete();
 
         return redirect()

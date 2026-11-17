@@ -31,6 +31,7 @@ return [
     */
     'attendance' => [
         'allow_mock_gps' => (bool) env('ALLOW_MOCK_GPS', true),
+        'is_ci_or_testing' => (bool) env('CI', false) || (bool) env('PLAYWRIGHT_TEST', false),
         'default_radius_meters' => (int) env('DEFAULT_ATTENDANCE_RADIUS', 100),
         'min_radius_meters' => 5,
         'max_radius_meters' => 10000,

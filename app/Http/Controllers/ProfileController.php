@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,20 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Cegah superadmin tunggal menghapus akun jika tidak ada superadmin lain di perusahaan
+        if ($user->company_id && $user->isSuperadmin()) {
+            $otherSuperadminsCount = User::where('company_id', $user->company_id)
+                ->where('role', 'superadmin')
+                ->where('id', '!=', $user->id)
+                ->count();
+
+            if ($otherSuperadminsCount === 0) {
+                return back()->withErrors([
+                    'password' => 'Anda adalah satu-satunya Super Admin di perusahaan ini. Akun tidak dapat dihapus sebelum menunjuk Super Admin pengganti.',
+                ], 'userDeletion');
+            }
+        }
 
         if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
             Storage::disk('public')->delete($user->profile_photo);

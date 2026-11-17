@@ -65,9 +65,12 @@ class DepartmentTimesheetController extends Controller
             ? Department::where('company_id', $manager->company_id)->orderBy('name')->get()
             : collect([$manager->department])->filter();
 
-        $department = $selectedDepartmentId
-            ? Department::where('company_id', $manager->company_id)->find($selectedDepartmentId)
-            : ($manager->department ?? null);
+        $department = null;
+        if ($selectedDepartmentId) {
+            $department = Department::where('company_id', $manager->company_id)->find($selectedDepartmentId);
+        } elseif (! $manager->is_global_manager) {
+            $department = $manager->department ?? null;
+        }
 
         return view('manager.timesheets.index', [
             'manager' => $manager,
@@ -131,13 +134,16 @@ class DepartmentTimesheetController extends Controller
 
         if ($manager->is_global_manager) {
             if ($departmentId) {
-                $query->whereHas('user', function ($q) use ($departmentId) {
-                    $q->where('department_id', $departmentId);
+                $query->where(function ($q) use ($departmentId) {
+                    $q->whereHas('user', fn ($uq) => $uq->where('department_id', $departmentId))
+                        ->orWhereHas('shift', fn ($sq) => $sq->where('department_id', $departmentId));
                 });
             }
         } else {
-            $query->whereHas('user', function ($q) use ($manager) {
-                $q->where('department_id', $manager->department_id);
+            $deptId = $manager->department_id;
+            $query->where(function ($q) use ($deptId) {
+                $q->whereHas('user', fn ($uq) => $uq->where('department_id', $deptId))
+                    ->orWhereHas('shift', fn ($sq) => $sq->where('department_id', $deptId));
             });
         }
 

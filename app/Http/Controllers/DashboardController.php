@@ -38,8 +38,10 @@ class DashboardController extends Controller
 
     private function superadminDashboard(User $user): View
     {
-        $monthStart = now()->startOfMonth();
-        $monthEnd = now()->endOfMonth();
+        $timezone = $user->company?->timezone ?: config('app.timezone', 'Asia/Jakarta');
+        $now = Carbon::now($timezone);
+        $monthStart = $now->copy()->startOfMonth();
+        $monthEnd = $now->copy()->endOfMonth();
 
         // Isolasi data sesuai konteks perusahaan Super Admin (Tenant Business Owner)
         $companyId = $user->company_id;
@@ -73,9 +75,10 @@ class DashboardController extends Controller
     {
         abort_unless($manager->company_id, 403, 'Akun belum terhubung ke perusahaan.');
 
-        $today = now();
-        $weekStart = now()->startOfWeek();
-        $weekEnd = now()->endOfWeek();
+        $timezone = $manager->company?->timezone ?: config('app.timezone', 'Asia/Jakarta');
+        $today = Carbon::now($timezone);
+        $weekStart = $today->copy()->startOfWeek();
+        $weekEnd = $today->copy()->endOfWeek();
 
         $teamQuery = User::where('company_id', $manager->company_id)
             ->where('role', 'employee')
@@ -166,9 +169,10 @@ class DashboardController extends Controller
     {
         abort_unless($employee->company_id, 403, 'Akun belum terhubung ke perusahaan.');
 
-        $today = now();
-        $weekStart = now()->startOfWeek();
-        $weekEnd = now()->endOfWeek();
+        $timezone = $employee->company?->timezone ?: config('app.timezone', 'Asia/Jakarta');
+        $today = Carbon::now($timezone);
+        $weekStart = $today->copy()->startOfWeek();
+        $weekEnd = $today->copy()->endOfWeek();
 
         $todayAssignments = ShiftAssignment::with('shift')
             ->where('company_id', $employee->company_id)
