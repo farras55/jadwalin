@@ -83,22 +83,22 @@
                 </div>
 
                 {{-- Right: Marketplace Quick Stats --}}
-                <div class="flex items-center gap-3 shrink-0">
-                    <div class="p-3 bg-[#F5F3FF] rounded-xl border border-[#E2E0F7] text-center min-w-[90px]">
-                        <p class="text-xl font-bold text-[#6C5CE7] leading-none">{{ $availableShifts->count() }}</p>
+                <div class="grid grid-cols-3 sm:flex sm:items-center gap-2 sm:gap-3 w-full sm:w-auto shrink-0">
+                    <div class="p-2.5 sm:p-3 bg-[#F5F3FF] rounded-xl border border-[#E2E0F7] text-center flex-1 sm:min-w-[90px]">
+                        <p class="text-lg sm:text-xl font-bold text-[#6C5CE7] leading-none">{{ $availableShifts->count() }}</p>
                         <p class="text-[10px] font-semibold text-[#7C7896] mt-1">Tersedia</p>
                     </div>
 
-                    <div class="p-3 bg-amber-50/80 rounded-xl border border-amber-100 text-center min-w-[90px]">
-                        <p class="text-xl font-bold text-amber-700 leading-none">
+                    <div class="p-2.5 sm:p-3 bg-amber-50/80 rounded-xl border border-amber-100 text-center flex-1 sm:min-w-[90px]">
+                        <p class="text-lg sm:text-xl font-bold text-amber-700 leading-none">
                             {{ $myClaims->where('status', 'pending_manager')->count() }}
                         </p>
                         <p class="text-[10px] font-semibold text-amber-800 mt-1">Menunggu</p>
                     </div>
 
-                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-center min-w-[90px]">
-                        <p class="text-xl font-bold text-[#2D2A3E] leading-none">{{ $myClaims->total() }}</p>
-                        <p class="text-[10px] font-semibold text-[#7C7896] mt-1">Riwayat Klaim</p>
+                    <div class="p-2.5 sm:p-3 bg-slate-50 rounded-xl border border-slate-200 text-center flex-1 sm:min-w-[90px]">
+                        <p class="text-lg sm:text-xl font-bold text-[#2D2A3E] leading-none">{{ $myClaims->total() }}</p>
+                        <p class="text-[10px] font-semibold text-[#7C7896] mt-1 truncate">Riwayat</p>
                     </div>
                 </div>
 
@@ -109,12 +109,12 @@
              TABS HEADER (JOB MARKETPLACE STYLE)
         ====================================================== --}}
         <div class="flex items-center justify-between border-b border-[#E2E0F7] pb-3">
-            <div class="inline-flex p-1 bg-white border border-[#E2E0F7] rounded-xl shadow-2xs">
+            <div class="flex overflow-x-auto p-1 bg-white border border-[#E2E0F7] rounded-xl shadow-2xs max-w-full">
                 <button
                     type="button"
                     @click="activeTab = 'available'"
                     :class="activeTab === 'available' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="relative px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2"
+                    class="relative px-3 sm:px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="megaphone" class="h-4 w-4"></i>
                     <span>Lowongan Shift</span>
@@ -128,10 +128,10 @@
                     type="button"
                     @click="activeTab = 'my_claims'"
                     :class="activeTab === 'my_claims' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2"
+                    class="px-3 sm:px-4 py-2 text-xs md:text-sm font-semibold rounded-lg transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="history" class="h-4 w-4"></i>
-                    <span>Riwayat Pengajuan Saya</span>
+                    <span>Riwayat Pengajuan</span>
                     <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
                           :class="activeTab === 'my_claims' ? 'bg-white text-[#6C5CE7]' : 'bg-slate-100 text-slate-700'">
                         {{ $myClaims->total() }}

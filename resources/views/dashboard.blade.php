@@ -48,54 +48,54 @@
     {{-- KARTU RINGKASAN INFORMASI PENGGUNA --}}
     {{-- ========================================================= --}}
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4 mb-5 md:mb-6">
 
         {{-- Perusahaan --}}
-        <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center gap-4">
-            <div class="p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl shrink-0">
-                <i data-lucide="building-2" class="h-6 w-6"></i>
+        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center gap-3 sm:gap-4">
+            <div class="p-2.5 sm:p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl shrink-0">
+                <i data-lucide="building-2" class="h-5 w-5 sm:h-6 sm:w-6"></i>
             </div>
 
             <div class="truncate">
-                <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">
+                <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">
                     Perusahaan
                 </p>
 
-                <p class="text-sm md:text-base font-bold text-[#2D2A3E] truncate">
+                <p class="text-xs sm:text-base font-bold text-[#2D2A3E] truncate">
                     {{ Auth::user()->company->name ?? 'Belum terhubung' }}
                 </p>
             </div>
         </div>
 
         {{-- Departemen & Posisi --}}
-        <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center gap-4">
-            <div class="p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl shrink-0">
-                <i data-lucide="briefcase" class="h-6 w-6"></i>
+        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center gap-3 sm:gap-4">
+            <div class="p-2.5 sm:p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl shrink-0">
+                <i data-lucide="briefcase" class="h-5 w-5 sm:h-6 sm:w-6"></i>
             </div>
 
             <div class="truncate">
-                <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">
+                <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">
                     Departemen & Posisi
                 </p>
 
-                <p class="text-sm md:text-base font-bold text-[#2D2A3E] truncate">
+                <p class="text-xs sm:text-base font-bold text-[#2D2A3E] truncate">
                     {{ Auth::user()->position->name ?? (Auth::user()->department->name ?? 'Staf Operasional') }}
                 </p>
             </div>
         </div>
 
         {{-- Status Keanggotaan --}}
-        <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center gap-4">
-            <div class="p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl shrink-0">
-                <i data-lucide="calendar" class="h-6 w-6"></i>
+        <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs flex items-center gap-3 sm:gap-4">
+            <div class="p-2.5 sm:p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl shrink-0">
+                <i data-lucide="calendar" class="h-5 w-5 sm:h-6 sm:w-6"></i>
             </div>
 
             <div class="truncate">
-                <p class="text-xs font-semibold text-[#7C7896] uppercase tracking-wider">
+                <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] uppercase tracking-wider">
                     Status Keanggotaan
                 </p>
 
-                <p class="text-sm md:text-base font-bold text-[#2D2A3E] truncate capitalize">
+                <p class="text-xs sm:text-base font-bold text-[#2D2A3E] truncate capitalize">
                     {{ Auth::user()->status ?? 'Aktif' }}
                 </p>
             </div>
@@ -123,89 +123,89 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-4">
 
                 {{-- Total Perusahaan --}}
-                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm">
+                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-3.5 sm:p-5 shadow-sm">
                     <div class="flex items-center justify-between">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E2E0F7] bg-[#F5F3FF] text-[#6C5CE7]">
-                            <i data-lucide="building-2" class="h-5 w-5"></i>
+                        <div class="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-[#E2E0F7] bg-[#F5F3FF] text-[#6C5CE7]">
+                            <i data-lucide="building-2" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                         </div>
 
-                        <span class="rounded-full bg-[#F5F3FF] px-2.5 py-1 text-[11px] font-semibold text-[#7C7896]">
+                        <span class="hidden sm:inline rounded-full bg-[#F5F3FF] px-2.5 py-1 text-[11px] font-semibold text-[#7C7896]">
                             Seluruh platform
                         </span>
                     </div>
 
-                    <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Total Perusahaan</p>
+                    <p class="mt-3 sm:mt-5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Total Perusahaan</p>
 
-                    <p class="mt-1 text-3xl font-bold tracking-tight text-[#2D2A3E]">
+                    <p class="mt-1 text-xl sm:text-3xl font-bold tracking-tight text-[#2D2A3E]">
                         {{ number_format($companyCount ?? 0) }}
                     </p>
 
                     <a href="{{ route('admin.companies.index') }}"
-                       class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6C5CE7] transition hover:gap-2.5 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#6C5CE7]">
-                        Kelola perusahaan
+                       class="mt-2 sm:mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6C5CE7] transition hover:gap-2.5 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#6C5CE7]">
+                        Kelola
                         <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
                     </a>
                 </div>
 
                 {{-- Total Departemen --}}
-                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm">
+                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-3.5 sm:p-5 shadow-sm">
                     <div class="flex items-center justify-between">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E2E0F7] bg-[#F5F3FF] text-[#6C5CE7]">
-                            <i data-lucide="network" class="h-5 w-5"></i>
+                        <div class="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-[#E2E0F7] bg-[#F5F3FF] text-[#6C5CE7]">
+                            <i data-lucide="network" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                         </div>
                     </div>
 
-                    <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Total Departemen</p>
+                    <p class="mt-3 sm:mt-5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Total Departemen</p>
 
-                    <p class="mt-1 text-3xl font-bold tracking-tight text-[#2D2A3E]">
+                    <p class="mt-1 text-xl sm:text-3xl font-bold tracking-tight text-[#2D2A3E]">
                         {{ number_format($departmentCount ?? 0) }}
                     </p>
 
                     <a href="{{ route('admin.departments.index') }}"
-                       class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6C5CE7] transition hover:gap-2.5 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#6C5CE7]">
-                        Kelola departemen
+                       class="mt-2 sm:mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#6C5CE7] transition hover:gap-2.5 hover:underline focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#6C5CE7]">
+                        Kelola
                         <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
                     </a>
                 </div>
 
                 {{-- Karyawan Aktif --}}
-                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm">
+                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-3.5 sm:p-5 shadow-sm">
                     <div class="flex items-center justify-between">
-                          <div class="flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-600">
-                              <i data-lucide="users" class="h-5 w-5"></i>
+                          <div class="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-600">
+                              <i data-lucide="users" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                           </div>
                     </div>
 
-                    <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Karyawan Aktif</p>
+                    <p class="mt-3 sm:mt-5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Karyawan Aktif</p>
 
-                    <p class="mt-1 text-3xl font-bold tracking-tight text-[#2D2A3E]">
+                    <p class="mt-1 text-xl sm:text-3xl font-bold tracking-tight text-[#2D2A3E]">
                           {{ number_format($employeeCount ?? 0) }}
                     </p>
 
-                    <p class="mt-4 text-xs text-[#7C7896]">
+                    <p class="mt-2 sm:mt-4 text-[11px] sm:text-xs text-[#7C7896]">
                           Seluruh perusahaan
                     </p>
                 </div>
 
                 {{-- Shift Bulan Ini --}}
-                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-5 shadow-sm">
+                <div class="rounded-2xl border border-[#E2E0F7] bg-white p-3.5 sm:p-5 shadow-sm">
                     <div class="flex items-center justify-between">
-                          <div class="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-100 bg-amber-50 text-amber-600">
-                              <i data-lucide="calendar-days" class="h-5 w-5"></i>
+                          <div class="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-amber-100 bg-amber-50 text-amber-600">
+                              <i data-lucide="calendar-days" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                           </div>
                     </div>
 
-                    <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Shift Bulan Ini</p>
+                    <p class="mt-3 sm:mt-5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#7C7896]">Shift Bulan Ini</p>
 
-                    <p class="mt-1 text-3xl font-bold tracking-tight text-[#2D2A3E]">
+                    <p class="mt-1 text-xl sm:text-3xl font-bold tracking-tight text-[#2D2A3E]">
                           {{ number_format($monthlyShiftCount ?? 0) }}
                     </p>
 
-                    <p class="mt-4 text-xs text-[#7C7896]">
-                        Berdasarkan waktu mulai shift
+                    <p class="mt-2 sm:mt-4 text-[11px] sm:text-xs text-[#7C7896]">
+                        Bulan ini
                     </p>
                 </div>
             </div>
@@ -314,114 +314,114 @@
             </div>
 
             {{-- 4 Stat Summary Cards --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-6">
 
                 {{-- Anggota Tim --}}
-                <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
+                <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between">
-                            <div class="p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl w-fit">
-                                <i data-lucide="users" class="h-5 w-5"></i>
+                            <div class="p-2 sm:p-3 bg-[#F5F3FF] text-[#6C5CE7] rounded-xl w-fit">
+                                <i data-lucide="users" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                             </div>
-                            <span class="text-[11px] font-semibold text-[#7C7896]">Departemen</span>
+                            <span class="text-[10px] sm:text-[11px] font-semibold text-[#7C7896]">Departemen</span>
                         </div>
-                        <p class="text-xs font-semibold text-[#7C7896] mt-4 uppercase tracking-wider">Anggota Tim Aktif</p>
-                        <p class="text-2xl font-bold text-[#2D2A3E] mt-1">
+                        <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] mt-2.5 sm:mt-4 uppercase tracking-wider">Anggota Tim</p>
+                        <p class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
                             {{ number_format($teamCount ?? 0) }}
                         </p>
                     </div>
-                    <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] text-[#7C7896]">Staf operasional aktif</span>
+                    <div class="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[10px] sm:text-[11px] text-[#7C7896] truncate">Staf aktif</span>
                         <a href="{{ route('manager.employees.index') }}"
-                           class="inline-flex items-center gap-1 text-xs font-semibold text-[#6C5CE7] hover:underline">
-                            Lihat Tim
-                            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                           class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-[#6C5CE7] hover:underline shrink-0">
+                            Lihat
+                            <i data-lucide="arrow-right" class="h-3 w-3 sm:h-3.5 sm:w-3.5"></i>
                         </a>
                     </div>
                 </div>
 
                 {{-- Kehadiran Hari Ini --}}
-                <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
+                <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between">
-                            <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl w-fit">
-                                <i data-lucide="user-check" class="h-5 w-5"></i>
+                            <div class="p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl w-fit">
+                                <i data-lucide="user-check" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                             </div>
                             @if (($teamCount ?? 0) > 0)
-                                <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                                     {{ round((($presentStaffCount ?? 0) / $teamCount) * 100) }}% Hadir
                                 </span>
                             @else
-                                <span class="text-[11px] font-semibold text-emerald-600">Hari ini</span>
+                                <span class="text-[10px] sm:text-[11px] font-semibold text-emerald-600">Hari ini</span>
                             @endif
                         </div>
-                        <p class="text-xs font-semibold text-[#7C7896] mt-4 uppercase tracking-wider">Kehadiran Hari Ini</p>
-                        <p class="text-2xl font-bold text-[#2D2A3E] mt-1">
+                        <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] mt-2.5 sm:mt-4 uppercase tracking-wider">Kehadiran</p>
+                        <p class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
                             {{ number_format($presentStaffCount ?? 0) }}
                         </p>
                     </div>
-                    <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] text-[#7C7896]">Status hadir terkonfirmasi</span>
+                    <div class="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[10px] sm:text-[11px] text-[#7C7896] truncate">Presensi hari ini</span>
                         <a href="{{ route('manager.attendance.index') }}"
-                           class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:underline">
+                           class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-emerald-600 hover:underline shrink-0">
                             Presensi
-                            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                            <i data-lucide="arrow-right" class="h-3 w-3 sm:h-3.5 sm:w-3.5"></i>
                         </a>
                     </div>
                 </div>
 
                 {{-- Menunggu Persetujuan --}}
-                <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
+                <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between">
-                            <div class="p-3 bg-amber-50 text-amber-600 rounded-xl w-fit">
-                                <i data-lucide="clipboard-check" class="h-5 w-5"></i>
+                            <div class="p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-xl w-fit">
+                                <i data-lucide="clipboard-check" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                             </div>
                             @if ($totalPending > 0)
                                 <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200">
-                                    +{{ $totalPending }} baru
+                                    +{{ $totalPending }}
                                 </span>
                             @else
-                                <span class="text-emerald-600 text-[11px] font-semibold flex items-center gap-1">
+                                <span class="text-emerald-600 text-[10px] sm:text-[11px] font-semibold flex items-center gap-1">
                                     <i data-lucide="check" class="h-3 w-3"></i> Tuntas
                                 </span>
                             @endif
                         </div>
-                        <p class="text-xs font-semibold text-[#7C7896] mt-4 uppercase tracking-wider">Menunggu Persetujuan</p>
-                        <p class="text-2xl font-bold text-[#2D2A3E] mt-1">
+                        <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] mt-2.5 sm:mt-4 uppercase tracking-wider">Persetujuan</p>
+                        <p class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
                             {{ number_format($totalPending) }}
                         </p>
                     </div>
-                    <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] text-[#7C7896]">Total antrean tindakan</span>
+                    <div class="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[10px] sm:text-[11px] text-[#7C7896] truncate">Antrean</span>
                         <a href="{{ route('manager.availability.index') }}"
-                           class="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 hover:underline">
+                           class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-amber-700 hover:underline shrink-0">
                             Tinjau
-                            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                            <i data-lucide="arrow-right" class="h-3 w-3 sm:h-3.5 sm:w-3.5"></i>
                         </a>
                     </div>
                 </div>
 
                 {{-- Penugasan Minggu Ini --}}
-                <div class="bg-white p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
+                <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-[#E2E0F7] shadow-2xs hover:border-[#6C5CE7]/40 hover:shadow-sm transition-all flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between">
-                            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl w-fit">
-                                <i data-lucide="calendar-days" class="h-5 w-5"></i>
+                            <div class="p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl w-fit">
+                                <i data-lucide="calendar-days" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                             </div>
-                            <span class="text-[11px] font-semibold text-blue-600">Roster Aktif</span>
+                            <span class="text-[10px] sm:text-[11px] font-semibold text-blue-600">Roster</span>
                         </div>
-                        <p class="text-xs font-semibold text-[#7C7896] mt-4 uppercase tracking-wider">Penugasan Minggu Ini</p>
-                        <p class="text-2xl font-bold text-[#2D2A3E] mt-1">
+                        <p class="text-[10px] sm:text-xs font-semibold text-[#7C7896] mt-2.5 sm:mt-4 uppercase tracking-wider">Penugasan</p>
+                        <p class="text-xl sm:text-2xl font-bold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
                             {{ number_format($weeklyRosterCount ?? 0) }}
                         </p>
                     </div>
-                    <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[11px] text-[#7C7896]">Shift terjadwal aktif</span>
+                    <div class="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-[10px] sm:text-[11px] text-[#7C7896] truncate">Minggu ini</span>
                         <a href="{{ route('manager.shifts.index') }}"
-                           class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
-                            Jadwal Shift
-                            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                           class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-blue-600 hover:underline shrink-0">
+                            Jadwal
+                            <i data-lucide="arrow-right" class="h-3 w-3 sm:h-3.5 sm:w-3.5"></i>
                         </a>
                     </div>
                 </div>

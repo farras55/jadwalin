@@ -58,7 +58,7 @@ test.describe('Modul Autentikasi: Skenario Login & Logout (F-01, F-02)', () => {
     });
 
     await expect(
-      page.getByText(account.role).first(),
+      page.locator('#main-content').getByText(account.role).first(),
     ).toBeVisible();
   }
 

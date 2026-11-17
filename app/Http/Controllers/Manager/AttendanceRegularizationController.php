@@ -141,15 +141,30 @@ class AttendanceRegularizationController extends Controller
             $totalHours = round($diffMinutes / 60, 2);
 
             $setting = CompanySetting::where('company_id', $manager->company_id)->first();
-
-            $maxRegularHours = ($setting && $setting->max_regular_hours !== null)
+            $dailyRegularCap = ($setting && (int) $setting->max_regular_hours > 0 && (int) $setting->max_regular_hours <= 12)
                 ? (float) $setting->max_regular_hours
                 : 8.0;
 
-            $regularHours = min($totalHours, $maxRegularHours);
+            $shift = $assignment->shift;
+            if ($shift && $shift->start_time && $shift->end_time) {
+                $shiftStart = Carbon::parse($shift->start_time);
+                $shiftEnd = Carbon::parse($shift->end_time);
+                if ($shiftEnd->lte($shiftStart)) {
+                    $shiftEnd->addDay();
+                }
+                $scheduledHours = round(abs($shiftStart->diffInMinutes($shiftEnd)) / 60, 2);
+                $regularThreshold = min($scheduledHours, $dailyRegularCap);
+
+                $effectiveStart = $clockIn->lt($shiftStart) ? $shiftStart : $clockIn;
+                $effectiveEnd = $requestedOut->gt($shiftEnd) ? $shiftEnd : $requestedOut;
+                $regularMinutes = $effectiveEnd->gt($effectiveStart) ? $effectiveStart->diffInMinutes($effectiveEnd) : 0;
+                $regularHours = min(round($regularMinutes / 60, 2), $regularThreshold);
+            } else {
+                $regularHours = min($totalHours, $dailyRegularCap);
+            }
 
             if ($validated['overtime_status'] === 'approved') {
-                $overtimeHours = max(0.0, round($totalHours - $maxRegularHours, 2));
+                $overtimeHours = max(0.0, round($totalHours - $regularHours, 2));
                 $isOvertime = ($overtimeHours > 0);
             } else {
                 $overtimeHours = 0.0;
@@ -240,6 +255,12 @@ class AttendanceRegularizationController extends Controller
                 'reviewed_by' => $manager->id,
                 'reviewed_at' => now(),
                 'review_note' => $validated['review_note'],
+                'overtime_status' => 'rejected',
+            ]);
+
+            $regularization->shiftAssignment?->update([
+                'overtime_status' => 'rejected',
+                'is_overtime' => false,
             ]);
 
             AuditLog::create([

@@ -53,7 +53,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[700px]">
                     <thead class="bg-slate-50/80 text-gray-700 font-bold border-b border-gray-200/80 uppercase text-[10px] tracking-wider">
                         <tr>
                             <th class="px-5 py-3.5">Tanggal & Shift</th>

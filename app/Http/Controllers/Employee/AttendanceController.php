@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Models\AttendanceRegularization;
 use App\Models\CompanySetting;
 use App\Models\Department;
 use App\Models\ShiftAssignment;
 use App\Models\User;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -459,7 +461,10 @@ class AttendanceController extends Controller
 
         $shiftStart = Carbon::parse($assignment->shift->getRawOriginal('start_time'), $timezone);
         $shiftEnd = Carbon::parse($assignment->shift->getRawOriginal('end_time'), $timezone);
-        $scheduledHours = round($shiftStart->diffInMinutes($shiftEnd) / 60, 2);
+        if ($shiftEnd->lte($shiftStart)) {
+            $shiftEnd->addDay();
+        }
+        $scheduledHours = round(abs($shiftStart->diffInMinutes($shiftEnd)) / 60, 2);
 
         $settings = CompanySetting::where('company_id', $user->company_id)->first();
         // Plafon harian standar (jika max_regular_hours di database adalah batas mingguan misal 40, gunakan 8 jam)
@@ -474,16 +479,95 @@ class AttendanceController extends Controller
             // Skenario A: Shift lembur sukarela / Open Shift di hari libur -> 100% jam lembur
             $regularHours = 0;
             $overtimeHours = $totalHours;
-        } else {
-            // Skenario B: Shift reguler dengan penambahan jam di luar jadwal
-            $regularHours = min($totalHours, $regularThreshold);
-            $overtimeHours = max(0, round($totalHours - $regularThreshold, 2));
+
+            $assignment->update([
+                'clock_out_time' => $now,
+                'regular_hours' => $regularHours,
+                'overtime_hours' => $overtimeHours,
+                'overtime_status' => 'approved',
+            ]);
+
+            return back()->with('success', 'Clock Out berhasil disimpan.');
         }
 
+        // Skenario B: Shift reguler
+        // Cek apakah clock-out melebihi batas jadwal shift
+        $isPastShiftEnd = $now->greaterThan($shiftEnd);
+
+        if ($isPastShiftEnd) {
+            // 1. Jam reguler hanya dihitung selama berada di dalam rentang shift
+            $effectiveStart = $clockInTime->lt($shiftStart) ? $shiftStart : $clockInTime;
+            $effectiveEnd = $shiftEnd;
+            $regularMinutes = $effectiveEnd->gt($effectiveStart) ? $effectiveStart->diffInMinutes($effectiveEnd) : 0;
+            $regularHours = min(round($regularMinutes / 60, 2), $regularThreshold);
+
+            // Kelebihan jam TIDAK langsung masuk lembur, tapi dibuatkan pengajuan koreksi jam (pending approval)
+            $excessMinutes = max(0, $shiftEnd->diffInMinutes($now));
+
+            $assignment->update([
+                'clock_out_time' => $now,
+                'regular_hours' => $regularHours,
+                'overtime_hours' => 0.0,
+                'is_overtime' => false,
+                'overtime_status' => 'pending_approval',
+            ]);
+
+            // Buat tiket koreksi presensi otomatis jika ada kelebihan waktu
+            if ($excessMinutes > 0) {
+                $reasonNote = trim((string) $request->input('notes', ''));
+                $reason = ! empty($reasonNote)
+                    ? $reasonNote
+                    : sprintf(
+                        'Koreksi jam pulang: Clock-out melebihi jadwal shift (%d menit). Jadwal selesai: %s, Clock-out: %s WIB.',
+                        round($excessMinutes),
+                        $shiftEnd->format('H:i'),
+                        $now->format('H:i')
+                    );
+
+                AttendanceRegularization::create([
+                    'company_id' => $user->company_id,
+                    'shift_assignment_id' => $assignment->id,
+                    'employee_id' => $user->id,
+                    'requested_clock_out_time' => $now,
+                    'reason' => $reason,
+                    'status' => 'pending',
+                    'overtime_status' => 'pending_approval',
+                ]);
+
+                // Kirim notifikasi ke manajer terkait
+                $managers = User::query()
+                    ->where('company_id', $user->company_id)
+                    ->where('role', 'manager')
+                    ->where(function ($q) use ($user) {
+                        $q->where('department_id', $user->department_id)
+                            ->orWhere('is_global_manager', true);
+                    })
+                    ->get();
+
+                foreach ($managers as $manager) {
+                    NotificationService::send(
+                        $manager->id,
+                        'regularization_submitted',
+                        'Pengajuan Koreksi Jam Shift',
+                        "Karyawan {$user->name} clock-out melebihi jadwal shift {$assignment->shift?->title} (".round($excessMinutes).' menit). Menunggu persetujuan koreksi.',
+                        $user->company_id
+                    );
+                }
+
+                return back()->with('success', sprintf('Clock Out berhasil. Kelebihan waktu %d menit telah diajukan ke manajer untuk persetujuan koreksi jam/lembur.', round($excessMinutes)));
+            }
+
+            return back()->with('success', 'Clock Out berhasil disimpan.');
+        }
+
+        // Karyawan pulang tepat waktu atau sebelum jadwal berakhir
+        $regularHours = min($totalHours, $regularThreshold);
         $assignment->update([
             'clock_out_time' => $now,
             'regular_hours' => $regularHours,
-            'overtime_hours' => $overtimeHours,
+            'overtime_hours' => 0.0,
+            'is_overtime' => false,
+            'overtime_status' => 'none',
         ]);
 
         return back()->with('success', 'Clock Out berhasil disimpan.');

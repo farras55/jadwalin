@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\Admin\CompanySettingController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\ShiftTemplateController;
 use App\Http\Controllers\Admin\TimesheetReportController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\AttendanceRegularizationController as EmployeeAttendanceRegularizationController;
@@ -55,7 +55,7 @@ Route::middleware(['auth', 'role:superadmin'])
         // ==========================================
         Route::get('/companies', [CompanyProfileController::class, 'index'])
             ->name('companies.index');
-            
+
         Route::put('/companies', [CompanyProfileController::class, 'update'])
             ->name('companies.update');
 

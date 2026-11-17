@@ -60,23 +60,23 @@
         </div>
 
         {{-- Header Profil Card (Modern Lavender Styling) --}}
-        <div class="bg-gradient-to-r from-[#F5F3FF] via-white to-[#F8F7FF] rounded-3xl border border-[#E2E0F7] p-6 shadow-2xs">
+        <div class="bg-gradient-to-r from-[#F5F3FF] via-white to-[#F8F7FF] rounded-3xl border border-[#E2E0F7] p-4 sm:p-6 shadow-2xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                     @if ($employee->profile_photo)
                         <img
                             src="{{ asset('storage/' . $employee->profile_photo) }}"
                             alt="{{ $employee->name }}"
-                            class="w-20 h-20 rounded-2xl border-2 border-white object-cover shadow-2xs"
+                            class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-white object-cover shadow-2xs"
                         >
                     @else
-                        <div class="w-20 h-20 rounded-2xl bg-[#6C5CE7] text-white flex items-center justify-center text-3xl font-bold shadow-2xs">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#6C5CE7] text-white flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-2xs">
                             {{ $initial }}
                         </div>
                     @endif
 
                     <div class="space-y-1">
-                        <h2 class="text-xl font-bold text-[#2D2A3E]">
+                        <h2 class="text-lg sm:text-xl font-bold text-[#2D2A3E]">
                             {{ $employee->name }}
                         </h2>
                         <div class="flex flex-wrap items-center gap-2 text-xs text-[#7C7896]">
@@ -97,7 +97,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 self-start sm:self-center">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border {{ $statusClasses[$employeeStatus] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                         {{ $statusLabels[$employeeStatus] ?? ucfirst($employeeStatus) }}
@@ -107,47 +107,47 @@
         </div>
 
         {{-- Ringkasan Aktivitas (3 KPI Cards) --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {{-- Card 1: Kehadiran 30 Hari --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-emerald-700">Kehadiran 30 Hari</p>
-                    <p class="text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                    <p class="text-2xl sm:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
                         {{ $attendanceCount }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Shift berstatus hadir atau terlambat</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5">Shift berstatus hadir atau terlambat</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="calendar-check" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Card 2: Jam Kerja Bulan Ini --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-[#6C5CE7]">Jam Kerja Bulan Ini</p>
-                    <p class="text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                    <p class="text-2xl sm:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
                         {{ number_format((float) $monthlyHours, 1, ',', '.') }}
                         <span class="text-xs font-sans font-normal text-[#7C7896]">jam</span>
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Jam reguler ditambah jam lembur</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5">Jam reguler ditambah jam lembur</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="clock" class="w-6 h-6"></i>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="clock" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
 
             {{-- Card 3: Total Shift Bulan Ini --}}
-            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between">
+            <div class="bg-white rounded-2xl border border-[#E2E0F7] p-3.5 sm:p-5 shadow-2xs flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-amber-700">Total Shift Bulan Ini</p>
-                    <p class="text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                    <p class="text-2xl sm:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
                         {{ $monthlyShiftCount }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Shift yang tercatat pada bulan berjalan</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5">Shift yang tercatat pada bulan berjalan</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="calendar-days" class="w-6 h-6"></i>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="calendar-days" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
             </div>
         </div>

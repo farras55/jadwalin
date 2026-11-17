@@ -45,7 +45,8 @@
         $clockOutFormatted = $isClockedOut ? \Carbon\Carbon::parse($todayShift->clock_out_time)->format('H:i') . ' WIB' : '-';
 
         // Dataset Riwayat 7 Hari Terakhir
-        $historyData = $recentHistory->isNotEmpty() ? $recentHistory->map(function($item) {
+        $tz = auth()->user()?->company?->timezone ?? 'Asia/Jakarta';
+        $historyData = $recentHistory->isNotEmpty() ? $recentHistory->map(function($item) use ($tz) {
             $startTime = \Carbon\Carbon::parse($item->shift->start_time ?? now());
             $dateStr = $startTime->translatedFormat('d M Y');
             $dayStr = $startTime->translatedFormat('l');
@@ -74,22 +75,44 @@
                 ? "Terlambat ({$lateH} Jam " . str_pad($lateM, 2, '0', STR_PAD_LEFT) . " Menit)"
                 : ($lateMin > 0 ? "Terlambat ({$lateMin} Menit)" : 'Terlambat');
 
-            $statusKey = 'hadir';
-            $statusLabel = 'Hadir Tepat Waktu';
-            $badgeTheme = 'emerald';
+            $hasClockedIn = ! empty($item->clock_in_time);
+            $hasClockedOut = ! empty($item->clock_out_time);
 
-            if ($rawStatus === 'late' || $lateMin > 0) {
-                $statusKey = 'terlambat';
-                $statusLabel = $lateLabel;
-                $badgeTheme = 'rose';
-            } elseif ($rawStatus === 'present' || (!empty($item->clock_in_time) && $lateMin == 0)) {
-                $statusKey = 'hadir';
-                $statusLabel = 'Hadir Tepat Waktu';
-                $badgeTheme = 'emerald';
-            } elseif ($rawStatus === 'absent' || $rawStatus === 'leave') {
-                $statusKey = 'off';
-                $statusLabel = 'Izin / Cuti';
-                $badgeTheme = 'indigo';
+            $shiftEnded = false;
+            if ($item->shift) {
+                $shiftEndDateTime = \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, $tz);
+                $shiftEnded = \Carbon\Carbon::now($tz)->greaterThan($shiftEndDateTime);
+            }
+
+            if ($hasClockedIn) {
+                if ($rawStatus === 'late' || $lateMin > 0) {
+                    $statusKey = 'terlambat';
+                    $statusLabel = $lateLabel;
+                    $badgeTheme = 'rose';
+                } elseif ($hasClockedOut) {
+                    $statusKey = 'hadir';
+                    $statusLabel = 'Hadir Tepat Waktu';
+                    $badgeTheme = 'emerald';
+                } else {
+                    $statusKey = 'hadir';
+                    $statusLabel = 'Sedang Bekerja';
+                    $badgeTheme = 'teal';
+                }
+            } else {
+                // Belum melakukan clock-in
+                if ($rawStatus === 'leave') {
+                    $statusKey = 'off';
+                    $statusLabel = 'Izin / Cuti';
+                    $badgeTheme = 'indigo';
+                } elseif ($rawStatus === 'absent' || $shiftEnded) {
+                    $statusKey = 'off';
+                    $statusLabel = 'Tidak Hadir';
+                    $badgeTheme = 'rose';
+                } else {
+                    $statusKey = 'belum_hadir';
+                    $statusLabel = 'Belum Hadir';
+                    $badgeTheme = 'amber';
+                }
             }
 
             return [
@@ -107,6 +130,8 @@
                 'is_late' => $rawStatus === 'late' || $lateMin > 0,
                 'is_off' => $rawStatus === 'absent' || $rawStatus === 'leave',
                 'is_auto_clockout' => (bool) $item->is_auto_clockout,
+                'overtime_status' => $item->overtime_status,
+                'can_regularize' => (bool) ($item->is_auto_clockout || ($item->clock_out_time && $item->shift && \Carbon\Carbon::parse($item->clock_out_time)->gt(\App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, $tz)))),
                 'regularization_status' => $item->latestAttendanceRegularization?->status,
                 'shift_end_datetime' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, auth()->user()?->company?->timezone ?? 'Asia/Jakarta')->format('Y-m-d\TH:i') : '',
                 'shift_end_formatted' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, auth()->user()?->company?->timezone ?? 'Asia/Jakarta')->format('H:i') . ' WIB' : '',
@@ -133,6 +158,10 @@
                 submittingRegularization: false,
                 regularizationError: '',
                 regularizationSuccess: '',
+                lateClockOutModalOpen: false,
+                lateClockOutConfirmed: false,
+                lateClockOutNotes: '',
+                isPastShiftEnd: {{ $shiftEnded ? 'true' : 'false' }},
                 regularizationForm: {
                     shift_assignment_id: null,
                     shift_title: '',
@@ -990,8 +1019,10 @@
                         <div class="shrink-0" id="attendance-action-container">
                             @if ($attendanceState === 'working')
                                 {{-- Tombol Clock-Out (Mode 2: Sedang Bekerja) --}}
-                                <form action="{{ route('employee.attendance.clock-out') }}" method="POST" id="form-clock-out">
+                                <form action="{{ route('employee.attendance.clock-out') }}" method="POST" id="form-clock-out"
+                                      @submit="if (isPastShiftEnd && !lateClockOutConfirmed) { $event.preventDefault(); lateClockOutModalOpen = true; return false; }">
                                     @csrf
+                                    <input type="hidden" name="notes" :value="lateClockOutNotes">
                                     <button type="submit" id="btn-clock-out" data-testid="btn-clock-out"
                                             :disabled="!isInsideRadius && isLocationConfigured"
                                             :class="(!isInsideRadius && isLocationConfigured) 
@@ -1253,6 +1284,14 @@
                                             <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max">
                                                 <i data-lucide="clock-alert" class="w-3 h-3 text-amber-700"></i> Auto Clock-Out
                                             </span>
+                                        @elseif ($row['overtime_status'] === 'pending_approval')
+                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max border border-amber-200">
+                                                <i data-lucide="clock" class="w-3 h-3 text-amber-600"></i> Lembur Pending
+                                            </span>
+                                        @elseif ($row['overtime_status'] === 'approved')
+                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 rounded-full w-max border border-emerald-200">
+                                                <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i> Lembur Disetujui
+                                            </span>
                                         @endif
                                     </div>
                                 </td>
@@ -1283,38 +1322,36 @@
                                     @endif
                                 </td>
                                 <td class="px-5 py-4 whitespace-nowrap text-center">
-                                    @if ($row['is_auto_clockout'])
-                                        @if ($row['regularization_status'] === 'pending')
-                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
-                                                Koreksi: Pending
+                                    @if ($row['regularization_status'] === 'pending')
+                                        <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                            <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+                                            Koreksi: Pending
+                                        </span>
+                                    @elseif ($row['regularization_status'] === 'approved')
+                                        <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                            <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                                            Koreksi: Disetujui
+                                        </span>
+                                    @elseif ($row['regularization_status'] === 'rejected')
+                                        <div class="inline-flex flex-col items-center gap-1">
+                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                <i data-lucide="x-circle" class="w-3.5 h-3.5 text-rose-600"></i>
+                                                Koreksi: Ditolak
                                             </span>
-                                        @elseif ($row['regularization_status'] === 'approved')
-                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
-                                                Koreksi: Disetujui
-                                            </span>
-                                        @elseif ($row['regularization_status'] === 'rejected')
-                                            <div class="inline-flex flex-col items-center gap-1">
-                                                <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                                                    <i data-lucide="x-circle" class="w-3.5 h-3.5 text-rose-600"></i>
-                                                    Koreksi: Ditolak
-                                                </span>
-                                                <button type="button" 
-                                                        @click="openRegularizationModal({{ json_encode($row) }})" 
-                                                        class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
-                                                    <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
-                                                    Ajukan Ulang
-                                                </button>
-                                            </div>
-                                        @else
                                             <button type="button" 
                                                     @click="openRegularizationModal({{ json_encode($row) }})" 
                                                     class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
                                                 <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
-                                                Ajukan Koreksi Kehadiran
+                                                Ajukan Ulang
                                             </button>
-                                        @endif
+                                        </div>
+                                    @elseif ($row['is_auto_clockout'] || $row['can_regularize'])
+                                        <button type="button" 
+                                                @click="openRegularizationModal({{ json_encode($row) }})" 
+                                                class="text-xs text-[#6C5CE7] hover:underline font-medium inline-flex items-center gap-1">
+                                            <i data-lucide="file-pen-line" class="w-3.5 h-3.5"></i>
+                                            Ajukan Koreksi Jam
+                                        </button>
                                     @else
                                         <span class="text-gray-400 font-mono text-xs">-</span>
                                     @endif
@@ -1571,6 +1608,92 @@
             </div>
         </div>
 
+        {{-- ========================================================================= --}}
+        {{-- MODAL KONFIRMASI CLOCK-OUT LEWAT JAM SHIFT (KOREKSI / LEMBUR)            --}}
+        {{-- ========================================================================= --}}
+        <div x-show="lateClockOutModalOpen" 
+             x-cloak
+             class="fixed inset-0 z-50 overflow-y-auto"
+             role="dialog" aria-modal="true"
+             style="display: none;">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="lateClockOutModalOpen" 
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" 
+                     @click="lateClockOutModalOpen = false"></div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="lateClockOutModalOpen" 
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-gray-100">
+                    
+                    <div class="p-6 sm:p-7 space-y-5">
+                        {{-- Modal Header --}}
+                        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded-xl bg-amber-50 text-amber-600">
+                                    <i data-lucide="clock" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-gray-900">Clock-Out Lewat Jam Shift</h3>
+                                    <p class="text-xs text-gray-500">Konfirmasi pengajuan koreksi / lembur</p>
+                                </div>
+                            </div>
+                            <button type="button" 
+                                    @click="lateClockOutModalOpen = false" 
+                                    class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                                <i data-lucide="x" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/80 text-xs text-amber-900 space-y-2">
+                            <p class="font-medium">
+                                Waktu Clock-Out Anda telah melewati jam selesai jadwal shift.
+                            </p>
+                            <p class="text-[11px] text-amber-800/80">
+                                Jam reguler shift akan tercatat hingga batas akhir shift. Kelebihan waktu akan otomatis diajukan ke manajer sebagai permohonan koreksi jam/lembur.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5">
+                                Keterangan / Pekerjaan yang Dilakukan <span class="text-gray-400 font-normal">(opsional)</span>
+                            </label>
+                            <textarea x-model="lateClockOutNotes" 
+                                      rows="3" 
+                                      class="w-full text-xs rounded-xl border border-gray-200 focus:border-[#6C5CE7] focus:ring focus:ring-[#6C5CE7]/20 p-3 transition"
+                                      placeholder="Contoh: Menyelesaikan closing kasir / melayani pesanan terakhir..."></textarea>
+                        </div>
+
+                        <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                            <button type="button" 
+                                    @click="lateClockOutModalOpen = false" 
+                                    class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-gray-700 rounded-xl text-xs font-semibold transition-colors">
+                                Batal
+                            </button>
+                            <button type="button" 
+                                    @click="lateClockOutConfirmed = true; $nextTick(() => document.getElementById('form-clock-out').submit());"
+                                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D32F2F] hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-md transition-all">
+                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                <span>Konfirmasi Clock-Out</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     {{-- Script untuk anti-double submit form & update icon --}}
@@ -1593,7 +1716,8 @@
             // Anti-double submit untuk Clock Out
             const formClockOut = document.getElementById('form-clock-out');
             if (formClockOut) {
-                formClockOut.addEventListener('submit', function() {
+                formClockOut.addEventListener('submit', function(e) {
+                    if (e.defaultPrevented) return;
                     const btn = document.getElementById('btn-clock-out');
                     if (btn) {
                         btn.disabled = true;

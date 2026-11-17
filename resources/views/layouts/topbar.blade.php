@@ -1,30 +1,14 @@
 <header class="h-[64px] md:h-[72px] bg-white border-b border-[#E2E0F7] flex items-center justify-between px-4 md:px-6 shrink-0 z-10 sticky top-0">
     {{-- Bagian Kiri Navbar --}}
     <div class="flex items-center gap-3 md:gap-5">
-        {{-- Hamburger Button (Mobile Only) --}}
-        <button type="button" 
-                @click="sidebarOpen = true" 
-                class="md:hidden -ml-1 p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-[#F5F3FF] transition focus:outline-none"
-                title="Buka Menu">
-            <i data-lucide="menu" class="h-5 w-5"></i>
-        </button>
-
-        {{-- Toggle Sidebar Button (Desktop Only) --}}
-        <button type="button" 
-                @click="toggleSidebar()" 
-                class="hidden md:flex items-center justify-center -ml-1 p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-[#F5F3FF] transition focus:outline-none"
-                :title="sidebarCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar'">
-            <i data-lucide="menu" class="h-5 w-5"></i>
-        </button>
-
-        {{-- Tampil di mobile saja: Logo Singkat --}}
+        {{-- Tampil di mobile saja: Logo Singkat (Tanpa Hamburger, Navigasi Pindah ke Bottom Bar) --}}
         <div class="md:hidden flex items-center gap-2">
             <x-application-logo class="h-7 w-auto shrink-0" />
             <span class="text-[17px] font-bold text-[#2D2A3E] tracking-tight">Jadwal<span style="color: #6C5CE7;">in</span></span>
         </div>
 
         {{-- Nama Perusahaan / Cabang --}}
-        <div class="flex items-center h-8 gap-2 text-[12px] md:text-[13px] font-semibold text-[#2D2A3E] bg-[#F5F3FF]/60 border border-[#E2E0F7] px-3 py-1 rounded-lg max-w-[200px] md:max-w-[320px]">
+        <div class="hidden sm:flex items-center h-8 gap-2 text-[12px] md:text-[13px] font-semibold text-[#2D2A3E] bg-[#F5F3FF]/60 border border-[#E2E0F7] px-3 py-1 rounded-lg max-w-[180px] md:max-w-[320px]">
             <i data-lucide="store" class="h-4 w-4 shrink-0" style="color: #6C5CE7;"></i>
             <span class="truncate">{{ $companyName }}</span>
         </div>
@@ -75,7 +59,7 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-95"
-                class="absolute right-0 mt-2 w-[340px] max-h-[400px] overflow-y-auto bg-white rounded-xl border border-[#E2E0F7] shadow-lg z-50"
+                class="absolute right-0 mt-2 w-[calc(100vw-32px)] sm:w-[340px] max-h-[400px] overflow-y-auto bg-white rounded-xl border border-[#E2E0F7] shadow-lg z-50"
                 style="display: none;"
             >
                 {{-- Header Dropdown --}}

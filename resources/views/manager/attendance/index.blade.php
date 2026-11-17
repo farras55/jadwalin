@@ -65,7 +65,7 @@
         {{-- ========================================================= --}}
         {{-- 4 KARTU METRIK RINGKASAN KEHADIRAN --}}
         {{-- ========================================================= --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
 
             {{-- Kartu 1: Dijadwalkan --}}
             <button
@@ -75,20 +75,20 @@
                 :class="selectedMetric === 'scheduled'
                     ? 'ring-2 ring-[#6C5CE7] border-[#6C5CE7]'
                     : 'hover:border-[#C7C2F5]'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
+                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
             >
-                <div>
-                    <p class="text-xs font-semibold text-[#7C7896]">Dijadwalkan</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono" x-text="metrics.scheduled">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#7C7896] truncate">Dijadwalkan</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.scheduled">
                         {{ $metrics['scheduled'] }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
                         Total staf shift hari ini
                     </p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0">
-                    <i data-lucide="activity" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0">
+                    <i data-lucide="activity" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -100,20 +100,20 @@
                 :class="selectedMetric === 'on_time'
                     ? 'ring-2 ring-emerald-500 border-emerald-500'
                     : 'hover:border-emerald-300'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500"
             >
-                <div>
-                    <p class="text-xs font-semibold text-emerald-700">Hadir Tepat Waktu</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono" x-text="metrics.on_time">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-emerald-700 truncate">Tepat Waktu</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.on_time">
                         {{ $metrics['on_time'] }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
                         Sesuai batas toleransi
                     </p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
-                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -125,20 +125,20 @@
                 :class="selectedMetric === 'late'
                     ? 'ring-2 ring-amber-500 border-amber-500'
                     : 'hover:border-amber-300'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
+                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500"
             >
-                <div>
-                    <p class="text-xs font-semibold text-amber-700">Terlambat</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono" x-text="metrics.late">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-amber-700 truncate">Terlambat</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.late">
                         {{ $metrics['late'] }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
                         Melewati toleransi
                     </p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
-                    <i data-lucide="clock" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -150,21 +150,20 @@
                 :class="selectedMetric === 'not_present'
                     ? 'ring-2 ring-rose-500 border-rose-500'
                     : 'hover:border-rose-300'"
-                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500"
+                class="w-full text-left bg-white rounded-2xl border border-[#E2E0F7] p-3 sm:p-5 shadow-2xs flex items-center justify-between transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500"
             >
-                <div>
-                    <p class="text-xs font-semibold text-rose-700">Belum Hadir</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono" x-text="metrics.not_present">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-rose-700 truncate">Belum Hadir</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono" x-text="metrics.not_present">
                         {{ $metrics['not_present'] }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">
-                        <span x-text="metrics.absent">{{ $metrics['absent'] }}</span> lewat batas,
-                        <span x-text="metrics.not_started">{{ $metrics['not_started'] }}</span> belum mulai
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate hidden xs:block">
+                        <span x-text="metrics.absent">{{ $metrics['absent'] }}</span> lewat batas
                     </p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0">
-                    <i data-lucide="slash" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="slash" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -287,7 +286,7 @@
                 class="overflow-x-auto"
                 @if(empty($rows)) style="display: none;" @endif
             >
-                <table class="w-full text-left text-sm">
+                <table class="w-full text-left text-sm min-w-[600px]">
 
                     <thead class="bg-[#F8F7FF] text-[11px] uppercase font-bold text-[#7C7896] tracking-wider border-b border-[#E2E0F7]">
                         <tr>

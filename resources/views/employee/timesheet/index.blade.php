@@ -88,50 +88,50 @@
         </div>
 
         {{-- 3 Card Ringkasan (PP 35/2021) --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {{-- Card 1: Total Jam Reguler --}}
-            <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs">
+            <div class="bg-white rounded-2xl border border-brand-border p-4 sm:p-5 shadow-2xs">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Total Jam Reguler</p>
-                        <h3 class="text-2xl font-bold text-gray-900 mt-1 font-mono">
-                            {{ number_format($totalRegularHours, 2) }} <span class="text-sm font-sans font-medium text-gray-500">Jam</span>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-1 font-mono">
+                            {{ number_format($totalRegularHours, 2) }} <span class="text-xs sm:text-sm font-sans font-medium text-gray-500">Jam</span>
                         </h3>
                     </div>
-                    <div class="p-3 rounded-xl bg-indigo-50 text-[#6C5CE7]">
-                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    <div class="p-2.5 sm:p-3 rounded-xl bg-indigo-50 text-[#6C5CE7]">
+                        <i data-lucide="clock" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
                 </div>
                 <p class="text-[11px] text-gray-400 mt-2">Maksimal 8 jam per hari atau 40 jam per minggu</p>
             </div>
 
             {{-- Card 2: Total Jam Lembur --}}
-            <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs">
+            <div class="bg-white rounded-2xl border border-brand-border p-4 sm:p-5 shadow-2xs">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Total Jam Lembur</p>
-                        <h3 class="text-2xl font-bold text-amber-600 mt-1 font-mono">
-                            {{ number_format($totalOvertimeHours, 2) }} <span class="text-sm font-sans font-medium text-gray-500">Jam</span>
+                        <h3 class="text-xl sm:text-2xl font-bold text-amber-600 mt-1 font-mono">
+                            {{ number_format($totalOvertimeHours, 2) }} <span class="text-xs sm:text-sm font-sans font-medium text-gray-500">Jam</span>
                         </h3>
                     </div>
-                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600">
-                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    <div class="p-2.5 sm:p-3 rounded-xl bg-amber-50 text-amber-600">
+                        <i data-lucide="zap" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
                 </div>
                 <p class="text-[11px] text-gray-400 mt-2">Perhitungan lembur disetujui sesuai regulasi PP 35/2021</p>
             </div>
 
             {{-- Card 3: Persentase Kehadiran --}}
-            <div class="bg-white rounded-2xl border border-brand-border p-5 shadow-2xs">
+            <div class="bg-white rounded-2xl border border-brand-border p-4 sm:p-5 shadow-2xs">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">Persentase Kehadiran</p>
-                        <h3 class="text-2xl font-bold text-emerald-600 mt-1 font-mono">
+                        <h3 class="text-xl sm:text-2xl font-bold text-emerald-600 mt-1 font-mono">
                             {{ number_format($attendanceRate, 1) }}%
                         </h3>
                     </div>
-                    <div class="p-3 rounded-xl bg-emerald-50 text-emerald-600">
-                        <i data-lucide="check-check" class="w-6 h-6"></i>
+                    <div class="p-2.5 sm:p-3 rounded-xl bg-emerald-50 text-emerald-600">
+                        <i data-lucide="check-check" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
                 </div>
                 <p class="text-[11px] text-gray-400 mt-2">{{ $attendedShifts }} dari {{ $totalShifts }} shift terjadwal dihadiri</p>
@@ -140,7 +140,7 @@
 
         {{-- Tabel Riwayat Kehadiran Personal --}}
         <div class="bg-white rounded-3xl border border-gray-100 shadow-xl/5 overflow-hidden">
-            <div class="p-5 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex items-center gap-2.5">
                     <div class="p-2 rounded-xl bg-[#6C5CE7]/10 text-[#6C5CE7]">
                         <i data-lucide="calendar-days" class="w-5 h-5"></i>
@@ -153,7 +153,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                <table class="w-full text-left border-collapse text-xs md:text-sm min-w-[680px]">
                     <thead class="bg-slate-50/80 text-gray-700 font-bold border-b border-gray-200/80 uppercase text-[10px] tracking-wider">
                         <tr>
                             <th class="px-5 py-3.5">Tanggal Shift</th>

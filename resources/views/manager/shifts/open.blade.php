@@ -118,12 +118,12 @@
 
         {{-- Tabs Header & Action Button --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="inline-flex p-1 bg-white border border-[#E2E0F7] rounded-2xl shadow-2xs">
+            <div class="flex overflow-x-auto p-1 bg-white border border-[#E2E0F7] rounded-2xl shadow-2xs max-w-full">
                 <button 
                     type="button" 
                     @click="activeTab = 'pending'"
                     :class="activeTab === 'pending' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="relative px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2"
+                    class="relative px-3 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="clock" class="h-4 w-4"></i>
                     <span>Antrean Klaim</span>
@@ -139,7 +139,7 @@
                     type="button" 
                     @click="activeTab = 'active_shifts'"
                     :class="activeTab === 'active_shifts' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2"
+                    class="px-3 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="megaphone" class="h-4 w-4"></i>
                     <span>Open Shift Aktif</span>
@@ -155,7 +155,7 @@
                     type="button" 
                     @click="activeTab = 'history'"
                     :class="activeTab === 'history' ? 'bg-[#6C5CE7] text-white shadow-xs' : 'text-[#7C7896] hover:text-[#2D2A3E]'"
-                    class="px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2"
+                    class="px-3 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-2 shrink-0"
                 >
                     <i data-lucide="history" class="h-4 w-4"></i>
                     <span>Riwayat Keputusan</span>
@@ -171,7 +171,7 @@
             <button 
                 type="button" 
                 @click="showBroadcastModal = true"
-                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-white bg-[#6C5CE7] hover:bg-[#5B4BD5] transition shadow-xs"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-white bg-[#6C5CE7] hover:bg-[#5B4BD5] transition shadow-xs"
             >
                 <i data-lucide="plus" class="h-4 w-4"></i>
                 <span>Broadcast Open Shift</span>

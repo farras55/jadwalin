@@ -122,13 +122,13 @@
                     </p>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <button type="submit"
-                            class="inline-flex items-center justify-center min-h-[44px] px-6 rounded-xl text-sm font-semibold text-white bg-brand-primary hover:bg-brand-hover transition shadow-sm">
+                            class="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-6 rounded-xl text-sm font-semibold text-white bg-brand-primary hover:bg-brand-hover transition shadow-sm">
                         Ajukan Halangan
                     </button>
                     <a href="{{ route('employee.availability') }}"
-                       class="inline-flex items-center justify-center min-h-[44px] px-4 text-sm font-semibold text-[#7C7896] hover:text-[#2D2A3E]">
+                       class="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-4 text-sm font-semibold text-[#7C7896] hover:text-[#2D2A3E] text-center">
                         Batal
                     </a>
                 </div>

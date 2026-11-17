@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
 use App\Models\User;
@@ -26,7 +27,15 @@ class DepartmentTimesheetController extends Controller
         $this->authorizeDepartment($request, $manager);
 
         [$from, $to] = $this->resolveDateRange($request);
-        $baseQuery = $this->filteredAssignmentsQuery($manager, $from, $to);
+
+        $selectedDepartmentId = null;
+        if ($manager->is_global_manager) {
+            $selectedDepartmentId = $request->filled('department_id') ? (int) $request->input('department_id') : null;
+        } else {
+            $selectedDepartmentId = $manager->department_id ? (int) $manager->department_id : null;
+        }
+
+        $baseQuery = $this->filteredAssignmentsQuery($manager, $from, $to, $selectedDepartmentId);
 
         // Agregasi di level database (SQL SUM & COUNT) tanpa memuat seluruh baris ke memori
         $totalRegularHours = round((float) (clone $baseQuery)->sum('regular_hours'), 2);
@@ -52,11 +61,19 @@ class DepartmentTimesheetController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        $department = $manager->department;
+        $departments = $manager->is_global_manager
+            ? Department::where('company_id', $manager->company_id)->orderBy('name')->get()
+            : collect([$manager->department])->filter();
+
+        $department = $selectedDepartmentId
+            ? Department::where('company_id', $manager->company_id)->find($selectedDepartmentId)
+            : ($manager->department ?? null);
 
         return view('manager.timesheets.index', [
             'manager' => $manager,
             'department' => $department,
+            'departments' => $departments,
+            'selectedDepartmentId' => $selectedDepartmentId,
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
             'totalRegularHours' => $totalRegularHours,
@@ -95,27 +112,41 @@ class DepartmentTimesheetController extends Controller
      */
     private function authorizeDepartment(Request $request, User $manager): void
     {
+        if ($manager->is_global_manager) {
+            return;
+        }
+
         if ($request->filled('department_id') && (int) $request->input('department_id') !== (int) $manager->department_id) {
             abort(403, 'Akses ditolak: Anda hanya berwenang mengakses data departemen Anda sendiri.');
         }
     }
 
     /**
-     * Query dasar shift_assignments staf departemen dengan scope ketat where('department_id', $manager->department_id).
+     * Query dasar shift_assignments staf departemen dengan filter hak akses.
      */
-    private function filteredAssignmentsQuery(User $manager, Carbon $from, Carbon $to): Builder
+    private function filteredAssignmentsQuery(User $manager, Carbon $from, Carbon $to, ?int $departmentId = null): Builder
     {
-        return ShiftAssignment::query()
-            ->where('company_id', $manager->company_id)
-            ->whereHas('user', function ($q) use ($manager) {
+        $query = ShiftAssignment::query()
+            ->where('shift_assignments.company_id', $manager->company_id);
+
+        if ($manager->is_global_manager) {
+            if ($departmentId) {
+                $query->whereHas('user', function ($q) use ($departmentId) {
+                    $q->where('department_id', $departmentId);
+                });
+            }
+        } else {
+            $query->whereHas('user', function ($q) use ($manager) {
                 $q->where('department_id', $manager->department_id);
-            })
-            ->where(function ($q) use ($from, $to) {
-                $q->whereBetween('clock_in_time', [$from, $to])
-                    ->orWhereHas('shift', function ($sub) use ($from, $to) {
-                        $sub->whereBetween('start_time', [$from, $to]);
-                    });
             });
+        }
+
+        return $query->where(function ($q) use ($from, $to) {
+            $q->whereBetween('clock_in_time', [$from, $to])
+                ->orWhereHas('shift', function ($sub) use ($from, $to) {
+                    $sub->whereBetween('start_time', [$from, $to]);
+                });
+        });
     }
 
     /**

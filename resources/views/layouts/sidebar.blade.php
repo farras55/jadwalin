@@ -1,28 +1,10 @@
-{{-- Mobile Backdrop Overlay --}}
-<div x-show="sidebarOpen" 
-     x-transition:enter="transition-opacity ease-linear duration-300"
-     x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100"
-     x-transition:leave="transition-opacity ease-linear duration-300"
-     x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0"
-     @click="sidebarOpen = false" 
-     class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"
-     style="display: none;">
-</div>
-
-{{-- Sidebar Container (Desktop Sticky & Mobile Off-Canvas Drawer) --}}
-<aside :class="{
-           'translate-x-0 shadow-2xl': sidebarOpen,
-           '-translate-x-full md:translate-x-0': !sidebarOpen,
-           'md:w-[76px]': sidebarCollapsed,
-           'md:w-[260px]': !sidebarCollapsed
-       }"
-       class="fixed inset-y-0 left-0 z-50 w-[270px] h-screen flex-shrink-0 flex flex-col justify-between border-r border-[#E2E0F7] bg-white transition-all duration-200 ease-in-out md:static md:translate-x-0 md:shadow-none select-none">
+{{-- Sidebar Container (Desktop Only: hidden md:flex) --}}
+<aside :class="sidebarCollapsed ? 'w-[76px]' : 'w-[260px]'"
+       class="hidden md:flex h-screen flex-shrink-0 flex-col justify-between border-r border-[#E2E0F7] bg-white transition-all duration-200 ease-in-out static shadow-none select-none">
     
     <div class="flex flex-col flex-1 min-h-0">
-        {{-- Logo Header --}}
-        <div :class="sidebarCollapsed ? 'px-0 py-4 justify-center' : 'px-5 py-4 justify-between'"
+        {{-- Logo & Toggle Header --}}
+        <div :class="sidebarCollapsed ? 'flex-col gap-2.5 px-0 py-3.5 justify-center' : 'flex-row px-5 py-4 justify-between'"
              class="flex items-center border-b border-transparent transition-all duration-200 w-full">
             
             {{-- Bagian Logo: Saat collapsed hanya ikon di tengah --}}
@@ -48,23 +30,15 @@
                     </span>
                 </div>
             </div>
-            
-            {{-- Tombol Tutup (Mobile Only) --}}
-            <button type="button" 
-                    @click="sidebarOpen = false" 
-                    class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-[#F5F3FF] transition focus:outline-none"
-                    title="Tutup Menu">
-                <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
 
-            {{-- Tombol Toggle Collapse (Desktop Only, hanya tampil saat sidebar terbuka) --}}
+            {{-- Tombol Panah Toggle Sidebar (Satu-satunya tombol untuk menutup / membuka sidebar) --}}
             <button type="button" 
                     @click="toggleSidebar()" 
-                    x-show="!sidebarCollapsed"
-                    :class="{ 'hidden': sidebarCollapsed }"
-                    class="hidden md:flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-[#F5F3FF] transition focus:outline-none"
-                    title="Tutup Sidebar">
-                <i data-lucide="chevron-left" class="h-4 w-4"></i>
+                    class="w-7 h-7 flex items-center justify-center rounded-lg bg-[#F5F3FF] border border-[#E2E0F7] text-[#6C5CE7] hover:bg-[#6C5CE7] hover:text-white hover:border-[#6C5CE7] shadow-2xs transition-all duration-200 focus:outline-none shrink-0"
+                    :title="sidebarCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar'">
+                <i data-lucide="chevron-left" 
+                   class="h-4 w-4 stroke-[2.5] transition-transform duration-200" 
+                   :class="{ 'rotate-180': sidebarCollapsed }"></i>
             </button>
         </div>
 

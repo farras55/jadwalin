@@ -23,7 +23,11 @@
                         Data Karyawan Tim
                     </h1>
                     <p class="text-xs md:text-sm text-[#7C7896] mt-1">
-                        Kelola informasi dan tinjau aktivitas karyawan di departemen Anda.
+                        @if ($isGlobalManager)
+                            Kelola informasi dan tinjau aktivitas karyawan di seluruh departemen perusahaan Anda (Akses Global).
+                        @else
+                            Kelola informasi dan tinjau aktivitas karyawan di departemen <span class="font-semibold text-[#6C5CE7]">{{ $currentDepartment?->name ?? 'Anda' }}</span>.
+                        @endif
                     </p>
                 </div>
             </div>
@@ -42,7 +46,7 @@
         {{-- 4 KPI CARDS --}}
         {{-- ================================================================= --}}
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
 
             {{-- Total Karyawan --}}
             <button
@@ -51,19 +55,25 @@
                 :class="selectedType === 'all'
                     ? 'ring-2 ring-[#6C5CE7] border-[#6C5CE7]'
                     : 'border-[#E2E0F7]'"
-                class="w-full text-left bg-white rounded-2xl border p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
+                class="w-full text-left bg-white rounded-2xl border p-3.5 sm:p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
                 :aria-pressed="selectedType === 'all'"
             >
-                <div>
-                    <p class="text-xs font-semibold text-[#7C7896]">Total Karyawan</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-1 font-mono">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#7C7896]">Total Karyawan</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#2D2A3E] mt-0.5 sm:mt-1 font-mono">
                         {{ $employees->total() }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Departemen Anda</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">
+                        @if ($isGlobalManager)
+                            {{ $selectedDepartment ? ($departments->firstWhere('id', $selectedDepartment)?->name ?? 'Departemen Terpilih') : 'Seluruh Departemen' }}
+                        @else
+                            {{ $currentDepartment?->name ?? 'Departemen Anda' }}
+                        @endif
+                    </p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="users" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -74,19 +84,19 @@
                 :class="selectedType === 'full_time'
                     ? 'ring-2 ring-emerald-500 border-emerald-500'
                     : 'border-[#E2E0F7]'"
-                class="w-full text-left bg-white rounded-2xl border p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
+                class="w-full text-left bg-white rounded-2xl border p-3.5 sm:p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
                 :aria-pressed="selectedType === 'full_time'"
             >
-                <div>
-                    <p class="text-xs font-semibold text-emerald-700">Full-Time</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-emerald-600 mt-1 font-mono">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-emerald-700">Full-Time</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-emerald-600 mt-0.5 sm:mt-1 font-mono">
                         {{ $employees->getCollection()->where('employment_type', 'full_time')->count() }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Pada halaman ini</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Halaman ini</p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="briefcase" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="briefcase" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -97,19 +107,19 @@
                 :class="selectedType === 'part_time'
                     ? 'ring-2 ring-indigo-500 border-indigo-500'
                     : 'border-[#E2E0F7]'"
-                class="w-full text-left bg-white rounded-2xl border p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
+                class="w-full text-left bg-white rounded-2xl border p-3.5 sm:p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
                 :aria-pressed="selectedType === 'part_time'"
             >
-                <div>
-                    <p class="text-xs font-semibold text-[#4F46E5]">Part-Time</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-[#4F46E5] mt-1 font-mono">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-[#4F46E5]">Part-Time</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#4F46E5] mt-0.5 sm:mt-1 font-mono">
                         {{ $employees->getCollection()->where('employment_type', 'part_time')->count() }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Pada halaman ini</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Halaman ini</p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="clock" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                 </div>
             </button>
 
@@ -120,19 +130,23 @@
                 :class="selectedType === 'freelance'
                     ? 'ring-2 ring-amber-500 border-amber-500'
                     : 'border-[#E2E0F7]'"
-                class="w-full text-left bg-white rounded-2xl border p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
+                class="w-full text-left bg-white rounded-2xl border p-3.5 sm:p-5 shadow-2xs flex items-center justify-between transition hover:shadow-md"
                 :aria-pressed="selectedType === 'freelance'"
             >
-                <div>
-                    <p class="text-xs font-semibold text-amber-700">Freelance</p>
-                    <p class="text-2xl md:text-3xl font-extrabold text-amber-600 mt-1 font-mono">
+                <div class="min-w-0 pr-1">
+                    <p class="text-[11px] sm:text-xs font-semibold text-amber-700">Freelance</p>
+                    <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-amber-600 mt-0.5 sm:mt-1 font-mono">
                         {{ $employees->getCollection()->where('employment_type', 'freelance')->count() }}
                     </p>
-                    <p class="text-[11px] text-[#7C7896] mt-0.5">Pada halaman ini</p>
+                    <p class="text-[10px] sm:text-[11px] text-[#7C7896] mt-0.5 truncate">Halaman ini</p>
                 </div>
 
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i data-lucide="user-check" class="w-6 h-6"></i>
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i data-lucide="user-check" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+            </button>
+
+        </div>
                 </div>
             </button>
 
@@ -148,7 +162,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
 
                     {{-- Input Pencarian --}}
-                    <div class="md:col-span-6 relative">
+                    <div class="{{ $isGlobalManager ? 'md:col-span-4' : 'md:col-span-6' }} relative">
                         <i data-lucide="search" class="w-4 h-4 text-[#7C7896] absolute left-3.5 top-1/2 -translate-y-1/2"></i>
 
                         <input
@@ -160,6 +174,27 @@
                             class="w-full pl-9 pr-4 py-2 text-xs md:text-sm text-[#2D2A3E] placeholder-[#7C7896]/60 bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
                         >
                     </div>
+
+                    {{-- Filter Departemen (HANYA untuk Global Manager) --}}
+                    @if ($isGlobalManager)
+                        <div class="md:col-span-3">
+                            <select
+                                id="department_id"
+                                name="department_id"
+                                class="w-full px-3 py-2 text-xs md:text-sm text-[#2D2A3E] bg-[#F8F7FF] border border-[#E2E0F7] rounded-xl focus:border-[#6C5CE7] focus:ring-1 focus:ring-[#6C5CE7] transition"
+                            >
+                                <option value="">Semua Departemen</option>
+                                @foreach ($departments as $department)
+                                    <option
+                                        value="{{ $department->id }}"
+                                        @selected((string) $selectedDepartment === (string) $department->id)
+                                    >
+                                        {{ $department->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
 
                     {{-- Filter Posisi --}}
                     <div class="md:col-span-3">
@@ -182,7 +217,7 @@
                     </div>
 
                     {{-- Filter Tipe Karyawan --}}
-                    <div class="md:col-span-3">
+                    <div class="{{ $isGlobalManager ? 'md:col-span-2' : 'md:col-span-3' }}">
                         <select
                             id="employment_type"
                             name="employment_type"
@@ -198,10 +233,10 @@
                 </div>
 
                 {{-- Tombol Filter & Reset --}}
-                <div class="flex items-center gap-2 pt-1">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
                     <button
                         type="submit"
-                        class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#6C5CE7] hover:bg-[#5A4BD1] text-white text-xs font-semibold shadow-2xs transition"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:py-2 rounded-xl bg-[#6C5CE7] hover:bg-[#5A4BD1] text-white text-xs font-semibold shadow-2xs transition"
                     >
                         <i data-lucide="filter" class="w-3.5 h-3.5"></i>
                         <span>Terapkan Filter</span>
@@ -209,7 +244,7 @@
 
                     <a
                         href="{{ route('manager.employees.index') }}"
-                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] hover:bg-[#F5F3FF] text-[#7C7896] hover:text-[#2D2A3E] text-xs font-semibold transition"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] hover:bg-[#F5F3FF] text-[#7C7896] hover:text-[#2D2A3E] text-xs font-semibold transition"
                     >
                         <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                         <span>Reset</span>
@@ -225,16 +260,16 @@
 
         <div class="bg-white rounded-2xl border border-[#E2E0F7] shadow-2xs overflow-hidden">
 
-            <div class="px-5 py-4 border-b border-[#E2E0F7] flex items-center justify-between">
+            <div class="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-[#E2E0F7] flex items-center justify-between">
 
                 <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0">
-                        <i data-lucide="users" class="w-5 h-5"></i>
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#F5F3FF] text-[#6C5CE7] border border-[#E2E0F7] flex items-center justify-center shrink-0">
+                        <i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                     </div>
 
                     <div>
-                        <h2 class="text-base font-bold text-[#2D2A3E]">Direktori Karyawan</h2>
-                        <p class="text-xs text-[#7C7896]">
+                        <h2 class="text-sm sm:text-base font-bold text-[#2D2A3E]">Direktori Karyawan</h2>
+                        <p class="text-[11px] sm:text-xs text-[#7C7896]">
                             Menampilkan {{ $employees->count() }} dari {{ $employees->total() }} karyawan.
                         </p>
                     </div>
@@ -246,7 +281,7 @@
                     x-show="selectedType !== 'all'"
                     @click="selectedType = 'all'"
                     x-cloak
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] hover:bg-[#F5F3FF] text-[#6C5CE7] text-xs font-semibold transition"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl border border-[#E2E0F7] bg-[#F8F7FF] hover:bg-[#F5F3FF] text-[#6C5CE7] text-xs font-semibold transition"
                 >
                     <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                     <span>Tampilkan Semua</span>
@@ -254,7 +289,92 @@
 
             </div>
 
-            <div class="overflow-x-auto">
+            {{-- Tampilan Mobile: Kartu Responsif (sm:hidden) --}}
+            <div class="sm:hidden divide-y divide-[#E2E0F7]">
+                @forelse ($employees as $index => $employee)
+                    @php
+                        $employmentLabels = [
+                            'full_time' => 'Full-Time',
+                            'part_time' => 'Part-Time',
+                            'freelance' => 'Freelance',
+                        ];
+                        $employmentClasses = [
+                            'full_time' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                            'part_time' => 'bg-sky-50 text-sky-700 border-sky-200',
+                            'freelance' => 'bg-purple-50 text-purple-700 border-purple-200',
+                        ];
+                        $statusLabels = [
+                            'active' => 'Aktif',
+                            'on_leave' => 'Cuti',
+                            'resigned' => 'Tidak Aktif',
+                        ];
+                        $statusClasses = [
+                            'active' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                            'on_leave' => 'bg-amber-50 text-amber-700 border-amber-200',
+                            'resigned' => 'bg-slate-100 text-slate-600 border-slate-200',
+                        ];
+                        $employeeStatus = $employee->status ?? 'active';
+                        $employmentType = $employee->employment_type ?? 'full_time';
+                        $initial = strtoupper(substr($employee->name, 0, 1));
+                    @endphp
+                    <div class="p-3.5 space-y-3" x-show="selectedType === 'all' || selectedType === @js($employmentType)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                @if ($employee->profile_photo)
+                                    <img src="{{ asset('storage/' . $employee->profile_photo) }}" alt="{{ $employee->name }}" class="w-10 h-10 rounded-full object-cover shrink-0 shadow-2xs">
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-[#6C5CE7] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                                        {{ $initial }}
+                                    </div>
+                                @endif
+                                <div class="min-w-0 truncate">
+                                    <p class="font-bold text-[#2D2A3E] text-sm truncate">{{ $employee->name }}</p>
+                                    <p class="text-[11px] text-[#7C7896] truncate">{{ $employee->email }}</p>
+                                    @if ($employee->phone_number)
+                                        <p class="text-[10px] text-[#7C7896] font-mono truncate">{{ $employee->phone_number }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border {{ $statusClasses[$employeeStatus] ?? 'bg-slate-100 text-slate-600 border-slate-200' }} shrink-0">
+                                @if ($employeeStatus === 'active')
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                @else
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                @endif
+                                {{ $statusLabels[$employeeStatus] ?? ucfirst($employeeStatus) }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2.5 border-t border-[#F5F3FF] text-xs">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="font-semibold text-[#2D2A3E] text-xs">{{ $employee->position?->name ?? 'Belum ditentukan' }}</span>
+                                @if ($isGlobalManager && $employee->department)
+                                    <span class="text-[11px] text-[#6C5CE7] font-semibold flex items-center gap-0.5">
+                                        <i data-lucide="building-2" class="w-3 h-3"></i>
+                                        {{ $employee->department->name }}
+                                    </span>
+                                @endif
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border {{ $employmentClasses[$employmentType] ?? 'bg-slate-100 text-slate-600 border-slate-200' }}">
+                                    {{ $employmentLabels[$employmentType] ?? ucfirst($employmentType) }}
+                                </span>
+                            </div>
+
+                            <a href="{{ route('manager.employees.show', $employee) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#E2E0F7] bg-[#F5F3FF] hover:bg-[#6C5CE7] hover:text-white text-[#6C5CE7] text-xs font-semibold shadow-2xs transition shrink-0">
+                                <span>Detail</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-[#7C7896]">
+                        <p class="text-sm font-bold text-[#2D2A3E]">Karyawan Tidak Ditemukan</p>
+                        <p class="text-xs text-[#7C7896] mt-1">Coba sesuaikan kata kunci pencarian atau reset filter.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            {{-- Tampilan Desktop: Tabel Lengkap (hidden sm:block) --}}
+            <div class="hidden sm:block overflow-x-auto">
                 <table class="w-full text-left text-xs">
 
                     <thead class="bg-[#F8F7FF] text-[#7C7896] font-bold border-b border-[#E2E0F7] uppercase text-[10px] tracking-wider">
@@ -342,8 +462,14 @@
                                 </td>
 
                                 {{-- Posisi --}}
-                                <td class="px-5 py-3.5 whitespace-nowrap font-medium text-[#2D2A3E]">
-                                    {{ $employee->position?->name ?? 'Belum ditentukan' }}
+                                <td class="px-5 py-3.5 whitespace-nowrap">
+                                    <p class="font-medium text-[#2D2A3E]">{{ $employee->position?->name ?? 'Belum ditentukan' }}</p>
+                                    @if ($isGlobalManager && $employee->department)
+                                        <p class="text-[11px] text-[#6C5CE7] font-semibold flex items-center gap-1 mt-0.5">
+                                            <i data-lucide="building-2" class="w-3 h-3"></i>
+                                            <span>{{ $employee->department->name }}</span>
+                                        </p>
+                                    @endif
                                 </td>
 
                                 {{-- Tipe Karyawan --}}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Position;
 use App\Models\ShiftAssignment;
 use App\Models\User;
@@ -12,7 +13,7 @@ use Illuminate\View\View;
 class TeamEmployeeController extends Controller
 {
     /**
-     * Menampilkan daftar karyawan dalam departemen manager.
+     * Menampilkan daftar karyawan dalam departemen manager (atau seluruh departemen jika global manager).
      */
     public function index(Request $request): View
     {
@@ -24,12 +25,19 @@ class TeamEmployeeController extends Controller
             ->where('role', 'employee');
 
         // Manager biasa hanya dapat melihat karyawan departemennya.
-        // Global manager dapat melihat seluruh departemen perusahaannya.
+        // Global manager dapat melihat seluruh departemen atau memfilter departemen tertentu.
         if (! $manager->is_global_manager) {
             $employeesQuery->where(
                 'department_id',
                 $manager->department_id
             );
+        } else {
+            if ($request->filled('department_id')) {
+                $employeesQuery->where(
+                    'department_id',
+                    $request->input('department_id')
+                );
+            }
         }
 
         $search = trim((string) $request->input('search', ''));
@@ -69,18 +77,31 @@ class TeamEmployeeController extends Controller
                 'department_id',
                 $manager->department_id
             );
+        } elseif ($request->filled('department_id')) {
+            $positionsQuery->where(
+                'department_id',
+                $request->input('department_id')
+            );
         }
 
         $positions = $positionsQuery
             ->orderBy('name')
             ->get();
 
+        $departments = $manager->is_global_manager
+            ? Department::where('company_id', $manager->company_id)->orderBy('name')->get()
+            : collect([]);
+
         return view('manager.employees.index', [
             'employees' => $employees,
             'positions' => $positions,
+            'departments' => $departments,
+            'isGlobalManager' => (bool) $manager->is_global_manager,
             'search' => $search,
+            'selectedDepartment' => $manager->is_global_manager ? $request->input('department_id') : $manager->department_id,
             'selectedPosition' => $request->input('position_id'),
             'selectedEmploymentType' => $request->input('employment_type'),
+            'currentDepartment' => $manager->department,
         ]);
     }
 
