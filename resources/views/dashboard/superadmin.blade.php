@@ -226,7 +226,7 @@
 
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
                 <span>Versi Platform</span>
-                <span class="font-mono text-slate-600">v2.4.0-stable</span>
+                <span class="font-mono text-slate-600">{{ config('app.version', 'v2.4.0-stable') }}</span>
             </div>
         </div>
 

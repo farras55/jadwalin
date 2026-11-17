@@ -247,7 +247,7 @@
                                     </p>
                                     <p class="text-xs text-slate-500 flex items-center gap-1 font-mono">
                                         <i data-lucide="clock" class="h-3 w-3 shrink-0 text-slate-400"></i>
-                                        <span>{{ $reqShift->start_time->format('H:i') }} – {{ $reqShift->end_time->format('H:i') }} WIB</span>
+                                        <span>{{ $reqShift->start_time->format('H:i') }} – {{ $reqShift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                     </p>
                                 </div>
 
@@ -282,7 +282,7 @@
                                             </p>
                                             <p class="text-xs text-slate-500 flex items-center gap-1 font-mono">
                                                 <i data-lucide="clock" class="h-3 w-3 shrink-0 text-slate-400"></i>
-                                                <span>{{ $myShift->start_time->format('H:i') }} – {{ $myShift->end_time->format('H:i') }} WIB</span>
+                                                <span>{{ $myShift->start_time->format('H:i') }} – {{ $myShift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                             </p>
                                         @else
                                             <p class="text-xs text-slate-400 italic">Jadwal shift pengganti tidak ditemukan.</p>
@@ -401,7 +401,7 @@
                             </p>
                             <p class="text-xs text-slate-500 flex items-center gap-1 font-mono">
                                 <i data-lucide="clock" class="h-3 w-3 text-slate-400"></i>
-                                <span>{{ $reqShift->start_time->format('H:i') }} – {{ $reqShift->end_time->format('H:i') }} WIB</span>
+                                <span>{{ $reqShift->start_time->format('H:i') }} – {{ $reqShift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                             </p>
                         </div>
 
@@ -422,7 +422,7 @@
                                     </p>
                                     <p class="text-xs text-slate-500 flex items-center gap-1 font-mono">
                                         <i data-lucide="clock" class="h-3 w-3 text-slate-400"></i>
-                                        <span>{{ $targetShift->start_time->format('H:i') }} – {{ $targetShift->end_time->format('H:i') }} WIB</span>
+                                        <span>{{ $targetShift->start_time->format('H:i') }} – {{ $targetShift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                     </p>
                                 @endif
                             @endif

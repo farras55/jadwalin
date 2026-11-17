@@ -145,7 +145,7 @@
             <tr>
                 <td class="meta-label">Tanggal Pembuatan</td>
                 <td class="meta-sep">:</td>
-                <td class="meta-value">{{ $generatedAt ?? (now()->translatedFormat('d F Y, H:i') . ' WIB') }}</td>
+                <td class="meta-value">{{ $generatedAt ?? (now()->translatedFormat('d F Y, H:i') . ' ' . ($timezoneAbbr ?? 'WIB')) }}</td>
             </tr>
         </table>
     </div>
@@ -240,8 +240,8 @@
                         $logDay = $log->shift?->start_time
                             ? \Carbon\Carbon::parse($log->shift->start_time)->translatedFormat('l')
                             : ($log->clock_in_time ? \Carbon\Carbon::parse($log->clock_in_time)->translatedFormat('l') : ($log->date ? \Carbon\Carbon::parse($log->date)->translatedFormat('l') : '-'));
-                        $in = $log->clock_in_time ? \Carbon\Carbon::parse($log->clock_in_time)->format('H:i') . ' WIB' : '-';
-                        $out = $log->clock_out_time ? \Carbon\Carbon::parse($log->clock_out_time)->format('H:i') . ' WIB' : '-';
+                        $in = $log->clock_in_time ? \Carbon\Carbon::parse($log->clock_in_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
+                        $out = $log->clock_out_time ? \Carbon\Carbon::parse($log->clock_out_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
                         $statusLabel = match($log->status) {
                             'present', 'completed' => 'Hadir',
                             'late' => 'Terlambat',

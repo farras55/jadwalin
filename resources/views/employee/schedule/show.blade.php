@@ -79,7 +79,7 @@
                     <div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Waktu</p>
                         <p class="text-xs font-bold text-slate-900 font-mono">
-                            {{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} WIB
+                            {{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}
                         </p>
                         <p class="text-[11px] text-slate-500 mt-0.5">
                             {{ $shiftStart->diffInHours($shiftEnd) }} jam kerja

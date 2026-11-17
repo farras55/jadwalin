@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\AuditLog;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
@@ -28,6 +29,18 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production') || str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
+
+        View::composer('*', function ($view) {
+            if (! array_key_exists('timezoneAbbr', $view->getData())) {
+                $user = auth()->user();
+                $tz = null;
+                if ($user && $user->relationLoaded('company')) {
+                    $tz = $user->company?->timezone;
+                }
+                $tz = $tz ?: config('app.timezone', 'Asia/Jakarta');
+                $view->with('timezoneAbbr', AuditLog::getTimezoneAbbreviation($tz));
+            }
+        });
 
         View::composer('layouts.topbar', function ($view) {
             $unreadNotifCount = 0;

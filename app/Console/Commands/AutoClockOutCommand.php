@@ -65,7 +65,7 @@ class AutoClockOutCommand extends Command
 
                     $bufferHours = ($setting && $setting->auto_clockout_buffer_hours !== null)
                         ? (int) $setting->auto_clockout_buffer_hours
-                        : 1;
+                        : (int) config('jadwalin.attendance.auto_clock_out_buffer_hours', 1);
 
                     $shiftEndDateTime = self::resolveShiftEndDateTime($shift, $timezone);
                     $cutoffDateTime = $shiftEndDateTime->copy()->addHours($bufferHours);

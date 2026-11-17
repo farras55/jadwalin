@@ -27,7 +27,7 @@
                     <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 shadow-card">
                         <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400"></i>
                         <span class="font-mono font-bold text-xs" x-text="currentTimeStr">{{ $serverTime }}</span>
-                        <span class="text-[10px] font-semibold text-slate-400">WIB</span>
+                        <span class="text-[10px] font-semibold text-slate-400">{{ $timezoneAbbr ?? 'WIB' }}</span>
                     </div>
 
                     {{-- Status Polling Indicator --}}

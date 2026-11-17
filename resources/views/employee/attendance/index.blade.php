@@ -1,7 +1,7 @@
 <x-app-layout>
     {{-- Leaflet Map CSS & JS for Real-Time Geofencing Map --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="{{ config('jadwalin.assets.leaflet_css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css') }}" crossorigin="" />
+    <script src="{{ config('jadwalin.assets.leaflet_js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js') }}" crossorigin=""></script>
 
     @php
         $user = auth()->user();
@@ -38,22 +38,46 @@
             'total_work_hours' => 168,
         ];
 
+        $tz = auth()->user()?->company?->timezone ?? config('app.timezone', 'Asia/Jakarta');
+        $tzAbbr = \App\Models\AuditLog::getTimezoneAbbreviation($tz);
+
         $shiftTitle = $todayShift && $todayShift->shift ? $todayShift->shift->title : 'Tidak Ada Shift';
         $shiftStart = $todayShift && $todayShift->shift ? \Carbon\Carbon::parse($todayShift->shift->start_time)->format('H:i') : '--:--';
         $shiftEnd   = $todayShift && $todayShift->shift ? \Carbon\Carbon::parse($todayShift->shift->end_time)->format('H:i') : '--:--';
-        $clockInFormatted  = $isClockedIn  ? \Carbon\Carbon::parse($todayShift->clock_in_time)->format('H:i') . ' WIB' : '-';
-        $clockOutFormatted = $isClockedOut ? \Carbon\Carbon::parse($todayShift->clock_out_time)->format('H:i') . ' WIB' : '-';
+        $clockInFormatted  = $isClockedIn  ? \Carbon\Carbon::parse($todayShift->clock_in_time)->format('H:i') . ' ' . $tzAbbr : '-';
+        $clockOutFormatted = $isClockedOut ? \Carbon\Carbon::parse($todayShift->clock_out_time)->format('H:i') . ' ' . $tzAbbr : '-';
+
+        // Hitung target durasi shift secara dinamis (fallback ke 8 jam jika tidak ada jadwal shift)
+        $targetShiftSeconds = 8 * 3600;
+        $targetShiftHours = 8.0;
+        $targetShiftFormatted = '08:00:00';
+        if ($todayShift && $todayShift->shift) {
+            $sStart = \Carbon\Carbon::parse($todayShift->shift->start_time);
+            $sEnd = \Carbon\Carbon::parse($todayShift->shift->end_time);
+            if ($sEnd->lessThan($sStart)) {
+                $sEnd->addDay();
+            }
+            $diffSec = $sStart->diffInSeconds($sEnd);
+            if ($diffSec > 0) {
+                $targetShiftSeconds = $diffSec;
+                $targetShiftHours = round($diffSec / 3600, 1);
+                $th = floor($diffSec / 3600);
+                $tm = floor(($diffSec % 3600) / 60);
+                $ts = $diffSec % 60;
+                $targetShiftFormatted = sprintf('%02d:%02d:%02d', $th, $tm, $ts);
+            }
+        }
+        $allowMockGps = (bool) config('jadwalin.attendance.allow_mock_gps', true);
 
         // Dataset Riwayat 7 Hari Terakhir
-        $tz = auth()->user()?->company?->timezone ?? 'Asia/Jakarta';
-        $historyData = $recentHistory->isNotEmpty() ? $recentHistory->map(function($item) use ($tz) {
+        $historyData = $recentHistory->isNotEmpty() ? $recentHistory->map(function($item) use ($tz, $tzAbbr) {
             $startTime = \Carbon\Carbon::parse($item->shift->start_time ?? now());
             $dateStr = $startTime->translatedFormat('d M Y');
             $dayStr = $startTime->translatedFormat('l');
             $shiftName = $item->shift->title ?? 'Shift Regular';
             $outlet = $item->shift->department->name ?? 'Operasional';
-            $cIn = $item->clock_in_time ? \Carbon\Carbon::parse($item->clock_in_time)->format('H:i') . ' WIB' : '-';
-            $cOut = $item->clock_out_time ? \Carbon\Carbon::parse($item->clock_out_time)->format('H:i') . ' WIB' : '-';
+            $cIn = $item->clock_in_time ? \Carbon\Carbon::parse($item->clock_in_time)->format('H:i') . ' ' . $tzAbbr : '-';
+            $cOut = $item->clock_out_time ? \Carbon\Carbon::parse($item->clock_out_time)->format('H:i') . ' ' . $tzAbbr : '-';
             
             $durationStr = '-';
             if ($item->clock_in_time && $item->clock_out_time) {
@@ -133,8 +157,8 @@
                 'overtime_status' => $item->overtime_status,
                 'can_regularize' => (bool) ($item->is_auto_clockout || ($item->clock_out_time && $item->shift && \Carbon\Carbon::parse($item->clock_out_time)->gt(\App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, $tz)))),
                 'regularization_status' => $item->latestAttendanceRegularization?->status,
-                'shift_end_datetime' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, auth()->user()?->company?->timezone ?? 'Asia/Jakarta')->format('Y-m-d\TH:i') : '',
-                'shift_end_formatted' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, auth()->user()?->company?->timezone ?? 'Asia/Jakarta')->format('H:i') . ' WIB' : '',
+                'shift_end_datetime' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, $tz)->format('Y-m-d\TH:i') : '',
+                'shift_end_formatted' => $item->shift ? \App\Console\Commands\AutoClockOutCommand::resolveShiftEndDateTime($item->shift, $tz)->format('H:i') . ' ' . $tzAbbr : '',
             ];
         }) : collect([]);
     @endphp
@@ -171,9 +195,12 @@
                     requested_clock_out_time: '',
                     reason: ''
                 },
+                targetShiftSeconds: parseInt(config.targetShiftSeconds || 28800),
+                targetShiftHours: parseFloat(config.targetShiftHours || 8.0),
+                allowMockGps: Boolean(config.allowMockGps !== undefined ? config.allowMockGps : true),
                 timerDisplay: '00 : 00 : 00',
                 progressPercent: 0,
-                progressHoursText: '0.0 / 8.0 Jam',
+                progressHoursText: '0.0 / ' + (parseFloat(config.targetShiftHours || 8.0).toFixed(1)) + ' Jam',
                 timerInterval: null,
                 pollInterval: null,
                 totalElapsedSeconds: 0,
@@ -193,8 +220,8 @@
                     radius: refRadius,
                     is_configured: isConfigured
                 },
-                userLat: (isConfigured && refLatitude !== null) ? refLatitude + 0.00008 : null,
-                userLng: (isConfigured && refLongitude !== null) ? refLongitude + 0.00008 : null,
+                userLat: (isConfigured && refLatitude !== null && Boolean(config.allowMockGps !== undefined ? config.allowMockGps : true)) ? refLatitude + 0.00008 : null,
+                userLng: (isConfigured && refLongitude !== null && Boolean(config.allowMockGps !== undefined ? config.allowMockGps : true)) ? refLongitude + 0.00008 : null,
                 distanceMeters: null,
                 isInsideRadius: isConfigured,
                 locationStatus: isConfigured ? 'success' : 'unconfigured',
@@ -227,7 +254,7 @@
                     } else {
                         this.timerDisplay = '00 : 00 : 00';
                         this.progressPercent = 0;
-                        this.progressHoursText = '0.0 / 8.0 Jam';
+                        this.progressHoursText = '0.0 / ' + (this.targetShiftHours || 8.0).toFixed(1) + ' Jam';
                     }
 
                     this.calculateSafePosition();
@@ -282,12 +309,13 @@
                         String(mins).padStart(2, '0') + ' : ' + 
                         String(secs).padStart(2, '0');
 
-                    const targetSeconds = 8 * 3600;
-                    const pct = Math.min(100, Math.round((this.totalElapsedSeconds / targetSeconds) * 100));
+                    const targetSec = this.targetShiftSeconds || 28800;
+                    const targetHrs = (this.targetShiftHours || 8.0).toFixed(1);
+                    const pct = Math.min(100, Math.round((this.totalElapsedSeconds / targetSec) * 100));
                     this.progressPercent = pct;
 
                     const elapsedHours = (this.totalElapsedSeconds / 3600).toFixed(1);
-                    this.progressHoursText = elapsedHours + ' / 8.0 Jam';
+                    this.progressHoursText = elapsedHours + ' / ' + targetHrs + ' Jam';
                 },
 
                 calculateSafePosition() {
@@ -299,15 +327,20 @@
                     if (hasCoords) {
                         const cleanLat = parseFloat(this.officeLatitude);
                         const cleanLng = parseFloat(this.officeLongitude);
-                        // Titik presensi aman karyawan diturunkan dari titik kantor di database (+ ~12-13 meter)
-                        this.userLat = cleanLat + 0.00008;
-                        this.userLng = cleanLng + 0.00008;
-                        this.locationStatus = 'success';
-                        this.isLocationConfigured = true;
+                        if (this.allowMockGps) {
+                            // Titik presensi aman karyawan diturunkan dari titik kantor di database (+ ~12-13 meter)
+                            this.userLat = cleanLat + 0.00008;
+                            this.userLng = cleanLng + 0.00008;
+                            this.locationStatus = 'success';
+                            this.isLocationConfigured = true;
 
-                        const dist = this.calculateDistance(this.userLat, this.userLng, cleanLat, cleanLng);
-                        this.distanceMeters = dist;
-                        this.isInsideRadius = (dist !== null && dist <= this.attendanceRadius);
+                            const dist = this.calculateDistance(this.userLat, this.userLng, cleanLat, cleanLng);
+                            this.distanceMeters = dist;
+                            this.isInsideRadius = (dist !== null && dist <= this.attendanceRadius);
+                        } else {
+                            this.locationStatus = 'detecting';
+                            this.isLocationConfigured = true;
+                        }
                     } else {
                         this.userLat = null;
                         this.userLng = null;
@@ -648,7 +681,10 @@
             officeLatitude: {{ $officeLat !== null ? (float) $officeLat : 'null' }},
             officeLongitude: {{ $officeLng !== null ? (float) $officeLng : 'null' }},
             attendanceRadius: {{ (int) $radius }},
-            outlet: @json($outlet)
+            outlet: @json($outlet),
+            targetShiftSeconds: {{ (int) $targetShiftSeconds }},
+            targetShiftHours: {{ (float) $targetShiftHours }},
+            allowMockGps: {{ $allowMockGps ? 'true' : 'false' }}
         };
     </script>
 
@@ -868,7 +904,7 @@
                                 <i data-lucide="clock-x" class="w-3.5 h-3.5"></i>
                                 Shift Berakhir Tanpa Presensi
                             </span>
-                            <span class="text-slate-400 font-medium">• Shift berakhir {{ $shiftEnd }} WIB</span>
+                            <span class="text-slate-400 font-medium">• Shift berakhir {{ $shiftEnd }} {{ $tzAbbr }}</span>
 
                         @else
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
@@ -878,7 +914,7 @@
                             <span class="text-slate-400 font-medium">• Menunggu Clock In</span>
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-medium">
                                 <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-500"></i>
-                                Jadwal Masuk: {{ $shiftStart }} WIB
+                                Jadwal Masuk: {{ $shiftStart }} {{ $tzAbbr }}
                             </span>
                         @endif
                     </div>
@@ -917,7 +953,7 @@
                                         <span x-text="timerDisplay" class="text-3xl md:text-5xl font-mono font-bold text-emerald-400 tracking-tight">
                                             00 : 00 : 00
                                         </span>
-                                        <span class="text-xs font-semibold text-slate-400">/ Target 08:00:00</span>
+                                        <span class="text-xs font-semibold text-slate-400">/ Target {{ $targetShiftFormatted }}</span>
                                     </div>
                                     <p class="text-xs text-slate-400 mt-2 font-medium">
                                         Telah menyelesaikan <strong class="font-bold text-white" x-text="progressPercent + '%'">0%</strong> dari target shift hari ini
@@ -930,7 +966,7 @@
                                         <span class="text-3xl md:text-5xl font-mono font-bold text-slate-500 tracking-tight">
                                             00 : 00 : 00
                                         </span>
-                                        <span class="text-xs font-semibold text-slate-500">/ Target 08:00:00</span>
+                                        <span class="text-xs font-semibold text-slate-500">/ Target {{ $targetShiftFormatted }}</span>
                                     </div>
                                     <p class="text-xs text-slate-400 mt-2 font-medium">
                                         @if ($shiftEnded && $attendanceState === 'idle')
@@ -946,15 +982,15 @@
                             <div class="md:col-span-5 bg-slate-800/80 p-3.5 rounded-lg border border-slate-700/80">
                                 <div class="flex items-center justify-between text-xs font-semibold mb-2">
                                     <span class="text-slate-300">Progres Shift</span>
-                                    <span class="text-emerald-400 font-bold font-mono" x-text="progressHoursText">0.0 / 8.0 Jam</span>
+                                    <span class="text-emerald-400 font-bold font-mono" x-text="progressHoursText">0.0 / {{ number_format($targetShiftHours, 1) }} Jam</span>
                                 </div>
                                 <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
                                     <div class="bg-emerald-500 h-2 rounded-full transition-all duration-500" 
                                          :style="'width: ' + progressPercent + '%;'"></div>
                                 </div>
                                 <div class="flex justify-between items-center text-[10px] text-slate-400 font-mono mt-1.5">
-                                    <span>{{ $shiftStart }} WIB</span>
-                                    <span>{{ $shiftEnd }} WIB</span>
+                                    <span>{{ $shiftStart }} {{ $tzAbbr }}</span>
+                                    <span>{{ $shiftEnd }} {{ $tzAbbr }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1014,8 +1050,8 @@
                                 {{-- Tombol Clock-In (Mode 1: Belum Masuk, shift belum berakhir) --}}
                                 <form action="{{ route('employee.attendance.clock-in') }}" method="POST" id="form-clock-in" @submit="if (!isInsideRadius || !isLocationConfigured) { $event.preventDefault(); return false; }">
                                     @csrf
-                                    <input type="hidden" name="latitude" :value="userLat" value="{{ $officeLatitude !== null ? ((float)$officeLatitude + 0.00008) : '' }}">
-                                    <input type="hidden" name="longitude" :value="userLng" value="{{ $officeLongitude !== null ? ((float)$officeLongitude + 0.00008) : '' }}">
+                                    <input type="hidden" name="latitude" :value="userLat" value="{{ ($allowMockGps && $officeLatitude !== null) ? ((float)$officeLatitude + 0.00008) : '' }}">
+                                    <input type="hidden" name="longitude" :value="userLng" value="{{ ($allowMockGps && $officeLongitude !== null) ? ((float)$officeLongitude + 0.00008) : '' }}">
                                     <button type="submit" id="btn-clock-in" data-testid="btn-clock-in"
                                             :disabled="!isInsideRadius || !isLocationConfigured"
                                             :class="(!isInsideRadius || !isLocationConfigured) 
@@ -1060,7 +1096,7 @@
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed">
                         <strong class="font-bold text-slate-900">Petunjuk Operasional Presensi:</strong> 
-                        Pastikan Anda berada dalam radius presensi cabang <span x-text="outletInfo.name">{{ $outletName }}</span> (<span x-text="outletInfo.radius + 'm'">{{ $outletInfo['radius'] ?? 50 }}m</span>) dan memverifikasi kehadiran sebelum shift berakhir pukul {{ $shiftEnd }} WIB.
+                        Pastikan Anda berada dalam radius presensi cabang <span x-text="outletInfo.name">{{ $outletName }}</span> (<span x-text="outletInfo.radius + 'm'">{{ $outletInfo['radius'] ?? 50 }}m</span>) dan memverifikasi kehadiran sebelum shift berakhir pukul {{ $shiftEnd }} {{ $tzAbbr }}.
                     </p>
                 </div>
             </div>

@@ -258,8 +258,8 @@
                                 $shiftDate = $row->shift?->start_time
                                     ? \Carbon\Carbon::parse($row->shift->start_time)->translatedFormat('d M Y')
                                     : ($row->clock_in_time ? \Carbon\Carbon::parse($row->clock_in_time)->translatedFormat('d M Y') : '-');
-                                $cIn = $row->clock_in_time ? \Carbon\Carbon::parse($row->clock_in_time)->format('H:i') . ' WIB' : '-';
-                                $cOut = $row->clock_out_time ? \Carbon\Carbon::parse($row->clock_out_time)->format('H:i') . ' WIB' : '-';
+                                $cIn = $row->clock_in_time ? \Carbon\Carbon::parse($row->clock_in_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
+                                $cOut = $row->clock_out_time ? \Carbon\Carbon::parse($row->clock_out_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
                             @endphp
                             <tr class="hover:bg-slate-50/80 transition">
                                 {{-- No --}}

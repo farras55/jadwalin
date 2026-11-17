@@ -260,7 +260,7 @@
                                             <i data-lucide="calendar" class="h-3.5 w-3.5 text-indigo-600 shrink-0"></i>
                                             <span class="font-medium text-slate-900">{{ $shift->start_time->translatedFormat('l, d M Y') }}</span>
                                             <span>&bull;</span>
-                                            <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} WIB</span>
+                                            <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                         </p>
                                     </div>
                                     <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
@@ -378,7 +378,7 @@
                                     </p>
                                     <p class="text-[11px] text-slate-500 flex items-center gap-1.5">
                                         <i data-lucide="clock" class="h-3.5 w-3.5 text-slate-400"></i>
-                                        <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} WIB</span>
+                                        <span>{{ $shift->start_time->format('H:i') }} - {{ $shift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                     </p>
                                 </div>
 

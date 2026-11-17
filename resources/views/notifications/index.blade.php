@@ -61,7 +61,7 @@
                             title: {{ json_encode($notification->title) }},
                             message: {{ json_encode($notification->message) }},
                             type: {{ json_encode($notification->type ?? 'Info') }},
-                            time: {{ json_encode($notification->created_at->translatedFormat('d F Y, H:i') . ' WIB (' . $notification->created_at->diffForHumans() . ')') }},
+                            time: {{ json_encode($notification->created_at->translatedFormat('d F Y, H:i') . ' ' . ($timezoneAbbr ?? 'WIB') . ' (' . $notification->created_at->diffForHumans() . ')') }},
                             isRead: {{ $notification->is_read ? 'true' : 'false' }},
                             readUrl: {{ json_encode(route('notifications.read', $notification)) }}
                         })"

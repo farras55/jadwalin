@@ -115,7 +115,7 @@
                         </template>
                         <template x-if="valid">
                             <span>
-                                Tercatat otomatis: <strong class="font-mono text-slate-900" x-text="from + ' - ' + to"></strong> WIB
+                                Tercatat otomatis: <strong class="font-mono text-slate-900" x-text="from + ' - ' + to"></strong> {{ $timezoneAbbr ?? 'WIB' }}
                                 (termasuk buffer {{ $bufferMinutes }} menit).
                             </span>
                         </template>
@@ -160,7 +160,7 @@
                         Input: 13:00 – 15:00
                     </p>
                     <p class="text-xs font-mono text-indigo-600 font-semibold">
-                        Sistem: {{ $exampleStart }} – {{ $exampleEnd }} WIB
+                        Sistem: {{ $exampleStart }} – {{ $exampleEnd }} {{ $timezoneAbbr ?? 'WIB' }}
                     </p>
                 </div>
             </div>

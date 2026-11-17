@@ -234,7 +234,7 @@
                                         </span>
                                         <span class="text-slate-300">•</span>
                                         <span class="font-mono text-slate-600">
-                                            {{ $pendingAvailability->start_time?->format('H:i') ?? '-' }} - {{ $pendingAvailability->end_time?->format('H:i') ?? '-' }} WIB
+                                            {{ $pendingAvailability->start_time?->format('H:i') ?? '-' }} - {{ $pendingAvailability->end_time?->format('H:i') ?? '-' }} {{ $timezoneAbbr ?? 'WIB' }}
                                         </span>
                                     </p>
                                     @if ($pendingAvailability->reason)

@@ -117,7 +117,7 @@
                                             {{ $assignment->shift?->title ?? 'Shift Operasional' }}
                                         </h4>
                                         <p class="text-xs text-slate-500 mt-0.5 font-mono">
-                                            {{ $assignment->shift?->start_time?->format('H:i') ?? '-' }} – {{ $assignment->shift?->end_time?->format('H:i') ?? '-' }} WIB
+                                            {{ $assignment->shift?->start_time?->format('H:i') ?? '-' }} – {{ $assignment->shift?->end_time?->format('H:i') ?? '-' }} {{ $timezoneAbbr ?? 'WIB' }}
                                         </p>
                                     </div>
                                 </div>
@@ -291,7 +291,7 @@
                                 <p class="font-semibold text-slate-900 truncate">{{ $shift->title }}</p>
                                 <p class="text-slate-400 text-[11px] mt-0.5">
                                     {{ $shift->start_time?->translatedFormat('l, d M Y') ?? '-' }} • 
-                                    <span class="font-mono text-slate-600">{{ $shift->start_time?->format('H:i') ?? '-' }} – {{ $shift->end_time?->format('H:i') ?? '-' }} WIB</span>
+                                    <span class="font-mono text-slate-600">{{ $shift->start_time?->format('H:i') ?? '-' }} – {{ $shift->end_time?->format('H:i') ?? '-' }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                 </p>
                             </div>
                         </div>

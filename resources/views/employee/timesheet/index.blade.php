@@ -175,8 +175,8 @@
                                 $shiftDay = $row->shift?->start_time
                                     ? \Carbon\Carbon::parse($row->shift->start_time)->translatedFormat('l')
                                     : ($row->clock_in_time ? \Carbon\Carbon::parse($row->clock_in_time)->translatedFormat('l') : '-');
-                                $cIn = $row->clock_in_time ? \Carbon\Carbon::parse($row->clock_in_time)->format('H:i') . ' WIB' : '-';
-                                $cOut = $row->clock_out_time ? \Carbon\Carbon::parse($row->clock_out_time)->format('H:i') . ' WIB' : '-';
+                                $cIn = $row->clock_in_time ? \Carbon\Carbon::parse($row->clock_in_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
+                                $cOut = $row->clock_out_time ? \Carbon\Carbon::parse($row->clock_out_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
                             @endphp
                             <tr class="hover:bg-slate-50/60 transition-colors">
                                 <td class="px-4 py-3 whitespace-nowrap">

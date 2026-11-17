@@ -73,8 +73,8 @@
                                 $dept = $shift?->department?->name ?? 'Operasional';
                                 $shiftDate = $shift ? \Carbon\Carbon::parse($shift->start_time)->translatedFormat('d M Y') : '-';
                                 $shiftTitle = $shift->title ?? 'Shift Regular';
-                                $officialClockOut = $assignment?->clock_out_time ? \Carbon\Carbon::parse($assignment->clock_out_time)->format('H:i') . ' WIB' : '-';
-                                $requestedOut = $reg->requested_clock_out_time ? \Carbon\Carbon::parse($reg->requested_clock_out_time)->format('d M Y, H:i') . ' WIB' : '-';
+                                $officialClockOut = $assignment?->clock_out_time ? \Carbon\Carbon::parse($assignment->clock_out_time)->format('H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
+                                $requestedOut = $reg->requested_clock_out_time ? \Carbon\Carbon::parse($reg->requested_clock_out_time)->format('d M Y, H:i') . ' ' . ($timezoneAbbr ?? 'WIB') : '-';
                             @endphp
                             <tr class="hover:bg-slate-50/60 transition-colors">
                                 <td class="px-5 py-4 whitespace-nowrap">

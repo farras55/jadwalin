@@ -15,11 +15,7 @@
 
         {{-- Jam & Tanggal Realtime (Sembunyi di mobile kecil) --}}
         @php
-            $tzLabel = match($timezone ?? 'Asia/Jakarta') {
-                'Asia/Makassar' => 'WITA',
-                'Asia/Jayapura' => 'WIT',
-                default => 'WIB',
-            };
+            $tzLabel = $timezoneAbbr ?? \App\Models\AuditLog::getTimezoneAbbreviation($timezone ?? 'Asia/Jakarta');
         @endphp
         <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500 font-medium border-l border-slate-200 pl-3 md:pl-4">
             <i data-lucide="calendar" class="h-3.5 w-3.5 shrink-0 text-slate-400"></i>

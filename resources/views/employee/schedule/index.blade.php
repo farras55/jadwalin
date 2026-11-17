@@ -301,7 +301,7 @@
                                             <div class="space-y-1 text-xs text-slate-500">
                                                 <p class="flex items-center gap-1.5 font-mono">
                                                     <i data-lucide="clock" class="h-3 w-3 text-slate-400 shrink-0"></i>
-                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} WIB</span>
+                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                                 </p>
                                                 @if ($assignment->location && $assignment->location !== '-')
                                                     <p class="flex items-center gap-1.5">
@@ -392,7 +392,7 @@
                                                 </div>
                                                 <p class="text-xs font-semibold text-brand-primary mt-0.5 flex items-center gap-1.5 font-mono">
                                                     <i data-lucide="clock" class="h-3 w-3"></i>
-                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} WIB</span>
+                                                    <span>{{ $shiftStart->format('H:i') }} – {{ $shiftEnd->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                                 </p>
                                             </div>
 

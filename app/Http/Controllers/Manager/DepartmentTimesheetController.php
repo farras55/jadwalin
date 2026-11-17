@@ -58,7 +58,7 @@ class DepartmentTimesheetController extends Controller
                 Shift::select('start_time')
                     ->whereColumn('shifts.id', 'shift_assignments.shift_id')
             )
-            ->paginate(15)
+            ->paginate(config('jadwalin.pagination.timesheets', 15))
             ->withQueryString();
 
         $departments = $manager->is_global_manager

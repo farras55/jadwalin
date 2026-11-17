@@ -194,7 +194,7 @@
 
                                     <div class="inline-flex items-center gap-1 font-mono text-slate-500">
                                         <i data-lucide="clock" class="h-3 w-3 text-slate-400 shrink-0"></i>
-                                        <span>{{ $shift->start_time->format('H:i') }} – {{ $shift->end_time->format('H:i') }} WIB</span>
+                                        <span>{{ $shift->start_time->format('H:i') }} – {{ $shift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}</span>
                                         <span class="font-sans font-semibold text-slate-700">({{ $durationHours }} jam)</span>
                                     </div>
                                 </div>
@@ -286,7 +286,7 @@
                             <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-slate-500">
                                 <span class="flex items-center gap-1 font-mono text-slate-700">
                                     <i data-lucide="calendar" class="h-3 w-3 text-slate-400 shrink-0"></i>
-                                    {{ $shift->start_time->translatedFormat('d M Y, H:i') }} – {{ $shift->end_time->format('H:i') }} WIB
+                                    {{ $shift->start_time->translatedFormat('d M Y, H:i') }} – {{ $shift->end_time->format('H:i') }} {{ $timezoneAbbr ?? 'WIB' }}
                                 </span>
                                 <span>•</span>
                                 <span>

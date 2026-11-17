@@ -53,7 +53,7 @@ class AuditLogController extends Controller
             });
         }
 
-        $logs = $query->paginate(15)->withQueryString();
+        $logs = $query->paginate(config('jadwalin.pagination.audit_logs', 15))->withQueryString();
 
         $statsBase = AuditLog::query()->when($companyId, fn ($q) => $q->where('company_id', $companyId));
 
