@@ -27,6 +27,7 @@
         modalOpen: false,
         activeLog: null,
         diffRows: [],
+        packageItems: [],
         fieldDictionary: {
             'clock_out_time': 'Clock Out Time',
             'clock_in_time': 'Clock In Time',
@@ -58,7 +59,10 @@
             'shifts_created': 'Jumlah Shift Dibuat',
             'assignments_created': 'Jumlah Penugasan Dibuat',
             'departments_count': 'Jumlah Departemen',
-            'period': 'Periode Jadwal'
+            'period': 'Periode Jadwal',
+            'scope': 'Cakupan Operasi',
+            'departments': 'Departemen Terlibat',
+            'draft_shifts_deleted': 'Jumlah Draf Dihapus'
         },
         hiddenFields: [
             'id', 
@@ -70,7 +74,8 @@
             'password', 
             'two_factor_secret', 
             'two_factor_recovery_codes', 
-            'email_verified_at'
+            'email_verified_at',
+            'package_details'
         ],
 
         formatVal(key, val) {
@@ -129,6 +134,11 @@
 
         openModal(log) {
             this.activeLog = log;
+            const newVals = (log.new_values && typeof log.new_values === 'object') ? log.new_values : {};
+            const oldVals = (log.old_values && typeof log.old_values === 'object') ? log.old_values : {};
+            this.packageItems = Array.isArray(newVals.package_details) 
+                ? newVals.package_details 
+                : (Array.isArray(oldVals.package_details) ? oldVals.package_details : []);
             this.diffRows = this.buildDiffRows(log.old_values, log.new_values);
             this.modalOpen = true;
             this.$nextTick(() => {
@@ -142,6 +152,7 @@
             this.modalOpen = false;
             this.activeLog = null;
             this.diffRows = [];
+            this.packageItems = [];
         }
     }" @keydown.escape.window="closeModal()" class="space-y-6">
 
@@ -555,6 +566,49 @@
                                         </template>
                                     </tbody>
                                 </table>
+                            </div>
+                        </template>
+
+                        {{-- Rincian Item Terpaket (Paket Smart Scheduling) --}}
+                        <template x-if="packageItems && packageItems.length > 0">
+                            <div class="space-y-2.5 pt-2">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-2">
+                                        <i data-lucide="package" class="h-4 w-4 text-indigo-600"></i>
+                                        <span>Daftar Rincian Shift dalam Paket</span>
+                                        <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100"
+                                              x-text="packageItems.length + ' Shift'"></span>
+                                    </h4>
+                                    <span class="text-[11px] text-slate-500">Rincian data operasional dalam paket</span>
+                                </div>
+                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-card max-h-64 overflow-y-auto">
+                                    <table class="w-full text-left text-xs border-collapse">
+                                        <thead class="bg-slate-50 text-gray-500 text-[10px] sm:text-xs font-semibold uppercase tracking-wider sticky top-0 border-b border-slate-200 z-10">
+                                            <tr>
+                                                <th class="px-4 py-2.5 w-10 text-center">#</th>
+                                                <th class="px-4 py-2.5">Departemen</th>
+                                                <th class="px-4 py-2.5">Shift</th>
+                                                <th class="px-4 py-2.5">Jadwal (Waktu)</th>
+                                                <th class="px-4 py-2.5 text-center">Kuota Staf</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <template x-for="(item, i) in packageItems" :key="i">
+                                                <tr class="hover:bg-slate-50/60 transition-colors">
+                                                    <td class="px-4 py-2 text-center font-mono text-gray-400" x-text="i + 1"></td>
+                                                    <td class="px-4 py-2 font-medium text-slate-800" x-text="item.dept"></td>
+                                                    <td class="px-4 py-2 font-semibold text-slate-900" x-text="item.title"></td>
+                                                    <td class="px-4 py-2 font-mono text-slate-600" x-text="item.date + ' • ' + item.time"></td>
+                                                    <td class="px-4 py-2 text-center">
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                                                            <span x-text="item.assigned_count ?? 0"></span>/<span x-text="item.quota"></span>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </template>
 

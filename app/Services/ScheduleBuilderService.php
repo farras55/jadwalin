@@ -68,10 +68,16 @@ class ScheduleBuilderService
             $rangeStart = $startDate->copy()->startOfDay();
             $rangeEnd = $endDate->copy()->endOfDay();
 
+            $departmentsMap = Department::where('company_id', $companyId)
+                ->whereIn('id', $departmentIds)
+                ->pluck('name', 'id')
+                ->all();
+
             $totalShiftsCreated = 0;
             $totalAssignmentsCreated = 0;
             $allSoftWarnings = [];
             $allUnfilledSlots = [];
+            $packageShiftDetails = [];
 
             // 2. Proses Setiap Departemen Sasaran
             // Bersihkan draf lama di seluruh departemen sasaran dalam 1 query batch
@@ -781,6 +787,16 @@ class ScheduleBuilderService
                                 'deficit' => $quotaNeeded - $assignedCount,
                             ];
                         }
+
+                        $packageShiftDetails[] = [
+                            'dept' => $departmentsMap[$deptId] ?? ('Dept #'.$deptId),
+                            'title' => $shift->title,
+                            'date' => $dateStr,
+                            'time' => $shift->start_time->format('H:i').' - '.$shift->end_time->format('H:i'),
+                            'quota' => $quotaNeeded,
+                            'assigned_count' => $assignedCount,
+                            'assigned_names' => collect($assignedCandidates)->pluck('user.name')->all(),
+                        ];
                     }
 
                     $currentDate->addDay();
@@ -794,8 +810,14 @@ class ScheduleBuilderService
                 }
             }
 
-            // Catat 1 entri audit log ringkasan eksekutif untuk seluruh proses penyusunan jadwal
+            // Catat 1 entri audit log paket (batch package) untuk seluruh proses penyusunan jadwal
             if ($totalShiftsCreated > 0) {
+                $deptNamesList = array_values($departmentsMap);
+                $scopeLabel = match (count($departmentIds)) {
+                    1 => 'Departemen Tunggal ('.($deptNamesList[0] ?? 'Dept').')',
+                    default => count($departmentIds).' Departemen Terpilih ('.implode(', ', array_slice($deptNamesList, 0, 3)).(count($deptNamesList) > 3 ? '...' : '').')',
+                };
+
                 AuditLog::create([
                     'company_id' => $companyId,
                     'user_id' => Auth::id(),
@@ -803,10 +825,13 @@ class ScheduleBuilderService
                     'model_type' => Shift::class,
                     'model_id' => null,
                     'new_values' => [
+                        'scope' => $scopeLabel,
+                        'departments' => implode(', ', $deptNamesList),
                         'departments_count' => count($departmentIds),
                         'shifts_created' => $totalShiftsCreated,
                         'assignments_created' => $totalAssignmentsCreated,
                         'period' => $rangeStart->format('Y-m-d').' s/d '.$rangeEnd->format('Y-m-d'),
+                        'package_details' => $packageShiftDetails,
                     ],
                     'ip_address' => request()?->ip(),
                     'user_agent' => request()?->userAgent(),
@@ -885,19 +910,67 @@ class ScheduleBuilderService
         $departmentIds = is_array($departmentId) ? $departmentId : [$departmentId];
 
         return DB::transaction(function () use ($companyId, $departmentIds, $startDate, $endDate) {
-            $draftShiftIds = Shift::where('company_id', $companyId)
+            $rangeStart = $startDate->copy()->startOfDay();
+            $rangeEnd = $endDate->copy()->endOfDay();
+
+            $departmentsMap = Department::where('company_id', $companyId)
+                ->whereIn('id', $departmentIds)
+                ->pluck('name', 'id')
+                ->all();
+
+            $draftShifts = Shift::where('company_id', $companyId)
                 ->whereIn('department_id', $departmentIds)
                 ->where('status', 'draft')
-                ->whereBetween('start_time', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()])
-                ->pluck('id');
+                ->whereBetween('start_time', [$rangeStart, $rangeEnd])
+                ->withCount('shiftAssignments')
+                ->get();
 
-            if ($draftShiftIds->isEmpty()) {
+            if ($draftShifts->isEmpty()) {
                 return 0;
             }
 
-            ShiftAssignment::whereIn('shift_id', $draftShiftIds)->delete();
+            $deletedPackageDetails = $draftShifts->map(function ($s) use ($departmentsMap) {
+                return [
+                    'dept' => $departmentsMap[$s->department_id] ?? ('Dept #'.$s->department_id),
+                    'title' => $s->title,
+                    'date' => $s->start_time->format('Y-m-d'),
+                    'time' => $s->start_time->format('H:i').' - '.$s->end_time->format('H:i'),
+                    'quota' => $s->quota,
+                    'assigned_count' => (int) $s->shift_assignments_count,
+                ];
+            })->all();
 
-            return Shift::whereIn('id', $draftShiftIds)->delete();
+            $draftShiftIds = $draftShifts->pluck('id');
+            ShiftAssignment::whereIn('shift_id', $draftShiftIds)->delete();
+            $deletedCount = Shift::whereIn('id', $draftShiftIds)->delete();
+
+            if ($deletedCount > 0) {
+                $deptNamesList = array_values($departmentsMap);
+                $scopeLabel = match (count($departmentIds)) {
+                    1 => 'Departemen Tunggal ('.($deptNamesList[0] ?? 'Dept').')',
+                    default => count($departmentIds).' Departemen Terpilih ('.implode(', ', array_slice($deptNamesList, 0, 3)).(count($deptNamesList) > 3 ? '...' : '').')',
+                };
+
+                AuditLog::create([
+                    'company_id' => $companyId,
+                    'user_id' => Auth::id(),
+                    'action' => 'clear_schedule',
+                    'model_type' => Shift::class,
+                    'model_id' => null,
+                    'old_values' => [
+                        'scope' => $scopeLabel,
+                        'departments' => implode(', ', $deptNamesList),
+                        'departments_count' => count($departmentIds),
+                        'draft_shifts_deleted' => $deletedCount,
+                        'period' => $rangeStart->format('Y-m-d').' s/d '.$rangeEnd->format('Y-m-d'),
+                        'package_details' => $deletedPackageDetails,
+                    ],
+                    'ip_address' => request()?->ip(),
+                    'user_agent' => request()?->userAgent(),
+                ]);
+            }
+
+            return $deletedCount;
         });
     }
 }

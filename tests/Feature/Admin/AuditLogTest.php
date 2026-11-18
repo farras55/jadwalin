@@ -562,5 +562,89 @@ class AuditLogTest extends TestCase
         $summary = $summaryLogs->first();
         $this->assertEquals($result['shifts_created'], $summary->new_values['shifts_created']);
         $this->assertEquals($result['assignments_created'], $summary->new_values['assignments_created']);
+        $this->assertNotEmpty($summary->new_values['package_details']);
+        $this->assertStringContainsString($this->department->name, $summary->new_values['departments']);
+
+        // Skenario 11: Pembersihan draf jadwal menghasilkan 1 paket log 'clear_schedule'
+        $deletedCount = $builder->clearWeeklyDrafts(
+            $this->company->id,
+            $this->department->id,
+            $startDate,
+            $endDate
+        );
+
+        $this->assertEquals($result['shifts_created'], $deletedCount);
+
+        $clearLogs = AuditLog::where('action', 'clear_schedule')->get();
+        $this->assertCount(1, $clearLogs);
+
+        $clearSummary = $clearLogs->first();
+        $this->assertEquals($deletedCount, $clearSummary->old_values['draft_shifts_deleted']);
+        $this->assertNotEmpty($clearSummary->old_values['package_details']);
+        $this->assertStringContainsString($this->department->name, $clearSummary->old_values['departments']);
+    }
+
+    /**
+     * Skenario 12: Verifikasi keamanan & isolasi paket log untuk seleksi 1 vs multi departemen.
+     */
+    public function test_package_audit_log_accurately_tracks_single_and_multi_department_scopes(): void
+    {
+        $deptB = Department::forceCreate([
+            'company_id' => $this->company->id,
+            'name' => 'Departemen Logistik',
+            'latitude' => -6.2088,
+            'longitude' => 106.8456,
+            'radius_meters' => 100,
+            'address' => 'Gudang Logistik',
+        ]);
+
+        ShiftTemplate::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $deptB->id,
+            'title' => 'Shift Logistik Siang',
+            'start_time' => '12:00:00',
+            'end_time' => '20:00:00',
+            'default_quota' => 1,
+        ]);
+
+        User::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $deptB->id,
+            'role' => 'employee',
+            'status' => 'active',
+        ]);
+
+        $startDate = Carbon::today()->startOfWeek();
+        $endDate = $startDate->copy()->addDays(1); // 2 hari
+
+        $builder = new ScheduleBuilderService;
+        $this->actingAs($this->admin);
+
+        // 1. Eksekusi untuk 1 departemen spesifik saja (deptB)
+        $resultB = $builder->generateWeeklyRoster(
+            $this->company->id,
+            $deptB->id,
+            $startDate,
+            $endDate
+        );
+
+        $logSingle = AuditLog::where('action', 'build_schedule')->latest('id')->first();
+        $this->assertStringContainsString('Departemen Tunggal', $logSingle->new_values['scope']);
+        $this->assertEquals('Departemen Logistik', $logSingle->new_values['departments']);
+        $this->assertEquals(1, $logSingle->new_values['departments_count']);
+
+        // 2. Eksekusi untuk 2 departemen sekaligus ($this->department & $deptB)
+        $resultMulti = $builder->generateWeeklyRoster(
+            $this->company->id,
+            [$this->department->id, $deptB->id],
+            $startDate,
+            $endDate
+        );
+
+        $logMulti = AuditLog::where('action', 'build_schedule')->latest('id')->first();
+        $this->assertStringContainsString('Departemen Terpilih', $logMulti->new_values['scope']);
+        $this->assertEquals(2, $logMulti->new_values['departments_count']);
+        $this->assertStringContainsString('Departemen Logistik', $logMulti->new_values['departments']);
+        $this->assertStringContainsString($this->department->name, $logMulti->new_values['departments']);
     }
 }
