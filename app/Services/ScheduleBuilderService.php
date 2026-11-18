@@ -58,12 +58,53 @@ class ScheduleBuilderService
                 ]
             );
 
-            $maxRegularHours = (int) ($settings->max_regular_hours ?? config('jadwalin.compliance.max_weekly_hours', 40));
-            $maxOvertimeHours = (int) ($settings->max_overtime_hours ?? 18);
-            $absoluteMaxHours = $maxRegularHours > 0 ? ($maxRegularHours + $maxOvertimeHours) : 0;
+            $isDailyLimit = ($settings->work_hour_limit_type === 'daily');
+
+            $rawRegularHours = (int) ($settings->max_regular_hours ?? config('jadwalin.compliance.max_weekly_hours', 40));
+            $rawOvertimeHours = (int) ($settings->max_overtime_hours ?? 18);
             $minRestHours = (int) ($settings->min_rest_hours ?? config('jadwalin.compliance.min_rest_hours_between_shifts', 11));
             $maxWorkingDays = (int) ($settings->max_working_days_per_week ?? config('jadwalin.compliance.consecutive_work_days_limit', 6));
             $bufferMinutes = (int) ($settings->auto_buffer_minutes ?? 30);
+            $maxWorkDaysSetting = ($maxWorkingDays > 0 && $maxWorkingDays <= 7) ? $maxWorkingDays : 6;
+
+            if ($rawRegularHours <= 0) {
+                // Mode Tanpa Batas (Unlimited)
+                $dailyRegularCap = 0;
+                $dailyOvertimeCap = 0;
+                $weeklyRegularCap = 0;
+                $weeklyOvertimeCap = 0;
+            } elseif ($isDailyLimit) {
+                // Mode Harian:
+                // Jika rawRegularHours berada dalam batas harian wajar (<= 12 jam), gunakan langsung.
+                // Jika melebihi 12 jam (misal 40), fallback ke standar harian 8 jam.
+                $dailyRegularCap = ($rawRegularHours <= 12)
+                    ? $rawRegularHours
+                    : (int) config('jadwalin.compliance.max_daily_hours', 8);
+
+                $dailyOvertimeCap = ($rawOvertimeHours > 0 && $rawOvertimeHours <= 12)
+                    ? $rawOvertimeHours
+                    : 4; // PP No. 35/2021: batas lembur maksimal 4 jam per hari
+
+                $weeklyRegularCap = $dailyRegularCap * $maxWorkDaysSetting;
+                $weeklyOvertimeCap = $dailyOvertimeCap * $maxWorkDaysSetting;
+            } else {
+                // Mode Mingguan:
+                $weeklyRegularCap = $rawRegularHours;
+                $weeklyOvertimeCap = $rawOvertimeHours;
+
+                $dailyRegularCap = ($rawRegularHours <= 12)
+                    ? $rawRegularHours
+                    : (int) config('jadwalin.compliance.max_daily_hours', 8);
+
+                $dailyOvertimeCap = ($rawOvertimeHours > 0 && $rawOvertimeHours <= 12)
+                    ? $rawOvertimeHours
+                    : 4;
+            }
+
+            $maxRegularHours = $weeklyRegularCap;
+            $maxOvertimeHours = $weeklyOvertimeCap;
+            $absoluteMaxHours = $maxRegularHours > 0 ? ($maxRegularHours + $maxOvertimeHours) : 0;
+            $absoluteDailyMaxHours = $dailyRegularCap > 0 ? ($dailyRegularCap + $dailyOvertimeCap) : 0;
 
             $rangeStart = $startDate->copy()->startOfDay();
             $rangeEnd = $endDate->copy()->endOfDay();
@@ -525,6 +566,10 @@ class ScheduleBuilderService
                             }
 
                             // HARD CONSTRAINT 4: Plafon Jam Kerja Berdasarkan Employment Type (maxRegularHours <= 0 = Fitur Pembatasan Nonaktif/Unlimited)
+                            if ($dailyRegularCap > 0 && $absoluteDailyMaxHours > 0 && $shiftDuration > $absoluteDailyMaxHours) {
+                                continue;
+                            }
+
                             if ($maxRegularHours > 0) {
                                 $prospectiveTotalHours = $tracker['total_hours'] + $shiftDuration;
                                 if ($user->employment_type === 'full_time') {
@@ -583,7 +628,9 @@ class ScheduleBuilderService
 
                             $prospectiveTotalHours = $tracker['total_hours'] + $shiftDuration;
                             $isFT = ($user->employment_type === 'full_time');
-                            $isOvertime = ($isFT && $maxRegularHours > 0 && $prospectiveTotalHours > $maxRegularHours);
+                            $isWeeklyOvertime = ($isFT && $maxRegularHours > 0 && $prospectiveTotalHours > $maxRegularHours);
+                            $isDailyOvertime = ($isFT && $dailyRegularCap > 0 && $shiftDuration > $dailyRegularCap);
+                            $isOvertime = ($isWeeklyOvertime || $isDailyOvertime);
                             $isScheduledOffDay = ! empty($scheduledOffDaysByUser[$user->id][$dayOfWeekIso]);
 
                             // Tentukan Tier Prioritas Cerdas:
@@ -713,20 +760,20 @@ class ScheduleBuilderService
                             $overtimeHours = 0.0;
 
                             if ($user->employment_type === 'full_time' && $maxRegularHours > 0) {
-                                if ($newTotal > $maxRegularHours) {
+                                $dailyAvailableRegular = ($dailyRegularCap > 0)
+                                    ? min($shiftDuration, (float) $dailyRegularCap)
+                                    : $shiftDuration;
+
+                                $weeklyAvailableRegular = ($maxRegularHours > 0)
+                                    ? max(0.0, (float) $maxRegularHours - $currentHours)
+                                    : $shiftDuration;
+
+                                $regularHours = min($dailyAvailableRegular, $weeklyAvailableRegular);
+                                $overtimeHours = max(0.0, round($shiftDuration - $regularHours, 2));
+
+                                if ($overtimeHours > 0) {
                                     $isOvertime = true;
                                     $overtimeStatus = 'pending_approval';
-
-                                    if ($currentHours >= $maxRegularHours) {
-                                        $regularHours = 0.0;
-                                        $overtimeHours = $shiftDuration;
-                                    } else {
-                                        $regularHours = $maxRegularHours - $currentHours;
-                                        $overtimeHours = $shiftDuration - $regularHours;
-                                    }
-                                } else {
-                                    $regularHours = $shiftDuration;
-                                    $overtimeHours = 0.0;
                                 }
                             } else {
                                 $regularHours = $shiftDuration;

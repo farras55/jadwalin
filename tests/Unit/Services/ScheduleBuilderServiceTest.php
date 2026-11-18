@@ -289,4 +289,112 @@ class ScheduleBuilderServiceTest extends TestCase
         }
         $this->assertGreaterThan(0, $ptInDayShiftsCount, 'Staf Part-Time harus ikut terdistribusi ke shift pagi/sore');
     }
+
+    public function test_generate_weekly_roster_supports_daily_work_hour_limit_mode(): void
+    {
+        CompanySetting::where('company_id', $this->company->id)->update([
+            'work_hour_limit_type' => 'daily',
+            'max_regular_hours' => 8,
+            'max_overtime_hours' => 4,
+            'max_working_days_per_week' => 5,
+        ]);
+
+        $employee = User::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'role' => 'employee',
+            'employment_type' => 'full_time',
+            'status' => 'active',
+        ]);
+
+        // Template shift 10 jam (melebihi plafon harian 8 jam sebesar 2 jam)
+        ShiftTemplate::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Panjang 10 Jam',
+            'start_time' => '08:00:00',
+            'end_time' => '18:00:00',
+            'default_quota' => 1,
+        ]);
+
+        $startDate = Carbon::today()->startOfWeek(Carbon::MONDAY);
+        $endDate = $startDate->copy(); // Hanya 1 hari
+
+        $result = $this->builder->generateWeeklyRoster(
+            $this->company->id,
+            $this->department->id,
+            $startDate,
+            $endDate
+        );
+
+        $this->assertEquals(1, $result['shifts_created']);
+        $this->assertEquals(1, $result['assignments_created']);
+
+        $assignment = Shift::where('company_id', $this->company->id)
+            ->first()
+            ->shiftAssignments()
+            ->first();
+
+        $this->assertNotNull($assignment);
+        $this->assertEquals($employee->id, $assignment->user_id);
+        $this->assertEquals(8.0, (float) $assignment->regular_hours, 'Jam reguler harus dibatasi maksimal 8 jam per hari');
+        $this->assertEquals(2.0, (float) $assignment->overtime_hours, 'Kelebihan 2 jam harus diakui sebagai jam lembur');
+        $this->assertTrue((bool) $assignment->is_overtime);
+        $this->assertEquals('pending_approval', $assignment->overtime_status);
+    }
+
+    public function test_generate_weekly_roster_does_not_treat_daily_8_hours_as_weekly_limit(): void
+    {
+        CompanySetting::where('company_id', $this->company->id)->update([
+            'work_hour_limit_type' => 'daily',
+            'max_regular_hours' => 8,
+            'max_overtime_hours' => 4,
+            'max_working_days_per_week' => 5,
+        ]);
+
+        $employee = User::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'role' => 'employee',
+            'employment_type' => 'full_time',
+            'status' => 'active',
+        ]);
+
+        ShiftTemplate::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Reguler 8 Jam',
+            'start_time' => '08:00:00',
+            'end_time' => '16:00:00',
+            'default_quota' => 1,
+        ]);
+
+        $startDate = Carbon::today()->startOfWeek(Carbon::MONDAY);
+        $endDate = $startDate->copy()->addDays(2); // 3 hari kerja: Senin, Selasa, Rabu
+
+        $result = $this->builder->generateWeeklyRoster(
+            $this->company->id,
+            $this->department->id,
+            $startDate,
+            $endDate
+        );
+
+        $this->assertEquals(3, $result['shifts_created']);
+        $this->assertEquals(3, $result['assignments_created']);
+
+        $assignments = Shift::where('company_id', $this->company->id)
+            ->with('shiftAssignments')
+            ->get()
+            ->pluck('shiftAssignments')
+            ->flatten();
+
+        $this->assertCount(3, $assignments);
+        foreach ($assignments as $a) {
+            $this->assertEquals($employee->id, $a->user_id);
+            $this->assertEquals(8.0, (float) $a->regular_hours);
+            $this->assertEquals(0.0, (float) $a->overtime_hours, 'Shift hari berikutnya tidak boleh dianggap lembur hanya karena akumulasi melebihi 8 jam');
+            $this->assertFalse((bool) $a->is_overtime);
+            $this->assertEquals('none', $a->overtime_status);
+        }
+    }
 }
