@@ -6,6 +6,7 @@ use App\Models\AuditLog;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Department;
+use App\Models\Position;
 use App\Models\Shift;
 use App\Models\ShiftTemplate;
 use App\Models\User;
@@ -229,6 +230,7 @@ class AuditLogTest extends TestCase
             'HTTP_USER_AGENT' => $fakeUserAgent,
         ]);
         $this->app->instance('request', $simulatedRequest);
+        \Illuminate\Support\Facades\Request::clearResolvedInstance('request');
 
         $shift = Shift::forceCreate([
             'company_id' => $this->company->id,
@@ -454,6 +456,8 @@ class AuditLogTest extends TestCase
      */
     public function test_audit_log_uses_soft_deletes(): void
     {
+        AuditLog::query()->forceDelete();
+
         $log = AuditLog::create([
             'company_id' => $this->company->id,
             'user_id' => $this->admin->id,
@@ -485,6 +489,8 @@ class AuditLogTest extends TestCase
      */
     public function test_prune_audit_logs_command_soft_deletes_records_older_than_seven_days(): void
     {
+        AuditLog::query()->forceDelete();
+
         $oldLog = AuditLog::create([
             'company_id' => $this->company->id,
             'user_id' => $this->admin->id,
@@ -646,5 +652,99 @@ class AuditLogTest extends TestCase
         $this->assertEquals(2, $logMulti->new_values['departments_count']);
         $this->assertStringContainsString('Departemen Logistik', $logMulti->new_values['departments']);
         $this->assertStringContainsString($this->department->name, $logMulti->new_values['departments']);
+    }
+
+    /**
+     * Skenario 13: Model master data (Department, Position, User, ShiftTemplate, Company) mencatat AuditLog.
+     */
+    public function test_master_data_models_trigger_audit_logs(): void
+    {
+        $this->actingAs($this->admin);
+
+        // 1. Department creation & update
+        $dept = Department::create([
+            'company_id' => $this->company->id,
+            'name' => 'Departemen Riset',
+            'radius_meters' => 100,
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => Department::class,
+            'model_id' => $dept->id,
+            'action' => 'create',
+        ]);
+
+        $dept->update(['name' => 'Departemen Riset & Inovasi']);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => Department::class,
+            'model_id' => $dept->id,
+            'action' => 'update',
+        ]);
+
+        // 2. Position creation
+        $pos = Position::create([
+            'company_id' => $this->company->id,
+            'department_id' => $dept->id,
+            'name' => 'Lead Researcher',
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => Position::class,
+            'model_id' => $pos->id,
+            'action' => 'create',
+        ]);
+
+        // 3. ShiftTemplate creation
+        $tmpl = ShiftTemplate::create([
+            'company_id' => $this->company->id,
+            'department_id' => $dept->id,
+            'title' => 'Shift Khusus Riset',
+            'start_time' => '09:00:00',
+            'end_time' => '17:00:00',
+            'default_quota' => 2,
+            'color_code' => '#10B981',
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => ShiftTemplate::class,
+            'model_id' => $tmpl->id,
+            'action' => 'create',
+        ]);
+
+        // 4. User creation & role change
+        $newUser = User::create([
+            'company_id' => $this->company->id,
+            'department_id' => $dept->id,
+            'position_id' => $pos->id,
+            'name' => 'Peneliti Baru',
+            'email' => 'researcher@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'employee',
+            'status' => 'active',
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => User::class,
+            'model_id' => $newUser->id,
+            'action' => 'create',
+        ]);
+
+        $newUser->update(['role' => 'manager', 'is_global_manager' => true]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => User::class,
+            'model_id' => $newUser->id,
+            'action' => 'update',
+        ]);
+
+        // 5. Company update
+        $this->company->update(['address' => 'Gedung Pusat Lt. 12']);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => Company::class,
+            'model_id' => $this->company->id,
+            'action' => 'update',
+        ]);
     }
 }

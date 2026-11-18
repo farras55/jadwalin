@@ -62,7 +62,17 @@
             'period': 'Periode Jadwal',
             'scope': 'Cakupan Operasi',
             'departments': 'Departemen Terlibat',
-            'draft_shifts_deleted': 'Jumlah Draf Dihapus'
+            'draft_shifts_deleted': 'Jumlah Draf Dihapus',
+            'color_code': 'Warna Shift',
+            'default_quota': 'Kuota Standar',
+            'description': 'Deskripsi / Keterangan',
+            'employment_type': 'Tipe Kontrak Kerja',
+            'max_weekly_hours': 'Maks. Jam Kerja Mingguan',
+            'join_date': 'Tanggal Bergabung',
+            'is_global_manager': 'Manajer Global (Semua Departemen)',
+            'office_latitude': 'Titik Lintang Kantor Pusat',
+            'office_longitude': 'Titik Bujur Kantor Pusat',
+            'attendance_radius_meters': 'Radius Presensi Kantor (Meter)'
         },
         hiddenFields: [
             'id', 

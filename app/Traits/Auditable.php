@@ -85,8 +85,8 @@ trait Auditable
         $userId = Auth::id() ?? ($model->user_id ?? null);
 
         // Capture IP address and User Agent
-        $ipAddress = Request::ip();
-        $userAgent = Request::userAgent();
+        $ipAddress = request()?->ip() ?? Request::ip();
+        $userAgent = request()?->userAgent() ?? Request::userAgent();
 
         AuditLog::create([
             'company_id' => $companyId,

@@ -23,7 +23,10 @@ class AuditLog extends Model
         'CompanySetting' => 'Pengaturan Perusahaan',
         'Availability' => 'Ketersediaan Waktu',
         'Department' => 'Departemen & Lokasi Kerja',
-        'User' => 'Pengguna',
+        'Position' => 'Posisi & Jabatan',
+        'User' => 'Pengguna & Karyawan',
+        'ShiftTemplate' => 'Template Shift',
+        'Company' => 'Profil Perusahaan',
         'AttendanceRegularization' => 'Koreksi Presensi',
     ];
 
@@ -97,6 +100,16 @@ class AuditLog extends Model
         'departments' => 'Departemen Terlibat',
         'draft_shifts_deleted' => 'Jumlah Draf Dihapus',
         'package_details' => 'Rincian Item Paket',
+        'color_code' => 'Warna Shift',
+        'default_quota' => 'Kuota Standar',
+        'description' => 'Deskripsi / Keterangan',
+        'employment_type' => 'Tipe Kontrak Kerja',
+        'max_weekly_hours' => 'Maks. Jam Kerja Mingguan',
+        'join_date' => 'Tanggal Bergabung',
+        'is_global_manager' => 'Manajer Global (Semua Departemen)',
+        'office_latitude' => 'Titik Lintang Kantor Pusat',
+        'office_longitude' => 'Titik Bujur Kantor Pusat',
+        'attendance_radius_meters' => 'Radius Presensi Kantor (Meter)',
     ];
 
     /**

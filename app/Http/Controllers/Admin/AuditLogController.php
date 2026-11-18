@@ -90,6 +90,11 @@ class AuditLogController extends Controller
             'Availability' => 'Ketersediaan Waktu',
             'CompanySetting' => 'Pengaturan Perusahaan',
             'Department' => 'Departemen & Lokasi Kerja',
+            'Position' => 'Posisi & Jabatan',
+            'User' => 'Pengguna & Karyawan',
+            'ShiftTemplate' => 'Template Shift',
+            'Company' => 'Profil Perusahaan',
+            'AttendanceRegularization' => 'Koreksi Presensi',
         ];
 
         return view('admin.audit-logs.index', [
