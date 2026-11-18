@@ -353,11 +353,20 @@
                         isUnlimited: {{ (old('is_unlimited', $setting->max_regular_hours <= 0 ? '1' : '0') === '1' ? 'true' : 'false') }},
                         regularHours: '{{ old('max_regular_hours', $setting->max_regular_hours > 0 ? $setting->max_regular_hours : 40) }}',
                         overtimeHours: '{{ old('max_overtime_hours', $setting->max_overtime_hours ?? 18) }}',
+                        limitType: '{{ old('work_hour_limit_type', $setting->work_hour_limit_type ?? 'weekly') }}',
+                        get isDaily() {
+                            return this.limitType === 'daily';
+                        },
                         get exceedsPpRegular() {
-                            return !this.isUnlimited && Number(this.regularHours) > 40;
+                            if (this.isUnlimited) return false;
+                            return this.isDaily
+                                ? Number(this.regularHours) > 8
+                                : Number(this.regularHours) > 40;
                         },
                         get exceedsPpOvertime() {
-                            return Number(this.overtimeHours) > 18;
+                            return this.isDaily
+                                ? Number(this.overtimeHours) > 4
+                                : Number(this.overtimeHours) > 18;
                         }
                     }">
                     <h3 class="text-lg font-semibold text-gray-900">
@@ -402,7 +411,7 @@
                             </svg>
                             <div>
                                 <span class="font-semibold">Peringatan Regulasi (PP No. 35/2021):</span>
-                                <span> Mode tanpa batas mengabaikan batas reguler standar 40 jam/minggu. Pengaturan ini <strong>tetap dapat disimpan</strong> untuk fleksibilitas operasional bisnis Anda.</span>
+                                <span x-text="isDaily ? ' Mode tanpa batas mengabaikan batas reguler standar 8 jam/hari. Pengaturan ini tetap dapat disimpan untuk fleksibilitas operasional bisnis Anda.' : ' Mode tanpa batas mengabaikan batas reguler standar 40 jam/minggu. Pengaturan ini tetap dapat disimpan untuk fleksibilitas operasional bisnis Anda.'"> Mode tanpa batas mengabaikan batas reguler standar 40 jam/minggu. Pengaturan ini <strong>tetap dapat disimpan</strong> untuk fleksibilitas operasional bisnis Anda.</span>
                             </div>
                         </div>
                     </div>
@@ -415,7 +424,7 @@
                                 for="max_regular_hours"
                                 class="block text-sm font-medium text-gray-700"
                             >
-                                Maksimal Jam Kerja Reguler (Jam/Minggu)
+                                Maksimal Jam Kerja Reguler <span x-text="isDaily ? '(Jam/Hari)' : '(Jam/Minggu)'">(Jam/Minggu)</span>
                             </label>
 
                             <template x-if="isUnlimited">
@@ -427,7 +436,7 @@
                                         class="mt-1 block w-full rounded-lg border-gray-200 bg-gray-100 text-gray-500 shadow-sm cursor-not-allowed text-sm"
                                     >
                                     <input type="hidden" name="max_regular_hours" value="0">
-                                    <p class="mt-1 text-xs text-indigo-600 font-medium">
+                                    <p class="mt-1 text-xs text-indigo-600 font-medium" x-text="isDaily ? 'Plafon jam harian dinonaktifkan.' : 'Plafon jam mingguan dinonaktifkan.'">
                                         Plafon jam mingguan dinonaktifkan.
                                     </p>
                                 </div>
@@ -447,17 +456,31 @@
                                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     >
 
-                                    {{-- Warning jika jam reguler melebihi 40 jam --}}
+                                    {{-- Warning jika jam reguler melebihi standar PP 35/2021 --}}
                                     <div x-show="exceedsPpRegular" class="mt-1.5 flex items-start gap-1.5 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
                                         <svg class="h-3.5 w-3.5 flex-shrink-0 text-amber-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                         </svg>
-                                        <span><strong>Catatan PP No. 35/2021:</strong> Standar jam kerja reguler adalah 40 jam/minggu. Angka di atas 40 jam tetap dapat disimpan sesuai kebijakan perusahaan.</span>
+                                        <span><strong>Catatan PP No. 35/2021:</strong> <span x-text="isDaily ? 'Standar jam kerja reguler adalah 8 jam/hari (5 hari kerja) atau 7 jam/hari (6 hari kerja). Angka di atas standar tetap dapat disimpan sesuai kebijakan perusahaan.' : 'Standar jam kerja reguler adalah 40 jam/minggu. Angka di atas 40 jam tetap dapat disimpan sesuai kebijakan perusahaan.'">Standar jam kerja reguler adalah 40 jam/minggu. Angka di atas 40 jam tetap dapat disimpan sesuai kebijakan perusahaan.</span></span>
                                     </div>
 
-                                    <p class="mt-1 text-xs text-gray-500" x-show="!exceedsPpRegular">
+                                    <p class="mt-1 text-xs text-gray-500" x-show="!exceedsPpRegular" x-text="isDaily ? 'Standar PP No. 35/2021 adalah maksimal 8 jam per hari.' : 'Standar PP No. 35/2021 adalah 40 jam per minggu.'">
                                         Standar PP No. 35/2021 adalah 40 jam per minggu.
                                     </p>
+
+                                    {{-- Quick Helper saat beralih tipe limit --}}
+                                    <div x-show="isDaily && Number(regularHours) > 12" x-cloak class="mt-1 text-xs text-indigo-600">
+                                        <span>Mode harian aktif. </span>
+                                        <button type="button" @click="regularHours = 8; overtimeHours = 4" class="font-medium underline hover:text-indigo-800">
+                                            Gunakan standar 8 jam/hari
+                                        </button>
+                                    </div>
+                                    <div x-show="!isDaily && Number(regularHours) <= 12 && Number(regularHours) > 0" x-cloak class="mt-1 text-xs text-indigo-600">
+                                        <span>Mode mingguan aktif. </span>
+                                        <button type="button" @click="regularHours = 40; overtimeHours = 18" class="font-medium underline hover:text-indigo-800">
+                                            Gunakan standar 40 jam/minggu
+                                        </button>
+                                    </div>
                                 </div>
                             </template>
                         </div>
@@ -468,7 +491,7 @@
                                 for="max_overtime_hours"
                                 class="block text-sm font-medium text-gray-700"
                             >
-                                Maksimal Jam Lembur (Jam/Minggu)
+                                Maksimal Jam Lembur <span x-text="isDaily ? '(Jam/Hari)' : '(Jam/Minggu)'">(Jam/Minggu)</span>
                             </label>
 
                             <input
@@ -484,15 +507,15 @@
                                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                             >
 
-                            {{-- Warning jika jam lembur melebihi 18 jam --}}
+                            {{-- Warning jika jam lembur melebihi standar PP 35/2021 --}}
                             <div x-show="exceedsPpOvertime" class="mt-1.5 flex items-start gap-1.5 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
                                 <svg class="h-3.5 w-3.5 flex-shrink-0 text-amber-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                 </svg>
-                                <span><strong>Catatan PP No. 35/2021:</strong> Batas maksimal jam lembur adalah 18 jam/minggu. Angka ini tetap dapat disimpan sesuai kebijakan perusahaan.</span>
+                                <span><strong>Catatan PP No. 35/2021:</strong> <span x-text="isDaily ? 'Batas maksimal jam lembur adalah 4 jam/hari. Angka ini tetap dapat disimpan sesuai kebijakan perusahaan.' : 'Batas maksimal jam lembur adalah 18 jam/minggu. Angka ini tetap dapat disimpan sesuai kebijakan perusahaan.'">Batas maksimal jam lembur adalah 18 jam/minggu. Angka ini tetap dapat disimpan sesuai kebijakan perusahaan.</span></span>
                             </div>
 
-                            <p class="mt-1 text-xs text-gray-500" x-show="!exceedsPpOvertime">
+                            <p class="mt-1 text-xs text-gray-500" x-show="!exceedsPpOvertime" x-text="isDaily ? 'Standar PP No. 35/2021 adalah maksimal 4 jam per hari.' : 'Standar PP No. 35/2021 adalah maksimal 18 jam per minggu.'">
                                 Standar PP No. 35/2021 adalah maksimal 18 jam per minggu.
                             </p>
                         </div>
@@ -510,6 +533,7 @@
                                 id="work_hour_limit_type"
                                 name="work_hour_limit_type"
                                 required
+                                x-model="limitType"
                                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                             >
                                 <option
