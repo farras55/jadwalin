@@ -13,8 +13,11 @@
                 <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                     Audit Trail Logging
                 </h1>
-                <p class="text-xs md:text-sm text-slate-500 mt-0.5">
-                    Rekam jejak mutasi data dan aktivitas operasional seluruh sistem secara transparan untuk pengawasan bisnis.
+                <p class="text-xs md:text-sm text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                    <span>Rekam jejak mutasi data dan aktivitas operasional seluruh sistem secara transparan untuk pengawasan bisnis.</span>
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <i data-lucide="clock" class="h-3 w-3"></i> 7 Hari Terakhir
+                    </span>
                 </p>
             </div>
         </div>
@@ -51,7 +54,11 @@
             'break_minutes': 'Durasi Istirahat',
             'is_holiday': 'Hari Libur Nasional',
             'color': 'Warna Label',
-            'type': 'Jenis / Tipe'
+            'type': 'Jenis / Tipe',
+            'shifts_created': 'Jumlah Shift Dibuat',
+            'assignments_created': 'Jumlah Penugasan Dibuat',
+            'departments_count': 'Jumlah Departemen',
+            'period': 'Periode Jadwal'
         },
         hiddenFields: [
             'id', 

@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class AuditLog extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Pemetaan nama model teknis ke label fitur yang ramah pengguna.
@@ -45,6 +46,7 @@ class AuditLog extends Model
         'regularization_submitted' => 'Pengajuan Koreksi Presensi',
         'regularization_approved' => 'Persetujuan Koreksi Presensi',
         'regularization_rejected' => 'Penolakan Koreksi Presensi',
+        'build_schedule' => 'Penyusunan Jadwal Otomatis',
     ];
 
     /**
@@ -86,6 +88,10 @@ class AuditLog extends Model
         'rejected_by' => 'Ditolak Oleh',
         'rejected_at' => 'Waktu Penolakan',
         'timezone' => 'Zona Waktu',
+        'shifts_created' => 'Jumlah Shift Dibuat',
+        'assignments_created' => 'Jumlah Penugasan Dibuat',
+        'departments_count' => 'Jumlah Departemen',
+        'period' => 'Periode Jadwal',
     ];
 
     /**
@@ -230,6 +236,7 @@ class AuditLog extends Model
             'broadcast_existing_shift', 'broadcast_open_shift' => 'bg-purple-50 text-purple-700 border-purple-200',
             'approve_shift_swap', 'swap_approved', 'claim_approved', 'regularization_approved' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
             'reject_shift_swap', 'swap_rejected', 'claim_rejected', 'regularization_rejected' => 'bg-rose-50 text-rose-700 border-rose-200',
+            'build_schedule' => 'bg-teal-50 text-teal-700 border-teal-200',
             default => 'bg-purple-50 text-purple-700 border-purple-200',
         };
     }
@@ -249,6 +256,7 @@ class AuditLog extends Model
             'broadcast_existing_shift', 'broadcast_open_shift' => 'bg-purple-500',
             'approve_shift_swap', 'swap_approved', 'claim_approved', 'regularization_approved' => 'bg-indigo-500',
             'reject_shift_swap', 'swap_rejected', 'claim_rejected', 'regularization_rejected' => 'bg-rose-500',
+            'build_schedule' => 'bg-teal-500',
             default => 'bg-purple-500',
         };
     }

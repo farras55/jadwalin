@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AuditLog;
 use App\Models\Availability;
 use App\Models\CompanySetting;
 use App\Models\Department;
@@ -11,6 +12,7 @@ use App\Models\ShiftTemplate;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ScheduleBuilderService
@@ -430,20 +432,22 @@ class ScheduleBuilderService
                         $bufferedShiftStart = $shiftStart->copy()->subMinutes($bufferMinutes);
                         $bufferedShiftEnd = $shiftEnd->copy()->addMinutes($bufferMinutes);
 
-                        // Buat Entitas Shift
-                        $shift = Shift::create([
-                            'company_id' => $companyId,
-                            'department_id' => $deptId,
-                            'template_id' => $shiftConfig['template_id'],
-                            'title' => $shiftConfig['title'],
-                            'start_time' => $shiftStart,
-                            'end_time' => $shiftEnd,
-                            'quota' => $quotaNeeded,
-                            'is_open_shift' => false,
-                            'requires_approval' => true,
-                            'is_holiday' => false,
-                            'status' => 'draft',
-                        ]);
+                        // Buat Entitas Shift tanpa memicu event Auditable berulang (mencegah spam log draf)
+                        $shift = Shift::withoutEvents(function () use ($companyId, $deptId, $shiftConfig, $shiftStart, $shiftEnd, $quotaNeeded) {
+                            return Shift::create([
+                                'company_id' => $companyId,
+                                'department_id' => $deptId,
+                                'template_id' => $shiftConfig['template_id'],
+                                'title' => $shiftConfig['title'],
+                                'start_time' => $shiftStart,
+                                'end_time' => $shiftEnd,
+                                'quota' => $quotaNeeded,
+                                'is_open_shift' => false,
+                                'requires_approval' => true,
+                                'is_holiday' => false,
+                                'status' => 'draft',
+                            ]);
+                        });
 
                         $totalShiftsCreated++;
 
@@ -788,6 +792,25 @@ class ScheduleBuilderService
                         ShiftAssignment::insert($chunk);
                     }
                 }
+            }
+
+            // Catat 1 entri audit log ringkasan eksekutif untuk seluruh proses penyusunan jadwal
+            if ($totalShiftsCreated > 0) {
+                AuditLog::create([
+                    'company_id' => $companyId,
+                    'user_id' => Auth::id(),
+                    'action' => 'build_schedule',
+                    'model_type' => Shift::class,
+                    'model_id' => null,
+                    'new_values' => [
+                        'departments_count' => count($departmentIds),
+                        'shifts_created' => $totalShiftsCreated,
+                        'assignments_created' => $totalAssignmentsCreated,
+                        'period' => $rangeStart->format('Y-m-d').' s/d '.$rangeEnd->format('Y-m-d'),
+                    ],
+                    'ip_address' => request()?->ip(),
+                    'user_agent' => request()?->userAgent(),
+                ]);
             }
 
             return [

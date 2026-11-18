@@ -19,9 +19,11 @@ class AuditLogController extends Controller
         $companyId = $user?->company_id;
         $companyTimezone = $company?->timezone ?: config('app.timezone', 'Asia/Jakarta');
         $timezoneAbbr = AuditLog::getTimezoneAbbreviation($companyTimezone);
+        $sevenDaysAgo = now()->timezone($companyTimezone)->subDays(7)->startOfDay();
 
         $query = AuditLog::query()
             ->when($companyId, fn ($q) => $q->where('company_id', $companyId))
+            ->where('created_at', '>=', $sevenDaysAgo)
             ->with(['user', 'company'])
             ->latest();
 
@@ -55,7 +57,9 @@ class AuditLogController extends Controller
 
         $logs = $query->paginate(config('jadwalin.pagination.audit_logs', 15))->withQueryString();
 
-        $statsBase = AuditLog::query()->when($companyId, fn ($q) => $q->where('company_id', $companyId));
+        $statsBase = AuditLog::query()
+            ->when($companyId, fn ($q) => $q->where('company_id', $companyId))
+            ->where('created_at', '>=', $sevenDaysAgo);
 
         $today = now()->timezone($companyTimezone)->startOfDay();
 
@@ -70,6 +74,7 @@ class AuditLogController extends Controller
             'create' => 'Penambahan Data (Buat Baru)',
             'update' => 'Pengeditan Data',
             'delete' => 'Penghapusan Data',
+            'build_schedule' => 'Penyusunan Jadwal Otomatis',
             'auto_clockout' => 'Absen Keluar Otomatis',
             'broadcast_existing_shift' => 'Pengiriman Jadwal Shift',
             'approve_shift_swap' => 'Persetujuan Tukar Shift',

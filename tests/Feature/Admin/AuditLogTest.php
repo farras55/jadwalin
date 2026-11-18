@@ -7,7 +7,9 @@ use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Department;
 use App\Models\Shift;
+use App\Models\ShiftTemplate;
 use App\Models\User;
+use App\Services\ScheduleBuilderService;
 use App\Traits\Auditable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
@@ -445,5 +447,120 @@ class AuditLogTest extends TestCase
         $responseBali->assertDontSee('17:00 WIB');
 
         Carbon::setTestNow(null);
+    }
+
+    /**
+     * Skenario 8: Audit log mendukung SoftDeletes.
+     */
+    public function test_audit_log_uses_soft_deletes(): void
+    {
+        $log = AuditLog::create([
+            'company_id' => $this->company->id,
+            'user_id' => $this->admin->id,
+            'action' => 'update',
+            'model_type' => Shift::class,
+            'model_id' => 123,
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'id' => $log->id,
+            'deleted_at' => null,
+        ]);
+
+        $log->delete();
+
+        // Di database masih ada (soft delete)
+        $this->assertDatabaseHas('audit_logs', [
+            'id' => $log->id,
+        ]);
+        $this->assertNotNull(AuditLog::withTrashed()->find($log->id)->deleted_at);
+
+        // Query biasa tidak menemukan record ini
+        $this->assertEquals(0, AuditLog::count());
+        $this->assertEquals(1, AuditLog::withTrashed()->count());
+    }
+
+    /**
+     * Skenario 9: Command jadwalin:prune-audit-logs me-soft-delete entri > 7 hari.
+     */
+    public function test_prune_audit_logs_command_soft_deletes_records_older_than_seven_days(): void
+    {
+        $oldLog = AuditLog::create([
+            'company_id' => $this->company->id,
+            'user_id' => $this->admin->id,
+            'action' => 'update',
+            'model_type' => Shift::class,
+            'model_id' => 1,
+        ]);
+        $oldLog->created_at = now()->subDays(10);
+        $oldLog->saveQuietly();
+
+        $recentLog = AuditLog::create([
+            'company_id' => $this->company->id,
+            'user_id' => $this->admin->id,
+            'action' => 'update',
+            'model_type' => Shift::class,
+            'model_id' => 2,
+        ]);
+        $recentLog->created_at = now()->subDays(2);
+        $recentLog->saveQuietly();
+
+        $this->artisan('jadwalin:prune-audit-logs', ['--days' => 7])
+            ->assertSuccessful();
+
+        // Old log is soft-deleted
+        $this->assertNotNull(AuditLog::withTrashed()->find($oldLog->id)?->deleted_at);
+
+        // Recent log remains active
+        $this->assertNull(AuditLog::find($recentLog->id)?->deleted_at);
+        $this->assertEquals(1, AuditLog::count());
+    }
+
+    /**
+     * Skenario 10: ScheduleBuilderService tidak membuat spam audit log per shift draf, melainkan 1 summary log.
+     */
+    public function test_schedule_builder_creates_single_summary_audit_log_without_individual_shift_spam(): void
+    {
+        ShiftTemplate::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'title' => 'Shift Pagi Reguler',
+            'start_time' => '08:00:00',
+            'end_time' => '16:00:00',
+            'default_quota' => 2,
+        ]);
+
+        User::factory()->count(2)->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->department->id,
+            'role' => 'employee',
+            'status' => 'active',
+        ]);
+
+        $startDate = Carbon::today()->startOfWeek();
+        $endDate = $startDate->copy()->addDays(2); // 3 hari
+
+        $builder = new ScheduleBuilderService;
+        $this->actingAs($this->manager);
+
+        $result = $builder->generateWeeklyRoster(
+            $this->company->id,
+            $this->department->id,
+            $startDate,
+            $endDate
+        );
+
+        $this->assertGreaterThan(0, $result['shifts_created']);
+
+        // Pastikan TIDAK ada audit log individu 'create' untuk App\Models\Shift
+        $this->assertEquals(0, AuditLog::where('action', 'create')->where('model_type', Shift::class)->count());
+
+        // Pastikan tercipta tepat 1 entri audit log summary 'build_schedule'
+        $summaryLogs = AuditLog::where('action', 'build_schedule')->get();
+        $this->assertCount(1, $summaryLogs);
+
+        $summary = $summaryLogs->first();
+        $this->assertEquals($result['shifts_created'], $summary->new_values['shifts_created']);
+        $this->assertEquals($result['assignments_created'], $summary->new_values['assignments_created']);
     }
 }
