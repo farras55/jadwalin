@@ -56,7 +56,7 @@ return new class extends Migration
             $table->boolean('is_auto_clockout')
                 ->default(false)
                 ->after('status');
-            $table->enum('overtime_status', ['none', 'pending_approval', 'approved', 'rejected'])
+            $table->enum('overtime_status', ['none', 'pending_approval', 'approved', 'rejected', 'regular'])
                 ->default('none')
                 ->after('is_overtime');
         });
