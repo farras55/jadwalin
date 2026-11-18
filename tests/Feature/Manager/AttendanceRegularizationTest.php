@@ -165,4 +165,100 @@ class AttendanceRegularizationTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    public function test_manager_can_approve_regularization_with_regular_option_compensating_late_arrival(): void
+    {
+        $shift = Shift::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->departmentA->id,
+            'start_time' => Carbon::today()->setTime(21, 0),
+            'end_time' => Carbon::today()->setTime(22, 15),
+        ]);
+
+        $assignment = ShiftAssignment::factory()->create([
+            'company_id' => $this->company->id,
+            'shift_id' => $shift->id,
+            'user_id' => $this->employeeA->id,
+            'clock_in_time' => Carbon::today()->setTime(22, 5),
+            'clock_out_time' => Carbon::today()->setTime(22, 15),
+            'late_minutes' => 65,
+            'regular_hours' => 0.17,
+            'overtime_hours' => 0.0,
+        ]);
+
+        $requestedOut = Carbon::today()->addDay()->setTime(0, 5);
+
+        $regularization = AttendanceRegularization::factory()->create([
+            'company_id' => $this->company->id,
+            'shift_assignment_id' => $assignment->id,
+            'employee_id' => $this->employeeA->id,
+            'requested_clock_out_time' => $requestedOut,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->managerA)
+            ->post(route('manager.attendance.regularizations.approve', $regularization), [
+                'overtime_status' => 'regular',
+                'review_note' => 'Disetujui sebagai jam reguler untuk kompensasi keterlambatan.',
+            ]);
+
+        $response->assertRedirect();
+        $regularization->refresh();
+        $this->assertEquals('approved', $regularization->status);
+        $this->assertEquals('regular', $regularization->overtime_status);
+
+        $assignment->refresh();
+        $this->assertEquals(1.25, (float) $assignment->regular_hours);
+        $this->assertEquals(0.0, (float) $assignment->overtime_hours);
+        $this->assertFalse((bool) $assignment->is_overtime);
+        $this->assertEquals(65, $assignment->late_minutes);
+    }
+
+    public function test_manager_approves_with_none_keeps_hours_within_shift_only(): void
+    {
+        $shift = Shift::factory()->create([
+            'company_id' => $this->company->id,
+            'department_id' => $this->departmentA->id,
+            'start_time' => Carbon::today()->setTime(21, 0),
+            'end_time' => Carbon::today()->setTime(22, 15),
+        ]);
+
+        $assignment = ShiftAssignment::factory()->create([
+            'company_id' => $this->company->id,
+            'shift_id' => $shift->id,
+            'user_id' => $this->employeeA->id,
+            'clock_in_time' => Carbon::today()->setTime(22, 5),
+            'clock_out_time' => Carbon::today()->setTime(22, 15),
+            'late_minutes' => 65,
+            'regular_hours' => 0.17,
+            'overtime_hours' => 0.0,
+        ]);
+
+        $requestedOut = Carbon::today()->addDay()->setTime(0, 5);
+
+        $regularization = AttendanceRegularization::factory()->create([
+            'company_id' => $this->company->id,
+            'shift_assignment_id' => $assignment->id,
+            'employee_id' => $this->employeeA->id,
+            'requested_clock_out_time' => $requestedOut,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->managerA)
+            ->post(route('manager.attendance.regularizations.approve', $regularization), [
+                'overtime_status' => 'none',
+                'review_note' => 'Disetujui jam riil tanpa kompensasi lembur.',
+            ]);
+
+        $response->assertRedirect();
+        $regularization->refresh();
+        $this->assertEquals('approved', $regularization->status);
+        $this->assertEquals('none', $regularization->overtime_status);
+
+        $assignment->refresh();
+        $this->assertEquals(0.17, (float) $assignment->regular_hours);
+        $this->assertEquals(0.0, (float) $assignment->overtime_hours);
+        $this->assertFalse((bool) $assignment->is_overtime);
+        $this->assertEquals(65, $assignment->late_minutes);
+    }
 }

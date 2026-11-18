@@ -123,7 +123,7 @@ class AttendanceRegularizationController extends Controller
         }
 
         $validated = $request->validate([
-            'overtime_status' => ['required', 'string', 'in:none,approved,rejected'],
+            'overtime_status' => ['required', 'string', 'in:none,approved,rejected,regular'],
             'review_note' => ['nullable', 'string', 'max:500'],
         ], [
             'overtime_status.required' => 'Pilihan status lembur wajib ditentukan.',
@@ -135,10 +135,6 @@ class AttendanceRegularizationController extends Controller
             $assignment = $regularization->shiftAssignment;
             $requestedOut = Carbon::parse($regularization->requested_clock_out_time);
             $clockIn = Carbon::parse($assignment->clock_in_time);
-
-            // Hitung ulang jam kerja berdasarkan jam pulang yang disetujui.
-            $diffMinutes = max(0, $clockIn->diffInMinutes($requestedOut));
-            $totalHours = round($diffMinutes / 60, 2);
 
             $setting = CompanySetting::where('company_id', $manager->company_id)->first();
             $dailyRegularCap = ($setting && (int) $setting->max_regular_hours > 0 && (int) $setting->max_regular_hours <= 12)
@@ -156,19 +152,42 @@ class AttendanceRegularizationController extends Controller
                 $regularThreshold = min($scheduledHours, $dailyRegularCap);
 
                 $effectiveStart = $clockIn->lt($shiftStart) ? $shiftStart : $clockIn;
-                $effectiveEnd = $requestedOut->gt($shiftEnd) ? $shiftEnd : $requestedOut;
-                $regularMinutes = $effectiveEnd->gt($effectiveStart) ? $effectiveStart->diffInMinutes($effectiveEnd) : 0;
-                $regularHours = min(round($regularMinutes / 60, 2), $regularThreshold);
-            } else {
-                $regularHours = min($totalHours, $dailyRegularCap);
-            }
+                $actualMinutes = max(0, $effectiveStart->diffInMinutes($requestedOut));
+                $totalHours = round($actualMinutes / 60, 2);
 
-            if ($validated['overtime_status'] === 'approved') {
-                $overtimeHours = max(0.0, round($totalHours - $regularHours, 2));
-                $isOvertime = ($overtimeHours > 0);
+                if ($validated['overtime_status'] === 'regular') {
+                    // Setujui sebagai jam reguler (kompensasi keterlambatan):
+                    // Jam kerja riil dialokasikan untuk memenuhi kuota jam reguler shift
+                    $regularHours = min($totalHours, $regularThreshold);
+                    $overtimeHours = 0.0;
+                    $isOvertime = false;
+                } elseif ($validated['overtime_status'] === 'approved') {
+                    // Setujui sebagai lembur resmi: jam reguler terisi dalam shift, kelebihannya dihitung lembur
+                    $effectiveEnd = $requestedOut->gt($shiftEnd) ? $shiftEnd : $requestedOut;
+                    $regularMinutes = $effectiveEnd->gt($effectiveStart) ? $effectiveStart->diffInMinutes($effectiveEnd) : 0;
+                    $regularHours = min(round($regularMinutes / 60, 2), $regularThreshold);
+                    $overtimeHours = max(0.0, round($totalHours - $regularHours, 2));
+                    $isOvertime = ($overtimeHours > 0);
+                } else {
+                    // 'none' dan 'rejected': jam reguler hanya dihitung selama berada di dalam rentang jadwal shift
+                    $effectiveEnd = $requestedOut->gt($shiftEnd) ? $shiftEnd : $requestedOut;
+                    $regularMinutes = $effectiveEnd->gt($effectiveStart) ? $effectiveStart->diffInMinutes($effectiveEnd) : 0;
+                    $regularHours = min(round($regularMinutes / 60, 2), $regularThreshold);
+                    $overtimeHours = 0.0;
+                    $isOvertime = false;
+                }
             } else {
-                $overtimeHours = 0.0;
-                $isOvertime = false;
+                $actualMinutes = max(0, $clockIn->diffInMinutes($requestedOut));
+                $totalHours = round($actualMinutes / 60, 2);
+                $regularHours = min($totalHours, $dailyRegularCap);
+
+                if ($validated['overtime_status'] === 'approved') {
+                    $overtimeHours = max(0.0, round($totalHours - $regularHours, 2));
+                    $isOvertime = ($overtimeHours > 0);
+                } else {
+                    $overtimeHours = 0.0;
+                    $isOvertime = false;
+                }
             }
 
             $oldAssignmentValues = [

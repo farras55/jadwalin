@@ -238,6 +238,7 @@
 
                                 $ovtStatusLabel = match ($reg->overtime_status) {
                                     'approved' => 'Dihitung Lembur Resmi',
+                                    'regular' => 'Dihitung Jam Reguler',
                                     'none' => 'Jam Riil Saja (Tanpa Lembur)',
                                     'rejected' => 'Klaim Lembur Ditolak',
                                     default => '-',
@@ -596,6 +597,7 @@
                                         class="w-full text-xs rounded-lg border border-slate-200 bg-slate-50 p-2.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 font-medium text-slate-800"
                                     >
                                         <option value="approved">Setujui Sebagai Lembur (Dihitung Jam Lembur Resmi)</option>
+                                        <option value="regular">Setujui Sebagai Jam Reguler (Kompensasi Jam Pengganti Keterlambatan)</option>
                                         <option value="none">Setujui Jam Riil Saja (Tanpa Kompensasi Lembur)</option>
                                         <option value="rejected">Tolak Klaim Lembur (Jam Di Luar Shift Hangus)</option>
                                     </select>

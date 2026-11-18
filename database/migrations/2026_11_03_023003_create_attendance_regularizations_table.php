@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('reviewed_at')->nullable();
             $table->text('review_note')->nullable();
-            $table->enum('overtime_status', ['none', 'pending_approval', 'approved', 'rejected'])->default('none');
+            $table->enum('overtime_status', ['none', 'pending_approval', 'approved', 'rejected', 'regular'])->default('none');
             $table->timestamps();
 
             $table->index(['shift_assignment_id', 'status']);
