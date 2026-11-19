@@ -1,8 +1,9 @@
 @php
-    $safeWeeklyHourLimit = ($weeklyHourLimit ?? 0) > 0 ? $weeklyHourLimit : 40;
-    $safeScheduledHours  = $weeklyScheduledHours ?? 0;
-    $progressPercent     = min(100, round(($safeScheduledHours / $safeWeeklyHourLimit) * 100));
-    $isOverLimit         = ($weeklyScheduledHours ?? 0) > $safeWeeklyHourLimit;
+    $isUnlimited         = !empty($isUnlimitedHours) || (isset($weeklyHourLimit) && (float)$weeklyHourLimit <= 0);
+    $safeWeeklyHourLimit = ($weeklyHourLimit ?? 0) > 0 ? (float)$weeklyHourLimit : 40.0;
+    $safeScheduledHours  = (float)($weeklyScheduledHours ?? 0);
+    $progressPercent     = $isUnlimited ? 100 : min(100, round(($safeScheduledHours / $safeWeeklyHourLimit) * 100));
+    $isOverLimit         = !$isUnlimited && ($safeScheduledHours > $safeWeeklyHourLimit);
 
     // Kelompokkan jadwal mingguan per tanggal (Senin - Minggu)
     $weekDays = [];
@@ -156,7 +157,11 @@
                         Beban Jam Kerja Pekanan
                     </h3>
                     <span class="text-xs font-mono font-bold {{ $isOverLimit ? 'text-rose-600' : 'text-slate-800' }}">
-                        {{ number_format($safeScheduledHours, 1, ',', '.') }} / {{ number_format($safeWeeklyHourLimit, 0, ',', '.') }} Jam
+                        @if ($isUnlimited)
+                            {{ number_format($safeScheduledHours, 1, ',', '.') }} Jam / <span class="text-indigo-600 font-sans font-semibold">Tanpa Batas</span>
+                        @else
+                            {{ number_format($safeScheduledHours, 1, ',', '.') }} / {{ number_format($safeWeeklyHourLimit, 0, ',', '.') }} Jam
+                        @endif
                     </span>
                 </div>
 
@@ -164,11 +169,15 @@
                 <div class="space-y-2 mb-5">
                     <div class="flex items-center justify-between text-xs">
                         <span class="text-slate-500">Kapasitas Terpakai</span>
-                        <span class="font-mono font-semibold {{ $isOverLimit ? 'text-rose-600' : 'text-indigo-600' }}">{{ $progressPercent }}%</span>
+                        @if ($isUnlimited)
+                            <span class="font-mono font-semibold text-indigo-600">Aktif (Unlimited)</span>
+                        @else
+                            <span class="font-mono font-semibold {{ $isOverLimit ? 'text-rose-600' : 'text-indigo-600' }}">{{ $progressPercent }}%</span>
+                        @endif
                     </div>
                     <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                         <div class="h-full rounded-full transition-all duration-300 {{ $isOverLimit ? 'bg-rose-500' : 'bg-indigo-600' }}" 
-                             style="width: {{ $progressPercent }}%"></div>
+                             style="width: {{ $isUnlimited ? '100' : $progressPercent }}%"></div>
                     </div>
                 </div>
 
@@ -184,14 +193,18 @@
                     <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
                         <p class="text-[11px] text-slate-400 font-medium">Sisa Kuota Jam</p>
                         <p class="text-base font-bold font-mono mt-0.5 {{ $isOverLimit ? 'text-rose-600' : 'text-slate-900' }}">
-                            {{ number_format($remainingWeeklyHours ?? 0, 1, ',', '.') }} <span class="text-xs font-normal text-slate-500 font-sans">Jam</span>
+                            @if ($isUnlimited)
+                                <span class="text-indigo-600 font-sans font-semibold text-sm">Tanpa Batas</span>
+                            @else
+                                {{ number_format($remainingWeeklyHours ?? 0, 1, ',', '.') }} <span class="text-xs font-normal text-slate-500 font-sans">Jam</span>
+                            @endif
                         </p>
                     </div>
                 </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span class="text-slate-400">Aturan jam mengacu PP 35</span>
+                <span class="text-slate-400">{{ $isUnlimited ? 'Mode fleksibel tanpa batas' : 'Aturan jam mengacu kebijakan perusahaan' }}</span>
                 <a href="{{ route('employee.timesheet') }}" class="font-medium text-indigo-600 hover:text-indigo-800 hover:underline inline-flex items-center gap-1">
                     <span>Lihat Timesheet</span>
                     <i data-lucide="arrow-right" class="h-3 w-3"></i>

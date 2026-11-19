@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\AttendanceRegularization;
 use App\Models\Company;
+use App\Models\CompanySetting;
 use App\Models\Department;
 use App\Models\Shift;
 use App\Models\ShiftAssignment;
@@ -196,6 +197,53 @@ class DashboardTest extends TestCase
         $response->assertOk();
         $response->assertSee('Karyawan');
         $response->assertSee('Jadwal Saya');
+    }
+
+    public function test_employee_dashboard_calculates_weekly_hours_correctly_for_daily_mode(): void
+    {
+        $company = Company::factory()->create();
+        CompanySetting::factory()->create([
+            'company_id' => $company->id,
+            'work_hour_limit_type' => 'daily',
+            'max_regular_hours' => 9,
+            'max_working_days_per_week' => 5,
+        ]);
+
+        $department = Department::factory()->create(['company_id' => $company->id]);
+        $employee = User::factory()->create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'role' => 'employee',
+        ]);
+
+        $response = $this->actingAs($employee)
+            ->get(route('employee.dashboard'));
+
+        $response->assertOk();
+        // 9 jam x 5 hari = 45 Jam
+        $response->assertSee('45 Jam');
+    }
+
+    public function test_employee_dashboard_displays_unlimited_mode_properly(): void
+    {
+        $company = Company::factory()->create();
+        CompanySetting::factory()->create([
+            'company_id' => $company->id,
+            'max_regular_hours' => 0,
+        ]);
+
+        $department = Department::factory()->create(['company_id' => $company->id]);
+        $employee = User::factory()->create([
+            'company_id' => $company->id,
+            'department_id' => $department->id,
+            'role' => 'employee',
+        ]);
+
+        $response = $this->actingAs($employee)
+            ->get(route('employee.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('Tanpa Batas');
     }
 
     public function test_unauthenticated_user_is_redirected_to_login(): void

@@ -233,14 +233,37 @@ class DashboardController extends Controller
 
         $companySetting = $employee->company?->companySetting;
 
-        $weeklyHourLimit = $employee->max_weekly_hours
-            ?? $companySetting?->max_regular_hours
-            ?? 40;
+        $isUnlimitedHours = false;
 
-        $remainingWeeklyHours = max(
-            0,
-            $weeklyHourLimit - $weeklyScheduledHours
-        );
+        // 1. Cek kuota personal karyawan jika disetel khusus (misal Part-time)
+        if ($employee->max_weekly_hours !== null && (float) $employee->max_weekly_hours <= 0) {
+            $isUnlimitedHours = true;
+            $weeklyHourLimit = 0.0;
+        } elseif ($employee->max_weekly_hours !== null) {
+            $weeklyHourLimit = (float) $employee->max_weekly_hours;
+            // 2. Cek Mode Unlimited di Pengaturan Perusahaan
+        } elseif ($companySetting && (int) $companySetting->max_regular_hours <= 0) {
+            $isUnlimitedHours = true;
+            $weeklyHourLimit = 0.0;
+            // 3. Cek Mode Harian vs Mingguan
+        } elseif ($companySetting) {
+            $rawRegular = (float) $companySetting->max_regular_hours;
+            if ($companySetting->work_hour_limit_type === 'daily') {
+                $dailyCap = ($rawRegular > 0 && $rawRegular <= 12) ? $rawRegular : 8.0;
+                $workDays = ($companySetting->max_working_days_per_week > 0 && $companySetting->max_working_days_per_week <= 7)
+                    ? (int) $companySetting->max_working_days_per_week
+                    : 5;
+                $weeklyHourLimit = $dailyCap * $workDays;
+            } else {
+                $weeklyHourLimit = $rawRegular;
+            }
+        } else {
+            $weeklyHourLimit = (float) config('jadwalin.compliance.max_weekly_hours', 40);
+        }
+
+        $remainingWeeklyHours = $isUnlimitedHours
+            ? null
+            : max(0.0, $weeklyHourLimit - $weeklyScheduledHours);
 
         $openShiftsQuery = Shift::where('company_id', $employee->company_id)
             ->where('is_open_shift', true)
@@ -262,7 +285,8 @@ class DashboardController extends Controller
             'weeklyAssignments' => $weeklyAssignments,
             'weeklyScheduledHours' => round($weeklyScheduledHours, 2),
             'weeklyHourLimit' => $weeklyHourLimit,
-            'remainingWeeklyHours' => round($remainingWeeklyHours, 2),
+            'isUnlimitedHours' => $isUnlimitedHours,
+            'remainingWeeklyHours' => $remainingWeeklyHours !== null ? round($remainingWeeklyHours, 2) : null,
             'openShiftCount' => $openShiftsQuery->count(),
             'openShifts' => $openShifts,
         ]);
